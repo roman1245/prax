@@ -10,6 +10,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import kandrac.xyz.library.model.obj.Author;
@@ -61,7 +62,7 @@ public class DatabaseProvider extends ContentProvider {
     }
 
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+    public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 
         switch (uriMatcher.match(uri)) {
@@ -74,9 +75,6 @@ public class DatabaseProvider extends ContentProvider {
             case BOOK_ID:
                 qb.setTables(Book.TABLE_NAME);
                 qb.appendWhere(Book.COLUMN_ID + "=" + uri.getPathSegments().get(1));
-                if (TextUtils.isEmpty(sortOrder)) {
-                    sortOrder = Book.COLUMN_TITLE;
-                }
                 break;
             case AUTHORS:
                 qb.setTables(Author.TABLE_NAME);
@@ -87,9 +85,6 @@ public class DatabaseProvider extends ContentProvider {
             case AUTHOR_ID:
                 qb.setTables(Author.TABLE_NAME);
                 qb.appendWhere(Author.COLUMN_ID + "=" + uri.getPathSegments().get(1));
-                if (TextUtils.isEmpty(sortOrder)) {
-                    sortOrder = Author.COLUMN_NAME;
-                }
                 break;
             case PUBLISHERS:
                 qb.setTables(Publisher.TABLE_NAME);
@@ -100,21 +95,21 @@ public class DatabaseProvider extends ContentProvider {
             case PUBLISHER_ID:
                 qb.setTables(Publisher.TABLE_NAME);
                 qb.appendWhere(Publisher.COLUMN_ID + "=" + uri.getPathSegments().get(1));
-                if (TextUtils.isEmpty(sortOrder)) {
-                    sortOrder = Publisher.COLUMN_NAME;
-                }
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
 
-        Cursor c = qb.query(db, projection, selection, selectionArgs, null, null, sortOrder);
-        c.setNotificationUri(getContext().getContentResolver(), uri);
-        return c;
+        Cursor cursor = qb.query(db, projection, selection, selectionArgs, null, null, sortOrder);
+        Context context = getContext();
+        if (context != null) {
+            cursor.setNotificationUri(context.getContentResolver(), uri);
+        }
+        return cursor;
     }
 
     @Override
-    public String getType(Uri uri) {
+    public String getType(@NonNull Uri uri) {
         switch (uriMatcher.match(uri)) {
             case BOOKS:
                 return "vnd.android.cursor.dir/vnd.books";
@@ -134,7 +129,7 @@ public class DatabaseProvider extends ContentProvider {
     }
 
     @Override
-    public Uri insert(Uri uri, ContentValues values) {
+    public Uri insert(@NonNull Uri uri, ContentValues values) {
         long rowID;
         switch (uriMatcher.match(uri)) {
             case BOOKS:
@@ -152,14 +147,17 @@ public class DatabaseProvider extends ContentProvider {
 
         if (rowID > 0) {
             Uri _uri = ContentUris.withAppendedId(CONTENT_URI, rowID);
-            getContext().getContentResolver().notifyChange(_uri, null);
+            Context context = getContext();
+            if (context != null) {
+                context.getContentResolver().notifyChange(_uri, null);
+            }
             return _uri;
         }
         throw new SQLException("Failed to add a record into " + uri);
     }
 
     @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
+    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         int count;
         String id;
 
@@ -193,12 +191,15 @@ public class DatabaseProvider extends ContentProvider {
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
 
-        getContext().getContentResolver().notifyChange(uri, null);
+        Context context = getContext();
+        if (context != null) {
+            context.getContentResolver().notifyChange(uri, null);
+        }
         return count;
     }
 
     @Override
-    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+    public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         int count;
         switch (uriMatcher.match(uri)){
             case BOOKS:
@@ -225,7 +226,11 @@ public class DatabaseProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri );
         }
-        getContext().getContentResolver().notifyChange(uri, null);
+
+        Context context = getContext();
+        if (context != null) {
+            context.getContentResolver().notifyChange(uri, null);
+        }
         return count;
     }
 }
