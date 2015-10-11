@@ -1,5 +1,6 @@
 package kandrac.xyz.library.model.obj;
 
+import android.content.ContentValues;
 import android.provider.BaseColumns;
 
 /**
@@ -41,7 +42,7 @@ public class Book {
 
     }
 
-    public Book(Builder builder) {
+    private Book(Builder builder) {
         id = builder.id;
         title = builder.title;
         subtitle = builder.subtitle;
@@ -49,6 +50,17 @@ public class Book {
         isbn = builder.isbn;
         author = builder.author;
         stars = builder.stars;
+    }
+
+    public ContentValues getContentValues() {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_TITLE, title);
+        contentValues.put(COLUMN_SUBTITLE, subtitle);
+        contentValues.put(COLUMN_DESCRIPTION, description);
+        contentValues.put(COLUMN_ISBN, isbn);
+        contentValues.put(COLUMN_AUTHOR, author);
+        contentValues.put(COLUMN_STARS, stars);
+        return contentValues;
     }
 
     public static class Builder {

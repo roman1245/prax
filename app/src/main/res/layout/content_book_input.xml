@@ -38,6 +38,7 @@
             android:layout_toStartOf="@id/book_input_image">
 
             <EditText
+                android:id="@+id/book_input_author_edit"
                 style="?android:attr/textAppearanceMediumInverse"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -58,6 +59,7 @@
             android:layout_toStartOf="@id/book_input_image">
 
             <EditText
+                android:id="@+id/book_input_title_edit"
                 style="?android:attr/textAppearanceMediumInverse"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -99,6 +101,7 @@
                 android:layout_marginTop="8dp">
 
                 <EditText
+                    android:id="@+id/book_input_publisher_edit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/book_publisher"
@@ -128,6 +131,7 @@
                 android:layout_toStartOf="@id/book_input_barcode">
 
                 <EditText
+                    android:id="@+id/book_input_isbn_edit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/book_isbn"

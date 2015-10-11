@@ -10,8 +10,12 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 import kandrac.xyz.library.model.obj.Author;
 import kandrac.xyz.library.model.obj.Book;
@@ -23,30 +27,53 @@ import kandrac.xyz.library.model.obj.Publisher;
  */
 public class DatabaseProvider extends ContentProvider {
 
-    static final String PROVIDER_NAME = "xyz.kandrac.Library";
-    static final String URL = "content://" + PROVIDER_NAME;
-    static final Uri CONTENT_URI = Uri.parse(URL);
+    public static final String PROVIDER_NAME = "xyz.kandrac.Library";
+    public static final String URL = "content://" + PROVIDER_NAME;
+    public static final Uri CONTENT_URI = Uri.parse(URL);
 
-    static final int BOOKS = 1;
-    static final int BOOK_ID = 2;
-    static final int AUTHORS = 3;
-    static final int AUTHOR_ID = 4;
-    static final int PUBLISHERS = 5;
-    static final int PUBLISHER_ID = 6;
+    public static final int BOOKS = 1;
+    public static final int BOOK_ID = 2;
+    public static final int AUTHORS = 3;
+    public static final int AUTHOR_ID = 4;
+    public static final int PUBLISHERS = 5;
+    public static final int PUBLISHER_ID = 6;
+
+    @IntDef({BOOKS, BOOK_ID, AUTHORS, AUTHOR_ID, PUBLISHERS, PUBLISHER_ID})
+    @Retention(RetentionPolicy.SOURCE)
+    @interface UriType {
+    }
 
     static final UriMatcher uriMatcher;
 
     static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        uriMatcher.addURI(PROVIDER_NAME, "students", BOOKS);
-        uriMatcher.addURI(PROVIDER_NAME, "students/#", BOOK_ID);
-        uriMatcher.addURI(PROVIDER_NAME, "students", AUTHORS);
-        uriMatcher.addURI(PROVIDER_NAME, "students/#", AUTHOR_ID);
-        uriMatcher.addURI(PROVIDER_NAME, "students", PUBLISHERS);
-        uriMatcher.addURI(PROVIDER_NAME, "students/#", PUBLISHER_ID);
+        uriMatcher.addURI(PROVIDER_NAME, Book.TABLE_NAME, BOOKS);
+        uriMatcher.addURI(PROVIDER_NAME, Book.TABLE_NAME + "/#", BOOK_ID);
+        uriMatcher.addURI(PROVIDER_NAME, Author.TABLE_NAME, AUTHORS);
+        uriMatcher.addURI(PROVIDER_NAME, Author.TABLE_NAME + "/#", AUTHOR_ID);
+        uriMatcher.addURI(PROVIDER_NAME, Publisher.TABLE_NAME, PUBLISHERS);
+        uriMatcher.addURI(PROVIDER_NAME, Publisher.TABLE_NAME + "/#", PUBLISHER_ID);
     }
 
     private SQLiteDatabase db;
+
+    public static Uri getUri(@UriType int type) {
+        switch (type) {
+            case BOOKS:
+                return Uri.parse(URL + "/" + Book.TABLE_NAME);
+            case BOOK_ID:
+                return Uri.parse(URL + "/" + Book.TABLE_NAME);
+            case AUTHORS:
+                return Uri.parse(URL + "/" + Author.TABLE_NAME);
+            case AUTHOR_ID:
+                return Uri.parse(URL + "/" + Author.TABLE_NAME);
+            case PUBLISHERS:
+                return Uri.parse(URL + "/" + Publisher.TABLE_NAME);
+            case PUBLISHER_ID:
+                return Uri.parse(URL + "/" + Publisher.TABLE_NAME);
+        }
+        throw new IllegalArgumentException("Unknown Type" + type);
+    }
 
     @Override
     public boolean onCreate() {
@@ -149,7 +176,7 @@ public class DatabaseProvider extends ContentProvider {
             Uri _uri = ContentUris.withAppendedId(CONTENT_URI, rowID);
             Context context = getContext();
             if (context != null) {
-                context.getContentResolver().notifyChange(_uri, null);
+                context.getContentResolver().notifyChange(uri, null);
             }
             return _uri;
         }
@@ -161,13 +188,13 @@ public class DatabaseProvider extends ContentProvider {
         int count;
         String id;
 
-        switch (uriMatcher.match(uri)){
+        switch (uriMatcher.match(uri)) {
             case BOOKS:
                 count = db.delete(Book.TABLE_NAME, selection, selectionArgs);
                 break;
             case BOOK_ID:
                 id = uri.getPathSegments().get(1);
-                count = db.delete(Book.TABLE_NAME, Book.COLUMN_ID +  " = " + id +
+                count = db.delete(Book.TABLE_NAME, Book.COLUMN_ID + " = " + id +
                         (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
                 break;
             case AUTHORS:
@@ -175,7 +202,7 @@ public class DatabaseProvider extends ContentProvider {
                 break;
             case AUTHOR_ID:
                 id = uri.getPathSegments().get(1);
-                count = db.delete(Author.TABLE_NAME, Author.COLUMN_ID +  " = " + id +
+                count = db.delete(Author.TABLE_NAME, Author.COLUMN_ID + " = " + id +
                         (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
                 break;
             case PUBLISHERS:
@@ -183,7 +210,7 @@ public class DatabaseProvider extends ContentProvider {
                 break;
             case PUBLISHER_ID:
                 id = uri.getPathSegments().get(1);
-                count = db.delete(Publisher.TABLE_NAME, Publisher.COLUMN_ID +  " = " + id +
+                count = db.delete(Publisher.TABLE_NAME, Publisher.COLUMN_ID + " = " + id +
                         (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
                 break;
 
@@ -201,30 +228,30 @@ public class DatabaseProvider extends ContentProvider {
     @Override
     public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         int count;
-        switch (uriMatcher.match(uri)){
+        switch (uriMatcher.match(uri)) {
             case BOOKS:
                 count = db.update(Book.TABLE_NAME, values, selection, selectionArgs);
                 break;
             case BOOK_ID:
                 count = db.update(Book.TABLE_NAME, values, Book.COLUMN_ID + " = " + uri.getPathSegments().get(1) +
-                        (!TextUtils.isEmpty(selection) ? " AND (" +selection + ')' : ""), selectionArgs);
+                        (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
                 break;
             case AUTHORS:
                 count = db.update(Author.TABLE_NAME, values, selection, selectionArgs);
                 break;
             case AUTHOR_ID:
                 count = db.update(Author.TABLE_NAME, values, Author.COLUMN_ID + " = " + uri.getPathSegments().get(1) +
-                        (!TextUtils.isEmpty(selection) ? " AND (" +selection + ')' : ""), selectionArgs);
+                        (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
                 break;
             case PUBLISHERS:
                 count = db.update(Publisher.TABLE_NAME, values, selection, selectionArgs);
                 break;
             case PUBLISHER_ID:
                 count = db.update(Publisher.TABLE_NAME, values, Publisher.COLUMN_ID + " = " + uri.getPathSegments().get(1) +
-                        (!TextUtils.isEmpty(selection) ? " AND (" +selection + ')' : ""), selectionArgs);
+                        (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
                 break;
             default:
-                throw new IllegalArgumentException("Unknown URI " + uri );
+                throw new IllegalArgumentException("Unknown URI " + uri);
         }
 
         Context context = getContext();
