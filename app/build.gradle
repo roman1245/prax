@@ -17,6 +17,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    lintOptions {
+        disable 'InvalidPackage'
+    }
 }
 
 repositories {
@@ -34,4 +37,6 @@ dependencies {
     compile 'com.embarkmobile:zxing-android-legacy:2.0.0@aar'
     compile 'com.embarkmobile:zxing-android-integration:2.0.0@aar'
     compile 'com.google.zxing:core:3.0.1'
+    compile 'com.android.support:design:23.0.1'
+    compile 'com.jakewharton:butterknife:7.0.1'
 }

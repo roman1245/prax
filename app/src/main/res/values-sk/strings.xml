@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Library</string>
+    <string name="action_save">Uložiť</string>
+    <string name="book_author">Autor</string>
+    <string name="book_barcode">Čiarový kód</string>
+    <string name="book_image">Obrázok knihy</string>
+    <string name="book_isbn">ISBN</string>
+    <string name="book_publisher">Vydavateľ</string>
+    <string name="book_title">Názov Knihy</string>
+</resources>
