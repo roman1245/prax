@@ -1,6 +1,7 @@
 package kandrac.xyz.library.model.obj;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.provider.BaseColumns;
 
 /**
@@ -30,16 +31,22 @@ public class Book {
 
     public static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
-    public int id;
-    public String title;
-    public String subtitle;
-    public String description;
-    public String isbn;
-    public String author;
-    public int stars;
+    public final int id;
+    public final String title;
+    public final String subtitle;
+    public final String description;
+    public final String isbn;
+    public final String author;
+    public final int stars;
 
-    public Book() {
-
+    public Book(Cursor cursor) {
+        id = cursor.getInt(cursor.getColumnIndex(COLUMN_ID));
+        title = cursor.getString(cursor.getColumnIndex(COLUMN_TITLE));
+        subtitle = cursor.getString(cursor.getColumnIndex(COLUMN_SUBTITLE));
+        description = cursor.getString(cursor.getColumnIndex(COLUMN_DESCRIPTION));
+        isbn = cursor.getString(cursor.getColumnIndex(COLUMN_ISBN));
+        author = cursor.getString(cursor.getColumnIndex(COLUMN_AUTHOR));
+        stars = cursor.getInt(cursor.getColumnIndex(COLUMN_STARS));
     }
 
     private Book(Builder builder) {
