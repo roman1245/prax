@@ -1,6 +1,5 @@
 package kandrac.xyz.library;
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.databinding.DataBindingUtil;
@@ -10,10 +9,11 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CursorAdapter;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public FloatingActionButton mAdd;
 
     @Bind(R.id.list)
-    ListView list;
+    RecyclerView list;
 
     BookCursorAdapter adapter;
 
@@ -47,7 +47,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         setContentView(R.layout.book_list);
         ButterKnife.bind(this);
         getSupportLoaderManager().initLoader(1, null, this);
-        adapter = new BookCursorAdapter(this);
+
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        adapter = new BookCursorAdapter();
+        list.setLayoutManager(new LinearLayoutManager(this));
         list.setAdapter(adapter);
     }
 
@@ -72,7 +75,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        adapter.changeCursor(data);
+        adapter.setCursor(data);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -80,20 +84,36 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     }
 
-    private class BookCursorAdapter extends CursorAdapter {
+    private class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.BindingHolder> {
 
-        public BookCursorAdapter(Context context) {
-            super(context, null, 0);
+        public class BindingHolder extends RecyclerView.ViewHolder {
+            public BindingHolder(View rowView) {
+                super(rowView);
+            }
+        }
+
+        Cursor mCursor;
+
+        public void setCursor(Cursor cursor) {
+            mCursor = cursor;
         }
 
         @Override
-        public View newView(Context context, Cursor cursor, ViewGroup parent) {
-            return BookListItemBinding.inflate(getLayoutInflater(), parent, false).getRoot();
+        public BindingHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new BindingHolder(BookListItemBinding.inflate(getLayoutInflater(), parent, false).getRoot());
         }
 
         @Override
-        public void bindView(View view, Context context, Cursor cursor) {
-            ((BookListItemBinding) DataBindingUtil.findBinding(view)).setBook(new Book(cursor));
+        public void onBindViewHolder(BindingHolder holder, int position) {
+            mCursor.moveToPosition(position);
+            ((BookListItemBinding) DataBindingUtil.findBinding(holder.itemView)).setBook(new Book(mCursor));
+        }
+
+        @Override
+        public int getItemCount() {
+            if (mCursor != null) {
+                return mCursor.getCount();
+            } else return 0;
         }
     }
 }
