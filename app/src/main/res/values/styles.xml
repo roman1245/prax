@@ -7,6 +7,12 @@
         <item name="colorAccent">@color/accent</item>
     </style>
 
+    <!-- More specified for this APIs -->
+    <style name="AppTheme.Base" parent="@style/AppTheme"/>
+
+    <!-- Supported since API 21-->
+    <style name="AppTheme.NoStatusBar" parent="@style/AppTheme.Base"/>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />

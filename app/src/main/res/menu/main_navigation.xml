@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/books"
+            android:title="Knihy">
+            <menu>
+                <item
+                    android:id="@+id/navigation_item_1"
+                    android:checked="true"
+                    android:icon="@drawable/ic_book"
+                    android:title="Moje knihy"
+                    app:actionLayout="@layout/action_layout"/>
+                <item
+                    android:id="@+id/navigation_item_2"
+                    android:title="Požičané knihy" />
+            </menu>
+        </item>
+
+        <item
+            android:id="@+id/authors"
+            android:title="Autori">
+            <menu>
+                <item
+                    android:id="@+id/navigation_item_3"
+                    android:icon="@drawable/ic_author"
+                    android:title="Autori" />
+
+                <item
+                    android:id="@+id/navigation_item_4"
+                    android:title="Vydavatelia" />
+            </menu>
+        </item>
+
+        <item
+            android:id="@+id/settings"
+            android:title="Nastavenia">
+            <menu>
+                <item
+                    android:id="@+id/navigation_item_5"
+                    android:icon="@drawable/ic_settings"
+                    android:title="Nastavenia" />
+                <item
+                    android:id="@+id/navigation_item_6"
+                    android:title="O Aplikácii" />
+            </menu>
+        </item>
+    </group>
+</menu>
