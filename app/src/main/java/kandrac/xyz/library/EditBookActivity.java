@@ -7,7 +7,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.ImageView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -25,14 +24,8 @@ public class EditBookActivity extends AppCompatActivity {
     @Bind(R.id.book_input_title_edit)
     EditText title;
 
-    @Bind(R.id.book_input_publisher_edit)
-    EditText publisher;
-
     @Bind(R.id.book_input_isbn_edit)
     EditText isbn;
-
-    @Bind(R.id.book_input_image)
-    ImageView image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
