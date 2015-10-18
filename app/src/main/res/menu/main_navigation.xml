@@ -5,49 +5,66 @@
 
         <item
             android:id="@+id/books"
-            android:title="Knihy">
+            android:title="@string/menu_books">
             <menu>
                 <item
-                    android:id="@+id/navigation_item_1"
+                    android:id="@+id/main_navigation_books"
                     android:checked="true"
                     android:icon="@drawable/ic_book"
-                    android:title="Moje knihy" />
+                    android:title="@string/menu_books_mine" />
+
                 <item
-                    android:id="@+id/navigation_item_2"
-                    android:title="Požičané knihy"
+                    android:id="@+id/main_navigation_borrowed"
+                    android:enabled="false"
+                    android:icon="@drawable/ic_share"
+                    android:title="@string/menu_books_borrowed"
+                    app:actionLayout="@layout/action_layout" />
+
+                <item
+                    android:icon="@drawable/ic_heart_outline"
+                    android:id="@+id/main_navigation_wish_list"
+                    android:enabled="false"
+                    android:title="@string/menu_books_wish_list"
                     app:actionLayout="@layout/action_layout" />
             </menu>
         </item>
 
         <item
             android:id="@+id/authors"
-            android:title="Autori">
+            android:title="@string/menu_authors">
             <menu>
                 <item
-                    android:id="@+id/navigation_item_3"
+                    android:id="@+id/main_navigation_authors"
+                    android:enabled="false"
                     android:icon="@drawable/ic_author"
-                    android:title="Autori"
+                    android:title="@string/menu_authors"
                     app:actionLayout="@layout/action_layout" />
 
                 <item
-                    android:id="@+id/navigation_item_4"
-                    android:title="Vydavatelia"
+                    android:id="@+id/main_navigation_publishers"
+                    android:enabled="false"
+                    android:icon="@drawable/ic_tie"
+                    android:title="@string/menu_authors_publishers"
                     app:actionLayout="@layout/action_layout" />
             </menu>
         </item>
 
         <item
             android:id="@+id/settings"
-            android:title="Nastavenia">
+            android:title="@string/menu_settings">
             <menu>
                 <item
-                    android:id="@+id/navigation_item_5"
+                    android:id="@+id/main_navigation_settings"
+                    android:enabled="false"
                     android:icon="@drawable/ic_settings"
-                    android:title="Nastavenia"
+                    android:title="@string/menu_settings"
                     app:actionLayout="@layout/action_layout" />
+
                 <item
-                    android:id="@+id/navigation_item_6"
-                    android:title="O Aplikácii"
+                    android:id="@+id/main_navigation_about"
+                    android:enabled="false"
+                    android:icon="@drawable/ic_information_outline"
+                    android:title="@string/menu_settings_about"
                     app:actionLayout="@layout/action_layout" />
             </menu>
         </item>
