@@ -32,9 +32,14 @@ public class DatabaseProvider extends ContentProvider {
     public static final int BOOKS = 1;
     public static final int BOOK_ID = 2;
 
-    @IntDef({BOOKS, BOOK_ID})
+    @IntDef({BOOKS})
     @Retention(RetentionPolicy.SOURCE)
     @interface UriType {
+    }
+
+    @IntDef({BOOK_ID})
+    @Retention(RetentionPolicy.SOURCE)
+    @interface UriTypeId {
     }
 
     static final UriMatcher uriMatcher;
@@ -51,8 +56,14 @@ public class DatabaseProvider extends ContentProvider {
         switch (type) {
             case BOOKS:
                 return Uri.parse(URL + "/" + Book.TABLE_NAME);
+        }
+        throw new IllegalArgumentException("Unknown Type" + type);
+    }
+
+    public static Uri getUriWithId(@UriTypeId int type, long id) {
+        switch (type) {
             case BOOK_ID:
-                return Uri.parse(URL + "/" + Book.TABLE_NAME);
+                return Uri.parse(URL + "/" + Book.TABLE_NAME + "/" + id);
         }
         throw new IllegalArgumentException("Unknown Type" + type);
     }

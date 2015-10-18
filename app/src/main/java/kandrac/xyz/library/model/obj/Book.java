@@ -27,13 +27,14 @@ public class Book {
 
     public static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
-    public final int id;
+    public final long id;
     public final String title;
     public final String description;
     public final String isbn;
     public final String author;
 
     public Book(Cursor cursor) {
+        cursor.moveToFirst();
         id = cursor.getInt(cursor.getColumnIndex(COLUMN_ID));
         title = cursor.getString(cursor.getColumnIndex(COLUMN_TITLE));
         description = cursor.getString(cursor.getColumnIndex(COLUMN_DESCRIPTION));
@@ -60,13 +61,13 @@ public class Book {
 
     public static class Builder {
 
-        private int id;
+        private long id;
         private String title;
         private String description;
         private String isbn;
         private String author;
 
-        public Builder setId(int id) {
+        public Builder setId(long id) {
             this.id = id;
             return this;
         }

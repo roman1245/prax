@@ -26,7 +26,13 @@
             android:name=".EditBookActivity"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:label="Add New Book"
+            android:name=".BookDetailActivity"
+            android:screenOrientation="portrait" />
+
         <provider
+            android:exported="false"
             android:name=".model.DatabaseProvider"
             android:authorities="xyz.kandrac.Library" />
     </application>

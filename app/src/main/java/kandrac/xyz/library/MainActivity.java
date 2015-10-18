@@ -106,7 +106,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         @Override
         public void onBindViewHolder(BindingHolder holder, int position) {
             mCursor.moveToPosition(position);
-            ((BookListItemBinding) DataBindingUtil.findBinding(holder.itemView)).setBook(new Book(mCursor));
+            final Book book = new Book(mCursor);
+
+            BookListItemBinding binding = DataBindingUtil.getBinding(holder.itemView);
+            binding.setBook(book);
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(MainActivity.this, BookDetailActivity.class);
+                    intent.putExtra(BookDetailActivity.EXTRA_BOOK_ID, book.id);
+                    startActivity(intent);
+                }
+            });
         }
 
         @Override
