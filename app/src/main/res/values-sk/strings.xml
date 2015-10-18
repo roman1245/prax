@@ -6,6 +6,9 @@
     <!-- Action strings (mostly used in Toolbar) -->
     <string name="action_save">Uložiť</string>
 
+    <!-- Basic Image Content descriptors -->
+    <string name="list_item">Kniha</string>
+
     <!-- Edit/Input Book Screen -->
     <string name="edit_book_author">Autor</string>
     <string name="edit_book_title">Názov Knihy</string>
@@ -25,4 +28,6 @@
     <string name="menu_settings">Nastavenia</string>
     <string name="menu_settings_about">O Aplikácii</string>
     <string name="menu_books_wish_list">Wishlist</string>
+    <string name="soon">Čoskoro…</string>
+    <string name="navigation_head">Hlavná navigácia</string>
 </resources>
