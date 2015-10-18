@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Application texts -->
     <string name="app_name">Library</string>
+
+    <!-- Action strings (mostly used in Toolbar) -->
     <string name="action_save">Uložiť</string>
-    <string name="book_author">Autor</string>
-    <string name="book_barcode">Čiarový kód</string>
-    <string name="book_image">Obrázok knihy</string>
-    <string name="book_isbn">ISBN</string>
-    <string name="book_publisher">Vydavateľ</string>
-    <string name="book_title">Názov Knihy</string>
+
+    <!-- Edit/Input Book Screen -->
+    <string name="edit_book_author">Autor</string>
+    <string name="edit_book_title">Názov Knihy</string>
+    <string name="edit_book_isbn">ISBN</string>
+    <string name="edit_book_change_cover">Zmeniť</string>
+    <string name="edit_book_description">Popis</string>
+
+    <string name="edit_book_info">Základné informácie o knihe</string>
+    <string name="edit_book_cover">Obálka Knihy</string>
 </resources>

@@ -18,13 +18,13 @@ import kandrac.xyz.library.model.obj.Book;
  */
 public class EditBookActivity extends AppCompatActivity {
 
-    @Bind(R.id.book_input_author_edit)
+    @Bind(R.id.book_input_author)
     EditText author;
 
-    @Bind(R.id.book_input_title_edit)
+    @Bind(R.id.book_input_title)
     EditText title;
 
-    @Bind(R.id.book_input_isbn_edit)
+    @Bind(R.id.book_input_isbn)
     EditText isbn;
 
     @Override

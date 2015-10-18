@@ -1,10 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Application texts -->
     <string name="app_name">Library</string>
-    <string name="book_author">Author</string>
-    <string name="book_title">Book Title</string>
-    <string name="book_publisher">Publisher</string>
-    <string name="book_isbn">ISBN</string>
-    <string name="book_image">Book Image</string>
-    <string name="book_barcode">Barcode</string>
+
+    <!-- Action strings (mostly used in Toolbar) -->
     <string name="action_save">Save</string>
+
+    <!-- Edit/Input Book Screen -->
+    <string name="edit_book_author">Author</string>
+    <string name="edit_book_title">Book Title</string>
+    <string name="edit_book_isbn">ISBN</string>
+    <string name="edit_book_change_cover">Change</string>
+    <string name="edit_book_description">Description</string>
+
+    <string name="edit_book_info">Basic book info</string>
+    <string name="edit_book_cover">Book Cover</string>
 </resources>

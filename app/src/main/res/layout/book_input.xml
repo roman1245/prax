@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,7 +7,7 @@
     android:fitsSystemWindows="true"
     tools:context=".EditBookActivity">
 
-
+    <!-- Toolbar -->
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,17 +25,12 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+        <!-- Main content -->
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:layout_margin="12dp"
-            android:alignmentMode="alignMargins"
-            android:columnCount="2"
-            android:columnOrderPreserved="true"
-
             android:orientation="horizontal"
-            android:rowCount="5"
             android:useDefaultMargins="true"
             tools:showIn="@layout/book_input">
 
@@ -46,6 +40,7 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_row="0"
+                android:contentDescription="@string/edit_book_info"
                 android:src="@drawable/ic_book"
                 android:tint="@color/md_grey_700" />
 
@@ -55,15 +50,15 @@
                 android:layout_row="0">
 
                 <EditText
-                    android:id="@+id/book_input_author_edit"
+                    android:id="@+id/book_input_author"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/book_author"
+                    android:ems="0"
+                    android:hint="@string/edit_book_author"
                     android:inputType="text"
                     android:singleLine="true"
                     tools:text="John Ronald Reuel Tolkien" />
             </android.support.design.widget.TextInputLayout>
-
 
             <android.support.design.widget.TextInputLayout
                 android:layout_column="1"
@@ -71,15 +66,15 @@
                 android:layout_row="1">
 
                 <EditText
-                    android:id="@+id/book_input_title_edit"
+                    android:id="@+id/book_input_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/book_title"
+                    android:ems="0"
+                    android:hint="@string/edit_book_title"
                     android:inputType="text"
                     android:singleLine="true"
                     tools:text="The Lord of the Rings" />
             </android.support.design.widget.TextInputLayout>
-
 
             <android.support.design.widget.TextInputLayout
                 android:layout_column="1"
@@ -87,10 +82,11 @@
                 android:layout_row="2">
 
                 <EditText
-                    android:id="@+id/book_input_isbn_edit"
+                    android:id="@+id/book_input_isbn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/book_isbn"
+                    android:inputType="number"
+                    android:hint="@string/edit_book_isbn"
                     tools:text="0802356555" />
             </android.support.design.widget.TextInputLayout>
 
@@ -99,6 +95,8 @@
                 android:layout_gravity="top"
                 android:layout_marginTop="16dp"
                 android:layout_row="3"
+                android:contentDescription="@string/edit_book_cover"
+                android:ems="0"
                 android:src="@drawable/ic_camera"
                 android:tint="@color/md_grey_700" />
 
@@ -110,26 +108,41 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:id="@+id/book_input_isbn_camera_pick"
                     android:layout_width="96dp"
                     android:layout_height="96dp"
                     android:background="#ddd"
-                    android:hint="@string/book_isbn"
+                    android:contentDescription="@string/edit_book_cover"
                     android:scaleType="center"
                     android:src="@drawable/ic_book"
                     android:tint="@color/md_grey_100" />
 
                 <Button
+                    android:id="@+id/book_input_cover"
                     style="@style/Base.Widget.AppCompat.Button.Borderless.Theme"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:layout_marginStart="16dp"
-                    android:text="Change" />
+                    android:text="@string/edit_book_change_cover" />
             </LinearLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_column="1"
+                android:layout_gravity="fill"
+                android:layout_row="4">
+
+                <EditText
+                    android:id="@+id/book_input_description_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="0"
+                    android:hint="@string/edit_book_description"
+                    tools:text="This book was completely awesome! It was about some small Hobbit." />
+            </android.support.design.widget.TextInputLayout>
         </GridLayout>
     </ScrollView>
 
+    <!-- FAB - scan button -->
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
@@ -139,5 +152,5 @@
         android:src="@drawable/ic_barcode_white"
         app:elevation="6dp"
         app:fabSize="normal"
-        app:pressedTranslationZ="12dp"/>
+        app:pressedTranslationZ="12dp" />
 </android.support.design.widget.CoordinatorLayout>
