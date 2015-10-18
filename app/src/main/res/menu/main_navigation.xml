@@ -11,11 +11,11 @@
                     android:id="@+id/navigation_item_1"
                     android:checked="true"
                     android:icon="@drawable/ic_book"
-                    android:title="Moje knihy"
-                    app:actionLayout="@layout/action_layout"/>
+                    android:title="Moje knihy" />
                 <item
                     android:id="@+id/navigation_item_2"
-                    android:title="Požičané knihy" />
+                    android:title="Požičané knihy"
+                    app:actionLayout="@layout/action_layout" />
             </menu>
         </item>
 
@@ -26,11 +26,13 @@
                 <item
                     android:id="@+id/navigation_item_3"
                     android:icon="@drawable/ic_author"
-                    android:title="Autori" />
+                    android:title="Autori"
+                    app:actionLayout="@layout/action_layout" />
 
                 <item
                     android:id="@+id/navigation_item_4"
-                    android:title="Vydavatelia" />
+                    android:title="Vydavatelia"
+                    app:actionLayout="@layout/action_layout" />
             </menu>
         </item>
 
@@ -41,10 +43,12 @@
                 <item
                     android:id="@+id/navigation_item_5"
                     android:icon="@drawable/ic_settings"
-                    android:title="Nastavenia" />
+                    android:title="Nastavenia"
+                    app:actionLayout="@layout/action_layout" />
                 <item
                     android:id="@+id/navigation_item_6"
-                    android:title="O Aplikácii" />
+                    android:title="O Aplikácii"
+                    app:actionLayout="@layout/action_layout" />
             </menu>
         </item>
     </group>
