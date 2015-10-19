@@ -117,7 +117,6 @@
                     android:src="@drawable/ic_book"/>
 
                 <Button
-                    android:onClick="takePhoto"
                     android:id="@+id/book_input_cover"
                     style="@style/Base.Widget.AppCompat.Button.Borderless.Theme"
                     android:layout_width="wrap_content"
@@ -145,7 +144,6 @@
 
     <!-- FAB - scan button -->
     <android.support.design.widget.FloatingActionButton
-        android:onClick="click"
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

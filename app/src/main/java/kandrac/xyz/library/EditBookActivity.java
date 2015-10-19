@@ -1,7 +1,6 @@
 package kandrac.xyz.library;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -31,10 +30,12 @@ import com.google.android.gms.vision.barcode.Barcode;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import kandrac.xyz.library.model.DatabaseProvider;
 import kandrac.xyz.library.model.obj.Book;
 
@@ -46,40 +47,68 @@ public class EditBookActivity extends AppCompatActivity {
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_BARCODE = 2;
 
-    private static final int RC_HANDLE_CAMERA_PERM = 2;
-
-    private String filePath;
+    private static final int TAKE_PHOTO_PERMISSIONS = 2;
+    private static final int BARCODE_PERMISSIONS = 3;
 
     @Bind(R.id.book_input_author)
-    EditText author;
+    EditText mAuthorEdit;
 
     @Bind(R.id.book_input_title)
-    EditText title;
+    EditText mTitleEdit;
 
     @Bind(R.id.book_input_isbn)
-    EditText isbn;
+    EditText mIsbnEdit;
 
     @Bind(R.id.book_input_cover_image)
-    ImageView image;
+    ImageView mImageEdit;
 
     @Bind(R.id.book_input_cover)
-    Button btn;
+    Button mCoverButton;
 
+    // Basic Activity Tasks
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.book_input);
 
+        // set ToolBar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
-        ab.setDisplayShowHomeEnabled(true);
-
+        if (ab != null) {
+            ab.setDisplayHomeAsUpEnabled(true);
+            ab.setDisplayShowHomeEnabled(true);
+        }
         ButterKnife.bind(this);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_BARCODE:
+                // Handle Barcode
+                if (resultCode == CommonStatusCodes.SUCCESS) {
+                    if (data != null) {
+                        Barcode barcode = data.getParcelableExtra(BarcodeActivity.BARCODE_OBJECT);
+                        mIsbnEdit.setText(barcode.displayValue);
+                    }
+                }
+                break;
+            case REQUEST_IMAGE_CAPTURE:
+                // Handle Image Capture
+                if (resultCode == RESULT_OK) {
+                    Bundle extras = data.getExtras();
+                    Bitmap imageBitmap = (Bitmap) extras.get("data");
+                    mImageEdit.setImageBitmap(imageBitmap);
+                }
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    // ToolBar option menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.book_add_menu, menu);
@@ -99,41 +128,61 @@ public class EditBookActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    // Storing result
     private void save() {
         Book book = new Book.Builder()
-                .setAuthor(author.getText().toString())
-                .setTitle(title.getText().toString())
-                .setIsbn(isbn.getText().toString()).build();
+                .setAuthor(mAuthorEdit.getText().toString())
+                .setTitle(mTitleEdit.getText().toString())
+                .setIsbn(mIsbnEdit.getText().toString()).build();
         getContentResolver().insert(
                 DatabaseProvider.getUri(DatabaseProvider.BOOKS),
                 book.getContentValues());
         finish();
     }
 
-    public void click(View v) {
-        startActivityForResult(new Intent(this, BarcodeActivity.class), REQUEST_BARCODE);
-    }
+    // Open Camera for taking image of Book Cover
+    @OnClick(R.id.book_input_cover)
+    public void takePhoto(View view) {
+        int cameraPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+        int writePermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case REQUEST_BARCODE:
-                if (resultCode == CommonStatusCodes.SUCCESS) {
-                    if (data != null) {
-                        Barcode barcode = data.getParcelableExtra(BarcodeActivity.BARCODE_OBJECT);
-                        isbn.setText(barcode.displayValue);
-                    }
-                }
+        int permissions = 0;
+        permissions |= (cameraPermission == PackageManager.PERMISSION_GRANTED) ? 0 : 1;
+        permissions |= (writePermission == PackageManager.PERMISSION_GRANTED) ? 0 : 2;
+
+        switch (permissions) {
+            case 1:
+                requestPermissions(
+                        view,
+                        TAKE_PHOTO_PERMISSIONS,
+                        Manifest.permission.CAMERA);
                 break;
-            case REQUEST_IMAGE_CAPTURE:
-                if (resultCode == RESULT_OK) {
-                    Bundle extras = data.getExtras();
-                    Bitmap imageBitmap = (Bitmap) extras.get("data");
-                    image.setImageBitmap(imageBitmap);
-                }
+            case 2:
+                requestPermissions(
+                        view,
+                        TAKE_PHOTO_PERMISSIONS,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                break;
+            case 3:
+                requestPermissions(
+                        view,
+                        TAKE_PHOTO_PERMISSIONS,
+                        Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE);
                 break;
             default:
-                super.onActivityResult(requestCode, resultCode, data);
+                dispatchTakePictureIntent();
+                return;
+        }
+    }
+
+    // Open Barcode scanner
+    @OnClick(R.id.fab)
+    public void click(View view) {
+        int cameraPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+        if (cameraPermission != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(view, BARCODE_PERMISSIONS, Manifest.permission.CAMERA, Manifest.permission.CAMERA);
+        } else {
+            startActivityForResult(new Intent(this, BarcodeActivity.class), REQUEST_BARCODE);
         }
     }
 
@@ -147,19 +196,9 @@ public class EditBookActivity extends AppCompatActivity {
                 Log.e("jano", ex.getMessage());
             }
             if (photoFile != null) {
-                filePath = photoFile.getAbsolutePath();
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
-        }
-    }
-
-    public void takePhoto(View view) {
-        int rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
-        if (rc != PackageManager.PERMISSION_GRANTED) {
-            requestCameraPermission();
-        } else {
-            dispatchTakePictureIntent();
         }
     }
 
@@ -168,28 +207,40 @@ public class EditBookActivity extends AppCompatActivity {
      * showing a "Snackbar" message of why the permission is needed then
      * sending the request.
      */
-    private void requestCameraPermission() {
+    private void requestPermissions(final View view, final int request, final String... permissions) {
 
-        final String[] permissions = new String[]{Manifest.permission.CAMERA};
-
-        if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
-            ActivityCompat.requestPermissions(this, permissions, RC_HANDLE_CAMERA_PERM);
-            return;
-        }
-
-        final Activity thisActivity = this;
+        final String[] ungiven = autoPermission(request, permissions);
 
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ActivityCompat.requestPermissions(thisActivity, permissions, RC_HANDLE_CAMERA_PERM);
+                ActivityCompat.requestPermissions(EditBookActivity.this, ungiven, request);
             }
         };
 
-        Snackbar.make(btn, "camera pls",
+        Snackbar.make(view, "camera pls",
                 Snackbar.LENGTH_INDEFINITE)
                 .setAction("ok", listener)
                 .show();
+    }
+
+    /**
+     * Grant permissions immediately (no user input required) for items, that doesn't need users approval
+     * @param permissions
+     */
+    private String[] autoPermission(final int request, final String... permissions) {
+
+        ArrayList<String> ungivenPermissions = new ArrayList<>();
+
+        for (String permission : permissions) {
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
+                ActivityCompat.requestPermissions(this, permissions, request);
+            } else {
+                ungivenPermissions.add(permission);
+            }
+        }
+
+        return ungivenPermissions.toArray(new String[ungivenPermissions.size()]);
     }
 
     /**
@@ -214,7 +265,7 @@ public class EditBookActivity extends AppCompatActivity {
                                            @NonNull int[] grantResults) {
 
         switch (requestCode) {
-            case RC_HANDLE_CAMERA_PERM:
+            case TAKE_PHOTO_PERMISSIONS:
                 if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     dispatchTakePictureIntent();
                     return;
@@ -233,11 +284,16 @@ public class EditBookActivity extends AppCompatActivity {
                         .setPositiveButton("OK", listener)
                         .show();
                 break;
+            case BARCODE_PERMISSIONS:
+                if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startActivityForResult(new Intent(this, BarcodeActivity.class), REQUEST_BARCODE);
+                    return;
+                }
+                break;
             default:
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
-
 
     private File createImageFile() throws IOException {
         // Create an image file name
