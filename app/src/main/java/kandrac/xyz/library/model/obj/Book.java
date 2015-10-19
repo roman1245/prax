@@ -19,7 +19,7 @@ public class Book {
 
     public static final String CREATE_TABLE =
             "CREATE TABLE " + TABLE_NAME + " (" +
-                    COLUMN_ID + " INTEGER PRIMARY KEY," +
+                    COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     COLUMN_TITLE + " TEXT NOT NULL," +
                     COLUMN_DESCRIPTION + " TEXT," +
                     COLUMN_ISBN + " TEXT," +
@@ -34,7 +34,9 @@ public class Book {
     public final String author;
 
     public Book(Cursor cursor) {
-        cursor.moveToFirst();
+        if (cursor.getPosition() < 0) {
+            cursor.moveToFirst();
+        }
         id = cursor.getInt(cursor.getColumnIndex(COLUMN_ID));
         title = cursor.getString(cursor.getColumnIndex(COLUMN_TITLE));
         description = cursor.getString(cursor.getColumnIndex(COLUMN_DESCRIPTION));
@@ -94,5 +96,16 @@ public class Book {
         public Book build() {
             return new Book(this);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", isbn='" + isbn + '\'' +
+                ", author='" + author + '\'' +
+                '}';
     }
 }
