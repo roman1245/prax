@@ -18,14 +18,14 @@
                     android:enabled="false"
                     android:icon="@drawable/ic_share"
                     android:title="@string/menu_books_borrowed"
-                    app:actionLayout="@layout/action_layout" />
+                    app:actionLayout="@layout/soon_action_layout" />
 
                 <item
-                    android:icon="@drawable/ic_heart_outline"
                     android:id="@+id/main_navigation_wish_list"
                     android:enabled="false"
+                    android:icon="@drawable/ic_heart_outline"
                     android:title="@string/menu_books_wish_list"
-                    app:actionLayout="@layout/action_layout" />
+                    app:actionLayout="@layout/soon_action_layout" />
             </menu>
         </item>
 
@@ -38,14 +38,14 @@
                     android:enabled="false"
                     android:icon="@drawable/ic_author"
                     android:title="@string/menu_authors"
-                    app:actionLayout="@layout/action_layout" />
+                    app:actionLayout="@layout/soon_action_layout" />
 
                 <item
                     android:id="@+id/main_navigation_publishers"
                     android:enabled="false"
                     android:icon="@drawable/ic_tie"
                     android:title="@string/menu_authors_publishers"
-                    app:actionLayout="@layout/action_layout" />
+                    app:actionLayout="@layout/soon_action_layout" />
             </menu>
         </item>
 
@@ -58,14 +58,12 @@
                     android:enabled="false"
                     android:icon="@drawable/ic_settings"
                     android:title="@string/menu_settings"
-                    app:actionLayout="@layout/action_layout" />
+                    app:actionLayout="@layout/soon_action_layout" />
 
                 <item
                     android:id="@+id/main_navigation_about"
-                    android:enabled="false"
                     android:icon="@drawable/ic_information_outline"
-                    android:title="@string/menu_settings_about"
-                    app:actionLayout="@layout/action_layout" />
+                    android:title="@string/menu_settings_about" />
             </menu>
         </item>
     </group>

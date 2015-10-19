@@ -30,4 +30,17 @@
     <string name="menu_books_wish_list">Wishlist</string>
     <string name="soon">Soon…</string>
     <string name="navigation_head">Main Navigation</string>
+
+    <!-- About -->
+    <string name="about_title">About application</string>
+    <string name="about_producer">Ján Kandráč</string>
+    <string name="about_text">This application came as alternative to many Library applications. I\'m
+        talking about Library with paper books hold in your private or public library. There is no
+        application that matched my needs so I created this one.\n\n
+
+        Currently application is just at the beginning, therefor many of intended functionalities are
+        not present in it yet. I\'m planning to create beautiful user experience, add book categorization,
+        bulk inserting, backup functionality and some more.\n\n
+
+        Hope You are the one that finds this application useful.</string>
 </resources>

@@ -5,13 +5,18 @@ import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -32,6 +37,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     BookCursorAdapter adapter;
 
+    private DrawerLayout drawerLayout;
+    private NavigationView view;
+
+    private MenuItem lastChecked;
+
     @OnClick(R.id.fab)
     public void addItem(View view) {
         startActivity(new Intent(this, EditBookActivity.class));
@@ -44,10 +54,43 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         ButterKnife.bind(this);
         getSupportLoaderManager().initLoader(1, null, this);
 
-        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        final ActionBar actionBar = getSupportActionBar();
+
+        if (actionBar != null) {
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
+        setSupportActionBar(toolbar);
+
+        drawerLayout = (DrawerLayout) findViewById(R.id.main_drawer);
+
+        view = (NavigationView) findViewById(R.id.main_navigation);
+        view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                int id = menuItem.getItemId();
+
+                switch (id) {
+                    case R.id.main_navigation_about:
+                        new AboutFragment().show(getFragmentManager(), null);
+                        break;
+                    default:
+                        lastChecked.setChecked(false);
+                        menuItem.setChecked(true);
+                        lastChecked = menuItem;
+                }
+                drawerLayout.closeDrawers();
+                return true;
+            }
+        });
+
         adapter = new BookCursorAdapter();
         list.setLayoutManager(new LinearLayoutManager(this));
         list.setAdapter(adapter);
+
     }
 
     @Override
@@ -64,6 +107,26 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                drawerLayout.openDrawer(GravityCompat.START);
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(view)) {
+            drawerLayout.closeDrawers();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     private class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.BindingHolder> {

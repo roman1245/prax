@@ -30,4 +30,16 @@
     <string name="menu_books_wish_list">Wishlist</string>
     <string name="soon">Čoskoro…</string>
     <string name="navigation_head">Hlavná navigácia</string>
+
+    <!-- About -->
+    <string name="about_title">O aplikácii</string>
+    <string name="about_producer">Ján Kandráč</string>
+    <string name="about_text">Táto aplikácia vznikla ako alternatíva k viacerým aplikáciam, ktoré sa
+        venujú spracovaniu záznamov o papierových knihách. Žiadna z aplikácií ma nedokázala osloviť
+    natoľko aby som sa rozhodol pri nej ostať. Problémov bolo viacero, od nie najkrajšieho či dokonca
+    nepoužiteľného prostredia, cez nemožnosť kategorizácie, hromadného vkladania, či zálohovania.
+
+    Aplikácia ako ju vidíte teraz je len vo svojich začiatkoch a množstvo zo spomenutých funkcií sama
+    nemá. Je však od začiatku pripravená na to, aby Vám poskytla maximálnu možnosť využitia jej
+    funkcií.</string>
 </resources>
