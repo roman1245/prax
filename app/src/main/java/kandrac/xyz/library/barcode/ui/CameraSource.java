@@ -70,7 +70,7 @@ import java.util.Map;
  * <li>android.permissions.CAMERA</li>
  * </ul>
  */
-@SuppressWarnings("deprecation")
+@SuppressWarnings({"deprecation", "FieldCanBeLocal"})
 public class CameraSource {
     @SuppressLint("InlinedApi")
     public static final int CAMERA_FACING_BACK = CameraInfo.CAMERA_FACING_BACK;

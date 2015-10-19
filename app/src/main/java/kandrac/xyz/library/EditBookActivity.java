@@ -10,6 +10,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import com.google.android.gms.common.api.CommonStatusCodes;
+import com.google.android.gms.vision.barcode.Barcode;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import kandrac.xyz.library.model.DatabaseProvider;
@@ -75,6 +78,21 @@ public class EditBookActivity extends AppCompatActivity {
     }
 
     public void click(View v) {
-        startActivity(new Intent(this, BarcodeActivity.class));
+        startActivityForResult(new Intent(this, BarcodeActivity.class), 523);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 523) {
+            if (resultCode == CommonStatusCodes.SUCCESS) {
+                if (data != null) {
+                    Barcode barcode = data.getParcelableExtra(BarcodeActivity.BARCODE_OBJECT);
+                    isbn.setText(barcode.displayValue);
+                } else {
+                }
+            } else {
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
