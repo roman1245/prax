@@ -99,7 +99,7 @@
                     android:layout_gravity="start"
                     android:layout_marginTop="8dp"
                     android:layout_row="3"
-                    android:background="#ddd"
+                    android:background="@color/md_grey_400"
                     android:contentDescription="@string/edit_book_cover"
                     android:scaleType="center"
                     android:src="@drawable/ic_book"
