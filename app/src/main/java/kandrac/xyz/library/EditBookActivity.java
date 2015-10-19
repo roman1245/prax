@@ -1,11 +1,13 @@
 package kandrac.xyz.library;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 
 import butterknife.Bind;
@@ -70,5 +72,9 @@ public class EditBookActivity extends AppCompatActivity {
                 DatabaseProvider.getUri(DatabaseProvider.BOOKS),
                 book.getContentValues());
         finish();
+    }
+
+    public void click(View v) {
+        startActivity(new Intent(this, BarcodeActivity.class));
     }
 }
