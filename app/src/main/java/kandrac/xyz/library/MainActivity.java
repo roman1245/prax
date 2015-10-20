@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -27,18 +26,21 @@ import kandrac.xyz.library.databinding.BookListItemBinding;
 import kandrac.xyz.library.model.DatabaseProvider;
 import kandrac.xyz.library.model.obj.Book;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
-
-    @Bind(R.id.fab)
-    public FloatingActionButton mAdd;
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, NavigationView.OnNavigationItemSelectedListener {
 
     @Bind(R.id.list)
     RecyclerView list;
 
-    BookCursorAdapter adapter;
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
 
-    private DrawerLayout drawerLayout;
-    private NavigationView view;
+    @Bind(R.id.main_drawer)
+    NavigationView navigation;
+
+    @Bind(R.id.main_navigation)
+    DrawerLayout drawerLayout;
+
+    BookCursorAdapter adapter;
 
     private MenuItem lastChecked;
 
@@ -52,45 +54,28 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.book_list);
         ButterKnife.bind(this);
-        getSupportLoaderManager().initLoader(1, null, this);
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        // Action Bar settings
         setSupportActionBar(toolbar);
         final ActionBar actionBar = getSupportActionBar();
-
         if (actionBar != null) {
             actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        setSupportActionBar(toolbar);
+        // Navigation View settings
+        navigation.setNavigationItemSelectedListener(this);
+        MenuItem menuItem = navigation.getMenu().getItem(0);
+        menuItem.setChecked(true);
+        lastChecked = menuItem;
 
-        drawerLayout = (DrawerLayout) findViewById(R.id.main_drawer);
-
-        view = (NavigationView) findViewById(R.id.main_navigation);
-        view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
-                int id = menuItem.getItemId();
-
-                switch (id) {
-                    case R.id.main_navigation_about:
-                        new AboutFragment().show(getFragmentManager(), null);
-                        break;
-                    default:
-                        lastChecked.setChecked(false);
-                        menuItem.setChecked(true);
-                        lastChecked = menuItem;
-                }
-                drawerLayout.closeDrawers();
-                return true;
-            }
-        });
-
+        // Content settings
         adapter = new BookCursorAdapter();
         list.setLayoutManager(new LinearLayoutManager(this));
         list.setAdapter(adapter);
 
+        // Init database loading
+        getSupportLoaderManager().initLoader(1, null, this);
     }
 
     @Override
@@ -122,11 +107,31 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(view)) {
+        if (drawerLayout.isDrawerOpen(navigation)) {
             drawerLayout.closeDrawers();
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem menuItem) {
+        int id = menuItem.getItemId();
+
+        switch (id) {
+            case R.id.main_navigation_about:
+                new AboutFragment().show(getFragmentManager(), null);
+                break;
+            default:
+                if (lastChecked == menuItem) {
+                    break;
+                }
+                lastChecked.setChecked(false);
+                menuItem.setChecked(true);
+                lastChecked = menuItem;
+        }
+        drawerLayout.closeDrawers();
+        return true;
     }
 
     private class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.BindingHolder> {
