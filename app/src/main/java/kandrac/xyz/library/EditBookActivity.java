@@ -4,6 +4,8 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +14,9 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -36,19 +41,27 @@ import java.util.Date;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import kandrac.xyz.library.databinding.BookInputBinding;
 import kandrac.xyz.library.model.DatabaseProvider;
 import kandrac.xyz.library.model.obj.Book;
 
 /**
  * Created by VizGhar on 11.10.2015.
  */
-public class EditBookActivity extends AppCompatActivity {
+public class EditBookActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    public static final String EXTRA_BOOK_ID = "book_id_extra";
+    private Long mBookId;
+    private BookInputBinding binding;
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_BARCODE = 2;
 
     private static final int TAKE_PHOTO_PERMISSIONS = 2;
     private static final int BARCODE_PERMISSIONS = 3;
+
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
 
     @Bind(R.id.book_input_author)
     EditText mAuthorEdit;
@@ -69,10 +82,11 @@ public class EditBookActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.book_input);
+        binding = DataBindingUtil.setContentView(this, R.layout.book_input);
+
+        ButterKnife.bind(this);
 
         // set ToolBar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         ActionBar ab = getSupportActionBar();
@@ -80,7 +94,15 @@ public class EditBookActivity extends AppCompatActivity {
             ab.setDisplayHomeAsUpEnabled(true);
             ab.setDisplayShowHomeEnabled(true);
         }
-        ButterKnife.bind(this);
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            long bookId = extras.getLong(EXTRA_BOOK_ID, -1);
+            if (bookId > 0) {
+                mBookId = bookId;
+                getSupportLoaderManager().initLoader(1, null, this);
+            }
+        }
     }
 
     @Override
@@ -226,6 +248,7 @@ public class EditBookActivity extends AppCompatActivity {
 
     /**
      * Grant permissions immediately (no user input required) for items, that doesn't need users approval
+     *
      * @param permissions
      */
     private String[] autoPermission(final int request, final String... permissions) {
@@ -307,4 +330,21 @@ public class EditBookActivity extends AppCompatActivity {
         );
     }
 
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(this, DatabaseProvider.getUriWithId(DatabaseProvider.BOOK_ID, mBookId), null, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (data.getCount() == 1) {
+            Book book = new Book(data);
+            binding.setBook(book);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
 }

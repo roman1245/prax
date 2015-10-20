@@ -1,156 +1,170 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context=".EditBookActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Toolbar -->
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+    <data>
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-    </android.support.design.widget.AppBarLayout>
+        <variable
+            name="book"
+            type="kandrac.xyz.library.model.obj.Book" />
+    </data>
 
-    <ScrollView
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:fitsSystemWindows="true"
+        tools:context=".EditBookActivity">
 
-        <!-- Main content -->
-        <GridLayout
+        <!-- Toolbar -->
+        <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:orientation="horizontal"
-            android:useDefaultMargins="true"
-            tools:showIn="@layout/book_input">
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-            <ImageView
-                android:layout_column="0"
-                android:layout_gravity="end|center_vertical"
-                android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_row="0"
-                android:contentDescription="@string/edit_book_info"
-                android:src="@drawable/ic_book"
-                android:tint="@color/md_grey_700" />
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+        </android.support.design.widget.AppBarLayout>
 
-            <android.support.design.widget.TextInputLayout
-                android:layout_column="1"
-                android:layout_gravity="fill"
-                android:layout_row="0">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-                <EditText
-                    android:id="@+id/book_input_author"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ems="0"
-                    android:hint="@string/edit_book_author"
-                    android:inputType="text"
-                    android:singleLine="true"
-                    tools:text="John Ronald Reuel Tolkien" />
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_column="1"
-                android:layout_gravity="fill"
-                android:layout_row="1">
-
-                <EditText
-                    android:id="@+id/book_input_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ems="0"
-                    android:hint="@string/edit_book_title"
-                    android:inputType="text"
-                    android:singleLine="true"
-                    tools:text="The Lord of the Rings" />
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_column="1"
-                android:layout_gravity="fill"
-                android:layout_row="2">
-
-                <EditText
-                    android:id="@+id/book_input_isbn"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="number"
-                    android:hint="@string/edit_book_isbn"
-                    tools:text="0802356555" />
-            </android.support.design.widget.TextInputLayout>
-
-            <ImageView
-                android:layout_column="0"
-                android:layout_gravity="top"
-                android:layout_marginTop="16dp"
-                android:layout_row="3"
-                android:contentDescription="@string/edit_book_cover"
-                android:ems="0"
-                android:src="@drawable/ic_camera"
-                android:tint="@color/md_grey_700" />
-
-            <LinearLayout
-                android:layout_column="1"
-                android:layout_gravity="fill"
-                android:layout_marginTop="8dp"
-                android:layout_row="3"
-                android:orientation="horizontal">
+            <!-- Main content -->
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:orientation="horizontal"
+                android:useDefaultMargins="true"
+                tools:showIn="@layout/book_input">
 
                 <ImageView
-                    android:id="@+id/book_input_cover_image"
-                    android:layout_width="96dp"
-                    android:layout_height="96dp"
-                    android:background="#ddd"
+                    android:layout_column="0"
+                    android:layout_gravity="end|center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_row="0"
+                    android:contentDescription="@string/edit_book_info"
+                    android:src="@drawable/ic_book"
+                    android:tint="@color/md_grey_700" />
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_column="1"
+                    android:layout_gravity="fill"
+                    android:layout_row="0">
+
+                    <EditText
+                        android:id="@+id/book_input_author"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="0"
+                        android:hint="@string/edit_book_author"
+                        android:inputType="text"
+                        android:singleLine="true"
+                        android:text="@{book.author}"
+                        tools:text="John Ronald Reuel Tolkien" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_column="1"
+                    android:layout_gravity="fill"
+                    android:layout_row="1">
+
+                    <EditText
+                        android:id="@+id/book_input_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="0"
+                        android:hint="@string/edit_book_title"
+                        android:inputType="text"
+                        android:singleLine="true"
+                        android:text="@{book.title}"
+                        tools:text="The Lord of the Rings" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_column="1"
+                    android:layout_gravity="fill"
+                    android:layout_row="2">
+
+                    <EditText
+                        android:text="@{book.isbn}"
+                        android:id="@+id/book_input_isbn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/edit_book_isbn"
+                        android:inputType="number"
+                        tools:text="0802356555" />
+                </android.support.design.widget.TextInputLayout>
+
+                <ImageView
+                    android:layout_column="0"
+                    android:layout_gravity="top"
+                    android:layout_marginTop="16dp"
+                    android:layout_row="3"
                     android:contentDescription="@string/edit_book_cover"
-                    android:scaleType="center"
-                    android:src="@drawable/ic_book"/>
-
-                <Button
-                    android:id="@+id/book_input_cover"
-                    style="@style/Base.Widget.AppCompat.Button.Borderless.Theme"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginStart="16dp"
-                    android:text="@string/edit_book_change_cover" />
-            </LinearLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_column="1"
-                android:layout_gravity="fill"
-                android:layout_row="4">
-
-                <EditText
-                    android:id="@+id/book_input_description_edit"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:ems="0"
-                    android:hint="@string/edit_book_description"
-                    tools:text="This book was completely awesome! It was about some small Hobbit." />
-            </android.support.design.widget.TextInputLayout>
-        </GridLayout>
-    </ScrollView>
+                    android:src="@drawable/ic_camera"
+                    android:tint="@color/md_grey_700" />
 
-    <!-- FAB - scan button -->
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:layout_margin="8dp"
-        android:src="@drawable/ic_barcode_white"
-        app:elevation="6dp"
-        app:fabSize="normal"
-        app:pressedTranslationZ="12dp" />
-</android.support.design.widget.CoordinatorLayout>
+                <LinearLayout
+                    android:layout_column="1"
+                    android:layout_gravity="fill"
+                    android:layout_marginTop="8dp"
+                    android:layout_row="3"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/book_input_cover_image"
+                        android:layout_width="96dp"
+                        android:layout_height="96dp"
+                        android:background="#ddd"
+                        android:contentDescription="@string/edit_book_cover"
+                        android:scaleType="center"
+                        android:src="@drawable/ic_book" />
+
+                    <Button
+                        android:id="@+id/book_input_cover"
+                        style="@style/Base.Widget.AppCompat.Button.Borderless.Theme"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
+                        android:text="@string/edit_book_change_cover" />
+                </LinearLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_column="1"
+                    android:layout_gravity="fill"
+                    android:layout_row="4">
+
+                    <EditText
+                        android:text="@{book.description}"
+                        android:id="@+id/book_input_description_edit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="0"
+                        android:hint="@string/edit_book_description"
+                        tools:text="This book was completely awesome! It was about some small Hobbit." />
+                </android.support.design.widget.TextInputLayout>
+            </GridLayout>
+        </ScrollView>
+
+        <!-- FAB - scan button -->
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="8dp"
+            android:src="@drawable/ic_barcode_white"
+            app:elevation="6dp"
+            app:fabSize="normal"
+            app:pressedTranslationZ="12dp" />
+    </android.support.design.widget.CoordinatorLayout>
+</layout>

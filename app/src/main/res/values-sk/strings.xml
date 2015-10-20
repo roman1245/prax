@@ -5,6 +5,7 @@
 
     <!-- Action strings (mostly used in Toolbar) -->
     <string name="action_save">Uložiť</string>
+    <string name="action_edit">Upraviť</string>
 
     <!-- Basic Image Content descriptors -->
     <string name="list_item">Kniha</string>
