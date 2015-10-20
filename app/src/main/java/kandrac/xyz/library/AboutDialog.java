@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 /**
  * Created by VizGhar on 19.10.2015.
  */
-public class AboutFragment extends DialogFragment {
+public class AboutDialog extends DialogFragment {
 
     @Nullable
     @Override
