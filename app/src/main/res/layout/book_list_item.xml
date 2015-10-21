@@ -25,8 +25,7 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
-            android:src="@drawable/ic_book"
-            android:tint="@color/md_grey_100"
+            android:src="@drawable/ic_book_white"
             android:scaleType="center"
             android:background="@color/md_grey_400" />
 

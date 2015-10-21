@@ -16,6 +16,7 @@ public class Book {
     public static final String COLUMN_DESCRIPTION = "birth";
     public static final String COLUMN_ISBN = "death";
     public static final String COLUMN_AUTHOR = "author";
+    public static final String COLUMN_IMAGE_FILE = "file";
 
     public static final String CREATE_TABLE =
             "CREATE TABLE " + TABLE_NAME + " (" +
@@ -23,6 +24,7 @@ public class Book {
                     COLUMN_TITLE + " TEXT NOT NULL," +
                     COLUMN_DESCRIPTION + " TEXT," +
                     COLUMN_ISBN + " TEXT," +
+                    COLUMN_IMAGE_FILE + " TEXT," +
                     COLUMN_AUTHOR + " TEXT)";
 
     public static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
@@ -32,6 +34,7 @@ public class Book {
     public final String description;
     public final String isbn;
     public final String author;
+    public final String imageFilePath;
 
     public Book(Cursor cursor) {
         if (cursor.getPosition() < 0) {
@@ -42,6 +45,7 @@ public class Book {
         description = cursor.getString(cursor.getColumnIndex(COLUMN_DESCRIPTION));
         isbn = cursor.getString(cursor.getColumnIndex(COLUMN_ISBN));
         author = cursor.getString(cursor.getColumnIndex(COLUMN_AUTHOR));
+        imageFilePath = cursor.getString(cursor.getColumnIndex(COLUMN_IMAGE_FILE));
     }
 
     private Book(Builder builder) {
@@ -50,6 +54,7 @@ public class Book {
         description = builder.description;
         isbn = builder.isbn;
         author = builder.author;
+        imageFilePath = builder.imageFilePath;
     }
 
     public ContentValues getContentValues() {
@@ -58,6 +63,7 @@ public class Book {
         contentValues.put(COLUMN_DESCRIPTION, description);
         contentValues.put(COLUMN_ISBN, isbn);
         contentValues.put(COLUMN_AUTHOR, author);
+        contentValues.put(COLUMN_IMAGE_FILE, imageFilePath);
         return contentValues;
     }
 
@@ -68,6 +74,7 @@ public class Book {
         private String description;
         private String isbn;
         private String author;
+        private String imageFilePath;
 
         public Builder setId(long id) {
             this.id = id;
@@ -88,8 +95,14 @@ public class Book {
             this.isbn = isbn;
             return this;
         }
+
         public Builder setAuthor(String author) {
             this.author = author;
+            return this;
+        }
+
+        public Builder setImageFilePath(String filePath) {
+            this.imageFilePath = filePath;
             return this;
         }
 
@@ -106,6 +119,7 @@ public class Book {
                 ", description='" + description + '\'' +
                 ", isbn='" + isbn + '\'' +
                 ", author='" + author + '\'' +
+                ", imageFilePath='" + imageFilePath + '\'' +
                 '}';
     }
 }

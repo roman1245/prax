@@ -93,6 +93,7 @@
                     android:tint="@color/md_grey_700" />
 
                 <ImageView
+                    android:id="@+id/book_input_cover_image"
                     android:layout_width="96dp"
                     android:layout_height="96dp"
                     android:layout_column="1"
@@ -102,8 +103,7 @@
                     android:background="@color/md_grey_400"
                     android:contentDescription="@string/edit_book_cover"
                     android:scaleType="center"
-                    android:src="@drawable/ic_book"
-                    android:tint="@color/md_grey_100" />
+                    android:src="@drawable/ic_book_white"/>
 
                 <TextView
                     android:id="@+id/book_input_description_edit"

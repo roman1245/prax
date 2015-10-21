@@ -15,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -22,6 +23,7 @@ import butterknife.OnClick;
 import kandrac.xyz.library.databinding.BookListItemBinding;
 import kandrac.xyz.library.model.DatabaseProvider;
 import kandrac.xyz.library.model.obj.Book;
+import kandrac.xyz.library.utils.DisplayUtils;
 
 /**
  * Created by kandrac on 20/10/15.
@@ -112,6 +114,8 @@ public class BookListFragment extends Fragment implements LoaderManager.LoaderCa
                     startActivity(intent);
                 }
             });
+
+            DisplayUtils.displayScaledImage(getActivity(), book.imageFilePath, (ImageView) holder.itemView.findViewById(R.id.image));
         }
 
         @Override

@@ -126,7 +126,7 @@
                         android:background="#ddd"
                         android:contentDescription="@string/edit_book_cover"
                         android:scaleType="centerInside"
-                        android:src="@drawable/ic_book" />
+                        android:src="@drawable/ic_book_white" />
 
                     <Button
                         android:id="@+id/book_input_cover"

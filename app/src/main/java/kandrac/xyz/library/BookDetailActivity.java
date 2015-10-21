@@ -12,12 +12,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import kandrac.xyz.library.databinding.BookDetailBinding;
 import kandrac.xyz.library.model.DatabaseProvider;
 import kandrac.xyz.library.model.obj.Book;
+import kandrac.xyz.library.utils.DisplayUtils;
 
 /**
  * Created by VizGhar on 18.10.2015.
@@ -30,6 +32,9 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
+
+    @Bind(R.id.book_input_cover_image)
+    ImageView cover;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +67,8 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
         if (data.getCount() == 1) {
             Book book = new Book(data);
             binding.setBook(book);
+
+            DisplayUtils.displayScaledImage(this, book.imageFilePath, cover);
         }
     }
 

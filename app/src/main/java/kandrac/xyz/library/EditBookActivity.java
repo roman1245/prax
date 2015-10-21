@@ -20,7 +20,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,7 +30,6 @@ import android.widget.ImageView;
 
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.barcode.Barcode;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,6 +43,7 @@ import butterknife.OnClick;
 import kandrac.xyz.library.databinding.BookInputBinding;
 import kandrac.xyz.library.model.DatabaseProvider;
 import kandrac.xyz.library.model.obj.Book;
+import kandrac.xyz.library.utils.DisplayUtils;
 
 /**
  * Created by VizGhar on 11.10.2015.
@@ -126,11 +125,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 // Handle Image Capture
                 if (resultCode == RESULT_OK) {
                     try {
-                        File f = getImageFile(imageFileName);
-                        Log.d(TAG, "getting picture from " + f.getPath());
-                        DisplayMetrics metrics = getResources().getDisplayMetrics();
-                        int densityDpi = (int)(metrics.density * 96);
-                        Picasso.with(this).load(f).resize(densityDpi, densityDpi).centerInside().into(mImageEdit);
+                        DisplayUtils.displayScaledImage(this, imageFileName, mImageEdit);
                     } catch (Exception ex) {
                         Log.e(TAG, "cannot open file", ex);
                     }
@@ -167,9 +162,10 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 .setAuthor(mAuthorEdit.getText().toString())
                 .setTitle(mTitleEdit.getText().toString())
                 .setIsbn(mIsbnEdit.getText().toString())
+                .setImageFilePath(imageFileName)
                 .build();
 
-        if (mBookId > 0) {
+        if (mBookId != null && mBookId > 0) {
             getContentResolver().update(
                     DatabaseProvider.getUri(DatabaseProvider.BOOKS),
                     book.getContentValues(), Book.COLUMN_ID + " = ?",
@@ -342,14 +338,11 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = SimpleDateFormat.getDateTimeInstance().format(new Date());
-        imageFileName = "JPEG_" + timeStamp + "_";
+        String fileName = "JPEG_" + timeStamp + "_";
         File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        return new File(storageDir, imageFileName + ".jpg");
-    }
-
-    private File getImageFile(String imageFileName) throws IOException {
-        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        return new File(storageDir, imageFileName + ".jpg");
+        File result = new File(storageDir, fileName + ".jpg");
+        imageFileName = result.getPath();
+        return result;
     }
 
     @Override
