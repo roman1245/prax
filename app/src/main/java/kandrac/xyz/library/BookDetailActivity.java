@@ -93,6 +93,10 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                 intent.putExtra(EditBookActivity.EXTRA_BOOK_ID, mBookId);
                 startActivity(intent);
                 return true;
+            case R.id.action_delete:
+                getContentResolver().delete(DatabaseProvider.getUri(DatabaseProvider.BOOKS), Book.COLUMN_ID + " = ?", new String[]{Long.toString(mBookId)});
+                finish();
+                return true;
             case android.R.id.home:
                 finish();
         }

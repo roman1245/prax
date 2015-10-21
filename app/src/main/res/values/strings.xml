@@ -6,6 +6,7 @@
     <!-- Action strings (mostly used in Toolbar) -->
     <string name="action_save">Save</string>
     <string name="action_edit">Edit</string>
+    <string name="action_delete">Delete</string>
 
     <!-- Basic Image Content descriptors -->
     <string name="list_item">Book Item</string>
