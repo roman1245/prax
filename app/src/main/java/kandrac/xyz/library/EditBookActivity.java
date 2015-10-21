@@ -166,10 +166,20 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         Book book = new Book.Builder()
                 .setAuthor(mAuthorEdit.getText().toString())
                 .setTitle(mTitleEdit.getText().toString())
-                .setIsbn(mIsbnEdit.getText().toString()).build();
-        getContentResolver().insert(
-                DatabaseProvider.getUri(DatabaseProvider.BOOKS),
-                book.getContentValues());
+                .setIsbn(mIsbnEdit.getText().toString())
+                .build();
+
+        if (mBookId > 0) {
+            getContentResolver().update(
+                    DatabaseProvider.getUri(DatabaseProvider.BOOKS),
+                    book.getContentValues(), Book.COLUMN_ID + " = ?",
+                    new String[]{Long.toString(mBookId)});
+        } else {
+            getContentResolver().insert(
+                    DatabaseProvider.getUri(DatabaseProvider.BOOKS),
+                    book.getContentValues());
+        }
+
         finish();
     }
 
