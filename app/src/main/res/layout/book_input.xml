@@ -125,7 +125,7 @@
                         android:layout_height="96dp"
                         android:background="#ddd"
                         android:contentDescription="@string/edit_book_cover"
-                        android:scaleType="center"
+                        android:scaleType="centerInside"
                         android:src="@drawable/ic_book" />
 
                     <Button

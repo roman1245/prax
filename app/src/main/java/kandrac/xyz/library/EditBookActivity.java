@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.databinding.DataBindingUtil;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -21,6 +20,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,6 +31,7 @@ import android.widget.ImageView;
 
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.barcode.Barcode;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,6 +52,8 @@ import kandrac.xyz.library.model.obj.Book;
 public class EditBookActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String EXTRA_BOOK_ID = "book_id_extra";
+    private static final String TAG = EditBookActivity.class.getName();
+
     private Long mBookId;
     private BookInputBinding binding;
 
@@ -77,6 +80,8 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
     @Bind(R.id.book_input_cover)
     Button mCoverButton;
+
+    String imageFileName;
 
     // Basic Activity Tasks
     @Override
@@ -120,9 +125,15 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
             case REQUEST_IMAGE_CAPTURE:
                 // Handle Image Capture
                 if (resultCode == RESULT_OK) {
-                    Bundle extras = data.getExtras();
-                    Bitmap imageBitmap = (Bitmap) extras.get("data");
-                    mImageEdit.setImageBitmap(imageBitmap);
+                    try {
+                        File f = getImageFile(imageFileName);
+                        Log.d(TAG, "getting picture from " + f.getPath());
+                        DisplayMetrics metrics = getResources().getDisplayMetrics();
+                        int densityDpi = (int)(metrics.density * 96);
+                        Picasso.with(this).load(f).resize(densityDpi, densityDpi).centerInside().into(mImageEdit);
+                    } catch (Exception ex) {
+                        Log.e(TAG, "cannot open file", ex);
+                    }
                 }
                 break;
             default:
@@ -193,7 +204,6 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 break;
             default:
                 dispatchTakePictureIntent();
-                return;
         }
     }
 
@@ -215,9 +225,10 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
             try {
                 photoFile = createImageFile();
             } catch (IOException ex) {
-                Log.e("jano", ex.getMessage());
+                Log.e(TAG, ex.getMessage());
             }
             if (photoFile != null) {
+                Log.d(TAG, "taking picture to store into " + photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
@@ -321,13 +332,14 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = SimpleDateFormat.getDateTimeInstance().format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
+        imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        return File.createTempFile(
-                imageFileName,
-                ".jpg",
-                storageDir
-        );
+        return new File(storageDir, imageFileName + ".jpg");
+    }
+
+    private File getImageFile(String imageFileName) throws IOException {
+        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        return new File(storageDir, imageFileName + ".jpg");
     }
 
     @Override
