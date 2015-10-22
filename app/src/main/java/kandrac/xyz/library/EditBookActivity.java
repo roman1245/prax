@@ -1,7 +1,6 @@
 package kandrac.xyz.library;
 
 import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -34,7 +33,6 @@ import com.google.android.gms.vision.barcode.Barcode;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 import butterknife.Bind;
@@ -193,18 +191,21 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
             case 1:
                 requestPermissions(
                         view,
+                        R.string.edit_book_take_photo_permission,
                         TAKE_PHOTO_PERMISSIONS,
                         Manifest.permission.CAMERA);
                 break;
             case 2:
                 requestPermissions(
                         view,
+                        R.string.edit_book_take_photo_permission,
                         TAKE_PHOTO_PERMISSIONS,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE);
                 break;
             case 3:
                 requestPermissions(
                         view,
+                        R.string.edit_book_take_photo_permission,
                         TAKE_PHOTO_PERMISSIONS,
                         Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE);
                 break;
@@ -218,7 +219,11 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     public void click(View view) {
         int cameraPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
         if (cameraPermission != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(view, BARCODE_PERMISSIONS, Manifest.permission.CAMERA, Manifest.permission.CAMERA);
+            requestPermissions(
+                    view,
+                    R.string.edit_book_barcode_permission,
+                    BARCODE_PERMISSIONS,
+                    Manifest.permission.CAMERA);
         } else {
             startActivityForResult(new Intent(this, BarcodeActivity.class), REQUEST_BARCODE);
         }
@@ -246,41 +251,19 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
      * showing a "Snackbar" message of why the permission is needed then
      * sending the request.
      */
-    private void requestPermissions(final View view, final int request, final String... permissions) {
-
-        final String[] ungiven = autoPermission(request, permissions);
+    private void requestPermissions(final View view, final int message, final int request, final String... permissions) {
 
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ActivityCompat.requestPermissions(EditBookActivity.this, ungiven, request);
+                ActivityCompat.requestPermissions(EditBookActivity.this, permissions, request);
             }
         };
 
-        Snackbar.make(view, "camera pls",
+        Snackbar.make(view, message,
                 Snackbar.LENGTH_INDEFINITE)
-                .setAction("ok", listener)
+                .setAction(R.string.action_ok, listener)
                 .show();
-    }
-
-    /**
-     * Grant permissions immediately (no user input required) for items, that doesn't need users approval
-     *
-     * @param permissions
-     */
-    private String[] autoPermission(final int request, final String... permissions) {
-
-        ArrayList<String> ungivenPermissions = new ArrayList<>();
-
-        for (String permission : permissions) {
-            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
-                ActivityCompat.requestPermissions(this, permissions, request);
-            } else {
-                ungivenPermissions.add(permission);
-            }
-        }
-
-        return ungivenPermissions.toArray(new String[ungivenPermissions.size()]);
     }
 
     /**
@@ -305,31 +288,41 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                                            @NonNull int[] grantResults) {
 
         switch (requestCode) {
-            case TAKE_PHOTO_PERMISSIONS:
-                if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            case TAKE_PHOTO_PERMISSIONS: {
+                boolean execute = true;
+                for (int grantResult : grantResults) {
+                    if (grantResult != PackageManager.PERMISSION_GRANTED) {
+                        execute = false;
+                    }
+                }
+
+                if (execute) {
                     dispatchTakePictureIntent();
                     return;
                 }
 
-                DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        finish();
-                    }
-                };
-
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-                builder.setTitle("Multitracker sample")
-                        .setMessage("no camera permission")
-                        .setPositiveButton("OK", listener)
+                builder.setTitle(R.string.edit_book_no_permission_title)
+                        .setMessage(R.string.edit_book_no_permission)
+                        .setPositiveButton(R.string.action_ok, null)
                         .show();
                 break;
-            case BARCODE_PERMISSIONS:
+            }
+            case BARCODE_PERMISSIONS: {
                 if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     startActivityForResult(new Intent(this, BarcodeActivity.class), REQUEST_BARCODE);
                     return;
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+                    builder.setTitle(R.string.edit_book_no_permission_title)
+                            .setMessage(R.string.edit_book_no_permission)
+                            .setPositiveButton(R.string.action_ok, null)
+                            .show();
                 }
                 break;
+            }
             default:
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
