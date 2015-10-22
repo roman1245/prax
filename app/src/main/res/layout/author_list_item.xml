@@ -5,8 +5,8 @@
     <data>
 
         <variable
-            name="book"
-            type="kandrac.xyz.library.model.obj.Book" />
+            name="author"
+            type="kandrac.xyz.library.model.obj.Author" />
     </data>
 
     <RelativeLayout
@@ -18,7 +18,7 @@
         android:padding="8dp">
 
         <ImageView
-            android:contentDescription="@string/book_list_item"
+            android:contentDescription="@string/author_list_item"
             android:id="@+id/image"
             android:layout_width="48dp"
             android:layout_height="48dp"
@@ -35,20 +35,8 @@
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/image"
             android:layout_toRightOf="@id/image"
-            android:text="@{book.title}"
+            android:text="@{author.name}"
             android:textSize="16sp"
-            tools:text="Lord of the Rings - The Return of the King" />
-
-        <TextView
-            android:id="@+id/line2"
-            style="@style/TextAppearance.AppCompat.Small"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/line1"
-            android:layout_marginTop="4dp"
-            android:layout_toEndOf="@id/image"
-            android:layout_toRightOf="@id/image"
-            android:text="@{book.author}"
             tools:text="John Ronald Reuel Tolkien" />
     </RelativeLayout>
 </layout>

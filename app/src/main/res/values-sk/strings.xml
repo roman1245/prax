@@ -9,7 +9,8 @@
     <string name="action_delete">Vymazať</string>
 
     <!-- Basic Image Content descriptors -->
-    <string name="list_item">Kniha</string>
+    <string name="book_list_item">Kniha</string>
+    <string name="author_list_item">Autor</string>
 
     <!-- Edit/Input Book Screen -->
     <string name="edit_book_author">Autor</string>

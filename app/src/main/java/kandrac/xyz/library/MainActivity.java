@@ -92,14 +92,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 new AboutDialog().show(getFragmentManager(), null);
                 return true;
             case R.id.main_navigation_books:
-            default:
                 fragmentToShow = new BookListFragment();
+                break;
+            case R.id.main_navigation_authors:
+                fragmentToShow = new AuthorListFragment();
+                break;
+            default:
+                return false;
         }
 
         drawerLayout.closeDrawers();
+
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.fragment_container, fragmentToShow)
+                .replace(R.id.fragment_container, fragmentToShow)
                 .commit();
 
         lastChecked.setChecked(false);

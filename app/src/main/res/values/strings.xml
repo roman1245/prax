@@ -9,7 +9,8 @@
     <string name="action_delete">Delete</string>
 
     <!-- Basic Image Content descriptors -->
-    <string name="list_item">Book Item</string>
+    <string name="book_list_item">Book Item</string>
+    <string name="author_list_item">Book Item</string>
 
     <!-- Edit/Input Book Screen -->
     <string name="edit_book_author">Author</string>
