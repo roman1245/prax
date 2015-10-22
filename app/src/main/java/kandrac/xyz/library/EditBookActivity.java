@@ -42,6 +42,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import kandrac.xyz.library.databinding.BookInputBinding;
 import kandrac.xyz.library.model.DatabaseProvider;
+import kandrac.xyz.library.model.obj.Author;
 import kandrac.xyz.library.model.obj.Book;
 import kandrac.xyz.library.utils.DisplayUtils;
 
@@ -156,8 +157,19 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         return super.onOptionsItemSelected(item);
     }
 
-    // Storing result
+    // Storing result synchronously
     private void save() {
+
+        Author author = new Author.Builder()
+                .setName(mAuthorEdit.getText().toString())
+                .build();
+
+        // insert author
+        getContentResolver().insert(
+                DatabaseProvider.getUri(DatabaseProvider.AUTHORS),
+                author.getContentValues());
+
+
         Book book = new Book.Builder()
                 .setAuthor(mAuthorEdit.getText().toString())
                 .setTitle(mTitleEdit.getText().toString())
@@ -166,11 +178,13 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 .build();
 
         if (mBookId != null && mBookId > 0) {
+            // edit book
             getContentResolver().update(
                     DatabaseProvider.getUri(DatabaseProvider.BOOKS),
                     book.getContentValues(), Book.COLUMN_ID + " = ?",
                     new String[]{Long.toString(mBookId)});
         } else {
+            // insert book
             getContentResolver().insert(
                     DatabaseProvider.getUri(DatabaseProvider.BOOKS),
                     book.getContentValues());

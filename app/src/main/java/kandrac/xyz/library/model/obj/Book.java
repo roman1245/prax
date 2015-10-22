@@ -25,7 +25,7 @@ public class Book {
                     COLUMN_DESCRIPTION + " TEXT," +
                     COLUMN_ISBN + " TEXT," +
                     COLUMN_IMAGE_FILE + " TEXT," +
-                    COLUMN_AUTHOR + " TEXT)";
+                    COLUMN_AUTHOR + " TEXT REFERENCES " + Author.TABLE_NAME + "(" + Author.COLUMN_NAME + "))";
 
     public static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import kandrac.xyz.library.model.obj.Author;
 import kandrac.xyz.library.model.obj.Book;
 
 /**
@@ -27,12 +28,14 @@ public class Database extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        db.execSQL(Author.CREATE_TABLE);
         db.execSQL(Book.CREATE_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL(Book.DROP_TABLE);
+        db.execSQL(Author.DROP_TABLE);
         onCreate(db);
     }
 }

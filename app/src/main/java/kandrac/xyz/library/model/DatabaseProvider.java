@@ -17,6 +17,7 @@ import android.text.TextUtils;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+import kandrac.xyz.library.model.obj.Author;
 import kandrac.xyz.library.model.obj.Book;
 
 /**
@@ -31,13 +32,15 @@ public class DatabaseProvider extends ContentProvider {
 
     public static final int BOOKS = 1;
     public static final int BOOK_ID = 2;
+    public static final int AUTHORS = 3;
+    public static final int AUTHOR_ID = 4;
 
-    @IntDef({BOOKS})
+    @IntDef({BOOKS, AUTHORS})
     @Retention(RetentionPolicy.SOURCE)
     @interface UriType {
     }
 
-    @IntDef({BOOK_ID})
+    @IntDef({BOOK_ID, AUTHOR_ID})
     @Retention(RetentionPolicy.SOURCE)
     @interface UriTypeId {
     }
@@ -48,6 +51,8 @@ public class DatabaseProvider extends ContentProvider {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(PROVIDER_NAME, Book.TABLE_NAME, BOOKS);
         uriMatcher.addURI(PROVIDER_NAME, Book.TABLE_NAME + "/#", BOOK_ID);
+        uriMatcher.addURI(PROVIDER_NAME, Author.TABLE_NAME, AUTHORS);
+        uriMatcher.addURI(PROVIDER_NAME, Author.TABLE_NAME + "/#", AUTHOR_ID);
     }
 
     private SQLiteDatabase db;
@@ -56,6 +61,8 @@ public class DatabaseProvider extends ContentProvider {
         switch (type) {
             case BOOKS:
                 return Uri.parse(URL + "/" + Book.TABLE_NAME);
+            case AUTHORS:
+                return Uri.parse(URL + "/" + Author.TABLE_NAME);
         }
         throw new IllegalArgumentException("Unknown Type" + type);
     }
@@ -64,6 +71,8 @@ public class DatabaseProvider extends ContentProvider {
         switch (type) {
             case BOOK_ID:
                 return Uri.parse(URL + "/" + Book.TABLE_NAME + "/" + id);
+            case AUTHOR_ID:
+                return Uri.parse(URL + "/" + Author.TABLE_NAME + "/" + id);
         }
         throw new IllegalArgumentException("Unknown Type" + type);
     }
@@ -96,6 +105,16 @@ public class DatabaseProvider extends ContentProvider {
                 qb.setTables(Book.TABLE_NAME);
                 qb.appendWhere(Book.COLUMN_ID + "=" + uri.getPathSegments().get(1));
                 break;
+            case AUTHORS:
+                qb.setTables(Author.TABLE_NAME);
+                if (TextUtils.isEmpty(sortOrder)) {
+                    sortOrder = Author.COLUMN_NAME;
+                }
+                break;
+            case AUTHOR_ID:
+                qb.setTables(Author.TABLE_NAME);
+//                qb.appendWhere(Author.COLUMN_ID + "=" + uri.getPathSegments().get(1));
+                break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -115,6 +134,10 @@ public class DatabaseProvider extends ContentProvider {
                 return "vnd.android.cursor.dir/vnd.books";
             case BOOK_ID:
                 return "vnd.android.cursor.item/vnd.books";
+            case AUTHORS:
+                return "vnd.android.cursor.dir/vnd.authors";
+            case AUTHOR_ID:
+                return "vnd.android.cursor.item/vnd.authors";
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
@@ -126,6 +149,9 @@ public class DatabaseProvider extends ContentProvider {
         switch (uriMatcher.match(uri)) {
             case BOOKS:
                 rowID = db.insert(Book.TABLE_NAME, "", values);
+                break;
+            case AUTHORS:
+                rowID = db.insert(Author.TABLE_NAME, "", values);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
@@ -156,6 +182,15 @@ public class DatabaseProvider extends ContentProvider {
                 count = db.delete(Book.TABLE_NAME, Book.COLUMN_ID + " = " + id +
                         (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
                 break;
+            case AUTHORS:
+                count = db.delete(Author.TABLE_NAME, selection, selectionArgs);
+                break;
+            case AUTHOR_ID:
+                id = uri.getPathSegments().get(1);
+                count = 0;
+//                count = db.delete(Author.TABLE_NAME, Author.COLUMN_ID + " = " + id +
+//                        (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
+                break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -177,6 +212,14 @@ public class DatabaseProvider extends ContentProvider {
             case BOOK_ID:
                 count = db.update(Book.TABLE_NAME, values, Book.COLUMN_ID + " = " + uri.getPathSegments().get(1) +
                         (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
+                break;
+            case AUTHORS:
+                count = db.update(Author.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            case AUTHOR_ID:
+                count = 0;
+//                count = db.update(Author.TABLE_NAME, values, Author.COLUMN_ID + " = " + uri.getPathSegments().get(1) +
+//                        (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
