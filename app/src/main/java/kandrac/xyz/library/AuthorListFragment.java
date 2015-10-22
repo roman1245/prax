@@ -42,14 +42,18 @@ public class AuthorListFragment extends Fragment implements LoaderManager.Loader
         list.setAdapter(adapter);
 
         // Init database loading
-        getActivity().getSupportLoaderManager().initLoader(2, null, this);
+        getActivity().getSupportLoaderManager().initLoader(MainActivity.AUTHOR_LIST_LOADER, null, this);
 
         return result;
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), DatabaseProvider.getUri(DatabaseProvider.AUTHORS), null, null, null, null);
+        if (id == MainActivity.AUTHOR_LIST_LOADER) {
+            return new CursorLoader(getActivity(), DatabaseProvider.getUri(DatabaseProvider.AUTHORS), null, null, null, null);
+        } else {
+            return null;
+        }
     }
 
     @Override

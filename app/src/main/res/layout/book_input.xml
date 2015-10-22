@@ -58,7 +58,7 @@
                     android:layout_gravity="fill"
                     android:layout_row="0">
 
-                    <EditText
+                    <AutoCompleteTextView
                         android:id="@+id/book_input_author"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

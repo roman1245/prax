@@ -51,14 +51,18 @@ public class BookListFragment extends Fragment implements LoaderManager.LoaderCa
         list.setAdapter(adapter);
 
         // Init database loading
-        getActivity().getSupportLoaderManager().initLoader(1, null, this);
+        getActivity().getSupportLoaderManager().initLoader(MainActivity.BOOK_LIST_LOADER, null, this);
 
         return result;
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), DatabaseProvider.getUri(DatabaseProvider.BOOKS), null, null, null, null);
+        if (id == MainActivity.BOOK_LIST_LOADER) {
+            return new CursorLoader(getActivity(), DatabaseProvider.getUri(DatabaseProvider.BOOKS), null, null, null, null);
+        } else {
+            return null;
+        }
     }
 
     @Override

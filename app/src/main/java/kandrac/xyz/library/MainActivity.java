@@ -15,6 +15,9 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    public static final int BOOK_LIST_LOADER = 1;
+    public static final int AUTHOR_LIST_LOADER = 2;
+
     @Bind(R.id.toolbar)
     Toolbar toolbar;
 

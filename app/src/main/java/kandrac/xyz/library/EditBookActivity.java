@@ -9,6 +9,7 @@ import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -16,6 +17,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -24,8 +26,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FilterQueryProvider;
 import android.widget.ImageView;
 
 import com.google.android.gms.common.api.CommonStatusCodes;
@@ -54,6 +58,8 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     public static final String EXTRA_BOOK_ID = "book_id_extra";
     private static final String TAG = EditBookActivity.class.getName();
 
+    public static final int BOOK_LOADER = 1;
+
     private Long mBookId;
     private BookInputBinding binding;
 
@@ -67,7 +73,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     Toolbar toolbar;
 
     @Bind(R.id.book_input_author)
-    EditText mAuthorEdit;
+    AutoCompleteTextView mAuthorEdit;
 
     @Bind(R.id.book_input_title)
     EditText mTitleEdit;
@@ -105,9 +111,32 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
             long bookId = extras.getLong(EXTRA_BOOK_ID, -1);
             if (bookId > 0) {
                 mBookId = bookId;
-                getSupportLoaderManager().initLoader(1, null, this);
+                getSupportLoaderManager().initLoader(BOOK_LOADER, null, this);
             }
         }
+
+        // fill autocomplete for author
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(
+                this,
+                android.R.layout.simple_list_item_1,
+                null,
+                new String[]{Author.COLUMN_NAME},
+                new int[]{android.R.id.text1},
+                0);
+        mAuthorEdit.setAdapter(adapter);
+
+        adapter.setFilterQueryProvider(new FilterQueryProvider() {
+            public Cursor runQuery(CharSequence str) {
+                return getCursor(str);
+            }
+        });
+
+        adapter.setCursorToStringConverter(new SimpleCursorAdapter.CursorToStringConverter() {
+            public CharSequence convertToString(Cursor cur) {
+                int index = cur.getColumnIndex(Author.COLUMN_NAME);
+                return cur.getString(index);
+            }
+        });
     }
 
     @Override
@@ -361,19 +390,40 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(this, DatabaseProvider.getUriWithId(DatabaseProvider.BOOK_ID, mBookId), null, null, null, null);
+        switch (id) {
+            case BOOK_LOADER:
+                return new CursorLoader(this, DatabaseProvider.getUriWithId(DatabaseProvider.BOOK_ID, mBookId), null, null, null, null);
+            default:
+                return null;
+        }
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (data.getCount() == 1) {
-            Book book = new Book(data);
-            binding.setBook(book);
+        int id = loader.getId();
+
+        switch (id) {
+            case BOOK_LOADER:
+                // bind book data
+                if (data.getCount() == 1) {
+                    Book book = new Book(data);
+                    binding.setBook(book);
+                }
+                break;
+            default:
         }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    public Cursor getCursor(CharSequence str) {
+        String select = Author.COLUMN_NAME + " LIKE ? ";
+        String[] selectArgs = {"%" + str + "%"};
+        String[] contactsProjection = new String[]{BaseColumns._ID, Author.COLUMN_NAME};
+
+        return getContentResolver().query(DatabaseProvider.getUri(DatabaseProvider.AUTHORS), contactsProjection, select, selectArgs, null);
     }
 }
