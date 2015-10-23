@@ -14,12 +14,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import kandrac.xyz.library.databinding.BookDetailBinding;
 import kandrac.xyz.library.model.DatabaseProvider;
 import kandrac.xyz.library.model.obj.Book;
-import kandrac.xyz.library.utils.DisplayUtils;
 
 /**
  * Created by VizGhar on 18.10.2015.
@@ -68,7 +71,21 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
             Book book = new Book(data);
             binding.setBook(book);
 
-            DisplayUtils.displayScaledImage(this, book.imageFilePath, cover);
+            if (book.imageFilePath == null) {
+                return;
+            }
+
+            File file = new File(book.imageFilePath);
+
+            if (!file.exists()) {
+                return;
+            }
+
+            Picasso.with(this)
+                    .load(file)
+                    .resize(cover.getMeasuredWidth(), cover.getMeasuredHeight())
+                    .centerInside()
+                    .into(cover);
         }
     }
 
