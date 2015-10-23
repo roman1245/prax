@@ -8,6 +8,7 @@
     <string name="action_edit">Edit</string>
     <string name="action_delete">Delete</string>
     <string name="action_search">Search</string>
+    <string name="action_ok">OK</string>
 
     <!-- Basic Image Content descriptors -->
     <string name="book_list_item">Book Item</string>
@@ -22,6 +23,11 @@
 
     <string name="edit_book_info">Basic book info</string>
     <string name="edit_book_cover">Book Cover</string>
+    <string name="edit_book_take_photo_permission">We need your permission to take a photo and store it on your phone</string>
+    <string name="edit_book_barcode_permission">If you want to scan barcode we will need your permission to use camera</string>
+
+    <string name="edit_book_no_permission">We can\'t continue without those permissions. If you want to change them you can do so in your phone Settings.</string>
+    <string name="edit_book_no_permission_title">Missing permissions</string>
 
     <!-- Navigation menu items -->
     <string name="menu_books">Books</string>

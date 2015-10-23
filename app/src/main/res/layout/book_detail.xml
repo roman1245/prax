@@ -16,20 +16,51 @@
         android:fitsSystemWindows="true"
         tools:context=".EditBookActivity">
 
-        <!-- Toolbar -->
         <android.support.design.widget.AppBarLayout
+            android:id="@+id/appbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="256dp"
+            android:fitsSystemWindows="true"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
+            <android.support.design.widget.CollapsingToolbarLayout
+                android:id="@+id/collapsing_toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
+                app:contentScrim="?attr/colorPrimary"
+                app:expandedTitleMarginBottom="32dp"
+                app:expandedTitleMarginEnd="64dp"
+                app:expandedTitleMarginStart="48dp"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+                <ImageView
+                    android:id="@+id/book_input_cover_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/navigation_back"
+                    android:fitsSystemWindows="true"
+                    android:scaleType="centerCrop"
+                    app:layout_collapseMode="parallax" />
+
+                <ImageView
+                    android:layout_gravity="bottom"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_collapseMode="parallax"
+                    android:src="@drawable/gradient" />
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:title="@{book.title}"
+                    app:layout_collapseMode="pin"
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+            </android.support.design.widget.CollapsingToolbarLayout>
         </android.support.design.widget.AppBarLayout>
 
-        <ScrollView
+        <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -50,7 +81,27 @@
                     android:layout_marginRight="16dp"
                     android:layout_row="0"
                     android:contentDescription="@string/edit_book_info"
-                    android:src="@drawable/ic_book"
+                    android:src="@drawable/ic_author"
+                    android:tint="@color/md_grey_700" />
+
+                <ImageView
+                    android:layout_column="0"
+                    android:layout_gravity="end|center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_row="1"
+                    android:contentDescription="@string/edit_book_info"
+                    android:src="@drawable/ic_barcode"
+                    android:tint="@color/md_grey_700" />
+
+                <ImageView
+                    android:layout_column="0"
+                    android:layout_gravity="end|center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_row="2"
+                    android:contentDescription="@string/edit_book_info"
+                    android:src="@drawable/ic_pencil"
                     android:tint="@color/md_grey_700" />
 
                 <TextView
@@ -64,68 +115,23 @@
                     tools:text="John Ronald Reuel Tolkien" />
 
                 <TextView
-                    android:id="@+id/book_input_title"
-                    android:layout_column="1"
-                    android:layout_gravity="start"
-                    android:layout_row="1"
-                    android:hint="@string/edit_book_title"
-                    android:singleLine="true"
-                    android:text="@{book.title}"
-                    tools:text="The Lord of the Rings" />
-
-                <TextView
                     android:id="@+id/book_input_isbn"
                     android:layout_column="1"
                     android:layout_gravity="start"
-                    android:layout_row="2"
+                    android:layout_row="1"
                     android:hint="@string/edit_book_isbn"
                     android:text="@{book.isbn}"
                     tools:text="0802356555" />
-
-                <ImageView
-                    android:layout_column="0"
-                    android:layout_gravity="top"
-                    android:layout_marginTop="16dp"
-                    android:layout_row="3"
-                    android:contentDescription="@string/edit_book_cover"
-                    android:ems="0"
-                    android:src="@drawable/ic_camera"
-                    android:tint="@color/md_grey_700" />
-
-                <ImageView
-                    android:id="@+id/book_input_cover_image"
-                    android:layout_width="96dp"
-                    android:layout_height="96dp"
-                    android:layout_column="1"
-                    android:layout_gravity="start"
-                    android:layout_marginTop="8dp"
-                    android:layout_row="3"
-                    android:background="@color/md_grey_400"
-                    android:contentDescription="@string/edit_book_cover"
-                    android:scaleType="center"
-                    android:src="@drawable/ic_book_white"/>
 
                 <TextView
                     android:id="@+id/book_input_description_edit"
                     android:layout_column="1"
                     android:layout_gravity="start"
-                    android:layout_row="4"
+                    android:layout_row="2"
                     android:hint="@string/edit_book_description"
                     android:text="@{book.description}"
                     tools:text="This book was completely awesome! It was about some small Hobbit." />
             </GridLayout>
-        </ScrollView>
-
-        <!-- FAB - scan button -->
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|bottom"
-            android:layout_margin="8dp"
-            android:src="@drawable/ic_barcode_white"
-            app:elevation="6dp"
-            app:fabSize="normal"
-            app:pressedTranslationZ="12dp" />
+        </android.support.v4.widget.NestedScrollView>
     </android.support.design.widget.CoordinatorLayout>
 </layout>

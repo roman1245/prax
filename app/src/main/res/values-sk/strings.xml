@@ -8,6 +8,7 @@
     <string name="action_edit">Upraviť</string>
     <string name="action_delete">Vymazať</string>
     <string name="action_search">Hľadať</string>
+    <string name="action_ok">OK</string>
 
     <!-- Basic Image Content descriptors -->
     <string name="book_list_item">Kniha</string>
@@ -22,6 +23,11 @@
 
     <string name="edit_book_info">Základné informácie o knihe</string>
     <string name="edit_book_cover">Obálka Knihy</string>
+    <string name="edit_book_take_photo_permission">Potrebujeme od vás povolenie pre fotenie a ukladanie fotografií do vášho telefónu</string>
+    <string name="edit_book_barcode_permission">Ak chcete naskenovať čiarový kód budeme potrebovať vaše povolenie</string>
+
+    <string name="edit_book_no_permission">Bez týchto oprávnení nemôžeme pokračovať. Ak chcete zmeniť oprávenia urobte tak v Nastaveniach telefónu.</string>
+    <string name="edit_book_no_permission_title">Chýbajúce oprávnenia</string>
 
     <!-- Navigation menu items -->
     <string name="menu_books">Knihy</string>

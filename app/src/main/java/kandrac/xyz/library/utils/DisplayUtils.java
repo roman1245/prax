@@ -8,6 +8,8 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
+import kandrac.xyz.library.R;
+
 /**
  * Created by kandrac on 21/10/15.
  */
@@ -22,8 +24,11 @@ public final class DisplayUtils {
             if (f.exists()) {
                 int densityDpi = getPixelsFromDips(96, context);
                 Picasso.with(context).load(f).resize(densityDpi, densityDpi).centerInside().into(imageView);
+                return;
             }
         }
+
+        imageView.setImageResource(R.drawable.ic_book_white);
     }
 
     public static int getPixelsFromDips(int dips, Context context) {
