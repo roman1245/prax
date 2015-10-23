@@ -1,5 +1,8 @@
 package kandrac.xyz.library;
 
+import android.app.SearchManager;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -7,7 +10,10 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import butterknife.Bind;
@@ -28,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     DrawerLayout drawerLayout;
 
     private MenuItem lastChecked;
+    private Fragment mShownFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,10 +60,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (savedInstanceState != null) {
             return;
         }
+
+        mShownFragment = new BookListFragment();
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.fragment_container, new BookListFragment())
+                .add(R.id.fragment_container, mShownFragment)
                 .commit();
+
+
+        handleIntent(getIntent());
     }
 
     @Override
@@ -68,6 +80,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        MenuItem searchMenuItem = menu.findItem(R.id.search);
+        SearchView searchView = (SearchView) searchMenuItem.getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        return true;
     }
 
     @Override
@@ -111,9 +136,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .replace(R.id.fragment_container, fragmentToShow)
                 .commit();
 
+        mShownFragment = fragmentToShow;
+
         lastChecked.setChecked(false);
         menuItem.setChecked(true);
         lastChecked = menuItem;
         return true;
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        handleIntent(intent);
+    }
+
+
+    private void handleIntent(Intent intent) {
+
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            if (mShownFragment instanceof Searchable) {
+                ((Searchable) mShownFragment).requestSearch(query);
+            }
+        }
     }
 }

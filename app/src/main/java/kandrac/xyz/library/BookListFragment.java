@@ -28,7 +28,7 @@ import kandrac.xyz.library.utils.DisplayUtils;
 /**
  * Created by kandrac on 20/10/15.
  */
-public class BookListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class BookListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, Searchable {
 
     @Bind(R.id.list)
     RecyclerView list;
@@ -39,6 +39,7 @@ public class BookListFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     BookCursorAdapter adapter;
+    String searchQuery;
 
     @Nullable
     @Override
@@ -59,7 +60,24 @@ public class BookListFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         if (id == MainActivity.BOOK_LIST_LOADER) {
-            return new CursorLoader(getActivity(), DatabaseProvider.getUri(DatabaseProvider.BOOKS), null, null, null, null);
+
+            String selection = null;
+            String[] selectionArgs = null;
+
+            if (searchQuery != null) {
+                selection = Book.COLUMN_TITLE + " LIKE ?";
+                selectionArgs = new String[]{
+                        "%" + searchQuery + "%"
+                };
+            }
+
+            return new CursorLoader(
+                    getActivity(),
+                    DatabaseProvider.getUri(DatabaseProvider.BOOKS),
+                    null,
+                    selection,
+                    selectionArgs,
+                    null);
         } else {
             return null;
         }
@@ -73,7 +91,13 @@ public class BookListFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+    }
 
+    @Override
+    public boolean requestSearch(String query) {
+        searchQuery = query;
+        getActivity().getSupportLoaderManager().restartLoader(MainActivity.BOOK_LIST_LOADER, null, this);
+        return true;
     }
 
 
