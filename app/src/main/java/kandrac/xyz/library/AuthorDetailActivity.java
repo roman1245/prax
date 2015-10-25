@@ -15,24 +15,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
-import com.squareup.picasso.Picasso;
-
-import java.io.File;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import kandrac.xyz.library.databinding.BookDetailBinding;
+import kandrac.xyz.library.databinding.AuthorDetailBinding;
 import kandrac.xyz.library.model.Contract;
-import kandrac.xyz.library.model.obj.Book;
+import kandrac.xyz.library.model.obj.Author;
 
 /**
- * Created by VizGhar on 18.10.2015.
+ * Created by VizGhar on 25.10.2015.
  */
-public class BookDetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class AuthorDetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    public static final String EXTRA_BOOK_ID = "book_id_extra";
-    private Long mBookId;
-    private BookDetailBinding binding;
+    public static final String EXTRA_AUTHOR_ID = "author_id_extra";
+    private long mAuthorId;
+    private AuthorDetailBinding binding;
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -47,7 +43,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = DataBindingUtil.setContentView(this, R.layout.book_detail);
+        binding = DataBindingUtil.setContentView(this, R.layout.author_detail);
 
         ButterKnife.bind(this);
 
@@ -60,37 +56,21 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
             ab.setDisplayShowHomeEnabled(true);
         }
 
-        mBookId = getIntent().getExtras().getLong(EXTRA_BOOK_ID);
+        mAuthorId = getIntent().getExtras().getLong(EXTRA_AUTHOR_ID);
         getSupportLoaderManager().initLoader(1, null, this);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(this, Contract.Books.buildBookWithAuthorUri(mBookId), null, null, null, null);
+        return new CursorLoader(this, Contract.Authors.buildAuthorUri(mAuthorId), null, null, null, null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data.getCount() == 1) {
-            Book book = new Book(data);
-            binding.setBook(book);
-            collapsingToolbarLayout.setTitle(book.title);
-
-            if (book.imageFilePath == null) {
-                return;
-            }
-
-            File file = new File(book.imageFilePath);
-
-            if (!file.exists()) {
-                return;
-            }
-
-            Picasso.with(this)
-                    .load(file)
-                    .resize(cover.getMeasuredWidth(), cover.getMeasuredHeight())
-                    .centerInside()
-                    .into(cover);
+            Author author = new Author(data);
+            binding.setAuthor(author);
+            collapsingToolbarLayout.setTitle(author.name);
         }
     }
 
@@ -112,11 +92,10 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
         switch (id) {
             case R.id.action_edit:
                 Intent intent = new Intent(this, EditBookActivity.class);
-                intent.putExtra(EditBookActivity.EXTRA_BOOK_ID, mBookId);
                 startActivity(intent);
                 return true;
             case R.id.action_delete:
-                getContentResolver().delete(Contract.Books.buildBookUri(mBookId), null, null);
+                getContentResolver().delete(Contract.Authors.CONTENT_URI, Contract.Authors.AUTHOR_ID + " = ?", new String[]{Long.toString(mAuthorId)});
                 finish();
                 return true;
             case android.R.id.home:

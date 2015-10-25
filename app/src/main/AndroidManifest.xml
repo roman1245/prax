@@ -43,12 +43,14 @@
 
         <activity
             android:name=".BookDetailActivity"
-            android:label="Add New Book"
             android:screenOrientation="portrait" />
 
         <activity
             android:name=".BarcodeActivity"
-            android:label="Add New Book"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".AuthorDetailActivity"
             android:screenOrientation="portrait" />
 
         <provider

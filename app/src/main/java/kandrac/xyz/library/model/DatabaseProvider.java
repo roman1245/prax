@@ -130,7 +130,7 @@ public class DatabaseProvider extends ContentProvider {
             case AUTHORS: {
                 long result = db.insertOrThrow(Database.Tables.AUTHORS, null, values);
                 getContext().getContentResolver().notifyChange(uri, null);
-                return Contract.Authors.buildBlockUri(result);
+                return Contract.Authors.buildAuthorUri(result);
             }
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);

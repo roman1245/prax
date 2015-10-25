@@ -96,7 +96,7 @@ public class Contract {
         /**
          * Build {@link Uri} for requested {@link #AUTHOR_ID}.
          */
-        public static Uri buildBlockUri(long authorId) {
+        public static Uri buildAuthorUri(long authorId) {
             return CONTENT_URI.buildUpon().appendPath(Long.toString(authorId)).build();
         }
 

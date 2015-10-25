@@ -1,6 +1,7 @@
 package kandrac.xyz.library;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -24,9 +25,11 @@ import kandrac.xyz.library.model.obj.Author;
 /**
  * Created by kandrac on 22/10/15.
  */
-public class AuthorListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class AuthorListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, Searchable {
 
     AuthorCursorAdapter adapter;
+
+    String searchQuery;
 
     @Bind(R.id.list)
     RecyclerView list;
@@ -50,7 +53,24 @@ public class AuthorListFragment extends Fragment implements LoaderManager.Loader
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         if (id == MainActivity.AUTHOR_LIST_LOADER) {
-            return new CursorLoader(getActivity(), Contract.Authors.CONTENT_URI, null, null, null, null);
+
+            String selection = null;
+            String[] selectionArgs = null;
+
+            if (searchQuery != null && searchQuery.length() > 1) {
+                selection = Contract.Authors.AUTHOR_NAME + " LIKE ?";
+                selectionArgs = new String[]{
+                        "%" + searchQuery + "%"
+                };
+            }
+
+            return new CursorLoader(
+                    getActivity(),
+                    Contract.Authors.CONTENT_URI,
+                    new String[]{Contract.Authors.AUTHOR_ID, Contract.Authors.AUTHOR_NAME},
+                    selection,
+                    selectionArgs,
+                    null);
         } else {
             return null;
         }
@@ -64,7 +84,13 @@ public class AuthorListFragment extends Fragment implements LoaderManager.Loader
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+    }
 
+    @Override
+    public boolean requestSearch(String query) {
+        searchQuery = query;
+        getActivity().getSupportLoaderManager().restartLoader(MainActivity.BOOK_LIST_LOADER, null, this);
+        return true;
     }
 
     private class AuthorCursorAdapter extends RecyclerView.Adapter<AuthorCursorAdapter.BindingHolder> {
@@ -94,6 +120,15 @@ public class AuthorListFragment extends Fragment implements LoaderManager.Loader
 
             AuthorListItemBinding binding = DataBindingUtil.getBinding(holder.itemView);
             binding.setAuthor(author);
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getContext(), AuthorDetailActivity.class);
+                    intent.putExtra(AuthorDetailActivity.EXTRA_AUTHOR_ID, author.id);
+                    startActivity(intent);
+                }
+            });
         }
 
         @Override
