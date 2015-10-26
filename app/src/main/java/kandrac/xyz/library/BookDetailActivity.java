@@ -21,7 +21,7 @@ import java.io.File;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import kandrac.xyz.library.databinding.BookDetailBinding;
-import kandrac.xyz.library.model.DatabaseProvider;
+import kandrac.xyz.library.model.Contract;
 import kandrac.xyz.library.model.obj.Book;
 
 /**
@@ -62,7 +62,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(this, DatabaseProvider.getUriWithId(DatabaseProvider.BOOK_ID, mBookId), null, null, null, null);
+        return new CursorLoader(this, Contract.Books.buildBookWithAuthorUri(mBookId), null, null, null, null);
     }
 
     @Override
@@ -111,7 +111,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                 startActivity(intent);
                 return true;
             case R.id.action_delete:
-                getContentResolver().delete(DatabaseProvider.getUri(DatabaseProvider.BOOKS), Book.COLUMN_ID + " = ?", new String[]{Long.toString(mBookId)});
+                getContentResolver().delete(Contract.Books.buildBookUri(mBookId), null, null);
                 finish();
                 return true;
             case android.R.id.home:

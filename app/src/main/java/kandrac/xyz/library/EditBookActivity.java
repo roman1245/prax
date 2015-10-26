@@ -43,7 +43,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import kandrac.xyz.library.databinding.BookInputBinding;
-import kandrac.xyz.library.model.DatabaseProvider;
+import kandrac.xyz.library.model.Contract;
 import kandrac.xyz.library.model.obj.Author;
 import kandrac.xyz.library.model.obj.Book;
 import kandrac.xyz.library.utils.DisplayUtils;
@@ -118,7 +118,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 this,
                 android.R.layout.simple_list_item_1,
                 null,
-                new String[]{Author.COLUMN_NAME},
+                new String[]{Contract.Authors.AUTHOR_NAME},
                 new int[]{android.R.id.text1},
                 0);
         mAuthorEdit.setAdapter(adapter);
@@ -131,7 +131,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
         adapter.setCursorToStringConverter(new SimpleCursorAdapter.CursorToStringConverter() {
             public CharSequence convertToString(Cursor cur) {
-                int index = cur.getColumnIndex(Author.COLUMN_NAME);
+                int index = cur.getColumnIndex(Contract.Authors.AUTHOR_NAME);
                 return cur.getString(index);
             }
         });
@@ -192,13 +192,13 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 .build();
 
         // insert author
-        getContentResolver().insert(
-                DatabaseProvider.getUri(DatabaseProvider.AUTHORS),
+        Uri uri = getContentResolver().insert(
+                Contract.Authors.CONTENT_URI,
                 author.getContentValues());
 
-
+        author.id = Long.parseLong(Contract.Authors.getAuthorId(uri));
         Book book = new Book.Builder()
-                .setAuthor(mAuthorEdit.getText().toString())
+                .setAuthor(author)
                 .setTitle(mTitleEdit.getText().toString())
                 .setIsbn(mIsbnEdit.getText().toString())
                 .setImageFilePath(imageFileName)
@@ -207,13 +207,13 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         if (mBookId != null && mBookId > 0) {
             // edit book
             getContentResolver().update(
-                    DatabaseProvider.getUri(DatabaseProvider.BOOKS),
-                    book.getContentValues(), Book.COLUMN_ID + " = ?",
+                    Contract.Books.CONTENT_URI,
+                    book.getContentValues(), Contract.Books.BOOK_ID + " = ?",
                     new String[]{Long.toString(mBookId)});
         } else {
             // insert book
             getContentResolver().insert(
-                    DatabaseProvider.getUri(DatabaseProvider.BOOKS),
+                    Contract.Books.CONTENT_URI,
                     book.getContentValues());
         }
 
@@ -385,7 +385,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         switch (id) {
             case BOOK_LOADER:
-                return new CursorLoader(this, DatabaseProvider.getUriWithId(DatabaseProvider.BOOK_ID, mBookId), null, null, null, null);
+                return new CursorLoader(this, Contract.Books.buildBookUri(mBookId), null, null, null, null);
             default:
                 return null;
         }
@@ -413,10 +413,10 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     }
 
     public Cursor getCursor(CharSequence str) {
-        String select = Author.COLUMN_NAME + " LIKE ? ";
+        String select = Contract.Authors.AUTHOR_NAME + " LIKE ? ";
         String[] selectArgs = {"%" + str + "%"};
-        String[] contactsProjection = new String[]{BaseColumns._ID, Author.COLUMN_NAME};
+        String[] contactsProjection = new String[]{BaseColumns._ID, Contract.Authors.AUTHOR_NAME};
 
-        return getContentResolver().query(DatabaseProvider.getUri(DatabaseProvider.AUTHORS), contactsProjection, select, selectArgs, null);
+        return getContentResolver().query(Contract.Authors.CONTENT_URI, contactsProjection, select, selectArgs, null);
     }
 }

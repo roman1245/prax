@@ -2,7 +2,8 @@ package kandrac.xyz.library.model.obj;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.provider.BaseColumns;
+
+import kandrac.xyz.library.model.Contract;
 
 /**
  * Representation of concrete book from your home library
@@ -10,42 +11,38 @@ import android.provider.BaseColumns;
  */
 public class Book {
 
-    public static final String TABLE_NAME = "books";
-    public static final String COLUMN_ID = BaseColumns._ID;
-    public static final String COLUMN_TITLE = "title";
-    public static final String COLUMN_DESCRIPTION = "birth";
-    public static final String COLUMN_ISBN = "death";
-    public static final String COLUMN_AUTHOR = "author";
-    public static final String COLUMN_IMAGE_FILE = "file";
-
-    public static final String CREATE_TABLE =
-            "CREATE TABLE " + TABLE_NAME + " (" +
-                    COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    COLUMN_TITLE + " TEXT NOT NULL," +
-                    COLUMN_DESCRIPTION + " TEXT," +
-                    COLUMN_ISBN + " TEXT," +
-                    COLUMN_IMAGE_FILE + " TEXT," +
-                    COLUMN_AUTHOR + " TEXT REFERENCES " + Author.TABLE_NAME + "(" + Author.COLUMN_NAME + "))";
-
-    public static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
-
-    public final long id;
+    public long id;
     public final String title;
     public final String description;
     public final String isbn;
-    public final String author;
+    public final Author author;
     public final String imageFilePath;
 
     public Book(Cursor cursor) {
         if (cursor.getPosition() < 0) {
             cursor.moveToFirst();
         }
-        id = cursor.getInt(cursor.getColumnIndex(COLUMN_ID));
-        title = cursor.getString(cursor.getColumnIndex(COLUMN_TITLE));
-        description = cursor.getString(cursor.getColumnIndex(COLUMN_DESCRIPTION));
-        isbn = cursor.getString(cursor.getColumnIndex(COLUMN_ISBN));
-        author = cursor.getString(cursor.getColumnIndex(COLUMN_AUTHOR));
-        imageFilePath = cursor.getString(cursor.getColumnIndex(COLUMN_IMAGE_FILE));
+        id = getInt(cursor, Contract.Books.BOOK_ID);
+        title = getString(cursor, Contract.Books.BOOK_TITLE);
+        description = getString(cursor, Contract.Books.BOOK_DESCRIPTION);
+        isbn = getString(cursor, Contract.Books.BOOK_ISBN);
+        author = getAuthor(cursor, Contract.Authors.AUTHOR_NAME);
+        imageFilePath = cursor.getString(cursor.getColumnIndex(Contract.Books.BOOK_IMAGE_FILE));
+    }
+
+    private static int getInt(Cursor cursor, String columnName) {
+        int index = cursor.getColumnIndex(columnName);
+        return index == -1 ? 0 : cursor.getInt(index);
+    }
+
+    private static String getString(Cursor cursor, String columnName) {
+        int index = cursor.getColumnIndex(columnName);
+        return index == -1 ? null : cursor.getString(index);
+    }
+
+    private static Author getAuthor(Cursor cursor, String columnName) {
+        int index = cursor.getColumnIndex(columnName);
+        return index == -1 ? null : new Author(cursor);
     }
 
     private Book(Builder builder) {
@@ -59,11 +56,11 @@ public class Book {
 
     public ContentValues getContentValues() {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_TITLE, title);
-        contentValues.put(COLUMN_DESCRIPTION, description);
-        contentValues.put(COLUMN_ISBN, isbn);
-        contentValues.put(COLUMN_AUTHOR, author);
-        contentValues.put(COLUMN_IMAGE_FILE, imageFilePath);
+        contentValues.put(Contract.Books.BOOK_TITLE, title);
+        contentValues.put(Contract.Books.BOOK_DESCRIPTION, description);
+        contentValues.put(Contract.Books.BOOK_ISBN, isbn);
+        contentValues.put(Contract.Books.BOOK_AUTHOR_ID, author.id);
+        contentValues.put(Contract.Books.BOOK_IMAGE_FILE, imageFilePath);
         return contentValues;
     }
 
@@ -73,7 +70,7 @@ public class Book {
         private String title;
         private String description;
         private String isbn;
-        private String author;
+        private Author author;
         private String imageFilePath;
 
         public Builder setId(long id) {
@@ -96,7 +93,7 @@ public class Book {
             return this;
         }
 
-        public Builder setAuthor(String author) {
+        public Builder setAuthor(Author author) {
             this.author = author;
             return this;
         }

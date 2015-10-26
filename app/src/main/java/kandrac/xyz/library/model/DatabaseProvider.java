@@ -1,24 +1,15 @@
 package kandrac.xyz.library.model;
 
 import android.content.ContentProvider;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
-import kandrac.xyz.library.model.obj.Author;
-import kandrac.xyz.library.model.obj.Book;
 
 /**
  * Content provider for all database items.
@@ -26,94 +17,92 @@ import kandrac.xyz.library.model.obj.Book;
  */
 public class DatabaseProvider extends ContentProvider {
 
-    public static final String PROVIDER_NAME = "xyz.kandrac.Library";
-    public static final String URL = "content://" + PROVIDER_NAME;
-    public static final Uri CONTENT_URI = Uri.parse(URL);
+    private Database databaseHelper;
 
-    public static final int BOOKS = 1;
-    public static final int BOOK_ID = 2;
-    public static final int AUTHORS = 3;
-    public static final int AUTHOR_ID = 4;
+    private static final UriMatcher uriMatcher = buildUriMatcher();
 
-    @IntDef({BOOKS, AUTHORS})
-    @Retention(RetentionPolicy.SOURCE)
-    @interface UriType {
-    }
+    public static final int BOOKS = 100;
+    public static final int BOOK_ID = 101;
+    public static final int BOOK_ID_AUTHOR = 102;
 
-    @IntDef({BOOK_ID, AUTHOR_ID})
-    @Retention(RetentionPolicy.SOURCE)
-    @interface UriTypeId {
-    }
+    public static final int AUTHORS = 200;
+    public static final int AUTHOR_ID = 201;
+    public static final int AUTHOR_BOOKS = 202;
 
-    static final UriMatcher uriMatcher;
+    public static final int BOOKS_AUTHORS = 300;
 
-    static {
-        uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        uriMatcher.addURI(PROVIDER_NAME, Book.TABLE_NAME, BOOKS);
-        uriMatcher.addURI(PROVIDER_NAME, Book.TABLE_NAME + "/#", BOOK_ID);
-        uriMatcher.addURI(PROVIDER_NAME, Author.TABLE_NAME, AUTHORS);
-        uriMatcher.addURI(PROVIDER_NAME, Author.TABLE_NAME + "/#", AUTHOR_ID);
-    }
+    private static UriMatcher buildUriMatcher() {
+        final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+        final String authority = Contract.CONTENT_AUTHORITY;
 
-    private SQLiteDatabase db;
+        uriMatcher.addURI(authority, "books", BOOKS);
+        uriMatcher.addURI(authority, "books/#", BOOK_ID);
+        uriMatcher.addURI(authority, "books/#/authors", BOOK_ID_AUTHOR);
+        uriMatcher.addURI(authority, "authors", AUTHORS);
+        uriMatcher.addURI(authority, "authors/#", AUTHOR_ID);
+        uriMatcher.addURI(authority, "authors/#/books", AUTHOR_BOOKS);
 
-    public static Uri getUri(@UriType int type) {
-        switch (type) {
-            case BOOKS:
-                return Uri.parse(URL + "/" + Book.TABLE_NAME);
-            case AUTHORS:
-                return Uri.parse(URL + "/" + Author.TABLE_NAME);
-        }
-        throw new IllegalArgumentException("Unknown Type" + type);
-    }
+        uriMatcher.addURI(authority, "books/authors", BOOKS_AUTHORS);
 
-    public static Uri getUriWithId(@UriTypeId int type, long id) {
-        switch (type) {
-            case BOOK_ID:
-                return Uri.parse(URL + "/" + Book.TABLE_NAME + "/" + id);
-            case AUTHOR_ID:
-                return Uri.parse(URL + "/" + Author.TABLE_NAME + "/" + id);
-        }
-        throw new IllegalArgumentException("Unknown Type" + type);
+        return uriMatcher;
     }
 
     @Override
     public boolean onCreate() {
-        Context context = getContext();
-        Database dbHelper = new Database(context);
+        final Context context = getContext();
+        databaseHelper = new Database(context);
+        return true;
+    }
 
-        /**
-         * Create a write able database which will trigger its
-         * creation if it doesn't already exist.
-         */
-        db = dbHelper.getWritableDatabase();
-        return db != null;
+    @Override
+    public String getType(@NonNull Uri uri) {
+        switch (uriMatcher.match(uri)) {
+            case BOOKS:
+                return Contract.Books.CONTENT_TYPE;
+            case BOOK_ID:
+                return Contract.Books.CONTENT_ITEM_TYPE;
+            case AUTHORS:
+                return Contract.Authors.CONTENT_TYPE;
+            case AUTHOR_ID:
+                return Contract.Authors.CONTENT_ITEM_TYPE;
+            case AUTHOR_BOOKS:
+                return Contract.Books.CONTENT_TYPE;
+            case BOOKS_AUTHORS:
+                return Contract.Books.CONTENT_TYPE;
+            default:
+                throw new IllegalArgumentException("Unsupported URI: " + uri);
+        }
     }
 
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
         switch (uriMatcher.match(uri)) {
             case BOOKS:
-                qb.setTables(Book.TABLE_NAME);
-                if (TextUtils.isEmpty(sortOrder)) {
-                    sortOrder = Book.COLUMN_TITLE;
-                }
+                qb.setTables(Database.Tables.BOOKS);
+                sortOrder = sortOrder == null ? Contract.Books.DEFAULT_SORT : sortOrder;
                 break;
             case BOOK_ID:
-                qb.setTables(Book.TABLE_NAME);
-                qb.appendWhere(Book.COLUMN_ID + "=" + uri.getPathSegments().get(1));
+                qb.setTables(Database.Tables.BOOKS);
+                qb.appendWhere(Contract.Books.BOOK_ID + "=" + Contract.Books.getBookId(uri));
+                break;
+            case BOOK_ID_AUTHOR:
+                qb.setTables(Database.Tables.BOOKS_JOIN_AUTHORS_ID);
+                qb.appendWhere(Database.Tables.BOOKS + "." + Contract.Books.BOOK_ID + "=" + Contract.Books.getBookId(uri));
                 break;
             case AUTHORS:
-                qb.setTables(Author.TABLE_NAME);
-                if (TextUtils.isEmpty(sortOrder)) {
-                    sortOrder = Author.COLUMN_NAME;
-                }
+                qb.setTables(Database.Tables.AUTHORS);
+                sortOrder = sortOrder == null ? Contract.Authors.DEFAULT_SORT : sortOrder;
                 break;
             case AUTHOR_ID:
-                qb.setTables(Author.TABLE_NAME);
-//                qb.appendWhere(Author.COLUMN_ID + "=" + uri.getPathSegments().get(1));
+                qb.setTables(Database.Tables.AUTHORS);
+                qb.appendWhere(Contract.Authors.AUTHOR_ID + "=" + Contract.Authors.getAuthorId(uri));
+                break;
+            case BOOKS_AUTHORS:
+                qb.setTables(Database.Tables.BOOKS_JOIN_AUTHORS_ID);
+                sortOrder = sortOrder == null ? Contract.Books.DEFAULT_SORT : sortOrder;
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
@@ -127,69 +116,49 @@ public class DatabaseProvider extends ContentProvider {
         return cursor;
     }
 
-    @Override
-    public String getType(@NonNull Uri uri) {
-        switch (uriMatcher.match(uri)) {
-            case BOOKS:
-                return "vnd.android.cursor.dir/vnd.books";
-            case BOOK_ID:
-                return "vnd.android.cursor.item/vnd.books";
-            case AUTHORS:
-                return "vnd.android.cursor.dir/vnd.authors";
-            case AUTHOR_ID:
-                return "vnd.android.cursor.item/vnd.authors";
-            default:
-                throw new IllegalArgumentException("Unsupported URI: " + uri);
-        }
-    }
-
+    @SuppressWarnings("ConstantConditions")
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
-        long rowID;
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+
         switch (uriMatcher.match(uri)) {
-            case BOOKS:
-                rowID = db.insert(Book.TABLE_NAME, "", values);
-                break;
-            case AUTHORS:
-                rowID = db.insert(Author.TABLE_NAME, "", values);
-                break;
+            case BOOKS: {
+                long result = db.insertOrThrow(Database.Tables.BOOKS, null, values);
+                getContext().getContentResolver().notifyChange(uri, null);
+                return Contract.Books.buildBookUri(result);
+            }
+            case AUTHORS: {
+                long result = db.insertOrThrow(Database.Tables.AUTHORS, null, values);
+                getContext().getContentResolver().notifyChange(uri, null);
+                return Contract.Authors.buildBlockUri(result);
+            }
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
-
-        if (rowID > 0) {
-            Uri _uri = ContentUris.withAppendedId(CONTENT_URI, rowID);
-            Context context = getContext();
-            if (context != null) {
-                context.getContentResolver().notifyChange(uri, null);
-            }
-            return _uri;
-        }
-        throw new SQLException("Failed to add a record into " + uri);
     }
 
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         int count;
         String id;
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
         switch (uriMatcher.match(uri)) {
             case BOOKS:
-                count = db.delete(Book.TABLE_NAME, selection, selectionArgs);
+                count = db.delete(Database.Tables.BOOKS, selection, selectionArgs);
                 break;
             case BOOK_ID:
-                id = uri.getPathSegments().get(1);
-                count = db.delete(Book.TABLE_NAME, Book.COLUMN_ID + " = " + id +
+                id = Contract.Books.getBookId(uri);
+                count = db.delete(Database.Tables.BOOKS, Contract.Books.BOOK_ID + " = " + id +
                         (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
                 break;
             case AUTHORS:
-                count = db.delete(Author.TABLE_NAME, selection, selectionArgs);
+                count = db.delete(Database.Tables.AUTHORS, selection, selectionArgs);
                 break;
             case AUTHOR_ID:
-                id = uri.getPathSegments().get(1);
-                count = 0;
-//                count = db.delete(Author.TABLE_NAME, Author.COLUMN_ID + " = " + id +
-//                        (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
+                id = Contract.Authors.getAuthorId(uri);
+                count = db.delete(Database.Tables.AUTHORS, Contract.Authors.AUTHOR_ID + " = " + id +
+                        (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
@@ -205,21 +174,25 @@ public class DatabaseProvider extends ContentProvider {
     @Override
     public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         int count;
+        String id;
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+
         switch (uriMatcher.match(uri)) {
             case BOOKS:
-                count = db.update(Book.TABLE_NAME, values, selection, selectionArgs);
+                count = db.update(Database.Tables.BOOKS, values, selection, selectionArgs);
                 break;
             case BOOK_ID:
-                count = db.update(Book.TABLE_NAME, values, Book.COLUMN_ID + " = " + uri.getPathSegments().get(1) +
+                id = Contract.Books.getBookId(uri);
+                count = db.update(Database.Tables.BOOKS, values, Contract.Books.BOOK_ID + " = " + id +
                         (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
                 break;
             case AUTHORS:
-                count = db.update(Author.TABLE_NAME, values, selection, selectionArgs);
+                count = db.update(Database.Tables.AUTHORS, values, selection, selectionArgs);
                 break;
             case AUTHOR_ID:
-                count = 0;
-//                count = db.update(Author.TABLE_NAME, values, Author.COLUMN_ID + " = " + uri.getPathSegments().get(1) +
-//                        (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
+                id = Contract.Books.getBookId(uri);
+                count = db.update(Database.Tables.AUTHORS, values, Contract.Authors.AUTHOR_ID + " = " + id +
+                        (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);

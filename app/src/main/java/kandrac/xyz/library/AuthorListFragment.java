@@ -18,7 +18,7 @@ import android.view.ViewGroup;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import kandrac.xyz.library.databinding.AuthorListItemBinding;
-import kandrac.xyz.library.model.DatabaseProvider;
+import kandrac.xyz.library.model.Contract;
 import kandrac.xyz.library.model.obj.Author;
 
 /**
@@ -50,7 +50,7 @@ public class AuthorListFragment extends Fragment implements LoaderManager.Loader
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         if (id == MainActivity.AUTHOR_LIST_LOADER) {
-            return new CursorLoader(getActivity(), DatabaseProvider.getUri(DatabaseProvider.AUTHORS), null, null, null, null);
+            return new CursorLoader(getActivity(), Contract.Authors.CONTENT_URI, null, null, null, null);
         } else {
             return null;
         }

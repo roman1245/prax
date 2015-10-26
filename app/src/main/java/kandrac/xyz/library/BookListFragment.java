@@ -21,7 +21,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import kandrac.xyz.library.databinding.BookListItemBinding;
-import kandrac.xyz.library.model.DatabaseProvider;
+import kandrac.xyz.library.model.Contract;
 import kandrac.xyz.library.model.obj.Book;
 import kandrac.xyz.library.utils.DisplayUtils;
 
@@ -65,7 +65,7 @@ public class BookListFragment extends Fragment implements LoaderManager.LoaderCa
             String[] selectionArgs = null;
 
             if (searchQuery != null) {
-                selection = Book.COLUMN_TITLE + " LIKE ?";
+                selection = Contract.Books.BOOK_TITLE + " LIKE ?";
                 selectionArgs = new String[]{
                         "%" + searchQuery + "%"
                 };
@@ -73,8 +73,8 @@ public class BookListFragment extends Fragment implements LoaderManager.LoaderCa
 
             return new CursorLoader(
                     getActivity(),
-                    DatabaseProvider.getUri(DatabaseProvider.BOOKS),
-                    null,
+                    Contract.BOOKS_AUTHORS_URI,
+                    new String[]{"books." + Contract.Books.BOOK_ID, Contract.Books.BOOK_TITLE, Contract.Books.BOOK_IMAGE_FILE, Contract.Authors.AUTHOR_NAME},
                     selection,
                     selectionArgs,
                     null);

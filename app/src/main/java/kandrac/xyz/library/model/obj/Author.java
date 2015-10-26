@@ -2,7 +2,8 @@ package kandrac.xyz.library.model.obj;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.provider.BaseColumns;
+
+import kandrac.xyz.library.model.Contract;
 
 /**
  * Representation of author
@@ -10,45 +11,25 @@ import android.provider.BaseColumns;
  */
 public class Author {
 
-    public static final String TABLE_NAME = "author";
-    public static final String COLUMN_NAME = "name";
-    public static final String COLUMN_DESCRIPTION = "description";
-    public static final String COLUMN_IMAGE_FILE = "file";
-
-    public static final String CREATE_TABLE =
-            "CREATE TABLE " + TABLE_NAME + " (" +
-                    BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    COLUMN_NAME + " TEXT NOT NULL," +
-                    COLUMN_DESCRIPTION + " TEXT," +
-                    COLUMN_IMAGE_FILE + " TEXT," +
-                    "UNIQUE (" + COLUMN_NAME + ") ON CONFLICT REPLACE)";
-
-    public static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
-
+    public long id;
     public final String name;
-    public final String description;
-    public final String imageFilePath;
 
     public Author(Cursor cursor) {
         if (cursor.getPosition() < 0) {
             cursor.moveToFirst();
         }
-        name = cursor.getString(cursor.getColumnIndex(COLUMN_NAME));
-        description = cursor.getString(cursor.getColumnIndex(COLUMN_DESCRIPTION));
-        imageFilePath = cursor.getString(cursor.getColumnIndex(COLUMN_IMAGE_FILE));
+        id = cursor.getLong(cursor.getColumnIndex(Contract.Authors.AUTHOR_ID));
+        name = cursor.getString(cursor.getColumnIndex(Contract.Authors.AUTHOR_NAME));
     }
 
     private Author(Builder builder) {
+        id = builder.id;
         name = builder.name;
-        description = builder.description;
-        imageFilePath = builder.imageFilePath;
     }
 
     public ContentValues getContentValues() {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_NAME, name);
-        contentValues.put(COLUMN_DESCRIPTION, description);
-        contentValues.put(COLUMN_IMAGE_FILE, imageFilePath);
+        contentValues.put(Contract.Authors.AUTHOR_NAME, name);
         return contentValues;
     }
 
@@ -56,26 +37,14 @@ public class Author {
 
         private long id;
         private String name;
-        private String description;
-        private String imageFilePath;
-
-        public Builder setId(long id) {
-            this.id = id;
-            return this;
-        }
 
         public Builder setName(String name) {
             this.name = name;
             return this;
         }
 
-        public Builder setDescription(String description) {
-            this.description = description;
-            return this;
-        }
-
-        public Builder setImageFilePath(String filePath) {
-            this.imageFilePath = filePath;
+        public Builder setId(long id) {
+            this.id = id;
             return this;
         }
 
@@ -88,8 +57,6 @@ public class Author {
     public String toString() {
         return "Author{" +
                 "name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", imageFilePath='" + imageFilePath + '\'' +
                 '}';
     }
 }

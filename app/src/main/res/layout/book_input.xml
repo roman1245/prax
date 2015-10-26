@@ -87,7 +87,7 @@
                     android:hint="@string/edit_book_author"
                     android:inputType="text"
                     android:singleLine="true"
-                    android:text="@{book.author}"
+                    android:text=""
                     tools:text="John Ronald Reuel Tolkien" />
 
                 <ImageView
