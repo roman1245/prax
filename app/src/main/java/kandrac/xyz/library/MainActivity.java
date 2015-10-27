@@ -2,7 +2,6 @@ package kandrac.xyz.library;
 
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -66,9 +65,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .beginTransaction()
                 .add(R.id.fragment_container, mShownFragment)
                 .commit();
-
-
-        handleIntent(getIntent());
     }
 
     @Override
@@ -92,6 +88,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         MenuItem searchMenuItem = menu.findItem(R.id.search);
         SearchView searchView = (SearchView) searchMenuItem.getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                if (mShownFragment instanceof Searchable) {
+                    ((Searchable) mShownFragment).requestSearch(query);
+                    return true;
+                }
+                return false;
+            }
+        });
         return true;
     }
 
@@ -142,22 +154,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         menuItem.setChecked(true);
         lastChecked = menuItem;
         return true;
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        handleIntent(intent);
-    }
-
-
-    private void handleIntent(Intent intent) {
-
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            if (mShownFragment instanceof Searchable) {
-                ((Searchable) mShownFragment).requestSearch(query);
-            }
-        }
     }
 }

@@ -64,9 +64,15 @@ public class BookListFragment extends Fragment implements LoaderManager.LoaderCa
             String selection = null;
             String[] selectionArgs = null;
 
-            if (searchQuery != null) {
-                selection = Contract.Books.BOOK_TITLE + " LIKE ?";
+            if (searchQuery != null && searchQuery.length() > 1) {
+                selection = Contract.Books.BOOK_TITLE + " LIKE ?" +
+                        " OR " + Contract.Authors.AUTHOR_NAME + " LIKE ?" +
+                        " OR " + Contract.Books.BOOK_DESCRIPTION + " LIKE ? " +
+                        " OR " + Contract.Books.BOOK_ISBN + " LIKE ? ";
                 selectionArgs = new String[]{
+                        "%" + searchQuery + "%",
+                        "%" + searchQuery + "%",
+                        "%" + searchQuery + "%",
                         "%" + searchQuery + "%"
                 };
             }
