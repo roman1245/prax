@@ -20,6 +20,7 @@ public class Database extends SQLiteOpenHelper {
     public interface Tables {
         String BOOKS = "books";
         String AUTHORS = "authors";
+        String PUBLISHERS = "publishers";
 
         String BOOKS_JOIN_AUTHORS_ID = "books "
                 + "LEFT OUTER JOIN authors ON books.book_author_id=authors._id";
@@ -27,8 +28,8 @@ public class Database extends SQLiteOpenHelper {
 
     interface References {
         String AUTHORS_ID = "REFERENCES " + Tables.AUTHORS + "(" + Contract.Authors.AUTHOR_ID + ")";
+        String PUBLISHERS_ID = "REFERENCES " + Tables.PUBLISHERS + "(" + Contract.Publishers.PUBLISHER_ID + ")";
     }
-
 
     public static final String BOOKS_CREATE_TABLE =
             "CREATE TABLE " + Tables.BOOKS + " (" +
@@ -37,7 +38,8 @@ public class Database extends SQLiteOpenHelper {
                     Contract.Books.BOOK_DESCRIPTION + " TEXT," +
                     Contract.Books.BOOK_ISBN + " TEXT," +
                     Contract.Books.BOOK_IMAGE_FILE + " TEXT," +
-                    Contract.Books.BOOK_AUTHOR_ID + " INTEGER " + References.AUTHORS_ID + ")";
+                    Contract.Books.BOOK_AUTHOR_ID + " INTEGER " + References.AUTHORS_ID + "," +
+                    Contract.Books.BOOK_PUBLISHER_ID + " INTEGER " + References.PUBLISHERS_ID + ")";
 
     public static final String AUTHORS_CREATE_TABLE =
             "CREATE TABLE " + Tables.AUTHORS + " (" +
@@ -45,8 +47,15 @@ public class Database extends SQLiteOpenHelper {
                     Contract.Authors.AUTHOR_NAME + " TEXT NOT NULL," +
                     "UNIQUE (" + Contract.Authors.AUTHOR_NAME + ") ON CONFLICT REPLACE)";
 
+    public static final String PUBLISHERS_CREATE_TABLE =
+            "CREATE TABLE " + Tables.PUBLISHERS + " (" +
+                    Contract.Publishers.PUBLISHER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    Contract.Publishers.PUBLISHER_NAME + " TEXT NOT NULL," +
+                    "UNIQUE (" + Contract.Publishers.PUBLISHER_NAME + ") ON CONFLICT REPLACE)";
+
     public static final String BOOKS_DROP_TABLE = "DROP TABLE IF EXISTS " + Tables.BOOKS;
     public static final String AUTHORS_DROP_TABLE = "DROP TABLE IF EXISTS " + Tables.AUTHORS;
+    public static final String PUBLISHERS_DROP_TABLE = "DROP TABLE IF EXISTS " + Tables.PUBLISHERS;
 
     @Override
     public void onConfigure(SQLiteDatabase db) {
@@ -57,12 +66,14 @@ public class Database extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(AUTHORS_CREATE_TABLE);
+        db.execSQL(PUBLISHERS_CREATE_TABLE);
         db.execSQL(BOOKS_CREATE_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL(BOOKS_DROP_TABLE);
+        db.execSQL(PUBLISHERS_DROP_TABLE);
         db.execSQL(AUTHORS_DROP_TABLE);
         onCreate(db);
     }

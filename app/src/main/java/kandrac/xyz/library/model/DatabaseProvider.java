@@ -29,7 +29,10 @@ public class DatabaseProvider extends ContentProvider {
     public static final int AUTHOR_ID = 201;
     public static final int AUTHOR_BOOKS = 202;
 
-    public static final int BOOKS_AUTHORS = 300;
+    public static final int PUBLISHERS = 300;
+    public static final int PUBLISHER_ID = 301;
+
+    public static final int BOOKS_AUTHORS = 400;
 
     private static UriMatcher buildUriMatcher() {
         final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -41,6 +44,8 @@ public class DatabaseProvider extends ContentProvider {
         uriMatcher.addURI(authority, "authors", AUTHORS);
         uriMatcher.addURI(authority, "authors/#", AUTHOR_ID);
         uriMatcher.addURI(authority, "authors/#/books", AUTHOR_BOOKS);
+        uriMatcher.addURI(authority, "publishers", PUBLISHERS);
+        uriMatcher.addURI(authority, "publishers/#", PUBLISHER_ID);
 
         uriMatcher.addURI(authority, "books/authors", BOOKS_AUTHORS);
 
@@ -67,6 +72,10 @@ public class DatabaseProvider extends ContentProvider {
                 return Contract.Authors.CONTENT_ITEM_TYPE;
             case AUTHOR_BOOKS:
                 return Contract.Books.CONTENT_TYPE;
+            case PUBLISHERS:
+                return Contract.Publishers.CONTENT_TYPE;
+            case PUBLISHER_ID:
+                return Contract.Publishers.CONTENT_ITEM_TYPE;
             case BOOKS_AUTHORS:
                 return Contract.Books.CONTENT_TYPE;
             default:
@@ -100,6 +109,14 @@ public class DatabaseProvider extends ContentProvider {
                 qb.setTables(Database.Tables.AUTHORS);
                 qb.appendWhere(Contract.Authors.AUTHOR_ID + "=" + Contract.Authors.getAuthorId(uri));
                 break;
+            case PUBLISHERS:
+                qb.setTables(Database.Tables.PUBLISHERS);
+                sortOrder = sortOrder == null ? Contract.Publishers.DEFAULT_SORT : sortOrder;
+                break;
+            case PUBLISHER_ID:
+                qb.setTables(Database.Tables.PUBLISHERS);
+                qb.appendWhere(Contract.Publishers.PUBLISHER_ID + "=" + Contract.Publishers.getPublisherId(uri));
+                break;
             case BOOKS_AUTHORS:
                 qb.setTables(Database.Tables.BOOKS_JOIN_AUTHORS_ID);
                 sortOrder = sortOrder == null ? Contract.Books.DEFAULT_SORT : sortOrder;
@@ -132,6 +149,11 @@ public class DatabaseProvider extends ContentProvider {
                 getContext().getContentResolver().notifyChange(uri, null);
                 return Contract.Authors.buildAuthorUri(result);
             }
+            case PUBLISHERS: {
+                long result = db.insertOrThrow(Database.Tables.PUBLISHERS, null, values);
+                getContext().getContentResolver().notifyChange(uri, null);
+                return Contract.Publishers.buildPublisherUri(result);
+            }
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -158,6 +180,14 @@ public class DatabaseProvider extends ContentProvider {
             case AUTHOR_ID:
                 id = Contract.Authors.getAuthorId(uri);
                 count = db.delete(Database.Tables.AUTHORS, Contract.Authors.AUTHOR_ID + " = " + id +
+                        (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
+                break;
+            case PUBLISHERS:
+                count = db.delete(Database.Tables.PUBLISHERS, selection, selectionArgs);
+                break;
+            case PUBLISHER_ID:
+                id = Contract.Publishers.getPublisherId(uri);
+                count = db.delete(Database.Tables.PUBLISHERS, Contract.Publishers.PUBLISHER_ID + " = " + id +
                         (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
                 break;
             default:
@@ -190,8 +220,16 @@ public class DatabaseProvider extends ContentProvider {
                 count = db.update(Database.Tables.AUTHORS, values, selection, selectionArgs);
                 break;
             case AUTHOR_ID:
-                id = Contract.Books.getBookId(uri);
+                id = Contract.Authors.getAuthorId(uri);
                 count = db.update(Database.Tables.AUTHORS, values, Contract.Authors.AUTHOR_ID + " = " + id +
+                        (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
+                break;
+            case PUBLISHERS:
+                count = db.update(Database.Tables.PUBLISHERS, values, selection, selectionArgs);
+                break;
+            case PUBLISHER_ID:
+                id = Contract.Publishers.getPublisherId(uri);
+                count = db.update(Database.Tables.PUBLISHERS, values, Contract.Publishers.PUBLISHER_ID + " = " + id +
                         (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
                 break;
             default:
