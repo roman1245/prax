@@ -16,6 +16,7 @@ public class Book {
     public final String description;
     public final String isbn;
     public final Author author;
+    public final Publisher publisher;
     public final String imageFilePath;
 
     public Book(Cursor cursor) {
@@ -27,6 +28,7 @@ public class Book {
         description = getString(cursor, Contract.Books.BOOK_DESCRIPTION);
         isbn = getString(cursor, Contract.Books.BOOK_ISBN);
         author = getAuthor(cursor, Contract.Authors.AUTHOR_NAME);
+        publisher = getPublisher(cursor, Contract.Publishers.PUBLISHER_NAME);
         imageFilePath = cursor.getString(cursor.getColumnIndex(Contract.Books.BOOK_IMAGE_FILE));
     }
 
@@ -45,12 +47,18 @@ public class Book {
         return index == -1 ? null : new Author(cursor);
     }
 
+    private static Publisher getPublisher(Cursor cursor, String columnName) {
+        int index = cursor.getColumnIndex(columnName);
+        return index == -1 ? null : new Publisher(cursor);
+    }
+
     private Book(Builder builder) {
         id = builder.id;
         title = builder.title;
         description = builder.description;
         isbn = builder.isbn;
         author = builder.author;
+        publisher = builder.publisher;
         imageFilePath = builder.imageFilePath;
     }
 
@@ -71,6 +79,7 @@ public class Book {
         private String description;
         private String isbn;
         private Author author;
+        private Publisher publisher;
         private String imageFilePath;
 
         public Builder setId(long id) {
@@ -95,6 +104,11 @@ public class Book {
 
         public Builder setAuthor(Author author) {
             this.author = author;
+            return this;
+        }
+
+        public Builder setPublisher(Publisher publisher) {
+            this.publisher = publisher;
             return this;
         }
 

@@ -16,6 +16,7 @@
 
     <!-- Edit/Input Book Screen -->
     <string name="edit_book_author">Autor</string>
+    <string name="edit_book_publisher">Publisher</string>
     <string name="edit_book_title">Názov Knihy</string>
     <string name="edit_book_isbn">ISBN</string>
     <string name="edit_book_change_cover">Zmeniť</string>

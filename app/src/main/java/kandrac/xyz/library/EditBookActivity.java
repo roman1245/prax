@@ -46,6 +46,7 @@ import kandrac.xyz.library.databinding.BookInputBinding;
 import kandrac.xyz.library.model.Contract;
 import kandrac.xyz.library.model.obj.Author;
 import kandrac.xyz.library.model.obj.Book;
+import kandrac.xyz.library.model.obj.Publisher;
 import kandrac.xyz.library.utils.DisplayUtils;
 
 /**
@@ -72,6 +73,9 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
     @Bind(R.id.book_input_author)
     AutoCompleteTextView mAuthorEdit;
+
+    @Bind(R.id.book_input_publisher)
+    AutoCompleteTextView mPublisherEdit;
 
     @Bind(R.id.book_input_title)
     EditText mTitleEdit;
@@ -113,7 +117,11 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
             }
         }
 
-        // fill autocomplete for author
+        setAuthorAdapter();
+        setPublisherAdapter();
+    }
+
+    private void setAuthorAdapter() {
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(
                 this,
                 android.R.layout.simple_list_item_1,
@@ -125,13 +133,37 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
         adapter.setFilterQueryProvider(new FilterQueryProvider() {
             public Cursor runQuery(CharSequence str) {
-                return getCursor(str);
+                return getAuthorCursor(str);
             }
         });
 
         adapter.setCursorToStringConverter(new SimpleCursorAdapter.CursorToStringConverter() {
             public CharSequence convertToString(Cursor cur) {
                 int index = cur.getColumnIndex(Contract.Authors.AUTHOR_NAME);
+                return cur.getString(index);
+            }
+        });
+    }
+
+    private void setPublisherAdapter() {
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(
+                this,
+                android.R.layout.simple_list_item_1,
+                null,
+                new String[]{Contract.Publishers.PUBLISHER_NAME},
+                new int[]{android.R.id.text1},
+                0);
+        mPublisherEdit.setAdapter(adapter);
+
+        adapter.setFilterQueryProvider(new FilterQueryProvider() {
+            public Cursor runQuery(CharSequence str) {
+                return getPublisherCursor(str);
+            }
+        });
+
+        adapter.setCursorToStringConverter(new SimpleCursorAdapter.CursorToStringConverter() {
+            public CharSequence convertToString(Cursor cur) {
+                int index = cur.getColumnIndex(Contract.Publishers.PUBLISHER_NAME);
                 return cur.getString(index);
             }
         });
@@ -187,18 +219,32 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     // Storing result synchronously
     private void save() {
 
+        // insert author
         Author author = new Author.Builder()
                 .setName(mAuthorEdit.getText().toString())
                 .build();
 
-        // insert author
-        Uri uri = getContentResolver().insert(
+        Uri authorUri = getContentResolver().insert(
                 Contract.Authors.CONTENT_URI,
                 author.getContentValues());
 
-        author.id = Long.parseLong(Contract.Authors.getAuthorId(uri));
+        author.id = Long.parseLong(Contract.Authors.getAuthorId(authorUri));
+
+        // insert publisher
+        Publisher publisher = new Publisher.Builder()
+                .setName(mPublisherEdit.getText().toString())
+                .build();
+
+        Uri publisherUri = getContentResolver().insert(
+                Contract.Publishers.CONTENT_URI,
+                publisher.getContentValues());
+
+        publisher.id = Long.parseLong(Contract.Publishers.getPublisherId(publisherUri));
+
+        // insert book
         Book book = new Book.Builder()
                 .setAuthor(author)
+                .setPublisher(publisher)
                 .setTitle(mTitleEdit.getText().toString())
                 .setIsbn(mIsbnEdit.getText().toString())
                 .setImageFilePath(imageFileName)
@@ -412,11 +458,19 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
     }
 
-    public Cursor getCursor(CharSequence str) {
+    public Cursor getAuthorCursor(CharSequence str) {
         String select = Contract.Authors.AUTHOR_NAME + " LIKE ? ";
         String[] selectArgs = {"%" + str + "%"};
         String[] contactsProjection = new String[]{BaseColumns._ID, Contract.Authors.AUTHOR_NAME};
 
         return getContentResolver().query(Contract.Authors.CONTENT_URI, contactsProjection, select, selectArgs, null);
+    }
+
+    public Cursor getPublisherCursor(CharSequence str) {
+        String select = Contract.Publishers.PUBLISHER_NAME + " LIKE ? ";
+        String[] selectArgs = {"%" + str + "%"};
+        String[] contactsProjection = new String[]{BaseColumns._ID, Contract.Publishers.PUBLISHER_NAME};
+
+        return getContentResolver().query(Contract.Publishers.CONTENT_URI, contactsProjection, select, selectArgs, null);
     }
 }
