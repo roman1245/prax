@@ -1,6 +1,7 @@
 package kandrac.xyz.library;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -123,9 +124,9 @@ public class PublisherListFragment extends Fragment implements LoaderManager.Loa
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    Intent intent = new Intent(getContext(), AuthorDetailActivity.class);
-//                    intent.putExtra(AuthorDetailActivity.EXTRA_AUTHOR_ID, author.id);
-//                    startActivity(intent);
+                    Intent intent = new Intent(getContext(), PublisherDetailActivity.class);
+                    intent.putExtra(PublisherDetailActivity.EXTRA_PUBLISHER_ID, publisher.id);
+                    startActivity(intent);
                 }
             });
         }
