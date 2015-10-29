@@ -54,4 +54,22 @@
         bulk inserting, backup functionality and some more.\n\n
 
         Hope You are the one that finds this application useful.</string>
+
+    <string-array name="book_types">
+        <item>Book Format</item>
+        <item>Hardcover</item>
+        <item>Paperback</item>
+    </string-array>
+
+    <string-array name="book_genres">
+        <item>Sci-fi</item>
+        <item>Blah</item>
+        <item>Blah Blah</item>
+    </string-array>
+
+    <integer-array name="book_types_values">
+        <item>-1</item>
+        <item>1</item>
+        <item>2</item>
+    </integer-array>
 </resources>
