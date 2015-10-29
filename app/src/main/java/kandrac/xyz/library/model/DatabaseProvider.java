@@ -8,8 +8,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 
 /**
  * Content provider for all database items.
@@ -17,6 +19,7 @@ import android.text.TextUtils;
  */
 public class DatabaseProvider extends ContentProvider {
 
+    private static final String TAG = DatabaseProvider.class.getName();
     private Database databaseHelper;
 
     private static final UriMatcher uriMatcher = buildUriMatcher();
@@ -145,18 +148,70 @@ public class DatabaseProvider extends ContentProvider {
                 return Contract.Books.buildBookUri(result);
             }
             case AUTHORS: {
-                long result = db.insertOrThrow(Database.Tables.AUTHORS, null, values);
+                long result = insertOrIgnore(db, values, Database.Tables.AUTHORS, Contract.Authors.AUTHOR_NAME);
                 getContext().getContentResolver().notifyChange(uri, null);
                 return Contract.Authors.buildAuthorUri(result);
             }
             case PUBLISHERS: {
-                long result = db.insertOrThrow(Database.Tables.PUBLISHERS, null, values);
+                long result = insertOrIgnore(db, values, Database.Tables.PUBLISHERS, Contract.Publishers.PUBLISHER_NAME);
                 getContext().getContentResolver().notifyChange(uri, null);
                 return Contract.Publishers.buildPublisherUri(result);
             }
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
+    }
+
+    /**
+     * Insert or ignore {@link ContentValues} to database. While inserting you are able to know any
+     * unique column value except of {@link BaseColumns#_ID}, therefor we are updating based on
+     * {@code uniqueColumn} name. In this case updating is completely ignored, but select request is required
+     * in order to get the missing BaseColumns._ID value.
+     *
+     * @param db           database to insert to
+     * @param values       values to insert
+     * @param table        table to insert to
+     * @param uniqueColumn unique column name
+     * @return _id column value
+     */
+    private long insertOrIgnore(SQLiteDatabase db, ContentValues values, String table, String uniqueColumn) {
+        long id = db.insert(table, null, values);
+        return (id == -1) ? selectId(db, values, table, uniqueColumn) : id;
+    }
+
+    /**
+     * Insert or update {@link ContentValues} to database. While inserting you are able to know any
+     * unique column value except of {@link BaseColumns#_ID}, therefor we are updating based on
+     * {@code uniqueColumn} name.
+     *
+     * @param db           database to insert to
+     * @param values       values to insert
+     * @param table        table to insert to
+     * @param uniqueColumn unique column name
+     * @return _id column value
+     */
+    private long insertOrUpdate(SQLiteDatabase db, ContentValues values, String table, String uniqueColumn) {
+        long id = db.insert(table, null, values);
+        if (id == -1) {
+            id = selectId(db, values, table, uniqueColumn);
+            db.update(table, values, uniqueColumn + " = ?", new String[]{values.getAsString(uniqueColumn)});
+        }
+        return id;
+    }
+
+    /**
+     * Select {@link BaseColumns#_ID} from given table based on other {@code uniqueColumn}
+     *
+     * @param db           database to insert to
+     * @param values       values to insert
+     * @param table        table to insert to
+     * @param uniqueColumn unique column name
+     * @return _id column value
+     */
+    private long selectId(SQLiteDatabase db, ContentValues values, String table, String uniqueColumn) {
+        String selectStatement = "SELECT " + BaseColumns._ID + " FROM " + table + " WHERE " + uniqueColumn + " = '" + values.getAsString(uniqueColumn) + "'";
+        Log.d(TAG, "Select: " + selectStatement);
+        return db.compileStatement(selectStatement).simpleQueryForLong();
     }
 
     @Override
