@@ -12,12 +12,20 @@ android {
         versionCode 5
         versionName "0.1.4"
     }
+
     buildTypes {
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+
+        debug {
+            buildConfigField 'String','BOOKS_API_KEY','"AIzaSyCJJ0MF8D795z4RyA-Q5FRRJnn5bf1hVw0"'
+            buildConfigField 'String','BOOKS_API_URL','"https://www.googleapis.com"'
+        }
     }
+
     lintOptions {
         disable 'InvalidPackage'
     }
@@ -37,4 +45,6 @@ dependencies {
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.google.android.gms:play-services:8.1.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.squareup.retrofit:retrofit:2.0.0-beta2'
+    compile 'com.squareup.retrofit:converter-gson:2.0.0-beta2'
 }
