@@ -47,12 +47,17 @@ import kandrac.xyz.library.model.Contract;
 import kandrac.xyz.library.model.obj.Author;
 import kandrac.xyz.library.model.obj.Book;
 import kandrac.xyz.library.model.obj.Publisher;
+import kandrac.xyz.library.net.BookResponse;
+import kandrac.xyz.library.net.OkHttpConfigurator;
 import kandrac.xyz.library.utils.DisplayUtils;
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 /**
  * Created by VizGhar on 11.10.2015.
  */
-public class EditBookActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class EditBookActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, Callback<BookResponse> {
 
     public static final String EXTRA_BOOK_ID = "book_id_extra";
     private static final String TAG = EditBookActivity.class.getName();
@@ -178,6 +183,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                     if (data != null) {
                         Barcode barcode = data.getParcelableExtra(BarcodeActivity.BARCODE_OBJECT);
                         mIsbnEdit.setText(barcode.displayValue);
+                        OkHttpConfigurator.getInstance().getApi().getBooksByIsbn(barcode.displayValue).enqueue(this);
                     }
                 }
                 break;
@@ -472,5 +478,25 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         String[] contactsProjection = new String[]{BaseColumns._ID, Contract.Publishers.PUBLISHER_NAME};
 
         return getContentResolver().query(Contract.Publishers.CONTENT_URI, contactsProjection, select, selectArgs, null);
+    }
+
+    @Override
+    public void onResponse(Response<BookResponse> response, Retrofit retrofit) {
+        if (response.isSuccess()) {
+            Log.d("jano", "success");
+            BookResponse s = response.body();
+            if (s.totalItems > 0) {
+                for (BookResponse.Book book : s.books) {
+                    Log.d("jano", book.toString());
+                }
+            }
+        } else {
+            Log.d("jano", "error");
+        }
+    }
+
+    @Override
+    public void onFailure(Throwable t) {
+
     }
 }

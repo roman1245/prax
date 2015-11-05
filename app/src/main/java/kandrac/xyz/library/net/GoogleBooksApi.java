@@ -15,5 +15,5 @@ public interface GoogleBooksApi {
      * @return
      */
     @GET("/books/v1/volumes")
-    Call<Object> getBooksByIsbn(@Query("q") String isbn);
+    Call<BookResponse> getBooksByIsbn(@Query("q") String isbn);
 }
