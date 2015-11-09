@@ -14,9 +14,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import kandrac.xyz.library.views.CloseDrawerCallback;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -67,6 +69,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .beginTransaction()
                 .add(R.id.fragment_container, mShownFragment)
                 .commit();
+
+        drawerLayout.setDrawerListener(new CloseDrawerCallback() {
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                if (searchView != null) {
+                    searchView.clearFocus();
+                }
+            }
+        });
     }
 
     @Override
