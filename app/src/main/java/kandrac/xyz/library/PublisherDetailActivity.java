@@ -15,18 +15,18 @@ import android.widget.ImageView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import kandrac.xyz.library.databinding.AuthorDetailBinding;
+import kandrac.xyz.library.databinding.PublisherDetailBinding;
 import kandrac.xyz.library.model.Contract;
-import kandrac.xyz.library.model.obj.Author;
+import kandrac.xyz.library.model.obj.Publisher;
 
 /**
  * Created by VizGhar on 25.10.2015.
  */
-public class AuthorDetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class PublisherDetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    public static final String EXTRA_AUTHOR_ID = "author_id_extra";
-    private long mAuthorId;
-    private AuthorDetailBinding binding;
+    public static final String EXTRA_PUBLISHER_ID = "publisher_id_extra";
+    private long mPublisherId;
+    private PublisherDetailBinding binding;
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -41,7 +41,7 @@ public class AuthorDetailActivity extends AppCompatActivity implements LoaderMan
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = DataBindingUtil.setContentView(this, R.layout.author_detail);
+        binding = DataBindingUtil.setContentView(this, R.layout.publisher_detail);
 
         ButterKnife.bind(this);
 
@@ -54,21 +54,21 @@ public class AuthorDetailActivity extends AppCompatActivity implements LoaderMan
             ab.setDisplayShowHomeEnabled(true);
         }
 
-        mAuthorId = getIntent().getExtras().getLong(EXTRA_AUTHOR_ID);
+        mPublisherId = getIntent().getExtras().getLong(EXTRA_PUBLISHER_ID);
         getSupportLoaderManager().initLoader(1, null, this);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(this, Contract.Authors.buildAuthorUri(mAuthorId), null, null, null, null);
+        return new CursorLoader(this, Contract.Publishers.buildPublisherUri(mPublisherId), null, null, null, null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data.getCount() == 1) {
-            Author author = new Author(data);
-            binding.setAuthor(author);
-            collapsingToolbarLayout.setTitle(author.name);
+            Publisher publisher = new Publisher(data);
+            binding.setPublisher(publisher);
+            collapsingToolbarLayout.setTitle(publisher.name);
         }
     }
 
