@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private MenuItem lastChecked;
     private Fragment mShownFragment;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,12 +88,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Associate searchable configuration with the SearchView
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         MenuItem searchMenuItem = menu.findItem(R.id.search);
-        SearchView searchView = (SearchView) searchMenuItem.getActionView();
+        searchView = (SearchView) searchMenuItem.getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                searchView.clearFocus();
                 return false;
             }
 
@@ -111,8 +113,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(navigation)) {
+            // close drawer first (do not give focus to search)
             drawerLayout.closeDrawers();
+        } else if (!searchView.isIconified()) {
+            // close search second
+            searchView.setIconified(true);
+            if (!searchView.isIconified()) {
+                // first iconify
+                searchView.setIconified(true);
+            }
         } else {
+            // take standard action otherwise
             super.onBackPressed();
         }
     }
