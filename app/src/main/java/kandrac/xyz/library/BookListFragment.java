@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -28,7 +27,7 @@ import kandrac.xyz.library.utils.DisplayUtils;
 /**
  * Created by kandrac on 20/10/15.
  */
-public class BookListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, Searchable {
+public class BookListFragment extends SubtitledFragment implements LoaderManager.LoaderCallbacks<Cursor>, Searchable {
 
     @Bind(R.id.list)
     RecyclerView list;
@@ -104,6 +103,11 @@ public class BookListFragment extends Fragment implements LoaderManager.LoaderCa
         searchQuery = query;
         getActivity().getSupportLoaderManager().restartLoader(MainActivity.BOOK_LIST_LOADER, null, this);
         return true;
+    }
+
+    @Override
+    public int getTitle() {
+        return R.string.menu_books_mine;
     }
 
 

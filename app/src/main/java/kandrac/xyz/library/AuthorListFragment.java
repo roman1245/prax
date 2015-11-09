@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -25,7 +24,7 @@ import kandrac.xyz.library.model.obj.Author;
 /**
  * Created by kandrac on 22/10/15.
  */
-public class AuthorListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, Searchable {
+public class AuthorListFragment extends SubtitledFragment implements LoaderManager.LoaderCallbacks<Cursor>, Searchable {
 
     AuthorCursorAdapter adapter;
 
@@ -91,6 +90,11 @@ public class AuthorListFragment extends Fragment implements LoaderManager.Loader
         searchQuery = query;
         getActivity().getSupportLoaderManager().restartLoader(MainActivity.AUTHOR_LIST_LOADER, null, this);
         return true;
+    }
+
+    @Override
+    public int getTitle() {
+        return R.string.menu_authors;
     }
 
     private class AuthorCursorAdapter extends RecyclerView.Adapter<AuthorCursorAdapter.BindingHolder> {

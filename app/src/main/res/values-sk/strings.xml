@@ -35,7 +35,7 @@
     <string name="menu_books_mine">Moje knihy</string>
     <string name="menu_books_borrowed">Požičané knihy</string>
     <string name="menu_authors">Autori</string>
-    <string name="menu_authors_publishers">Vydavatelia</string>
+    <string name="menu_publishers">Vydavatelia</string>
     <string name="menu_settings">Nastavenia</string>
     <string name="menu_settings_about">O Aplikácii</string>
     <string name="menu_books_wish_list">Wishlist</string>

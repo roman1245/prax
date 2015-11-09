@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private MenuItem lastChecked;
     private Fragment mShownFragment;
     private SearchView searchView;
+    private ActionBar mActionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +48,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // Action Bar settings
         setSupportActionBar(toolbar);
-        final ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
-            actionBar.setDisplayHomeAsUpEnabled(true);
+        mActionBar = getSupportActionBar();
+        if (mActionBar != null) {
+            mActionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
+            mActionBar.setDisplayHomeAsUpEnabled(true);
+            mActionBar.setTitle(R.string.menu_books_mine);
         }
 
         // Navigation View settings
@@ -141,6 +143,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
+
+        //
         if (lastChecked == menuItem) {
             drawerLayout.closeDrawers();
             return true;
@@ -148,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         int id = menuItem.getItemId();
 
-        Fragment fragmentToShow;
+        SubtitledFragment fragmentToShow;
         switch (id) {
             case R.id.main_navigation_about:
                 drawerLayout.closeDrawers();
@@ -179,6 +183,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         lastChecked.setChecked(false);
         menuItem.setChecked(true);
         lastChecked = menuItem;
+
+        if (mActionBar != null) {
+            mActionBar.setTitle(fragmentToShow.getTitle());
+        }
+
         return true;
     }
 }

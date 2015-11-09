@@ -41,7 +41,7 @@
                 <item
                     android:id="@+id/main_navigation_publishers"
                     android:icon="@drawable/ic_tie"
-                    android:title="@string/menu_authors_publishers" />
+                    android:title="@string/menu_publishers" />
             </menu>
         </item>
 

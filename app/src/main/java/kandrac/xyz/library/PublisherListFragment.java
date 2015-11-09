@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -25,7 +24,7 @@ import kandrac.xyz.library.model.obj.Publisher;
 /**
  * Created by kandrac on 22/10/15.
  */
-public class PublisherListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, Searchable {
+public class PublisherListFragment extends SubtitledFragment implements LoaderManager.LoaderCallbacks<Cursor>, Searchable {
 
     PublishCursorAdapter adapter;
 
@@ -91,6 +90,11 @@ public class PublisherListFragment extends Fragment implements LoaderManager.Loa
         searchQuery = query;
         getActivity().getSupportLoaderManager().restartLoader(MainActivity.PUBLISHER_LIST_LOADER, null, this);
         return true;
+    }
+
+    @Override
+    public int getTitle() {
+        return R.string.menu_publishers;
     }
 
     private class PublishCursorAdapter extends RecyclerView.Adapter<PublishCursorAdapter.BindingHolder> {
