@@ -49,6 +49,7 @@ import kandrac.xyz.library.model.obj.Author;
 import kandrac.xyz.library.model.obj.Book;
 import kandrac.xyz.library.model.obj.Publisher;
 import kandrac.xyz.library.net.BookResponse;
+import kandrac.xyz.library.net.GoogleBooksUtils;
 import kandrac.xyz.library.net.OkHttpConfigurator;
 import kandrac.xyz.library.utils.DisplayUtils;
 import retrofit.Callback;
@@ -188,7 +189,13 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                     if (data != null) {
                         Barcode barcode = data.getParcelableExtra(BarcodeActivity.BARCODE_OBJECT);
                         mIsbnEdit.setText(barcode.displayValue);
-                        OkHttpConfigurator.getInstance().getApi().getBooksByIsbn(barcode.displayValue).enqueue(this);
+                        String searchQuery = GoogleBooksUtils.getSearchQuery(GoogleBooksUtils.QUERY_ISBN, barcode.displayValue);
+
+                        OkHttpConfigurator
+                                .getInstance()
+                                .getApi()
+                                .getBooksByQuery(searchQuery)
+                                .enqueue(this);
                     }
                 }
                 break;
@@ -499,8 +506,10 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                         mDescritpion.setText(book.volumeInfo.description);
                         mAuthorEdit.setText(book.volumeInfo.authors[0]);
 
-                        imageUrl = book.volumeInfo.imageLinks.thumbnail;
-                        Picasso.with(this).load(imageUrl).into(mImageEdit);
+                        if (book.volumeInfo.imageLinks != null) {
+                            imageUrl = book.volumeInfo.imageLinks.thumbnail;
+                            Picasso.with(this).load(imageUrl).into(mImageEdit);
+                        }
                     }
                 }
             }
