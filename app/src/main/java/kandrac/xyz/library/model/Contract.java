@@ -21,6 +21,7 @@ public class Contract {
         String BOOK_IMAGE_FILE = "book_image_file";
         String BOOK_AUTHOR_ID = "book_author_id";
         String BOOK_PUBLISHER_ID = "book_publisher_id";
+        String BOOK_IMAGE_URL = "book_image_url";
     }
 
     interface AuthorsColumns {

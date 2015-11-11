@@ -18,6 +18,7 @@ public class Book {
     public final Author author;
     public final Publisher publisher;
     public final String imageFilePath;
+    public final String imageUrlPath;
 
     public Book(Cursor cursor) {
         if (cursor.getPosition() < 0) {
@@ -29,7 +30,8 @@ public class Book {
         isbn = getString(cursor, Contract.Books.BOOK_ISBN);
         author = getAuthor(cursor, Contract.Authors.AUTHOR_NAME);
         publisher = getPublisher(cursor, Contract.Publishers.PUBLISHER_NAME);
-        imageFilePath = cursor.getString(cursor.getColumnIndex(Contract.Books.BOOK_IMAGE_FILE));
+        imageFilePath = getString(cursor, Contract.Books.BOOK_IMAGE_FILE);
+        imageUrlPath = getString(cursor, Contract.Books.BOOK_IMAGE_URL);
     }
 
     private static int getInt(Cursor cursor, String columnName) {
@@ -60,6 +62,7 @@ public class Book {
         author = builder.author;
         publisher = builder.publisher;
         imageFilePath = builder.imageFilePath;
+        imageUrlPath = builder.imageUrlPath;
     }
 
     public ContentValues getContentValues() {
@@ -69,6 +72,7 @@ public class Book {
         contentValues.put(Contract.Books.BOOK_ISBN, isbn);
         contentValues.put(Contract.Books.BOOK_AUTHOR_ID, author.id);
         contentValues.put(Contract.Books.BOOK_IMAGE_FILE, imageFilePath);
+        contentValues.put(Contract.Books.BOOK_IMAGE_URL, imageUrlPath);
         return contentValues;
     }
 
@@ -81,6 +85,7 @@ public class Book {
         private Author author;
         private Publisher publisher;
         private String imageFilePath;
+        private String imageUrlPath;
 
         public Builder setId(long id) {
             this.id = id;
@@ -114,6 +119,11 @@ public class Book {
 
         public Builder setImageFilePath(String filePath) {
             this.imageFilePath = filePath;
+            return this;
+        }
+
+        public Builder setImageUrlPath(String url) {
+            this.imageUrlPath = url;
             return this;
         }
 
