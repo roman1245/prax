@@ -33,6 +33,7 @@ import android.widget.ImageView;
 
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.barcode.Barcode;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
@@ -94,7 +95,11 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     @Bind(R.id.book_input_cover)
     Button mCoverButton;
 
+    @Bind(R.id.book_input_description_edit)
+    EditText mDescritpion;
+
     String imageFileName;
+    String imageUrl;
 
     // Basic Activity Tasks
     @Override
@@ -254,6 +259,8 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 .setTitle(mTitleEdit.getText().toString())
                 .setIsbn(mIsbnEdit.getText().toString())
                 .setImageFilePath(imageFileName)
+                .setDescription(mDescritpion.getText().toString())
+                .setImageUrlPath(imageUrl)
                 .build();
 
         if (mBookId != null && mBookId > 0) {
@@ -483,11 +490,18 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     @Override
     public void onResponse(Response<BookResponse> response, Retrofit retrofit) {
         if (response.isSuccess()) {
-            Log.d("jano", "success");
             BookResponse s = response.body();
             if (s.totalItems > 0) {
                 for (BookResponse.Book book : s.books) {
-                    Log.d("jano", book.toString());
+                    if (book.volumeInfo != null) {
+                        mPublisherEdit.setText(book.volumeInfo.publisher);
+                        mTitleEdit.setText(book.volumeInfo.title);
+                        mDescritpion.setText(book.volumeInfo.description);
+                        mAuthorEdit.setText(book.volumeInfo.authors[0]);
+
+                        imageUrl = book.volumeInfo.imageLinks.thumbnail;
+                        Picasso.with(this).load(imageUrl).into(mImageEdit);
+                    }
                 }
             }
         } else {
