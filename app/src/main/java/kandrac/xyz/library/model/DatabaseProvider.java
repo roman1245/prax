@@ -162,6 +162,34 @@ public class DatabaseProvider extends ContentProvider {
                 getContext().getContentResolver().notifyChange(uri, null);
                 return Contract.Authors.buildAuthorUri(result);
             }
+            case AUTHOR_BY_BOOK: {
+                String bookId = Contract.Books.getBookId(uri);
+
+                // insert author
+                long result = insertOrIgnore(db, values, Database.Tables.AUTHORS, Contract.Authors.AUTHOR_NAME);
+
+                // insert author book connection
+                ContentValues cv = Contract.BookAuthors.generateContentValues(Long.parseLong(bookId), result);
+
+                db.insert(Database.Tables.BOOKS_AUTHORS, null, cv);
+
+                getContext().getContentResolver().notifyChange(uri, null);
+                return Contract.Authors.buildAuthorUri(result);
+            }
+            case BOOK_BY_AUTHOR: {
+                String authorId = Contract.Authors.getAuthorId(uri);
+
+                // insert author
+                long result = insertOrIgnore(db, values, Database.Tables.AUTHORS, Contract.Authors.AUTHOR_NAME);
+
+                // insert author book connection
+                ContentValues cv = Contract.BookAuthors.generateContentValues(result, Long.parseLong(authorId));
+
+                db.insert(Database.Tables.BOOKS_AUTHORS, null, cv);
+
+                getContext().getContentResolver().notifyChange(uri, null);
+                return Contract.Authors.buildAuthorUri(result);
+            }
             case PUBLISHERS: {
                 long result = insertOrIgnore(db, values, Database.Tables.PUBLISHERS, Contract.Publishers.PUBLISHER_NAME);
                 getContext().getContentResolver().notifyChange(uri, null);

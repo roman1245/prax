@@ -1,5 +1,6 @@
 package kandrac.xyz.library.model;
 
+import android.content.ContentValues;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -165,6 +166,16 @@ public class Contract {
          */
         public static String getPublisherId(Uri uri) {
             return uri.getPathSegments().get(1);
+        }
+    }
+
+    public static class BookAuthors implements BookAuthorsColumns {
+
+        public static ContentValues generateContentValues(long bookId, long authorId) {
+            ContentValues cv = new ContentValues();
+            cv.put(BOOK_ID, bookId);
+            cv.put(AUTHOR_ID, authorId);
+            return cv;
         }
     }
 }

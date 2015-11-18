@@ -117,6 +117,15 @@ public class Book {
             return this;
         }
 
+        public Builder setPublisher(long publisherId) {
+            if (publisher != null) {
+                publisher.id = publisherId;
+            } else {
+                publisher = new Publisher.Builder().setId(publisherId).build();
+            }
+            return this;
+        }
+
         public Builder setImageFilePath(String filePath) {
             this.imageFilePath = filePath;
             return this;

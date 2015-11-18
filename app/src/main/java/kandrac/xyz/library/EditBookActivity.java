@@ -237,32 +237,16 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     // Storing result synchronously
     private void save() {
 
-        // insert author
-        Author author = new Author.Builder()
-                .setName(mAuthorEdit.getText().toString())
-                .build();
-
-        Uri authorUri = getContentResolver().insert(
-                Contract.Authors.CONTENT_URI,
-                author.getContentValues());
-
-        author.id = Long.parseLong(Contract.Authors.getAuthorId(authorUri));
-
-        // insert publisher
+        // Store publisher first (no dependencies to other tables)
         Publisher publisher = new Publisher.Builder()
                 .setName(mPublisherEdit.getText().toString())
                 .build();
 
-        Uri publisherUri = getContentResolver().insert(
-                Contract.Publishers.CONTENT_URI,
-                publisher.getContentValues());
+        long publisherId = savePublisher(publisher);
 
-        publisher.id = Long.parseLong(Contract.Publishers.getPublisherId(publisherUri));
-
-        // insert book
+        // Store / update book second
         Book book = new Book.Builder()
-                .setAuthor(author)
-                .setPublisher(publisher)
+                .setPublisher(publisherId)
                 .setTitle(mTitleEdit.getText().toString())
                 .setIsbn(mIsbnEdit.getText().toString())
                 .setImageFilePath(imageFileName)
@@ -270,23 +254,62 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 .setImageUrlPath(imageUrl)
                 .build();
 
+        long bookId = saveBook(book);
+
+        Author author = new Author.Builder()
+                .setName(mAuthorEdit.getText().toString())
+                .build();
+
+        // Store author connected to this book
+        saveAuthor(author, bookId);
+
+        finish();
+    }
+
+    /**
+     * Store author into database
+     *
+     * @return id
+     */
+    private long saveAuthor(Author author, long bookId) {
+        Uri authorUri = getContentResolver().insert(
+                Contract.Books.buildBookWithAuthorUri(bookId),
+                author.getContentValues());
+
+        return Long.parseLong(Contract.Authors.getAuthorId(authorUri));
+    }
+
+    /**
+     * Store author into database
+     *
+     * @return id
+     */
+    private long savePublisher(Publisher publisher) {
+        Uri publisherUri = getContentResolver().insert(
+                Contract.Publishers.CONTENT_URI,
+                publisher.getContentValues());
+
+        return Long.parseLong(Contract.Publishers.getPublisherId(publisherUri));
+    }
+
+    private long saveBook(Book book) {
         if (mBookId != null && mBookId > 0) {
             // edit book
             getContentResolver().update(
                     Contract.Books.CONTENT_URI,
                     book.getContentValues(), Contract.Books.BOOK_ID + " = ?",
                     new String[]{Long.toString(mBookId)});
+            return mBookId;
         } else {
             // insert book
-            getContentResolver().insert(
+            Uri bookUri = getContentResolver().insert(
                     Contract.Books.CONTENT_URI,
                     book.getContentValues());
+            return Long.parseLong(Contract.Books.getBookId(bookUri));
         }
-
-        finish();
     }
 
-    // Open Camera for taking image of Book Cover
+    // Open Camevra for taking image of Book Cover
     @OnClick(R.id.book_input_cover)
     public void takePhoto(View view) {
         int cameraPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
