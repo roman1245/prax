@@ -35,6 +35,7 @@ public class Database extends SQLiteOpenHelper {
             "CREATE TABLE " + Tables.BOOKS + " (" +
                     Contract.Books.BOOK_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     Contract.Books.BOOK_TITLE + " TEXT NOT NULL," +
+                    Contract.Books.BOOK_SUBTITLE + " TEXT," +
                     Contract.Books.BOOK_DESCRIPTION + " TEXT," +
                     Contract.Books.BOOK_ISBN + " TEXT," +
                     Contract.Books.BOOK_IMAGE_FILE + " TEXT," +
