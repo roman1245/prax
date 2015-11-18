@@ -19,7 +19,6 @@ public class Contract {
         String BOOK_ISBN = "book_isbn";
         String BOOK_DESCRIPTION = "book_description";
         String BOOK_IMAGE_FILE = "book_image_file";
-        String BOOK_AUTHOR_ID = "book_author_id";
         String BOOK_PUBLISHER_ID = "book_publisher_id";
         String BOOK_IMAGE_URL = "book_image_url";
     }
@@ -32,6 +31,11 @@ public class Contract {
     interface PublishersColumns {
         String PUBLISHER_ID = BaseColumns._ID;
         String PUBLISHER_NAME = "publisher_name";
+    }
+
+    interface BookAuthorsColumns {
+        String BOOK_ID = "book_id";
+        String AUTHOR_ID = "author_id";
     }
 
     // URI Paths

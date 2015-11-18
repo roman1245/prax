@@ -70,7 +70,7 @@ public class Book {
         contentValues.put(Contract.Books.BOOK_TITLE, title);
         contentValues.put(Contract.Books.BOOK_DESCRIPTION, description);
         contentValues.put(Contract.Books.BOOK_ISBN, isbn);
-        contentValues.put(Contract.Books.BOOK_AUTHOR_ID, author.id);
+//        contentValues.put(Contract.Books.BOOK_AUTHOR_ID, author.id);
         contentValues.put(Contract.Books.BOOK_IMAGE_FILE, imageFilePath);
         contentValues.put(Contract.Books.BOOK_IMAGE_URL, imageUrlPath);
         return contentValues;

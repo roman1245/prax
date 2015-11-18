@@ -24,13 +24,19 @@ public class DatabaseProvider extends ContentProvider {
 
     private static final UriMatcher uriMatcher = buildUriMatcher();
 
+    // Everything from books (SELECT, INSERT, UPDATE, DELETE)
     public static final int BOOKS = 100;
+    // Book by ID (SELECT, UPDATE, DELETE)
     public static final int BOOK_ID = 101;
-    public static final int BOOK_ID_AUTHOR = 102;
+    // Books by author id (SELECT)
+    public static final int BOOK_BY_AUTHOR = 102;
 
+    // Everything from authors (SELECT, INSERT, UPDATE, DELETE)
     public static final int AUTHORS = 200;
+    // Author by id (SELECT, UPDATE, DELETE)
     public static final int AUTHOR_ID = 201;
-    public static final int AUTHOR_BOOKS = 202;
+    // Authors of book (SELECT)
+    public static final int AUTHOR_BY_BOOK = 202;
 
     public static final int PUBLISHERS = 300;
     public static final int PUBLISHER_ID = 301;
@@ -43,10 +49,10 @@ public class DatabaseProvider extends ContentProvider {
 
         uriMatcher.addURI(authority, "books", BOOKS);
         uriMatcher.addURI(authority, "books/#", BOOK_ID);
-        uriMatcher.addURI(authority, "books/#/authors", BOOK_ID_AUTHOR);
+        uriMatcher.addURI(authority, "books/#/authors", AUTHOR_BY_BOOK);
         uriMatcher.addURI(authority, "authors", AUTHORS);
         uriMatcher.addURI(authority, "authors/#", AUTHOR_ID);
-        uriMatcher.addURI(authority, "authors/#/books", AUTHOR_BOOKS);
+        uriMatcher.addURI(authority, "authors/#/books", BOOK_BY_AUTHOR);
         uriMatcher.addURI(authority, "publishers", PUBLISHERS);
         uriMatcher.addURI(authority, "publishers/#", PUBLISHER_ID);
 
@@ -73,7 +79,7 @@ public class DatabaseProvider extends ContentProvider {
                 return Contract.Authors.CONTENT_TYPE;
             case AUTHOR_ID:
                 return Contract.Authors.CONTENT_ITEM_TYPE;
-            case AUTHOR_BOOKS:
+            case AUTHOR_BY_BOOK:
                 return Contract.Books.CONTENT_TYPE;
             case PUBLISHERS:
                 return Contract.Publishers.CONTENT_TYPE;
@@ -100,9 +106,9 @@ public class DatabaseProvider extends ContentProvider {
                 qb.setTables(Database.Tables.BOOKS);
                 qb.appendWhere(Contract.Books.BOOK_ID + "=" + Contract.Books.getBookId(uri));
                 break;
-            case BOOK_ID_AUTHOR:
-                qb.setTables(Database.Tables.BOOKS_JOIN_AUTHORS_ID);
-                qb.appendWhere(Database.Tables.BOOKS + "." + Contract.Books.BOOK_ID + "=" + Contract.Books.getBookId(uri));
+            case BOOK_BY_AUTHOR:
+                qb.setTables(Database.Tables.BOOKS_JOIN_AUTHORS);
+                qb.appendWhere(Database.Tables.AUTHORS + "." + Contract.Authors.AUTHOR_ID + "=" + Contract.Authors.getAuthorId(uri));
                 break;
             case AUTHORS:
                 qb.setTables(Database.Tables.AUTHORS);
@@ -111,6 +117,10 @@ public class DatabaseProvider extends ContentProvider {
             case AUTHOR_ID:
                 qb.setTables(Database.Tables.AUTHORS);
                 qb.appendWhere(Contract.Authors.AUTHOR_ID + "=" + Contract.Authors.getAuthorId(uri));
+                break;
+            case AUTHOR_BY_BOOK:
+                qb.setTables(Database.Tables.BOOKS_JOIN_AUTHORS);
+                qb.appendWhere(Database.Tables.BOOKS + "." + Contract.Books.BOOK_ID + "=" + Contract.Books.getBookId(uri));
                 break;
             case PUBLISHERS:
                 qb.setTables(Database.Tables.PUBLISHERS);
@@ -121,7 +131,7 @@ public class DatabaseProvider extends ContentProvider {
                 qb.appendWhere(Contract.Publishers.PUBLISHER_ID + "=" + Contract.Publishers.getPublisherId(uri));
                 break;
             case BOOKS_AUTHORS:
-                qb.setTables(Database.Tables.BOOKS_JOIN_AUTHORS_ID);
+                qb.setTables(Database.Tables.BOOKS_JOIN_AUTHORS);
                 sortOrder = sortOrder == null ? Contract.Books.DEFAULT_SORT : sortOrder;
                 break;
             default:
