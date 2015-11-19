@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 
 /**
  * Content provider for all database items.
@@ -19,18 +18,23 @@ import android.util.Log;
  */
 public class DatabaseProvider extends ContentProvider {
 
-    private static final String TAG = DatabaseProvider.class.getName();
     private Database databaseHelper;
 
     private static final UriMatcher uriMatcher = buildUriMatcher();
 
+    // Everything from books (SELECT, INSERT, UPDATE, DELETE)
     public static final int BOOKS = 100;
+    // Book by ID (SELECT, UPDATE, DELETE)
     public static final int BOOK_ID = 101;
-    public static final int BOOK_ID_AUTHOR = 102;
+    // Books by author id (SELECT)
+    public static final int BOOK_BY_AUTHOR = 102;
 
+    // Everything from authors (SELECT, INSERT, UPDATE, DELETE)
     public static final int AUTHORS = 200;
+    // Author by id (SELECT, UPDATE, DELETE)
     public static final int AUTHOR_ID = 201;
-    public static final int AUTHOR_BOOKS = 202;
+    // Authors of book (SELECT)
+    public static final int AUTHOR_BY_BOOK = 202;
 
     public static final int PUBLISHERS = 300;
     public static final int PUBLISHER_ID = 301;
@@ -43,10 +47,10 @@ public class DatabaseProvider extends ContentProvider {
 
         uriMatcher.addURI(authority, "books", BOOKS);
         uriMatcher.addURI(authority, "books/#", BOOK_ID);
-        uriMatcher.addURI(authority, "books/#/authors", BOOK_ID_AUTHOR);
+        uriMatcher.addURI(authority, "books/#/authors", AUTHOR_BY_BOOK);
         uriMatcher.addURI(authority, "authors", AUTHORS);
         uriMatcher.addURI(authority, "authors/#", AUTHOR_ID);
-        uriMatcher.addURI(authority, "authors/#/books", AUTHOR_BOOKS);
+        uriMatcher.addURI(authority, "authors/#/books", BOOK_BY_AUTHOR);
         uriMatcher.addURI(authority, "publishers", PUBLISHERS);
         uriMatcher.addURI(authority, "publishers/#", PUBLISHER_ID);
 
@@ -73,7 +77,7 @@ public class DatabaseProvider extends ContentProvider {
                 return Contract.Authors.CONTENT_TYPE;
             case AUTHOR_ID:
                 return Contract.Authors.CONTENT_ITEM_TYPE;
-            case AUTHOR_BOOKS:
+            case AUTHOR_BY_BOOK:
                 return Contract.Books.CONTENT_TYPE;
             case PUBLISHERS:
                 return Contract.Publishers.CONTENT_TYPE;
@@ -100,9 +104,9 @@ public class DatabaseProvider extends ContentProvider {
                 qb.setTables(Database.Tables.BOOKS);
                 qb.appendWhere(Contract.Books.BOOK_ID + "=" + Contract.Books.getBookId(uri));
                 break;
-            case BOOK_ID_AUTHOR:
-                qb.setTables(Database.Tables.BOOKS_JOIN_AUTHORS_ID);
-                qb.appendWhere(Database.Tables.BOOKS + "." + Contract.Books.BOOK_ID + "=" + Contract.Books.getBookId(uri));
+            case BOOK_BY_AUTHOR:
+                qb.setTables(Database.Tables.BOOKS_JOIN_AUTHORS);
+                qb.appendWhere(Database.Tables.AUTHORS + "." + Contract.Authors.AUTHOR_ID + "=" + Contract.Authors.getAuthorId(uri));
                 break;
             case AUTHORS:
                 qb.setTables(Database.Tables.AUTHORS);
@@ -111,6 +115,10 @@ public class DatabaseProvider extends ContentProvider {
             case AUTHOR_ID:
                 qb.setTables(Database.Tables.AUTHORS);
                 qb.appendWhere(Contract.Authors.AUTHOR_ID + "=" + Contract.Authors.getAuthorId(uri));
+                break;
+            case AUTHOR_BY_BOOK:
+                qb.setTables(Database.Tables.BOOKS_JOIN_AUTHORS);
+                qb.appendWhere(Database.Tables.BOOKS + "." + Contract.Books.BOOK_ID + "=" + Contract.Books.getBookId(uri));
                 break;
             case PUBLISHERS:
                 qb.setTables(Database.Tables.PUBLISHERS);
@@ -121,7 +129,7 @@ public class DatabaseProvider extends ContentProvider {
                 qb.appendWhere(Contract.Publishers.PUBLISHER_ID + "=" + Contract.Publishers.getPublisherId(uri));
                 break;
             case BOOKS_AUTHORS:
-                qb.setTables(Database.Tables.BOOKS_JOIN_AUTHORS_ID);
+                qb.setTables(Database.Tables.BOOKS_JOIN_AUTHORS);
                 sortOrder = sortOrder == null ? Contract.Books.DEFAULT_SORT : sortOrder;
                 break;
             default:
@@ -152,6 +160,34 @@ public class DatabaseProvider extends ContentProvider {
                 getContext().getContentResolver().notifyChange(uri, null);
                 return Contract.Authors.buildAuthorUri(result);
             }
+            case AUTHOR_BY_BOOK: {
+                String bookId = Contract.Books.getBookId(uri);
+
+                // insert author
+                long result = insertOrIgnore(db, values, Database.Tables.AUTHORS, Contract.Authors.AUTHOR_NAME);
+
+                // insert author book connection
+                ContentValues cv = Contract.BookAuthors.generateContentValues(Long.parseLong(bookId), result);
+
+                db.insert(Database.Tables.BOOKS_AUTHORS, null, cv);
+
+                getContext().getContentResolver().notifyChange(uri, null);
+                return Contract.Authors.buildAuthorUri(result);
+            }
+            case BOOK_BY_AUTHOR: {
+                String authorId = Contract.Authors.getAuthorId(uri);
+
+                // insert author
+                long result = insertOrIgnore(db, values, Database.Tables.AUTHORS, Contract.Authors.AUTHOR_NAME);
+
+                // insert author book connection
+                ContentValues cv = Contract.BookAuthors.generateContentValues(result, Long.parseLong(authorId));
+
+                db.insert(Database.Tables.BOOKS_AUTHORS, null, cv);
+
+                getContext().getContentResolver().notifyChange(uri, null);
+                return Contract.Authors.buildAuthorUri(result);
+            }
             case PUBLISHERS: {
                 long result = insertOrIgnore(db, values, Database.Tables.PUBLISHERS, Contract.Publishers.PUBLISHER_NAME);
                 getContext().getContentResolver().notifyChange(uri, null);
@@ -175,7 +211,7 @@ public class DatabaseProvider extends ContentProvider {
      * @return _id column value
      */
     private long insertOrIgnore(SQLiteDatabase db, ContentValues values, String table, String uniqueColumn) {
-        long id = db.insert(table, null, values);
+        long id = db.insertWithOnConflict(table, null, values, SQLiteDatabase.CONFLICT_IGNORE);
         return (id == -1) ? selectId(db, values, table, uniqueColumn) : id;
     }
 
@@ -210,7 +246,6 @@ public class DatabaseProvider extends ContentProvider {
      */
     private long selectId(SQLiteDatabase db, ContentValues values, String table, String uniqueColumn) {
         String selectStatement = "SELECT " + BaseColumns._ID + " FROM " + table + " WHERE " + uniqueColumn + " = '" + values.getAsString(uniqueColumn) + "'";
-        Log.d(TAG, "Select: " + selectStatement);
         return db.compileStatement(selectStatement).simpleQueryForLong();
     }
 
@@ -296,5 +331,52 @@ public class DatabaseProvider extends ContentProvider {
             context.getContentResolver().notifyChange(uri, null);
         }
         return count;
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    @Override
+    public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
+        int result = 0;
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+
+        switch (uriMatcher.match(uri)) {
+            case BOOKS: {
+                db.beginTransaction();
+                for (ContentValues contentValues: values) {
+                    db.insert(Database.Tables.BOOKS, null, contentValues);
+                    result++;
+                }
+                db.setTransactionSuccessful();
+                db.endTransaction();
+                getContext().getContentResolver().notifyChange(uri, null);
+                break;
+            }
+            case AUTHORS: {
+                db.beginTransaction();
+                for (ContentValues contentValues: values) {
+                    db.insert(Database.Tables.AUTHORS, null, contentValues);
+                    result++;
+                }
+                db.setTransactionSuccessful();
+                db.endTransaction();
+                getContext().getContentResolver().notifyChange(uri, null);
+                break;
+            }
+            case PUBLISHERS: {
+                db.beginTransaction();
+                for (ContentValues contentValues: values) {
+                    db.insert(Database.Tables.PUBLISHERS, null, contentValues);
+                    result++;
+                }
+                db.setTransactionSuccessful();
+                db.endTransaction();
+                getContext().getContentResolver().notifyChange(uri, null);
+                break;
+            }
+            default:
+                throw new IllegalArgumentException("Unknown URI " + uri);
+        }
+
+        return result;
     }
 }

@@ -73,7 +73,7 @@ public class Book {
         contentValues.put(Contract.Books.BOOK_TITLE, title);
         contentValues.put(Contract.Books.BOOK_DESCRIPTION, description);
         contentValues.put(Contract.Books.BOOK_ISBN, isbn);
-        contentValues.put(Contract.Books.BOOK_AUTHOR_ID, author.id);
+//        contentValues.put(Contract.Books.BOOK_AUTHOR_ID, author.id);
         contentValues.put(Contract.Books.BOOK_IMAGE_FILE, imageFilePath);
         contentValues.put(Contract.Books.BOOK_IMAGE_URL, imageUrlPath);
         contentValues.put(Contract.Books.BOOK_BORROWED_TO, borrowedTo);
@@ -119,6 +119,15 @@ public class Book {
 
         public Builder setPublisher(Publisher publisher) {
             this.publisher = publisher;
+            return this;
+        }
+
+        public Builder setPublisher(long publisherId) {
+            if (publisher != null) {
+                publisher.id = publisherId;
+            } else {
+                publisher = new Publisher.Builder().setId(publisherId).build();
+            }
             return this;
         }
 
