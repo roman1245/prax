@@ -2,6 +2,7 @@ package kandrac.xyz.library;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -50,7 +51,8 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
 
     private Long mBookId;
     private BookDetailBinding binding;
-
+    private MenuItem mBorrowMenuItem;
+    private Book mBook;
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -106,15 +108,19 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
         switch (id) {
             case LOADER_BOOK:
                 if (data.getCount() == 1) {
-                    Book book = new Book(data);
-                    binding.setBook(book);
-                    collapsingToolbarLayout.setTitle(book.title);
+                    mBook = new Book(data);
+                    binding.setBook(mBook);
+                    collapsingToolbarLayout.setTitle(mBook.title);
 
-                    if (book.imageFilePath == null) {
+                    if (mBorrowMenuItem != null) {
+                        mBorrowMenuItem.setVisible(mBook.borrowedTo == null);
+                    }
+
+                    if (mBook.imageFilePath == null) {
                         return;
                     }
 
-                    File file = new File(book.imageFilePath);
+                    File file = new File(mBook.imageFilePath);
 
                     if (!file.exists()) {
                         return;
@@ -133,6 +139,11 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                         Toast.makeText(this, data.getString(0) + "," + data.getString(1), Toast.LENGTH_SHORT).show();
                     } while (data.moveToNext());
                 }
+
+                String contactId = contactUri.getLastPathSegment();
+                ContentValues cv = new ContentValues();
+                cv.put(Contract.Books.BOOK_BORROWED_TO, contactId);
+                getContentResolver().update(Contract.Books.buildBookUri(mBookId), cv, null, null);
             }
         }
     }
@@ -146,6 +157,12 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.book_detail_menu, menu);
+        mBorrowMenuItem = menu.findItem(R.id.action_borrow);
+
+        if (mBook != null) {
+            mBorrowMenuItem.setVisible(mBook.borrowedTo == null);
+        }
+
         return true;
     }
 

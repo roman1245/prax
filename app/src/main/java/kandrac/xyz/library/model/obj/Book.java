@@ -19,6 +19,7 @@ public class Book {
     public final Publisher publisher;
     public final String imageFilePath;
     public final String imageUrlPath;
+    public final String borrowedTo;
 
     public Book(Cursor cursor) {
         if (cursor.getPosition() < 0) {
@@ -32,6 +33,7 @@ public class Book {
         publisher = getPublisher(cursor, Contract.Publishers.PUBLISHER_NAME);
         imageFilePath = getString(cursor, Contract.Books.BOOK_IMAGE_FILE);
         imageUrlPath = getString(cursor, Contract.Books.BOOK_IMAGE_URL);
+        borrowedTo = getString(cursor, Contract.Books.BOOK_BORROWED_TO);
     }
 
     private static int getInt(Cursor cursor, String columnName) {
@@ -63,6 +65,7 @@ public class Book {
         publisher = builder.publisher;
         imageFilePath = builder.imageFilePath;
         imageUrlPath = builder.imageUrlPath;
+        borrowedTo = builder.borrowedTo;
     }
 
     public ContentValues getContentValues() {
@@ -73,6 +76,7 @@ public class Book {
         contentValues.put(Contract.Books.BOOK_AUTHOR_ID, author.id);
         contentValues.put(Contract.Books.BOOK_IMAGE_FILE, imageFilePath);
         contentValues.put(Contract.Books.BOOK_IMAGE_URL, imageUrlPath);
+        contentValues.put(Contract.Books.BOOK_BORROWED_TO, borrowedTo);
         return contentValues;
     }
 
@@ -86,6 +90,7 @@ public class Book {
         private Publisher publisher;
         private String imageFilePath;
         private String imageUrlPath;
+        private String borrowedTo;
 
         public Builder setId(long id) {
             this.id = id;
@@ -127,6 +132,11 @@ public class Book {
             return this;
         }
 
+        public Builder setBorrowedTo(String borrowedTo) {
+            this.borrowedTo = borrowedTo;
+            return this;
+        }
+
         public Book build() {
             return new Book(this);
         }
@@ -141,6 +151,7 @@ public class Book {
                 ", isbn='" + isbn + '\'' +
                 ", author='" + author + '\'' +
                 ", imageFilePath='" + imageFilePath + '\'' +
+                ", borrowedTo='" + borrowedTo + '\'' +
                 '}';
     }
 }
