@@ -51,30 +51,17 @@ public class BookListFragment extends SubtitledFragment implements LoaderManager
         list.setAdapter(adapter);
 
         // Init database loading
-        getActivity().getSupportLoaderManager().initLoader(MainActivity.BOOK_LIST_LOADER, null, this);
+        getActivity().getSupportLoaderManager().initLoader(getLoaderId(), null, this);
 
         return result;
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        if (id == MainActivity.BOOK_LIST_LOADER) {
+        if (id == getLoaderId()) {
 
-            String selection = null;
-            String[] selectionArgs = null;
-
-            if (searchQuery != null && searchQuery.length() > 1) {
-                selection = Contract.Books.BOOK_TITLE + " LIKE ?" +
-                        " OR " + Contract.Authors.AUTHOR_NAME + " LIKE ?" +
-                        " OR " + Contract.Books.BOOK_DESCRIPTION + " LIKE ? " +
-                        " OR " + Contract.Books.BOOK_ISBN + " LIKE ? ";
-                selectionArgs = new String[]{
-                        "%" + searchQuery + "%",
-                        "%" + searchQuery + "%",
-                        "%" + searchQuery + "%",
-                        "%" + searchQuery + "%"
-                };
-            }
+            String selection = getSelection();
+            String[] selectionArgs = getSelectionArguments();
 
             return new CursorLoader(
                     getActivity(),
@@ -83,6 +70,34 @@ public class BookListFragment extends SubtitledFragment implements LoaderManager
                     selection,
                     selectionArgs,
                     null);
+        } else {
+            return null;
+        }
+    }
+
+    protected int getLoaderId() {
+        return MainActivity.BOOK_LIST_LOADER;
+    }
+
+    protected String getSelection() {
+        if (searchQuery != null && searchQuery.length() > 1) {
+            return Contract.Books.BOOK_TITLE + " LIKE ?" +
+                    " OR " + Contract.Authors.AUTHOR_NAME + " LIKE ?" +
+                    " OR " + Contract.Books.BOOK_DESCRIPTION + " LIKE ? " +
+                    " OR " + Contract.Books.BOOK_ISBN + " LIKE ? ";
+        } else {
+            return null;
+        }
+    }
+
+    protected String[] getSelectionArguments() {
+        if (searchQuery != null && searchQuery.length() > 1) {
+            return new String[]{
+                    "%" + searchQuery + "%",
+                    "%" + searchQuery + "%",
+                    "%" + searchQuery + "%",
+                    "%" + searchQuery + "%"
+            };
         } else {
             return null;
         }
@@ -101,7 +116,7 @@ public class BookListFragment extends SubtitledFragment implements LoaderManager
     @Override
     public boolean requestSearch(String query) {
         searchQuery = query;
-        getActivity().getSupportLoaderManager().restartLoader(MainActivity.BOOK_LIST_LOADER, null, this);
+        getActivity().getSupportLoaderManager().restartLoader(getLoaderId(), null, this);
         return true;
     }
 
