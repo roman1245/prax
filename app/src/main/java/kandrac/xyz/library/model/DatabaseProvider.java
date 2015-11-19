@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 
 /**
  * Content provider for all database items.
@@ -19,7 +18,6 @@ import android.util.Log;
  */
 public class DatabaseProvider extends ContentProvider {
 
-    private static final String TAG = DatabaseProvider.class.getName();
     private Database databaseHelper;
 
     private static final UriMatcher uriMatcher = buildUriMatcher();
@@ -213,7 +211,7 @@ public class DatabaseProvider extends ContentProvider {
      * @return _id column value
      */
     private long insertOrIgnore(SQLiteDatabase db, ContentValues values, String table, String uniqueColumn) {
-        long id = db.insert(table, null, values);
+        long id = db.insertWithOnConflict(table, null, values, SQLiteDatabase.CONFLICT_IGNORE);
         return (id == -1) ? selectId(db, values, table, uniqueColumn) : id;
     }
 
@@ -248,7 +246,6 @@ public class DatabaseProvider extends ContentProvider {
      */
     private long selectId(SQLiteDatabase db, ContentValues values, String table, String uniqueColumn) {
         String selectStatement = "SELECT " + BaseColumns._ID + " FROM " + table + " WHERE " + uniqueColumn + " = '" + values.getAsString(uniqueColumn) + "'";
-        Log.d(TAG, "Select: " + selectStatement);
         return db.compileStatement(selectStatement).simpleQueryForLong();
     }
 
@@ -334,5 +331,52 @@ public class DatabaseProvider extends ContentProvider {
             context.getContentResolver().notifyChange(uri, null);
         }
         return count;
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    @Override
+    public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
+        int result = 0;
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+
+        switch (uriMatcher.match(uri)) {
+            case BOOKS: {
+                db.beginTransaction();
+                for (ContentValues contentValues: values) {
+                    db.insert(Database.Tables.BOOKS, null, contentValues);
+                    result++;
+                }
+                db.setTransactionSuccessful();
+                db.endTransaction();
+                getContext().getContentResolver().notifyChange(uri, null);
+                break;
+            }
+            case AUTHORS: {
+                db.beginTransaction();
+                for (ContentValues contentValues: values) {
+                    db.insert(Database.Tables.AUTHORS, null, contentValues);
+                    result++;
+                }
+                db.setTransactionSuccessful();
+                db.endTransaction();
+                getContext().getContentResolver().notifyChange(uri, null);
+                break;
+            }
+            case PUBLISHERS: {
+                db.beginTransaction();
+                for (ContentValues contentValues: values) {
+                    db.insert(Database.Tables.PUBLISHERS, null, contentValues);
+                    result++;
+                }
+                db.setTransactionSuccessful();
+                db.endTransaction();
+                getContext().getContentResolver().notifyChange(uri, null);
+                break;
+            }
+            default:
+                throw new IllegalArgumentException("Unknown URI " + uri);
+        }
+
+        return result;
     }
 }
