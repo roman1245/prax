@@ -15,10 +15,8 @@
 
                 <item
                     android:id="@+id/main_navigation_borrowed"
-                    android:enabled="false"
                     android:icon="@drawable/ic_share"
-                    android:title="@string/menu_books_borrowed"
-                    app:actionLayout="@layout/soon_action_layout" />
+                    android:title="@string/menu_books_borrowed" />
 
                 <item
                     android:id="@+id/main_navigation_wish_list"

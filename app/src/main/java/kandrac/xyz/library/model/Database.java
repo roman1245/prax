@@ -39,6 +39,7 @@ public class Database extends SQLiteOpenHelper {
                     Contract.Books.BOOK_ISBN + " TEXT," +
                     Contract.Books.BOOK_IMAGE_FILE + " TEXT," +
                     Contract.Books.BOOK_IMAGE_URL + " TEXT," +
+                    Contract.Books.BOOK_BORROWED_TO + " TEXT," +
                     Contract.Books.BOOK_AUTHOR_ID + " INTEGER " + References.AUTHORS_ID + "," +
                     Contract.Books.BOOK_PUBLISHER_ID + " INTEGER " + References.PUBLISHERS_ID + ")";
 

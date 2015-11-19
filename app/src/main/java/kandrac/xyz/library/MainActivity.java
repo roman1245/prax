@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static final int BOOK_LIST_LOADER = 1;
     public static final int AUTHOR_LIST_LOADER = 2;
     public static final int PUBLISHER_LIST_LOADER = 3;
+    public static final int BORROWED_BOOK_LIST_LOADER = 4;
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -160,6 +161,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return true;
             case R.id.main_navigation_books:
                 fragmentToShow = new BookListFragment();
+                break;
+            case R.id.main_navigation_borrowed:
+                fragmentToShow = new SharedBookListFragment();
                 break;
             case R.id.main_navigation_authors:
                 fragmentToShow = new AuthorListFragment();
