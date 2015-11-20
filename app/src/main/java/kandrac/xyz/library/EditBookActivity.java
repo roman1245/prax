@@ -87,6 +87,9 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     @Bind(R.id.book_input_title)
     EditText mTitleEdit;
 
+    @Bind(R.id.book_input_subtitle)
+    EditText mSubitleEdit;
+
     @Bind(R.id.book_input_isbn)
     EditText mIsbnEdit;
 
@@ -248,6 +251,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         Book book = new Book.Builder()
                 .setPublisher(publisherId)
                 .setTitle(mTitleEdit.getText().toString())
+                .setSubtitle(mSubitleEdit.getText().toString())
                 .setIsbn(mIsbnEdit.getText().toString())
                 .setImageFilePath(imageFileName)
                 .setDescription(mDescritpion.getText().toString())

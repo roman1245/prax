@@ -13,6 +13,7 @@ public class Book {
 
     public long id;
     public final String title;
+    public final String subtitle;
     public final String description;
     public final String isbn;
     public final Author author;
@@ -27,6 +28,7 @@ public class Book {
         }
         id = getInt(cursor, Contract.Books.BOOK_ID);
         title = getString(cursor, Contract.Books.BOOK_TITLE);
+        subtitle = getString(cursor, Contract.Books.BOOK_SUBTITLE);
         description = getString(cursor, Contract.Books.BOOK_DESCRIPTION);
         isbn = getString(cursor, Contract.Books.BOOK_ISBN);
         author = getAuthor(cursor, Contract.Authors.AUTHOR_NAME);
@@ -59,6 +61,7 @@ public class Book {
     private Book(Builder builder) {
         id = builder.id;
         title = builder.title;
+        subtitle = builder.subtitle;
         description = builder.description;
         isbn = builder.isbn;
         author = builder.author;
@@ -71,6 +74,7 @@ public class Book {
     public ContentValues getContentValues() {
         ContentValues contentValues = new ContentValues();
         contentValues.put(Contract.Books.BOOK_TITLE, title);
+        contentValues.put(Contract.Books.BOOK_SUBTITLE, subtitle);
         contentValues.put(Contract.Books.BOOK_DESCRIPTION, description);
         contentValues.put(Contract.Books.BOOK_ISBN, isbn);
 //        contentValues.put(Contract.Books.BOOK_AUTHOR_ID, author.id);
@@ -91,6 +95,7 @@ public class Book {
         private String imageFilePath;
         private String imageUrlPath;
         private String borrowedTo;
+        private String subtitle;
 
         public Builder setId(long id) {
             this.id = id;
@@ -99,6 +104,11 @@ public class Book {
 
         public Builder setTitle(String title) {
             this.title = title;
+            return this;
+        }
+
+        public Builder setSubtitle(String subtitle) {
+            this.subtitle = subtitle;
             return this;
         }
 
@@ -156,6 +166,7 @@ public class Book {
         return "Book{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
+                ", subtitle='" + subtitle + '\'' +
                 ", description='" + description + '\'' +
                 ", isbn='" + isbn + '\'' +
                 ", author='" + author + '\'' +

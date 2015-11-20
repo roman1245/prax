@@ -23,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.Toast;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
@@ -63,6 +64,9 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     @Bind(R.id.book_input_cover_image)
     ImageView cover;
 
+    @Bind(R.id.subtitle)
+    TextView subtitle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,7 +75,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
 
         ButterKnife.bind(this);
 
-        // set ToolBar
+        // set ToolBar;
         setSupportActionBar(toolbar);
 
         ActionBar ab = getSupportActionBar();
@@ -111,6 +115,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                     mBook = new Book(data);
                     binding.setBook(mBook);
                     collapsingToolbarLayout.setTitle(mBook.title);
+                    subtitle.setText(mBook.subtitle);
 
                     if (mBorrowMenuItem != null) {
                         mBorrowMenuItem.setVisible(mBook.borrowedTo == null);

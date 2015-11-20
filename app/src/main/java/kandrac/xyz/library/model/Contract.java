@@ -17,6 +17,7 @@ public class Contract {
     interface BooksColumns {
         String BOOK_ID = BaseColumns._ID;
         String BOOK_TITLE = "book_title";
+        String BOOK_SUBTITLE = "book_subtitle";
         String BOOK_ISBN = "book_isbn";
         String BOOK_DESCRIPTION = "book_description";
         String BOOK_IMAGE_FILE = "book_image_file";
