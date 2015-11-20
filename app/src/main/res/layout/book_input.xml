@@ -68,10 +68,24 @@
                     android:text="@{book.title}"
                     tools:text="The Lord of the Rings" />
 
+                <EditText
+                    android:id="@+id/book_input_subtitle"
+                    android:layout_column="1"
+                    android:layout_columnSpan="2"
+                    android:layout_gravity="fill"
+                    android:layout_marginTop="8dp"
+                    android:layout_row="1"
+                    android:ems="0"
+                    android:hint="@string/edit_book_subtitle"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    android:text="@{book.subtitle}"
+                    tools:text="The Return of the King" />
+
                 <ImageView
                     android:layout_column="0"
                     android:layout_marginTop="28dp"
-                    android:layout_row="1"
+                    android:layout_row="2"
                     android:contentDescription="@string/edit_book_info"
                     android:src="@drawable/ic_author"
                     android:tint="@color/md_grey_700" />
@@ -82,7 +96,6 @@
                     android:layout_columnSpan="2"
                     android:layout_gravity="fill"
                     android:layout_marginTop="16dp"
-                    android:layout_row="1"
                     android:ems="0"
                     android:hint="@string/edit_book_author"
                     android:inputType="text"
@@ -93,7 +106,7 @@
                 <ImageView
                     android:layout_column="0"
                     android:layout_marginTop="28dp"
-                    android:layout_row="2"
+                    android:layout_row="3"
                     android:contentDescription="@string/edit_book_info"
                     android:src="@drawable/ic_tie"
                     android:tint="@color/md_grey_700" />
@@ -104,7 +117,6 @@
                     android:layout_columnSpan="2"
                     android:layout_gravity="fill"
                     android:layout_marginTop="16dp"
-                    android:layout_row="2"
                     android:ems="0"
                     android:hint="@string/edit_book_publisher"
                     android:inputType="text"
@@ -115,7 +127,7 @@
                 <ImageView
                     android:layout_column="0"
                     android:layout_marginTop="28dp"
-                    android:layout_row="3"
+                    android:layout_row="4"
                     android:contentDescription="@string/edit_book_info"
                     android:src="@drawable/ic_barcode"
                     android:tint="@color/md_grey_700" />
@@ -126,7 +138,6 @@
                     android:layout_columnSpan="2"
                     android:layout_gravity="fill"
                     android:layout_marginTop="16dp"
-                    android:layout_row="3"
                     android:ems="0"
                     android:hint="@string/edit_book_isbn"
                     android:inputType="number"
@@ -136,7 +147,7 @@
                 <ImageView
                     android:layout_column="0"
                     android:layout_marginTop="28dp"
-                    android:layout_row="4"
+                    android:layout_row="5"
                     android:contentDescription="@string/edit_book_cover"
                     android:src="@drawable/ic_camera"
                     android:tint="@color/md_grey_700" />
@@ -147,7 +158,6 @@
                     android:layout_height="96dp"
                     android:layout_column="1"
                     android:layout_marginTop="24dp"
-                    android:layout_row="4"
                     android:background="#ddd"
                     android:contentDescription="@string/edit_book_cover"
                     android:scaleType="centerInside"
@@ -158,14 +168,13 @@
                     style="@style/Base.Widget.AppCompat.Button.Borderless.Theme"
                     android:layout_column="2"
                     android:layout_marginTop="24dp"
-                    android:layout_row="4"
                     android:gravity="fill"
                     android:text="@string/edit_book_change_cover" />
 
                 <ImageView
                     android:layout_column="0"
                     android:layout_marginTop="28dp"
-                    android:layout_row="5"
+                    android:layout_row="6"
                     android:contentDescription="@string/edit_book_info"
                     android:src="@drawable/ic_pencil"
                     android:tint="@color/md_grey_700" />
@@ -176,7 +185,6 @@
                     android:layout_columnSpan="2"
                     android:layout_gravity="fill"
                     android:layout_marginTop="16dp"
-                    android:layout_row="5"
                     android:ems="0"
                     android:hint="@string/edit_book_description"
                     android:text="@{book.description}"

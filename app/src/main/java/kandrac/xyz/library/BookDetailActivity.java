@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
@@ -43,6 +44,9 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     @Bind(R.id.book_input_cover_image)
     ImageView cover;
 
+    @Bind(R.id.subtitle)
+    TextView subtitle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +55,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
 
         ButterKnife.bind(this);
 
-        // set ToolBar
+        // set ToolBar;
         setSupportActionBar(toolbar);
 
         ActionBar ab = getSupportActionBar();
@@ -75,6 +79,8 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
             Book book = new Book(data);
             binding.setBook(book);
             collapsingToolbarLayout.setTitle(book.title);
+
+            subtitle.setText(book.subtitle);
 
             if (book.imageFilePath == null) {
                 return;
