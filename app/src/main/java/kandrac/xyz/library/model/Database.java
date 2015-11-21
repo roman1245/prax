@@ -55,8 +55,8 @@ public class Database extends SQLiteOpenHelper {
 
     public static final String BOOKS_AUTHORS_CREATE_TABLE =
             "CREATE TABLE " + Tables.BOOKS_AUTHORS + "(" +
-                    Contract.BookAuthorsColumns.BOOK_ID + " INTEGER " + References.BOOKS_ID + " , " +
-                    Contract.BookAuthorsColumns.AUTHOR_ID + " INTEGER " + References.AUTHORS_ID + " , " +
+                    Contract.BookAuthorsColumns.BOOK_ID + " INTEGER " + References.BOOKS_ID + " ON DELETE CASCADE, " +
+                    Contract.BookAuthorsColumns.AUTHOR_ID + " INTEGER " + References.AUTHORS_ID + " ON DELETE CASCADE, " +
                     "PRIMARY KEY (" + Contract.BookAuthorsColumns.BOOK_ID + " , " + Contract.BookAuthorsColumns.AUTHOR_ID + "))";
 
     public static final String PUBLISHERS_CREATE_TABLE =
