@@ -48,7 +48,6 @@
             android:layout_marginTop="4dp"
             android:layout_toEndOf="@id/image"
             android:layout_toRightOf="@id/image"
-            android:text="@{book.author.name}"
             tools:text="John Ronald Reuel Tolkien" />
     </RelativeLayout>
 </layout>

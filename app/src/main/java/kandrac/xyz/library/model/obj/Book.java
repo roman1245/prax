@@ -16,7 +16,6 @@ public class Book {
     public final String subtitle;
     public final String description;
     public final String isbn;
-    public final Author author;
     public final Publisher publisher;
     public final String imageFilePath;
     public final String imageUrlPath;
@@ -31,7 +30,6 @@ public class Book {
         subtitle = getString(cursor, Contract.Books.BOOK_SUBTITLE);
         description = getString(cursor, Contract.Books.BOOK_DESCRIPTION);
         isbn = getString(cursor, Contract.Books.BOOK_ISBN);
-        author = getAuthor(cursor, Contract.Authors.AUTHOR_NAME);
         publisher = getPublisher(cursor, Contract.Publishers.PUBLISHER_NAME);
         imageFilePath = getString(cursor, Contract.Books.BOOK_IMAGE_FILE);
         imageUrlPath = getString(cursor, Contract.Books.BOOK_IMAGE_URL);
@@ -48,11 +46,6 @@ public class Book {
         return index == -1 ? null : cursor.getString(index);
     }
 
-    private static Author getAuthor(Cursor cursor, String columnName) {
-        int index = cursor.getColumnIndex(columnName);
-        return index == -1 ? null : new Author(cursor);
-    }
-
     private static Publisher getPublisher(Cursor cursor, String columnName) {
         int index = cursor.getColumnIndex(columnName);
         return index == -1 ? null : new Publisher(cursor);
@@ -64,7 +57,6 @@ public class Book {
         subtitle = builder.subtitle;
         description = builder.description;
         isbn = builder.isbn;
-        author = builder.author;
         publisher = builder.publisher;
         imageFilePath = builder.imageFilePath;
         imageUrlPath = builder.imageUrlPath;
@@ -77,7 +69,6 @@ public class Book {
         contentValues.put(Contract.Books.BOOK_SUBTITLE, subtitle);
         contentValues.put(Contract.Books.BOOK_DESCRIPTION, description);
         contentValues.put(Contract.Books.BOOK_ISBN, isbn);
-//        contentValues.put(Contract.Books.BOOK_AUTHOR_ID, author.id);
         contentValues.put(Contract.Books.BOOK_IMAGE_FILE, imageFilePath);
         contentValues.put(Contract.Books.BOOK_IMAGE_URL, imageUrlPath);
         contentValues.put(Contract.Books.BOOK_BORROWED_TO, borrowedTo);
@@ -90,7 +81,6 @@ public class Book {
         private String title;
         private String description;
         private String isbn;
-        private Author author;
         private Publisher publisher;
         private String imageFilePath;
         private String imageUrlPath;
@@ -119,11 +109,6 @@ public class Book {
 
         public Builder setIsbn(String isbn) {
             this.isbn = isbn;
-            return this;
-        }
-
-        public Builder setAuthor(Author author) {
-            this.author = author;
             return this;
         }
 
@@ -169,7 +154,6 @@ public class Book {
                 ", subtitle='" + subtitle + '\'' +
                 ", description='" + description + '\'' +
                 ", isbn='" + isbn + '\'' +
-                ", author='" + author + '\'' +
                 ", imageFilePath='" + imageFilePath + '\'' +
                 ", borrowedTo='" + borrowedTo + '\'' +
                 '}';
