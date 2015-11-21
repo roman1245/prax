@@ -64,6 +64,8 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     public static final String EXTRA_BOOK_ID = "book_id_extra";
     private static final String TAG = EditBookActivity.class.getName();
 
+    public static final String SAVE_STATE_FILE_NAME = "save_state_file_name";
+
     public static final int BOOK_LOADER = 1;
 
     private Long mBookId;
@@ -205,6 +207,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
             case REQUEST_IMAGE_CAPTURE:
                 // Handle Image Capture
                 if (resultCode == RESULT_OK) {
+                    Log.d(TAG, "display image : " + imageFileName);
                     try {
                         DisplayUtils.displayScaledImage(this, imageFileName, mImageEdit);
                     } catch (Exception ex) {
@@ -375,10 +378,13 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 Log.e(TAG, ex.getMessage());
             }
             if (photoFile != null) {
-                Log.d(TAG, "taking picture to store into " + photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+                Uri uri = Uri.fromFile(photoFile);
+                Log.d(TAG, "taking picture to store into " + uri.toString());
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
+        } else {
+            Log.d(TAG, "No application for taking photo available");
         }
     }
 
@@ -471,6 +477,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         File result = new File(storageDir, fileName + ".jpg");
         imageFileName = result.getPath();
+        Log.d(TAG, "Created file : " + imageFileName);
         return result;
     }
 
@@ -541,12 +548,24 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 }
             }
         } else {
-            Log.d("jano", "error");
+            Log.d(TAG, "Error parsing response");
         }
     }
 
     @Override
     public void onFailure(Throwable t) {
 
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(SAVE_STATE_FILE_NAME, imageFileName);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        imageFileName = savedInstanceState.getString(SAVE_STATE_FILE_NAME);
     }
 }
