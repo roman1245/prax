@@ -1,11 +1,20 @@
 package kandrac.xyz.library;
 
+import android.os.Bundle;
+import android.view.View;
+
 import kandrac.xyz.library.model.Contract;
 
 /**
  * Created by kandrac on 19/11/15.
  */
 public class SharedBookListFragment extends BookListFragment {
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mFab.setVisibility(View.GONE);
+    }
 
     @Override
     public int getTitle() {

@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -31,6 +32,9 @@ public class BookListFragment extends SubtitledFragment implements LoaderManager
 
     @Bind(R.id.list)
     RecyclerView list;
+
+    @Bind(R.id.fab)
+    FloatingActionButton mFab;
 
     @OnClick(R.id.fab)
     public void addItem(View view) {

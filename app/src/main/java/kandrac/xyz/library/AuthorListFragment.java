@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -33,11 +34,16 @@ public class AuthorListFragment extends SubtitledFragment implements LoaderManag
     @Bind(R.id.list)
     RecyclerView list;
 
+    @Bind(R.id.fab)
+    FloatingActionButton mFab;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View result = inflater.inflate(R.layout.book_list_fragment, container, false);
         ButterKnife.bind(this, result);
+
+        mFab.setVisibility(View.GONE);
 
         adapter = new AuthorCursorAdapter();
         list.setLayoutManager(new LinearLayoutManager(getActivity()));
