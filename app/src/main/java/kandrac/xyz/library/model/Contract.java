@@ -45,6 +45,7 @@ public class Contract {
     public static final String PATH_BOOKS = "books";
     public static final String PATH_AUTHORS = "authors";
     public static final String PATH_PUBLISHERS = "publishers";
+    public static final String PATH_BOOKS_AUTHORS = "books/authors";
 
     // Base URI specification (authority and its URI representation)
     public static final String CONTENT_AUTHORITY = "xyz.kandrac.Library";
@@ -86,8 +87,8 @@ public class Contract {
         /**
          * Read {@link #BOOK_ID} from {@link Books} {@link Uri}.
          */
-        public static String getBookId(Uri uri) {
-            return uri.getPathSegments().get(1);
+        public static long getBookId(Uri uri) {
+            return Long.parseLong(uri.getPathSegments().get(1));
         }
     }
 
@@ -126,8 +127,8 @@ public class Contract {
         /**
          * Read {@link #AUTHOR_ID} from {@link Authors} {@link Uri}.
          */
-        public static String getAuthorId(Uri uri) {
-            return uri.getPathSegments().get(1);
+        public static long getAuthorId(Uri uri) {
+            return Long.parseLong(uri.getPathSegments().get(1));
         }
     }
 
@@ -166,12 +167,14 @@ public class Contract {
         /**
          * Read {@link #PUBLISHER_ID} from {@link Authors} {@link Uri}.
          */
-        public static String getPublisherId(Uri uri) {
-            return uri.getPathSegments().get(1);
+        public static long getPublisherId(Uri uri) {
+            return Long.parseLong(uri.getPathSegments().get(1));
         }
     }
 
     public static class BookAuthors implements BookAuthorsColumns {
+
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_BOOKS).appendPath(PATH_AUTHORS).build();
 
         public static ContentValues generateContentValues(long bookId, long authorId) {
             ContentValues cv = new ContentValues();

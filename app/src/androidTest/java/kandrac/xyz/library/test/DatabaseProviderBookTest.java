@@ -28,7 +28,7 @@ public class DatabaseProviderBookTest extends ProviderTestCase2<DatabaseProvider
 
         Uri result = getProvider().insert(Contract.Books.CONTENT_URI, book.getContentValues());
 
-        return Long.parseLong(Contract.Books.getBookId(result));
+        return (Contract.Books.getBookId(result));
     }
 
     private Book getBook(Cursor cursor) {
@@ -64,11 +64,11 @@ public class DatabaseProviderBookTest extends ProviderTestCase2<DatabaseProvider
      * PROVIDER INTERFACE TEST
      */
     public void testBookProviderInterface() {
-        String test1 = Contract.Books.getBookId(Uri.parse("content://xyz.kandrac.Library/books/1"));
+        long test1 = Contract.Books.getBookId(Uri.parse("content://xyz.kandrac.Library/books/1"));
         String test2 = Contract.Books.buildBookUri(1).toString();
         String test3 = Contract.Books.buildBookWithAuthorUri(1).toString();
 
-        assertEquals("1", test1);
+        assertEquals(1, test1);
         assertEquals("content://xyz.kandrac.Library/books/1", test2);
         assertEquals("content://xyz.kandrac.Library/books/1/authors", test3);
     }

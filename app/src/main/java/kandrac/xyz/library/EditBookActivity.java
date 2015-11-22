@@ -45,6 +45,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import kandrac.xyz.library.databinding.BookInputBinding;
 import kandrac.xyz.library.model.Contract;
+import kandrac.xyz.library.model.DatabaseUtils;
 import kandrac.xyz.library.model.obj.Author;
 import kandrac.xyz.library.model.obj.Book;
 import kandrac.xyz.library.model.obj.Publisher;
@@ -125,12 +126,11 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         }
 
         Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            long bookId = extras.getLong(EXTRA_BOOK_ID, -1);
-            if (bookId > 0) {
-                mBookId = bookId;
-                getSupportLoaderManager().initLoader(BOOK_LOADER, null, this);
-            }
+
+        mBookId = (extras != null) ? mBookId = extras.getLong(EXTRA_BOOK_ID, -1) : -1;
+
+        if (mBookId > 0) {
+            getSupportLoaderManager().initLoader(BOOK_LOADER, null, this);
         }
 
         setAuthorAdapter();
@@ -242,17 +242,18 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
     // Storing result synchronously
     private void save() {
-
-        // Store publisher first (no dependencies to other tables)
         Publisher publisher = new Publisher.Builder()
                 .setName(mPublisherEdit.getText().toString())
                 .build();
 
-        long publisherId = savePublisher(publisher);
+        Author author = new Author.Builder()
+                .setName(mAuthorEdit.getText().toString())
+                .build();
 
-        // Store / update book second
         Book book = new Book.Builder()
-                .setPublisher(publisherId)
+                .setId(mBookId)
+                .setPublisher(publisher)
+                .setAuthors(new Author[]{author})
                 .setTitle(mTitleEdit.getText().toString())
                 .setSubtitle(mSubitleEdit.getText().toString())
                 .setIsbn(mIsbnEdit.getText().toString())
@@ -261,59 +262,8 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 .setImageUrlPath(imageUrl)
                 .build();
 
-        long bookId = saveBook(book);
-
-        Author author = new Author.Builder()
-                .setName(mAuthorEdit.getText().toString())
-                .build();
-
-        // Store author connected to this book
-        saveAuthor(author, bookId);
-
+        DatabaseUtils.saveBook(getContentResolver(), book);
         finish();
-    }
-
-    /**
-     * Store author into database
-     *
-     * @return id
-     */
-    private long saveAuthor(Author author, long bookId) {
-        Uri authorUri = getContentResolver().insert(
-                Contract.Books.buildBookWithAuthorUri(bookId),
-                author.getContentValues());
-
-        return Long.parseLong(Contract.Authors.getAuthorId(authorUri));
-    }
-
-    /**
-     * Store author into database
-     *
-     * @return id
-     */
-    private long savePublisher(Publisher publisher) {
-        Uri publisherUri = getContentResolver().insert(
-                Contract.Publishers.CONTENT_URI,
-                publisher.getContentValues());
-
-        return Long.parseLong(Contract.Publishers.getPublisherId(publisherUri));
-    }
-
-    private long saveBook(Book book) {
-        if (mBookId != null && mBookId > 0) {
-            // edit book
-            getContentResolver().update(
-                    Contract.Books.CONTENT_URI,
-                    book.getContentValues(), Contract.Books.BOOK_ID + " = ?",
-                    new String[]{Long.toString(mBookId)});
-            return mBookId;
-        } else {
-            // insert book
-            Uri bookUri = getContentResolver().insert(
-                    Contract.Books.CONTENT_URI,
-                    book.getContentValues());
-            return Long.parseLong(Contract.Books.getBookId(bookUri));
-        }
     }
 
     // Open Camevra for taking image of Book Cover

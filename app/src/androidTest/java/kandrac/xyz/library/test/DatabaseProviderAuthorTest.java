@@ -30,7 +30,7 @@ public class DatabaseProviderAuthorTest extends ProviderTestCase2<DatabaseProvid
 
         Uri result = getProvider().insert(Contract.Authors.CONTENT_URI, author.getContentValues());
 
-        return Long.parseLong(Contract.Authors.getAuthorId(result));
+        return Contract.Authors.getAuthorId(result);
     }
 
     private String getAuthorName(Cursor cursor) {
@@ -40,11 +40,11 @@ public class DatabaseProviderAuthorTest extends ProviderTestCase2<DatabaseProvid
     }
 
     public void testUriAuthor() {
-        String test1 = Contract.Authors.getAuthorId(Uri.parse("content://xyz.kandrac.Library/authors/1"));
+        long test1 = Contract.Authors.getAuthorId(Uri.parse("content://xyz.kandrac.Library/authors/1"));
         String test2 = Contract.Authors.buildAuthorUri(1).toString();
         String test3 = Contract.Authors.buildBooksUri("1").toString();
 
-        assertEquals("1", test1);
+        assertEquals(1, test1);
         assertEquals("content://xyz.kandrac.Library/authors/1", test2);
         assertEquals("content://xyz.kandrac.Library/authors/1/books", test3);
     }

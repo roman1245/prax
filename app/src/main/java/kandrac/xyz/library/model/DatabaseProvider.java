@@ -161,13 +161,13 @@ public class DatabaseProvider extends ContentProvider {
                 return Contract.Authors.buildAuthorUri(result);
             }
             case AUTHOR_BY_BOOK: {
-                String bookId = Contract.Books.getBookId(uri);
+                long bookId = Contract.Books.getBookId(uri);
 
                 // insert author
                 long result = insertOrIgnore(db, values, Database.Tables.AUTHORS, Contract.Authors.AUTHOR_NAME);
 
                 // insert author book connection
-                ContentValues cv = Contract.BookAuthors.generateContentValues(Long.parseLong(bookId), result);
+                ContentValues cv = Contract.BookAuthors.generateContentValues(bookId, result);
 
                 db.insert(Database.Tables.BOOKS_AUTHORS, null, cv);
 
@@ -175,13 +175,13 @@ public class DatabaseProvider extends ContentProvider {
                 return Contract.Authors.buildAuthorUri(result);
             }
             case BOOK_BY_AUTHOR: {
-                String authorId = Contract.Authors.getAuthorId(uri);
+                long authorId = Contract.Authors.getAuthorId(uri);
 
                 // insert author
                 long result = insertOrIgnore(db, values, Database.Tables.AUTHORS, Contract.Authors.AUTHOR_NAME);
 
                 // insert author book connection
-                ContentValues cv = Contract.BookAuthors.generateContentValues(result, Long.parseLong(authorId));
+                ContentValues cv = Contract.BookAuthors.generateContentValues(result, authorId);
 
                 db.insert(Database.Tables.BOOKS_AUTHORS, null, cv);
 
@@ -192,6 +192,11 @@ public class DatabaseProvider extends ContentProvider {
                 long result = insertOrIgnore(db, values, Database.Tables.PUBLISHERS, Contract.Publishers.PUBLISHER_NAME);
                 getContext().getContentResolver().notifyChange(uri, null);
                 return Contract.Publishers.buildPublisherUri(result);
+            }
+            case BOOKS_AUTHORS: {
+                db.insert(Database.Tables.BOOKS_AUTHORS, null, values);
+                getContext().getContentResolver().notifyChange(uri, null);
+                return uri;
             }
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
@@ -252,34 +257,39 @@ public class DatabaseProvider extends ContentProvider {
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         int count;
-        String id;
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
         switch (uriMatcher.match(uri)) {
-            case BOOKS:
+            case BOOKS: {
                 count = db.delete(Database.Tables.BOOKS, selection, selectionArgs);
                 break;
-            case BOOK_ID:
-                id = Contract.Books.getBookId(uri);
+            }
+            case BOOK_ID: {
+                long id = Contract.Books.getBookId(uri);
                 count = db.delete(Database.Tables.BOOKS, Contract.Books.BOOK_ID + " = " + id +
                         (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
                 break;
-            case AUTHORS:
+            }
+            case AUTHORS: {
                 count = db.delete(Database.Tables.AUTHORS, selection, selectionArgs);
                 break;
-            case AUTHOR_ID:
-                id = Contract.Authors.getAuthorId(uri);
+            }
+            case AUTHOR_ID: {
+                long id = Contract.Authors.getAuthorId(uri);
                 count = db.delete(Database.Tables.AUTHORS, Contract.Authors.AUTHOR_ID + " = " + id +
                         (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
                 break;
-            case PUBLISHERS:
+            }
+            case PUBLISHERS: {
                 count = db.delete(Database.Tables.PUBLISHERS, selection, selectionArgs);
                 break;
-            case PUBLISHER_ID:
-                id = Contract.Publishers.getPublisherId(uri);
+            }
+            case PUBLISHER_ID: {
+                long id = Contract.Publishers.getPublisherId(uri);
                 count = db.delete(Database.Tables.PUBLISHERS, Contract.Publishers.PUBLISHER_ID + " = " + id +
                         (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
                 break;
+            }
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -294,34 +304,39 @@ public class DatabaseProvider extends ContentProvider {
     @Override
     public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         int count;
-        String id;
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
         switch (uriMatcher.match(uri)) {
-            case BOOKS:
+            case BOOKS: {
                 count = db.update(Database.Tables.BOOKS, values, selection, selectionArgs);
                 break;
-            case BOOK_ID:
-                id = Contract.Books.getBookId(uri);
+            }
+            case BOOK_ID: {
+                long id = Contract.Books.getBookId(uri);
                 count = db.update(Database.Tables.BOOKS, values, Contract.Books.BOOK_ID + " = " + id +
                         (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
                 break;
-            case AUTHORS:
+            }
+            case AUTHORS: {
                 count = db.update(Database.Tables.AUTHORS, values, selection, selectionArgs);
                 break;
-            case AUTHOR_ID:
-                id = Contract.Authors.getAuthorId(uri);
+            }
+            case AUTHOR_ID: {
+                long id = Contract.Authors.getAuthorId(uri);
                 count = db.update(Database.Tables.AUTHORS, values, Contract.Authors.AUTHOR_ID + " = " + id +
                         (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
                 break;
-            case PUBLISHERS:
+            }
+            case PUBLISHERS: {
                 count = db.update(Database.Tables.PUBLISHERS, values, selection, selectionArgs);
                 break;
-            case PUBLISHER_ID:
-                id = Contract.Publishers.getPublisherId(uri);
+            }
+            case PUBLISHER_ID: {
+                long id = Contract.Publishers.getPublisherId(uri);
                 count = db.update(Database.Tables.PUBLISHERS, values, Contract.Publishers.PUBLISHER_ID + " = " + id +
                         (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
                 break;
+            }
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -342,7 +357,7 @@ public class DatabaseProvider extends ContentProvider {
         switch (uriMatcher.match(uri)) {
             case BOOKS: {
                 db.beginTransaction();
-                for (ContentValues contentValues: values) {
+                for (ContentValues contentValues : values) {
                     db.insert(Database.Tables.BOOKS, null, contentValues);
                     result++;
                 }
@@ -353,7 +368,7 @@ public class DatabaseProvider extends ContentProvider {
             }
             case AUTHORS: {
                 db.beginTransaction();
-                for (ContentValues contentValues: values) {
+                for (ContentValues contentValues : values) {
                     db.insert(Database.Tables.AUTHORS, null, contentValues);
                     result++;
                 }
@@ -364,7 +379,7 @@ public class DatabaseProvider extends ContentProvider {
             }
             case PUBLISHERS: {
                 db.beginTransaction();
-                for (ContentValues contentValues: values) {
+                for (ContentValues contentValues : values) {
                     db.insert(Database.Tables.PUBLISHERS, null, contentValues);
                     result++;
                 }

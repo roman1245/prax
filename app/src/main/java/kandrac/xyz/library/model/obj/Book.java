@@ -16,10 +16,12 @@ public class Book {
     public final String subtitle;
     public final String description;
     public final String isbn;
-    public final Publisher publisher;
     public final String imageFilePath;
     public final String imageUrlPath;
     public final String borrowedTo;
+
+    public Author[] authors;
+    public Publisher publisher;
 
     public Book(Cursor cursor) {
         if (cursor.getPosition() < 0) {
@@ -61,6 +63,7 @@ public class Book {
         imageFilePath = builder.imageFilePath;
         imageUrlPath = builder.imageUrlPath;
         borrowedTo = builder.borrowedTo;
+        authors = builder.authors;
     }
 
     public ContentValues getContentValues() {
@@ -81,11 +84,13 @@ public class Book {
         private String title;
         private String description;
         private String isbn;
-        private Publisher publisher;
         private String imageFilePath;
         private String imageUrlPath;
         private String borrowedTo;
         private String subtitle;
+
+        private Publisher publisher;
+        public Author[] authors;
 
         public Builder setId(long id) {
             this.id = id;
@@ -138,6 +143,11 @@ public class Book {
 
         public Builder setBorrowedTo(String borrowedTo) {
             this.borrowedTo = borrowedTo;
+            return this;
+        }
+
+        public Builder setAuthors(Author[] authors) {
+            this.authors = authors;
             return this;
         }
 
