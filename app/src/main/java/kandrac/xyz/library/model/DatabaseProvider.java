@@ -290,6 +290,10 @@ public class DatabaseProvider extends ContentProvider {
                         (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
                 break;
             }
+            case BOOKS_AUTHORS: {
+                count = db.delete(Database.Tables.BOOKS_AUTHORS, selection, selectionArgs);
+                break;
+            }
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -313,8 +317,7 @@ public class DatabaseProvider extends ContentProvider {
             }
             case BOOK_ID: {
                 long id = Contract.Books.getBookId(uri);
-                count = db.update(Database.Tables.BOOKS, values, Contract.Books.BOOK_ID + " = " + id +
-                        (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
+                count = db.update(Database.Tables.BOOKS, values, Contract.Books.BOOK_ID + " = ?", new String[]{Long.toString(id)});
                 break;
             }
             case AUTHORS: {

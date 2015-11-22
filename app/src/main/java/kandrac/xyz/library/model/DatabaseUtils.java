@@ -18,6 +18,10 @@ public final class DatabaseUtils {
 
     public static long saveBook(ContentResolver contentResolver, Book book) {
 
+        if (book.id > 0) {
+            deleteBookAuthor(contentResolver, book.id);
+        }
+
         long publisherId = savePublisher(contentResolver, book.publisher);
 
         long bookId = saveBookOnly(contentResolver, book, publisherId);
@@ -80,5 +84,9 @@ public final class DatabaseUtils {
         bookAuthorContentValues.put(Contract.BookAuthors.AUTHOR_ID, authorId);
 
         contentResolver.insert(Contract.BookAuthors.CONTENT_URI, bookAuthorContentValues);
+    }
+
+    public static long deleteBookAuthor(ContentResolver contentResolver, long bookId) {
+        return contentResolver.delete(Contract.BOOKS_AUTHORS_URI, Contract.BookAuthors.BOOK_ID + " = ?", new String[]{Long.toString(bookId)});
     }
 }
