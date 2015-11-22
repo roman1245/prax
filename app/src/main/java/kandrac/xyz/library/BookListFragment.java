@@ -65,8 +65,8 @@ public class BookListFragment extends SubtitledFragment implements LoaderManager
 
             return new CursorLoader(
                     getActivity(),
-                    Contract.BOOKS_AUTHORS_URI,
-                    new String[]{"books." + Contract.Books.BOOK_ID, Contract.Books.BOOK_TITLE, Contract.Books.BOOK_IMAGE_FILE, Contract.Authors.AUTHOR_NAME},
+                    Contract.Books.CONTENT_URI,
+                    new String[]{Contract.Books.BOOK_ID, Contract.Books.BOOK_TITLE, Contract.Books.BOOK_IMAGE_FILE, Contract.Books.BOOK_AUTHORS_READ},
                     selection,
                     selectionArgs,
                     null);
@@ -82,7 +82,7 @@ public class BookListFragment extends SubtitledFragment implements LoaderManager
     protected String getSelection() {
         if (searchQuery != null && searchQuery.length() > 1) {
             return Contract.Books.BOOK_TITLE + " LIKE ?" +
-                    " OR " + Contract.Authors.AUTHOR_NAME + " LIKE ?" +
+                    " OR " + Contract.Books.BOOK_AUTHORS_READ + " LIKE ?" +
                     " OR " + Contract.Books.BOOK_DESCRIPTION + " LIKE ? " +
                     " OR " + Contract.Books.BOOK_ISBN + " LIKE ? ";
         } else {

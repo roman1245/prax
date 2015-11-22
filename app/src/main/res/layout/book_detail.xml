@@ -69,6 +69,7 @@
                     android:layout_row="0"
                     android:hint="@string/edit_book_author"
                     android:singleLine="true"
+                    android:text="@{book.authorsReadable}"
                     tools:text="John Ronald Reuel Tolkien" />
 
                 <TextView

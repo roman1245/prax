@@ -21,6 +21,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -242,24 +243,32 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
     // Storing result synchronously
     private void save() {
+
+        String authorsReadable = mAuthorEdit.getText().toString();
+
         Publisher publisher = new Publisher.Builder()
                 .setName(mPublisherEdit.getText().toString())
                 .build();
 
-        Author author = new Author.Builder()
-                .setName(mAuthorEdit.getText().toString())
-                .build();
+        String[] authorsSplit = TextUtils.split(authorsReadable, ",");
+
+        Author[] authors = new Author[authorsSplit.length];
+        for (int i = 0; i < authorsSplit.length; i++) {
+            String authorName = authorsSplit[i].trim();
+            authors[i] = new Author.Builder().setName(authorName).build();
+        }
 
         Book book = new Book.Builder()
                 .setId(mBookId)
                 .setPublisher(publisher)
-                .setAuthors(new Author[]{author})
+                .setAuthors(authors)
                 .setTitle(mTitleEdit.getText().toString())
                 .setSubtitle(mSubitleEdit.getText().toString())
                 .setIsbn(mIsbnEdit.getText().toString())
                 .setImageFilePath(imageFileName)
                 .setDescription(mDescritpion.getText().toString())
                 .setImageUrlPath(imageUrl)
+                .setAuthorsRedable(authorsReadable)
                 .build();
 
         DatabaseUtils.saveBook(getContentResolver(), book);

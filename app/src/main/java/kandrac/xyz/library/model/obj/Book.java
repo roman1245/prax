@@ -19,6 +19,7 @@ public class Book {
     public final String imageFilePath;
     public final String imageUrlPath;
     public final String borrowedTo;
+    public final String authorsReadable;
 
     public Author[] authors;
     public Publisher publisher;
@@ -36,6 +37,7 @@ public class Book {
         imageFilePath = getString(cursor, Contract.Books.BOOK_IMAGE_FILE);
         imageUrlPath = getString(cursor, Contract.Books.BOOK_IMAGE_URL);
         borrowedTo = getString(cursor, Contract.Books.BOOK_BORROWED_TO);
+        authorsReadable = getString(cursor, Contract.Books.BOOK_AUTHORS_READ);
     }
 
     private static int getInt(Cursor cursor, String columnName) {
@@ -64,6 +66,7 @@ public class Book {
         imageUrlPath = builder.imageUrlPath;
         borrowedTo = builder.borrowedTo;
         authors = builder.authors;
+        authorsReadable = builder.authorsReadable;
     }
 
     public ContentValues getContentValues() {
@@ -75,6 +78,7 @@ public class Book {
         contentValues.put(Contract.Books.BOOK_IMAGE_FILE, imageFilePath);
         contentValues.put(Contract.Books.BOOK_IMAGE_URL, imageUrlPath);
         contentValues.put(Contract.Books.BOOK_BORROWED_TO, borrowedTo);
+        contentValues.put(Contract.Books.BOOK_AUTHORS_READ, authorsReadable);
         return contentValues;
     }
 
@@ -91,6 +95,7 @@ public class Book {
 
         private Publisher publisher;
         public Author[] authors;
+        public String authorsReadable;
 
         public Builder setId(long id) {
             this.id = id;
@@ -146,6 +151,11 @@ public class Book {
             return this;
         }
 
+        public Builder setAuthorsRedable(String authorsReadable) {
+            this.authorsReadable = authorsReadable;
+            return this;
+        }
+
         public Builder setAuthors(Author[] authors) {
             this.authors = authors;
             return this;
@@ -166,6 +176,7 @@ public class Book {
                 ", isbn='" + isbn + '\'' +
                 ", imageFilePath='" + imageFilePath + '\'' +
                 ", borrowedTo='" + borrowedTo + '\'' +
+                ", authorsReadable='" + authorsReadable + '\'' +
                 '}';
     }
 }

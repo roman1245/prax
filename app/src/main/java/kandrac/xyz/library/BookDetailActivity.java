@@ -92,7 +92,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         switch (id) {
             case LOADER_BOOK:
-                return new CursorLoader(this, Contract.Books.buildBookWithAuthorUri(mBookId), null, null, null, null);
+                return new CursorLoader(this, Contract.Books.buildBookUri(mBookId), null, null, null, null);
             case LOADER_CONTACT:
                 String contactId = contactUri.getLastPathSegment();
                 return new CursorLoader(
