@@ -43,7 +43,6 @@ public final class DatabaseUtils {
         bookContentValues.put(Contract.Books.BOOK_IMAGE_FILE, book.imageFilePath);
         bookContentValues.put(Contract.Books.BOOK_DESCRIPTION, book.description);
         bookContentValues.put(Contract.Books.BOOK_IMAGE_URL, book.imageUrlPath);
-        bookContentValues.put(Contract.Books.BOOK_BORROWED_TO, book.borrowedTo);
         bookContentValues.put(Contract.Books.BOOK_ISBN, book.isbn);
         bookContentValues.put(Contract.Books.BOOK_AUTHORS_READ, book.authorsReadable);
         bookContentValues.put(Contract.Books.BOOK_PUBLISHER_ID, publisherId);
