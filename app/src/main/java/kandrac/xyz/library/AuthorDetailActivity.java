@@ -9,6 +9,8 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -17,7 +19,9 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import kandrac.xyz.library.databinding.AuthorDetailBinding;
 import kandrac.xyz.library.model.Contract;
+import kandrac.xyz.library.model.Database;
 import kandrac.xyz.library.model.obj.Author;
+import kandrac.xyz.library.utils.BookCursorAdapter;
 
 /**
  * Created by VizGhar on 25.10.2015.
@@ -37,6 +41,11 @@ public class AuthorDetailActivity extends AppCompatActivity implements LoaderMan
     @Bind(R.id.book_input_cover_image)
     ImageView cover;
 
+    @Bind(R.id.list)
+    RecyclerView recyclerView;
+
+    BookCursorAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,21 +63,39 @@ public class AuthorDetailActivity extends AppCompatActivity implements LoaderMan
             ab.setDisplayShowHomeEnabled(true);
         }
 
+        adapter = new BookCursorAdapter(this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
+
         mAuthorId = getIntent().getExtras().getLong(EXTRA_AUTHOR_ID);
         getSupportLoaderManager().initLoader(1, null, this);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(this, Contract.Authors.buildAuthorUri(mAuthorId), null, null, null, null);
+        return new CursorLoader(
+                this,
+                Contract.Authors.buildBooksUri(mAuthorId),
+                new String[]{
+                        Contract.Authors.AUTHOR_NAME,
+                        Database.Tables.BOOKS + "." + Contract.Books.BOOK_ID,
+                        Contract.Books.BOOK_TITLE,
+                        Contract.Books.BOOK_IMAGE_FILE,
+                        Contract.Books.BOOK_AUTHORS_READ
+                },
+                null, null, null
+        );
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (data.getCount() == 1) {
+        if (data.getCount() > 0) {
             Author author = new Author(data);
             binding.setAuthor(author);
             collapsingToolbarLayout.setTitle(author.name);
+
+            adapter.setCursor(data);
+            adapter.notifyDataSetChanged();
         }
     }
 

@@ -121,8 +121,8 @@ public class Contract {
          * Build {@link Uri} that references any {@link Books} associated
          * with the requested {@link #AUTHOR_ID}.
          */
-        public static Uri buildBooksUri(String authorId) {
-            return CONTENT_URI.buildUpon().appendPath(authorId).appendPath(PATH_BOOKS).build();
+        public static Uri buildBooksUri(long authorId) {
+            return CONTENT_URI.buildUpon().appendPath(Long.toString(authorId)).appendPath(PATH_BOOKS).build();
         }
 
         /**

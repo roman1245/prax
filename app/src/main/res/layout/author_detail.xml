@@ -16,14 +16,12 @@
         android:fitsSystemWindows="true"
         tools:context=".EditBookActivity">
 
-        <include layout="@layout/parallax_toolbar"/>
+        <include layout="@layout/parallax_toolbar" />
 
-        <android.support.v4.widget.NestedScrollView
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-            <!-- Main content -->
-        </android.support.v4.widget.NestedScrollView>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
     </android.support.design.widget.CoordinatorLayout>
 </layout>
