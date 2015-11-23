@@ -1,9 +1,8 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.android.databinding'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    buildToolsVersion '23.0.2'
 
     defaultConfig {
         applicationId "kandrac.xyz.library"
@@ -22,13 +21,17 @@ android {
         }
 
         debug {
-            buildConfigField 'String','BOOKS_API_KEY','"AIzaSyCJJ0MF8D795z4RyA-Q5FRRJnn5bf1hVw0"'
-            buildConfigField 'String','BOOKS_API_URL','"https://www.googleapis.com"'
+            buildConfigField 'String', 'BOOKS_API_KEY', '"AIzaSyCJJ0MF8D795z4RyA-Q5FRRJnn5bf1hVw0"'
+            buildConfigField 'String', 'BOOKS_API_URL', '"https://www.googleapis.com"'
         }
     }
 
     lintOptions {
         disable 'InvalidPackage'
+    }
+
+    dataBinding {
+        enabled = true
     }
 }
 
@@ -39,11 +42,11 @@ repositories {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.1.0'
-    compile 'com.android.support:design:23.1.0'
-    compile 'com.android.support:recyclerview-v7:23.1.0'
+    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.android.support:design:23.1.1'
+    compile 'com.android.support:recyclerview-v7:23.1.1'
     compile 'com.google.zxing:core:3.0.1'
-    compile 'com.android.support:design:23.1.0'
+    compile 'com.android.support:design:23.1.1'
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.google.android.gms:play-services:8.1.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
