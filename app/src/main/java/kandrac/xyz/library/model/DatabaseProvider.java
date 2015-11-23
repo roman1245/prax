@@ -28,6 +28,7 @@ public class DatabaseProvider extends ContentProvider {
     public static final int BOOK_ID = 101;
     // Books by author id (SELECT)
     public static final int BOOK_BY_AUTHOR = 102;
+    public static final int BOOK_BY_PUBLISHER = 103;
 
     // Everything from authors (SELECT, INSERT, UPDATE, DELETE)
     public static final int AUTHORS = 200;
@@ -53,6 +54,7 @@ public class DatabaseProvider extends ContentProvider {
         uriMatcher.addURI(authority, "authors/#/books", BOOK_BY_AUTHOR);
         uriMatcher.addURI(authority, "publishers", PUBLISHERS);
         uriMatcher.addURI(authority, "publishers/#", PUBLISHER_ID);
+        uriMatcher.addURI(authority, "publishers/#/books", BOOK_BY_PUBLISHER);
 
         uriMatcher.addURI(authority, "books/authors", BOOKS_AUTHORS);
 
@@ -84,6 +86,8 @@ public class DatabaseProvider extends ContentProvider {
             case PUBLISHER_ID:
                 return Contract.Publishers.CONTENT_ITEM_TYPE;
             case BOOKS_AUTHORS:
+                return Contract.Books.CONTENT_TYPE;
+            case BOOK_BY_PUBLISHER:
                 return Contract.Books.CONTENT_TYPE;
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
@@ -131,6 +135,10 @@ public class DatabaseProvider extends ContentProvider {
             case BOOKS_AUTHORS:
                 qb.setTables(Database.Tables.BOOKS_JOIN_AUTHORS);
                 sortOrder = sortOrder == null ? Contract.Books.DEFAULT_SORT : sortOrder;
+                break;
+            case BOOK_BY_PUBLISHER:
+                qb.setTables(Database.Tables.BOOKS_JOIN_PUBLISHERS);
+                qb.appendWhere(Database.Tables.PUBLISHERS + "." + Contract.Publishers.PUBLISHER_ID + "=" + Contract.Publishers.getPublisherId(uri));
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
