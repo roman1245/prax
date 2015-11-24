@@ -1,7 +1,6 @@
 package kandrac.xyz.library;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -10,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -41,7 +39,7 @@ public class BarcodeActivity extends AppCompatActivity {
     // constants used to pass extra data in the intent
     public static final String AUTO_FOCUS = "AUTO_FOCUS";
     public static final String USE_FLASH = "USE_FLASH";
-    public static final String BARCODE_OBJECT = "Barcode";
+    public static final String BARCODE_TEXT = "Barcode";
 
     private CameraSource mCameraSource;
     private CameraSourcePreview mPreview;
@@ -79,7 +77,12 @@ public class BarcodeActivity extends AppCompatActivity {
         Context context = getApplicationContext();
 
         BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(context).setBarcodeFormats(Barcode.ISBN | Barcode.EAN_13).build();
-        BarcodeTrackerFactory barcodeFactory = new BarcodeTrackerFactory(mGraphicOverlay);
+        BarcodeTrackerFactory barcodeFactory = new BarcodeTrackerFactory(mGraphicOverlay) {
+            @Override
+            public void onBarcodeRead(final String barcode) {
+                complete(barcode);
+            }
+        };
         barcodeDetector.setProcessor(new MultiProcessor.Builder<>(barcodeFactory).build());
 
         if (!barcodeDetector.isOperational()) {
@@ -147,13 +150,11 @@ public class BarcodeActivity extends AppCompatActivity {
      * again when the camera source is created.
      */
     private void startCameraSource() throws SecurityException {
+
         // check that the device has play services available.
-        int code = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(
-                getApplicationContext());
+        int code = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getApplicationContext());
         if (code != ConnectionResult.SUCCESS) {
-            Dialog dlg =
-                    GoogleApiAvailability.getInstance().getErrorDialog(this, code, RC_HANDLE_GMS);
-            dlg.show();
+            GoogleApiAvailability.getInstance().getErrorDialog(this, code, RC_HANDLE_GMS).show();
         }
 
         if (mCameraSource != null) {
@@ -168,26 +169,10 @@ public class BarcodeActivity extends AppCompatActivity {
     }
 
 
-    private boolean complete() {
-        BarcodeGraphic graphic = mGraphicOverlay.getFirstGraphic();
-        Barcode barcode = null;
-        if (graphic != null) {
-            barcode = graphic.getBarcode();
-            if (barcode != null) {
-                Intent data = new Intent();
-                data.putExtra(BARCODE_OBJECT, barcode);
-                setResult(CommonStatusCodes.SUCCESS, data);
-                finish();
-            } else {
-                Log.d(TAG, "barcode data is null");
-            }
-        } else {
-            Log.d(TAG, "no barcode detected");
-        }
-        return barcode != null;
-    }
-
-    public void click(View view) {
-        complete();
+    private void complete(String barcode) {
+        Intent data = new Intent();
+        data.putExtra(BARCODE_TEXT, barcode);
+        setResult(CommonStatusCodes.SUCCESS, data);
+        finish();
     }
 }

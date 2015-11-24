@@ -33,7 +33,6 @@ import android.widget.FilterQueryProvider;
 import android.widget.ImageView;
 
 import com.google.android.gms.common.api.CommonStatusCodes;
-import com.google.android.gms.vision.barcode.Barcode;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -193,9 +192,9 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 // Handle Barcode
                 if (resultCode == CommonStatusCodes.SUCCESS) {
                     if (data != null) {
-                        Barcode barcode = data.getParcelableExtra(BarcodeActivity.BARCODE_OBJECT);
-                        mIsbnEdit.setText(barcode.displayValue);
-                        String searchQuery = GoogleBooksUtils.getSearchQuery(GoogleBooksUtils.QUERY_ISBN, barcode.displayValue);
+                        String barcode = data.getStringExtra(BarcodeActivity.BARCODE_TEXT);
+                        mIsbnEdit.setText(barcode);
+                        String searchQuery = GoogleBooksUtils.getSearchQuery(GoogleBooksUtils.QUERY_ISBN, barcode);
 
                         OkHttpConfigurator
                                 .getInstance()
