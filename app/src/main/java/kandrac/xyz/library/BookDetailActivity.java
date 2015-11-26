@@ -2,7 +2,6 @@ package kandrac.xyz.library;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -22,8 +21,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
-import android.widget.Toast;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -118,7 +117,8 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                     subtitle.setText(mBook.subtitle);
 
                     if (mBorrowMenuItem != null) {
-                        mBorrowMenuItem.setVisible(mBook.borrowedTo == null);
+                        // TODO: get book borrow status and set menu borrow icon visibility based on result
+//                        mBorrowMenuItem.setVisible(mBook.borrowedTo == null);
                     }
 
                     if (mBook.imageFilePath == null) {
@@ -146,9 +146,10 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                 }
 
                 String contactId = contactUri.getLastPathSegment();
-                ContentValues cv = new ContentValues();
-                cv.put(Contract.Books.BOOK_BORROWED_TO, contactId);
-                getContentResolver().update(Contract.Books.buildBookUri(mBookId), cv, null, null);
+                // TODO: previously borrow info stored like this, rewrite
+//                ContentValues cv = new ContentValues();
+//                cv.put(Contract.Books.BOOK_BORROWED_TO, contactId);
+//                getContentResolver().update(Contract.Books.buildBookUri(mBookId), cv, null, null);
             }
         }
     }
@@ -165,7 +166,8 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
         mBorrowMenuItem = menu.findItem(R.id.action_borrow);
 
         if (mBook != null) {
-            mBorrowMenuItem.setVisible(mBook.borrowedTo == null);
+            // TODO: get book borrow status and set menu borrow icon visibility based on result
+//            mBorrowMenuItem.setVisible(mBook.borrowedTo == null);
         }
 
         return true;

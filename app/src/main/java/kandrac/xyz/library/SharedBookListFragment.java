@@ -6,8 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import kandrac.xyz.library.model.Contract;
-
 /**
  * Created by kandrac on 19/11/15.
  */
@@ -31,15 +29,16 @@ public class SharedBookListFragment extends BookListFragment {
         return R.string.menu_books_borrowed;
     }
 
-    @Override
-    protected String getSelection() {
-        String superSelection = super.getSelection();
-        if (superSelection == null) {
-            return Contract.Books.BOOK_BORROWED_TO + " IS NOT NULL";
-        } else {
-            return "(" + superSelection + ") AND " + Contract.Books.BOOK_BORROWED_TO + " IS NOT NULL";
-        }
-    }
+    // TODO: selection based on book borrowed info status
+//    @Override
+//    protected String getSelection() {
+//        String superSelection = super.getSelection();
+//        if (superSelection == null) {
+//            return Contract.Books.BOOK_BORROWED_TO + " IS NOT NULL";
+//        } else {
+//            return "(" + superSelection + ") AND " + Contract.Books.BOOK_BORROWED_TO + " IS NOT NULL";
+//        }
+//    }
 
     @Override
     protected int getLoaderId() {

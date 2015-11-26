@@ -18,7 +18,6 @@ public class Book {
     public final String isbn;
     public final String imageFilePath;
     public final String imageUrlPath;
-    public final String borrowedTo;
     public final String authorsReadable;
 
     public Author[] authors;
@@ -36,7 +35,6 @@ public class Book {
         publisher = getPublisher(cursor, Contract.Publishers.PUBLISHER_NAME);
         imageFilePath = getString(cursor, Contract.Books.BOOK_IMAGE_FILE);
         imageUrlPath = getString(cursor, Contract.Books.BOOK_IMAGE_URL);
-        borrowedTo = getString(cursor, Contract.Books.BOOK_BORROWED_TO);
         authorsReadable = getString(cursor, Contract.Books.BOOK_AUTHORS_READ);
     }
 
@@ -64,7 +62,6 @@ public class Book {
         publisher = builder.publisher;
         imageFilePath = builder.imageFilePath;
         imageUrlPath = builder.imageUrlPath;
-        borrowedTo = builder.borrowedTo;
         authors = builder.authors;
         authorsReadable = builder.authorsReadable;
     }
@@ -77,7 +74,6 @@ public class Book {
         contentValues.put(Contract.Books.BOOK_ISBN, isbn);
         contentValues.put(Contract.Books.BOOK_IMAGE_FILE, imageFilePath);
         contentValues.put(Contract.Books.BOOK_IMAGE_URL, imageUrlPath);
-        contentValues.put(Contract.Books.BOOK_BORROWED_TO, borrowedTo);
         contentValues.put(Contract.Books.BOOK_AUTHORS_READ, authorsReadable);
         return contentValues;
     }
@@ -90,7 +86,6 @@ public class Book {
         private String isbn;
         private String imageFilePath;
         private String imageUrlPath;
-        private String borrowedTo;
         private String subtitle;
 
         private Publisher publisher;
@@ -146,11 +141,6 @@ public class Book {
             return this;
         }
 
-        public Builder setBorrowedTo(String borrowedTo) {
-            this.borrowedTo = borrowedTo;
-            return this;
-        }
-
         public Builder setAuthorsRedable(String authorsReadable) {
             this.authorsReadable = authorsReadable;
             return this;
@@ -175,7 +165,6 @@ public class Book {
                 ", description='" + description + '\'' +
                 ", isbn='" + isbn + '\'' +
                 ", imageFilePath='" + imageFilePath + '\'' +
-                ", borrowedTo='" + borrowedTo + '\'' +
                 ", authorsReadable='" + authorsReadable + '\'' +
                 '}';
     }

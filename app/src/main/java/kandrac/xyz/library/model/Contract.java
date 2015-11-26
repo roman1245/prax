@@ -23,7 +23,6 @@ public class Contract {
         String BOOK_IMAGE_FILE = "book_image_file";
         String BOOK_PUBLISHER_ID = "book_publisher_id";
         String BOOK_IMAGE_URL = "book_image_url";
-        String BOOK_BORROWED_TO = "book_borrowed_to";
         String BOOK_AUTHORS_READ = "book_authors_readable";
     }
 
@@ -42,11 +41,23 @@ public class Contract {
         String AUTHOR_ID = "author_id";
     }
 
+    interface BorrowInfoColumns {
+        String BORROW_ID = BaseColumns._ID;
+        String BORROW_BOOK_ID = "borrow_book_id";
+        String BORROW_TO = "borrow_to";
+        String BORROW_MAIL = "borrow_mail";
+        String BORROW_PHONE = "borrow_phone";
+        String BORROW_NAME = "borrow_name";
+        String BORROW_DATE_BORROWED = "date_borrowed";
+        String BORROW_DATE_RETURNED = "date_returned";
+    }
+
     // URI Paths
     public static final String PATH_BOOKS = "books";
     public static final String PATH_AUTHORS = "authors";
     public static final String PATH_PUBLISHERS = "publishers";
     public static final String PATH_BOOKS_AUTHORS = "books/authors";
+    public static final String PATH_BORROW_INFO = "borrowinfo";
 
     // Base URI specification (authority and its URI representation)
     public static final String CONTENT_AUTHORITY = "xyz.kandrac.Library";
