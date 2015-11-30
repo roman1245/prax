@@ -45,7 +45,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import kandrac.xyz.library.databinding.BookInputBinding;
 import kandrac.xyz.library.model.Contract;
-import kandrac.xyz.library.model.DatabaseUtils;
+import kandrac.xyz.library.model.DatabaseStoreUtils;
 import kandrac.xyz.library.model.obj.Author;
 import kandrac.xyz.library.model.obj.Book;
 import kandrac.xyz.library.model.obj.Publisher;
@@ -270,7 +270,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 .setAuthorsRedable(authorsReadable)
                 .build();
 
-        DatabaseUtils.saveBook(getContentResolver(), book);
+        DatabaseStoreUtils.saveBook(getContentResolver(), book);
         finish();
     }
 
