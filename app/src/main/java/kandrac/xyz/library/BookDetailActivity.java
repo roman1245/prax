@@ -2,6 +2,7 @@ package kandrac.xyz.library;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -27,6 +28,7 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -43,6 +45,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
 
     static final int LOADER_BOOK = 1;
     static final int LOADER_CONTACT = 2;
+    static final int LOADER_BORROW_DETAIL = 3;
 
     static final int PICK_CONTACT_PERMISSION = 1;
     static final int PICK_CONTACT_ACTION = 1;
@@ -52,7 +55,6 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     private Long mBookId;
     private BookDetailBinding binding;
     private MenuItem mBorrowMenuItem;
-    private Book mBook;
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -85,6 +87,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
 
         mBookId = getIntent().getExtras().getLong(EXTRA_BOOK_ID);
         getSupportLoaderManager().initLoader(LOADER_BOOK, null, this);
+        getSupportLoaderManager().initLoader(LOADER_BORROW_DETAIL, null, this);
     }
 
     @Override
@@ -101,6 +104,8 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                         ContactsContract.CommonDataKinds.Email.CONTACT_ID + "=?",
                         new String[]{contactId},
                         null);
+            case LOADER_BORROW_DETAIL:
+                return new CursorLoader(this, Contract.BorrowInfo.buildUri(mBookId), null, Contract.BorrowInfo.BORROW_DATE_RETURNED + " = 0", null, null);
         }
         return null;
     }
@@ -111,21 +116,16 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
         switch (id) {
             case LOADER_BOOK:
                 if (data.getCount() == 1) {
-                    mBook = new Book(data);
-                    binding.setBook(mBook);
-                    collapsingToolbarLayout.setTitle(mBook.title);
-                    subtitle.setText(mBook.subtitle);
+                    Book book = new Book(data);
+                    binding.setBook(book);
+                    collapsingToolbarLayout.setTitle(book.title);
+                    subtitle.setText(book.subtitle);
 
-                    if (mBorrowMenuItem != null) {
-                        // TODO: get book borrow status and set menu borrow icon visibility based on result
-//                        mBorrowMenuItem.setVisible(mBook.borrowedTo == null);
-                    }
-
-                    if (mBook.imageFilePath == null) {
+                    if (book.imageFilePath == null) {
                         return;
                     }
 
-                    File file = new File(mBook.imageFilePath);
+                    File file = new File(book.imageFilePath);
 
                     if (!file.exists()) {
                         return;
@@ -139,18 +139,24 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                 }
                 break;
             case LOADER_CONTACT: {
-                if (data.moveToFirst()) {
-                    do {
-                        Toast.makeText(this, data.getString(0) + "," + data.getString(1), Toast.LENGTH_SHORT).show();
-                    } while (data.moveToNext());
+                if (!data.moveToFirst()) {
+                    break;
                 }
 
+                Toast.makeText(this, data.getString(0) + "," + data.getString(1), Toast.LENGTH_SHORT).show();
+
                 String contactId = contactUri.getLastPathSegment();
-                // TODO: previously borrow info stored like this, rewrite
-//                ContentValues cv = new ContentValues();
-//                cv.put(Contract.Books.BOOK_BORROWED_TO, contactId);
-//                getContentResolver().update(Contract.Books.buildBookUri(mBookId), cv, null, null);
+                ContentValues cv = new ContentValues();
+                cv.put(Contract.BorrowInfo.BORROW_BOOK_ID, mBookId);
+                cv.put(Contract.BorrowInfo.BORROW_TO, contactId);
+                cv.put(Contract.BorrowInfo.BORROW_DATE_BORROWED, new Date(System.currentTimeMillis()).getTime());
+                cv.put(Contract.BorrowInfo.BORROW_NAME, data.getString(0));
+                cv.put(Contract.BorrowInfo.BORROW_MAIL, data.getString(1));
+                getContentResolver().insert(Contract.BorrowInfo.CONTENT_URI, cv);
             }
+            case LOADER_BORROW_DETAIL:
+                // no borrow details provided means book is not provided, enable borrow button
+                mBorrowMenuItem.setVisible(data.getCount() == 0);
         }
     }
 
@@ -164,12 +170,6 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.book_detail_menu, menu);
         mBorrowMenuItem = menu.findItem(R.id.action_borrow);
-
-        if (mBook != null) {
-            // TODO: get book borrow status and set menu borrow icon visibility based on result
-//            mBorrowMenuItem.setVisible(mBook.borrowedTo == null);
-        }
-
         return true;
     }
 

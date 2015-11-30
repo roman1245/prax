@@ -10,10 +10,9 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class Database extends SQLiteOpenHelper {
 
-    public static final int ADDED_BORROW_INFO_TABLE = 1;
 
     public static final String DATABASE_NAME = "library.db";
-    public static final int DATABASE_VERSION = ADDED_BORROW_INFO_TABLE;
+    public static final int DATABASE_VERSION = 1;
 
     public Database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -75,7 +74,7 @@ public class Database extends SQLiteOpenHelper {
                     Contract.BorrowInfoColumns.BORROW_BOOK_ID + " INTEGER " + References.BOOKS_ID + " ON DELETE CASCADE, " +
                     Contract.BorrowInfoColumns.BORROW_TO + " TEXT, " +
                     Contract.BorrowInfoColumns.BORROW_DATE_BORROWED + " INTEGER, " +
-                    Contract.BorrowInfoColumns.BORROW_DATE_RETURNED + " INTEGER, " +
+                    Contract.BorrowInfoColumns.BORROW_DATE_RETURNED + " INTEGER DEFAULT 0, " +
                     Contract.BorrowInfoColumns.BORROW_MAIL + " TEXT, " +
                     Contract.BorrowInfoColumns.BORROW_NAME + " TEXT, " +
                     Contract.BorrowInfoColumns.BORROW_PHONE + " TEXT)";

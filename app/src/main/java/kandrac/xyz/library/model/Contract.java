@@ -195,4 +195,25 @@ public class Contract {
             return cv;
         }
     }
+
+    public static class BorrowInfo implements BorrowInfoColumns {
+
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_BORROW_INFO).build();
+
+        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.borrow";
+        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.borrow";
+
+        /**
+         * Default "ORDER BY" clause.
+         */
+        public static final String DEFAULT_SORT = BORROW_DATE_BORROWED + " ASC";
+
+        public static Uri buildUri(long bookId) {
+            return CONTENT_URI.buildUpon().appendPath(Long.toString(bookId)).build();
+        }
+
+        public static long getBookId(Uri uri) {
+            return Long.parseLong(uri.getPathSegments().get(1));
+        }
+    }
 }
