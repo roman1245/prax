@@ -56,6 +56,8 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     private BookDetailBinding binding;
     private MenuItem mBorrowMenuItem;
 
+    private boolean mBorrowed;
+
     @Bind(R.id.toolbar)
     Toolbar toolbar;
 
@@ -156,7 +158,8 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
             }
             case LOADER_BORROW_DETAIL:
                 // no borrow details provided means book is not provided, enable borrow button
-                mBorrowMenuItem.setVisible(data.getCount() == 0);
+                mBorrowed = data.getCount() == 0;
+                checkBorrowed();
         }
     }
 
@@ -165,11 +168,18 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
 
     }
 
+    private void checkBorrowed() {
+        if (mBorrowMenuItem != null) {
+            mBorrowMenuItem.setVisible(mBorrowed);
+        }
+    }
+
     // ToolBar option menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.book_detail_menu, menu);
         mBorrowMenuItem = menu.findItem(R.id.action_borrow);
+        checkBorrowed();
         return true;
     }
 

@@ -45,6 +45,8 @@ public class DatabaseProvider extends ContentProvider {
     public static final int BORROW_INFO = 500;
     public static final int BORROW_INFO_BY_BOOK = 501;
 
+    public static final int BOOKS_BORROW = 502;
+
     private static UriMatcher buildUriMatcher() {
         final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = Contract.CONTENT_AUTHORITY;
@@ -62,6 +64,8 @@ public class DatabaseProvider extends ContentProvider {
         uriMatcher.addURI(authority, "books/authors", BOOKS_AUTHORS);
         uriMatcher.addURI(authority, "borrowinfo", BORROW_INFO);
         uriMatcher.addURI(authority, "borrowinfo/#", BORROW_INFO_BY_BOOK);
+
+        uriMatcher.addURI(authority, "books/borrowinfo", BOOKS_BORROW);
 
         return uriMatcher;
     }
@@ -98,6 +102,8 @@ public class DatabaseProvider extends ContentProvider {
                 return Contract.BorrowInfo.CONTENT_TYPE;
             case BORROW_INFO_BY_BOOK:
                 return Contract.BorrowInfo.CONTENT_TYPE;
+            case BOOKS_BORROW:
+                return Contract.Books.CONTENT_TYPE;
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
@@ -157,6 +163,10 @@ public class DatabaseProvider extends ContentProvider {
                 qb.setTables(Database.Tables.BORROW_INFO);
                 qb.appendWhere(Contract.BorrowInfo.BORROW_BOOK_ID + "=" + Contract.BorrowInfo.getBookId(uri));
                 sortOrder = sortOrder == null ? Contract.BorrowInfo.DEFAULT_SORT : sortOrder;
+                break;
+            case BOOKS_BORROW:
+                qb.setTables(Database.Tables.BOOKS_JOIN_BORROW);
+                sortOrder = sortOrder == null ? Contract.Books.DEFAULT_SORT : sortOrder;
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);

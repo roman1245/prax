@@ -1,10 +1,15 @@
 package kandrac.xyz.library;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import kandrac.xyz.library.model.Contract;
 
 /**
  * Created by kandrac on 19/11/15.
@@ -29,16 +34,24 @@ public class SharedBookListFragment extends BookListFragment {
         return R.string.menu_books_borrowed;
     }
 
-    // TODO: selection based on book borrowed info status
-//    @Override
-//    protected String getSelection() {
-//        String superSelection = super.getSelection();
-//        if (superSelection == null) {
-//            return Contract.Books.BOOK_BORROWED_TO + " IS NOT NULL";
-//        } else {
-//            return "(" + superSelection + ") AND " + Contract.Books.BOOK_BORROWED_TO + " IS NOT NULL";
-//        }
-//    }
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        CursorLoader loader = (CursorLoader) super.onCreateLoader(id, args);
+        if (loader != null) {
+            loader.setUri(Contract.BOOKS_BORROW_URI);
+        }
+        return loader;
+    }
+
+    @Override
+    protected String getSelection() {
+        String superSelection = super.getSelection();
+        if (superSelection == null) {
+            return Contract.BorrowInfo.BORROW_DATE_RETURNED + " = 0";
+        } else {
+            return "(" + superSelection + ") AND " + Contract.BorrowInfo.BORROW_DATE_RETURNED + " = 0";
+        }
+    }
 
     @Override
     protected int getLoaderId() {

@@ -4,13 +4,20 @@ import android.database.sqlite.SQLiteDatabase;
 
 /**
  * Database Utils used mostly for Database Migrations
- * <p>
+ * <p/>
  * Created by kandrac on 30/11/15.
  */
 public final class DatabaseUtils {
 
     private DatabaseUtils() {
 
+    }
+
+    public static String[] getFullColumnNames(String table, String[] columnNames) {
+        for (int i = 0; i < columnNames.length; i++) {
+            columnNames[i] = table + "." + columnNames[i];
+        }
+        return columnNames;
     }
 
     /**
@@ -72,7 +79,7 @@ public final class DatabaseUtils {
      * used for example in case you are making database migration and you need to pass those data
      * to another table which will be copy of source table with some columns removed or if you
      * creating new table which has those columns required.
-     * <p>
+     * <p/>
      * Script is formed as follows: <br/>
      * {@code INSERT INTO 'tableTo' ('columnsTo') SELECT 'columnsFrom' from 'tableFrom'}<br/>
      * for example: <br/>

@@ -18,6 +18,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import kandrac.xyz.library.model.Contract;
+import kandrac.xyz.library.model.Database;
+import kandrac.xyz.library.model.DatabaseUtils;
 import kandrac.xyz.library.utils.BookCursorAdapter;
 
 /**
@@ -65,7 +67,12 @@ public class BookListFragment extends SubtitledFragment implements LoaderManager
             return new CursorLoader(
                     getActivity(),
                     Contract.Books.CONTENT_URI,
-                    new String[]{Contract.Books.BOOK_ID, Contract.Books.BOOK_TITLE, Contract.Books.BOOK_IMAGE_FILE, Contract.Books.BOOK_AUTHORS_READ},
+                    DatabaseUtils.getFullColumnNames(
+                            Database.Tables.BOOKS, new String[]{
+                                    Contract.Books.BOOK_ID,
+                                    Contract.Books.BOOK_TITLE,
+                                    Contract.Books.BOOK_IMAGE_FILE,
+                                    Contract.Books.BOOK_AUTHORS_READ}),
                     selection,
                     selectionArgs,
                     null);
