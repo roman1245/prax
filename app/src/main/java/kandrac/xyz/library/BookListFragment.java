@@ -4,12 +4,14 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,23 +25,96 @@ import kandrac.xyz.library.model.DatabaseUtils;
 import kandrac.xyz.library.utils.BookCursorAdapter;
 
 /**
+ * Fragment with list of all books without any pre scripted selection. This fragment also contains
+ * {@link FloatingActionButton} for basic actions.
+ * <p/>
  * Created by kandrac on 20/10/15.
  */
 public class BookListFragment extends SubtitledFragment implements LoaderManager.LoaderCallbacks<Cursor>, Searchable {
 
+    private static final String EXTRA_TITLE = "title";
+    private static final String EXTRA_FILTER = "filter";
+    private static final String EXTRA_ADD_BUTTON = "button";
+    private static final String EXTRA_LOADER_ID = "loader_id";
+
+    private int mTitleRes;
+    private int mLoaderId;
+    private String mFilter;
+    private boolean mAddButton;
+
     @Bind(R.id.list)
-    RecyclerView list;
+    public RecyclerView list;
 
     @Bind(R.id.fab)
-    FloatingActionButton mFab;
+    public FloatingActionButton mFab;
 
     @OnClick(R.id.fab)
     public void addItem(View view) {
         startActivity(new Intent(getActivity(), EditBookActivity.class));
     }
 
-    BookCursorAdapter adapter;
-    String searchQuery;
+    private BookCursorAdapter adapter;
+    private String searchQuery;
+
+    /**
+     * Get instance of {@link BookListFragment}
+     *
+     * @return instance
+     */
+    public static BookListFragment getInstance() {
+        return getInstance(R.string.menu_books_mine, null, true, MainActivity.BOOK_LIST_LOADER);
+    }
+
+    /**
+     * Get instance of {@link BookListFragment}
+     *
+     * @return instance
+     */
+    public static BookListFragment getBorrowedBooksInstance() {
+        return getInstance(R.string.menu_books_borrowed, Contract.BorrowInfo.BORROW_DATE_RETURNED + " = 0", false, MainActivity.BORROWED_BOOK_LIST_LOADER);
+    }
+
+    /**
+     * Get instance of {@link BookListFragment} for setting all custom fields. {@code title} hold
+     * the title representing this fragments content (for example: old books, borrowed books, all
+     * books etc.)
+     * <p/>
+     * {@code filter} should be closely related to {@code title} because it contains
+     * string that will be added to search selection String and specifies which books exactly will
+     * be shown. Always use column names from {@link kandrac.xyz.library.model.Contract.BorrowInfo}
+     * or {@link kandrac.xyz.library.model.Contract.Books}
+     * <p/>
+     * {@code addButtonVisible} determines whether button for adding new books is visible or not
+     * <p/>
+     * {@code loaderId} is unique id that will be used with this instance only. It should not be
+     * same for 2 or more fragments inside one activity.
+     *
+     * @param title            of fragment
+     * @param filter           to be added to selection
+     * @param addButtonVisible add button visibility
+     * @return instance
+     */
+    public static BookListFragment getInstance(@StringRes int title, String filter, boolean addButtonVisible, int loaderId) {
+        BookListFragment result = new BookListFragment();
+        Bundle arguments = new Bundle();
+        arguments.putInt(EXTRA_TITLE, title);
+        arguments.putInt(EXTRA_LOADER_ID, loaderId);
+        arguments.putString(EXTRA_FILTER, filter);
+        arguments.putBoolean(EXTRA_ADD_BUTTON, addButtonVisible);
+        result.setArguments(arguments);
+        return result;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle arguments = getArguments();
+
+        mTitleRes = arguments.getInt(EXTRA_TITLE);
+        mLoaderId = arguments.getInt(EXTRA_LOADER_ID);
+        mFilter = arguments.getString(EXTRA_FILTER);
+        mAddButton = arguments.getBoolean(EXTRA_ADD_BUTTON);
+    }
 
     @Nullable
     @Override
@@ -50,23 +125,24 @@ public class BookListFragment extends SubtitledFragment implements LoaderManager
         adapter = new BookCursorAdapter(getContext());
         list.setLayoutManager(new LinearLayoutManager(getActivity()));
         list.setAdapter(adapter);
+        mFab.setVisibility(mAddButton ? View.VISIBLE : View.GONE);
 
         // Init database loading
-        getActivity().getSupportLoaderManager().initLoader(getLoaderId(), null, this);
+        getActivity().getSupportLoaderManager().initLoader(mLoaderId, null, this);
 
         return result;
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        if (id == getLoaderId()) {
+        if (id == mLoaderId) {
 
             String selection = getSelection();
             String[] selectionArgs = getSelectionArguments();
 
             return new CursorLoader(
                     getActivity(),
-                    Contract.Books.CONTENT_URI,
+                    Contract.BOOKS_BORROW_URI,
                     DatabaseUtils.getFullColumnNames(
                             Database.Tables.BOOKS, new String[]{
                                     Contract.Books.BOOK_ID,
@@ -81,21 +157,35 @@ public class BookListFragment extends SubtitledFragment implements LoaderManager
         }
     }
 
-    protected int getLoaderId() {
-        return MainActivity.BOOK_LIST_LOADER;
-    }
-
+    /**
+     * @return selection String
+     */
     protected String getSelection() {
+
+        String searchSelection = null;
+
         if (searchQuery != null && searchQuery.length() > 1) {
-            return Contract.Books.BOOK_TITLE + " LIKE ?" +
+            searchSelection = Contract.Books.BOOK_TITLE + " LIKE ?" +
                     " OR " + Contract.Books.BOOK_AUTHORS_READ + " LIKE ?" +
                     " OR " + Contract.Books.BOOK_DESCRIPTION + " LIKE ? " +
                     " OR " + Contract.Books.BOOK_ISBN + " LIKE ? ";
+        }
+
+        if (TextUtils.isEmpty(mFilter)) {
+            // search selection or null (everything)
+            return searchSelection;
+        } else if (TextUtils.isEmpty(searchSelection)) {
+            // filter
+            return mFilter;
         } else {
-            return null;
+            // search selection and filter combined
+            return "(" + searchSelection + ") AND " + mFilter;
         }
     }
 
+    /**
+     * @return selection arguments
+     */
     protected String[] getSelectionArguments() {
         if (searchQuery != null && searchQuery.length() > 1) {
             return new String[]{
@@ -122,13 +212,12 @@ public class BookListFragment extends SubtitledFragment implements LoaderManager
     @Override
     public boolean requestSearch(String query) {
         searchQuery = query;
-        getActivity().getSupportLoaderManager().restartLoader(getLoaderId(), null, this);
+        getActivity().getSupportLoaderManager().restartLoader(mLoaderId, null, this);
         return true;
     }
 
     @Override
     public int getTitle() {
-        return R.string.menu_books_mine;
+        return mTitleRes;
     }
-
 }

@@ -9,7 +9,13 @@ import android.view.View;
  *
  * Created by kandrac on 09/11/15.
  */
-public abstract class CloseDrawerCallback implements DrawerLayout.DrawerListener {
+public class DummyDrawerCallback implements DrawerLayout.DrawerListener {
+
+    @Override
+    public void onDrawerClosed(View drawerView) {
+
+    }
+
     @Override
     public void onDrawerSlide(View drawerView, float slideOffset) {
 

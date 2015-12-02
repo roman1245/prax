@@ -30,7 +30,7 @@ public class Database extends SQLiteOpenHelper {
         // everything from connected authors and books
         String BOOKS_JOIN_AUTHORS = "books JOIN book_author ON books._id = book_author.book_id JOIN authors ON authors._id = book_author.author_id";
         String BOOKS_JOIN_PUBLISHERS = "books JOIN publishers ON books.book_publisher_id = publishers._id";
-        String BOOKS_JOIN_BORROW = "books JOIN borrow_info ON borrow_info.borrow_book_id = books._id";
+        String BOOKS_JOIN_BORROW = "books LEFT JOIN borrow_info ON borrow_info.borrow_book_id = books._id";
     }
 
     interface References {

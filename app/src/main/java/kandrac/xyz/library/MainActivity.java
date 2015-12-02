@@ -18,10 +18,17 @@ import android.view.View;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import kandrac.xyz.library.views.CloseDrawerCallback;
+import kandrac.xyz.library.views.DummyDrawerCallback;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+/**
+ * So far, this is launcher Activity of this Application. It contains side menu Navigation, title as
+ * Action Bar and the content fragment replaced by currently selected item.
+ *
+ * @see NavigationView
+ */
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SubtitledFragment.ChangeTitleListener {
 
+    // Loader constants. Ensure that fragments are using this constants and not the
     public static final int BOOK_LIST_LOADER = 1;
     public static final int AUTHOR_LIST_LOADER = 2;
     public static final int PUBLISHER_LIST_LOADER = 3;
@@ -67,15 +74,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return;
         }
 
-        mShownFragment = new BookListFragment();
+        // setup first fragment
+        mShownFragment = BookListFragment.getInstance();
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.fragment_container, mShownFragment)
                 .commit();
 
-        drawerLayout.setDrawerListener(new CloseDrawerCallback() {
+        // hide keyboard if drawer opened
+        drawerLayout.setDrawerListener(new DummyDrawerCallback() {
             @Override
-            public void onDrawerClosed(View drawerView) {
+            public void onDrawerOpened(View drawerView) {
                 if (searchView != null) {
                     searchView.clearFocus();
                 }
@@ -90,7 +99,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 drawerLayout.openDrawer(GravityCompat.START);
                 return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -104,7 +112,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         MenuItem searchMenuItem = menu.findItem(R.id.search);
         searchView = (SearchView) searchMenuItem.getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -145,36 +152,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
 
-        //
+        // if last clicked menu item is same as current, do nothing
         if (lastChecked == menuItem) {
             drawerLayout.closeDrawers();
-            return true;
+            return false;
         }
 
-        int id = menuItem.getItemId();
+        // Get fragment to show
+        SubtitledFragment fragmentToShow = getFragmentToShow(menuItem.getItemId());
 
-        SubtitledFragment fragmentToShow;
-        switch (id) {
-            case R.id.main_navigation_about:
-                drawerLayout.closeDrawers();
-                new AboutDialog().show(getFragmentManager(), null);
-                return true;
-            case R.id.main_navigation_books:
-                fragmentToShow = new BookListFragment();
-                break;
-            case R.id.main_navigation_borrowed:
-                fragmentToShow = new SharedBookListFragment();
-                break;
-            case R.id.main_navigation_authors:
-                fragmentToShow = new AuthorListFragment();
-                break;
-            case R.id.main_navigation_publishers:
-                fragmentToShow = new PublisherListFragment();
-                break;
-            default:
-                return false;
+        if (fragmentToShow == null) {
+            return false;
         }
 
+        // close drawers and use replace fragment
         drawerLayout.closeDrawers();
 
         getSupportFragmentManager()
@@ -182,16 +173,46 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .replace(R.id.fragment_container, fragmentToShow)
                 .commit();
 
+        // remember
         mShownFragment = fragmentToShow;
-
         lastChecked.setChecked(false);
         menuItem.setChecked(true);
         lastChecked = menuItem;
 
-        if (mActionBar != null) {
-            mActionBar.setTitle(fragmentToShow.getTitle());
-        }
-
         return true;
+    }
+
+    /**
+     * Based on ID of menu item, get new instance of fragment related to it.
+     *
+     * @param menuItemId ID of menu item
+     * @return null if nothing to be shown
+     */
+    private SubtitledFragment getFragmentToShow(final int menuItemId) {
+        switch (menuItemId) {
+            case R.id.main_navigation_about:
+                // about dialog doesn't run any fragment only displays About dialog now
+                drawerLayout.closeDrawers();
+                new AboutDialog().show(getFragmentManager(), null);
+                return null;
+            case R.id.main_navigation_books:
+                return BookListFragment.getInstance();
+            case R.id.main_navigation_borrowed:
+                return BookListFragment.getBorrowedBooksInstance();
+            case R.id.main_navigation_authors:
+                return new AuthorListFragment();
+            case R.id.main_navigation_publishers:
+                return new PublisherListFragment();
+            default:
+                return null;
+        }
+    }
+
+    @Override
+    public void onTitleLoaded(String title) {
+        // change title
+        if (mActionBar != null) {
+            mActionBar.setTitle(title);
+        }
     }
 }
