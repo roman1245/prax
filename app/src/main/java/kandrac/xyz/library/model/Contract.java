@@ -23,7 +23,6 @@ public class Contract {
         String BOOK_IMAGE_FILE = "book_image_file";
         String BOOK_PUBLISHER_ID = "book_publisher_id";
         String BOOK_IMAGE_URL = "book_image_url";
-        String BOOK_BORROWED_TO = "book_borrowed_to";
         String BOOK_AUTHORS_READ = "book_authors_readable";
     }
 
@@ -42,17 +41,30 @@ public class Contract {
         String AUTHOR_ID = "author_id";
     }
 
+    interface BorrowInfoColumns {
+        String BORROW_ID = BaseColumns._ID;
+        String BORROW_BOOK_ID = "borrow_book_id";
+        String BORROW_TO = "borrow_to";
+        String BORROW_MAIL = "borrow_mail";
+        String BORROW_PHONE = "borrow_phone";
+        String BORROW_NAME = "borrow_name";
+        String BORROW_DATE_BORROWED = "date_borrowed";
+        String BORROW_DATE_RETURNED = "date_returned";
+    }
+
     // URI Paths
     public static final String PATH_BOOKS = "books";
     public static final String PATH_AUTHORS = "authors";
     public static final String PATH_PUBLISHERS = "publishers";
     public static final String PATH_BOOKS_AUTHORS = "books/authors";
+    public static final String PATH_BORROW_INFO = "borrowinfo";
 
     // Base URI specification (authority and its URI representation)
     public static final String CONTENT_AUTHORITY = "xyz.kandrac.Library";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
     public static final Uri BOOKS_AUTHORS_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_BOOKS).appendPath(PATH_AUTHORS).build();
+    public static final Uri BOOKS_BORROW_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_BOOKS).appendPath(PATH_BORROW_INFO).build();
 
     /**
      *
@@ -182,6 +194,27 @@ public class Contract {
             cv.put(BOOK_ID, bookId);
             cv.put(AUTHOR_ID, authorId);
             return cv;
+        }
+    }
+
+    public static class BorrowInfo implements BorrowInfoColumns {
+
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_BORROW_INFO).build();
+
+        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.borrow";
+        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.borrow";
+
+        /**
+         * Default "ORDER BY" clause.
+         */
+        public static final String DEFAULT_SORT = BORROW_DATE_BORROWED + " ASC";
+
+        public static Uri buildUri(long bookId) {
+            return CONTENT_URI.buildUpon().appendPath(Long.toString(bookId)).build();
+        }
+
+        public static long getBookId(Uri uri) {
+            return Long.parseLong(uri.getPathSegments().get(1));
         }
     }
 }

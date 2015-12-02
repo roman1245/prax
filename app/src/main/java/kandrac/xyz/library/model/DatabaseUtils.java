@@ -1,92 +1,139 @@
 package kandrac.xyz.library.model;
 
-import android.content.ContentResolver;
-import android.content.ContentValues;
-import android.net.Uri;
-
-import kandrac.xyz.library.model.obj.Author;
-import kandrac.xyz.library.model.obj.Book;
-import kandrac.xyz.library.model.obj.Publisher;
+import android.database.sqlite.SQLiteDatabase;
 
 /**
- * Created by kandrac on 21/11/15.
+ * Database Utils used mostly for Database Migrations
+ * <p/>
+ * Created by kandrac on 30/11/15.
  */
 public final class DatabaseUtils {
 
     private DatabaseUtils() {
+
     }
 
-    public static long saveBook(ContentResolver contentResolver, Book book) {
+    public static String[] getFullColumnNames(String table, String[] columnNames) {
+        for (int i = 0; i < columnNames.length; i++) {
+            columnNames[i] = table + "." + columnNames[i];
+        }
+        return columnNames;
+    }
 
-        if (book.id > 0) {
-            deleteBookAuthor(contentResolver, book.id);
+    /**
+     * Remove columns from given table based on list of columns that have to persist.
+     *
+     * @param tableName      name of table to apply changes to
+     * @param persistColumns columns that will remain unchanged
+     */
+    public static void RemoveTableColumnsSql(SQLiteDatabase database, String tableName, String[] persistColumns, String createNewTableScript, boolean removeBackupDatabase) {
+
+        // rename table that will be removed
+        database.execSQL(getRenameTableToBackupSql(tableName));
+
+        // create new table with removed columns
+        database.execSQL(createNewTableScript);
+
+        // copy values from old table to new one
+        database.execSQL(getCopySql(getBackupTableName(tableName), tableName, persistColumns, persistColumns));
+
+        // remove backup database if needed
+        if (removeBackupDatabase) {
+            database.execSQL("DROP TABLE " + getBackupTableName(tableName));
+        }
+    }
+
+    /**
+     * Get name of database for backup purposes
+     *
+     * @param tableName to get backup name from
+     * @return backup table name
+     */
+    private static String getBackupTableName(String tableName) {
+        return tableName + "_backup";
+    }
+
+    /**
+     * Get standard ALTER TABLE command, that will rename table to given name
+     *
+     * @param tableName    table to be renamed
+     * @param newTableName new name of table
+     * @return rename table SQL
+     */
+    public static String getRenameTableSql(String tableName, String newTableName) {
+        return "ALTER TABLE " + tableName + " RENAME TO " + newTableName;
+    }
+
+    /**
+     * Rename table to be backup table
+     *
+     * @param tableName to be renamed
+     * @return rename backup table SQL
+     */
+    private static String getRenameTableToBackupSql(String tableName) {
+        return getRenameTableSql(tableName, getBackupTableName(tableName));
+    }
+
+    /**
+     * Script for copying data based on column names from source to destination table. This can be
+     * used for example in case you are making database migration and you need to pass those data
+     * to another table which will be copy of source table with some columns removed or if you
+     * creating new table which has those columns required.
+     * <p/>
+     * Script is formed as follows: <br/>
+     * {@code INSERT INTO 'tableTo' ('columnsTo') SELECT 'columnsFrom' from 'tableFrom'}<br/>
+     * for example: <br/>
+     * {@code INSERT INTO tableTo (ct1, ct2) SELECT cf1, cf2 FROM tableFrom}
+     *
+     * @param tableFrom   source table
+     * @param tableTo     destination table
+     * @param columnsFrom columns from source table to copy
+     * @param columnsTo   columns from destination table to copy into
+     * @return SQL for copying data from table to table
+     */
+    public static String getCopySql(String tableFrom, String tableTo, String[] columnsFrom, String[] columnsTo) {
+        StringBuilder sqlBuilder = new StringBuilder();
+
+        sqlBuilder.append("INSERT INTO ")
+                .append(tableTo);
+
+        sqlBuilder.append("(");
+
+        for (int i = 0; i < columnsTo.length; i++) {
+            if (i > 0) {
+                sqlBuilder.append(", ");
+            }
+            sqlBuilder.append(columnsTo[i]);
         }
 
-        long publisherId = savePublisher(contentResolver, book.publisher);
+        sqlBuilder.append(") SELECT ");
 
-        long bookId = saveBookOnly(contentResolver, book, publisherId);
-
-        for (Author author : book.authors) {
-            long authorId = saveAuthor(contentResolver, author);
-            saveBookAuthor(contentResolver, bookId, authorId);
+        for (int i = 0; i < columnsFrom.length; i++) {
+            if (i > 0) {
+                sqlBuilder.append(", ");
+            }
+            sqlBuilder.append(columnsFrom[i]);
         }
 
-        return bookId;
+        sqlBuilder.append(" FROM ")
+                .append(tableFrom);
+
+        return sqlBuilder.toString();
     }
 
-    public static long saveBookOnly(ContentResolver contentResolver, Book book, long publisherId) {
-
-        ContentValues bookContentValues = new ContentValues();
-
-        bookContentValues.put(Contract.Books.BOOK_TITLE, book.title);
-        bookContentValues.put(Contract.Books.BOOK_SUBTITLE, book.subtitle);
-        bookContentValues.put(Contract.Books.BOOK_IMAGE_FILE, book.imageFilePath);
-        bookContentValues.put(Contract.Books.BOOK_DESCRIPTION, book.description);
-        bookContentValues.put(Contract.Books.BOOK_IMAGE_URL, book.imageUrlPath);
-        bookContentValues.put(Contract.Books.BOOK_ISBN, book.isbn);
-        bookContentValues.put(Contract.Books.BOOK_AUTHORS_READ, book.authorsReadable);
-        bookContentValues.put(Contract.Books.BOOK_PUBLISHER_ID, publisherId);
-
-        if (book.id > 0) {
-            contentResolver.update(Contract.Books.buildBookUri(book.id), bookContentValues, null, null);
-            return book.id;
-        } else {
-            Uri bookUri = contentResolver.insert(Contract.Books.CONTENT_URI, bookContentValues);
-            return Contract.Books.getBookId(bookUri);
-        }
-
+    /**
+     * Script for copying data based on column names from source to destination table. It will copy
+     * those values into columns with same name as in source table as specified in {@code columns}
+     * parameter.
+     *
+     * @param tableFrom source table
+     * @param tableTo   destination table
+     * @param columns   columns of tables to copy
+     * @return SQL for copying data from table to table
+     * @see #getCopySql(String, String, String[], String[])
+     */
+    public static String getCopySql(String tableFrom, String tableTo, String[] columns) {
+        return getCopySql(tableFrom, tableTo, columns, columns);
     }
 
-    public static long savePublisher(ContentResolver contentResolver, Publisher publisher) {
-
-        ContentValues publisherContentValues = new ContentValues();
-        publisherContentValues.put(Contract.Publishers.PUBLISHER_NAME, publisher.name);
-
-        Uri publisherUri = contentResolver.insert(Contract.Publishers.CONTENT_URI, publisherContentValues);
-
-        return Contract.Publishers.getPublisherId(publisherUri);
-    }
-
-    public static long saveAuthor(ContentResolver contentResolver, Author author) {
-
-        ContentValues authorContentValues = new ContentValues();
-        authorContentValues.put(Contract.Authors.AUTHOR_NAME, author.name);
-
-        Uri authorUri = contentResolver.insert(Contract.Authors.CONTENT_URI, authorContentValues);
-
-        return Contract.Authors.getAuthorId(authorUri);
-    }
-
-    public static void saveBookAuthor(ContentResolver contentResolver, long bookId, long authorId) {
-
-        ContentValues bookAuthorContentValues = new ContentValues();
-        bookAuthorContentValues.put(Contract.BookAuthors.BOOK_ID, bookId);
-        bookAuthorContentValues.put(Contract.BookAuthors.AUTHOR_ID, authorId);
-
-        contentResolver.insert(Contract.BookAuthors.CONTENT_URI, bookAuthorContentValues);
-    }
-
-    public static long deleteBookAuthor(ContentResolver contentResolver, long bookId) {
-        return contentResolver.delete(Contract.BOOKS_AUTHORS_URI, Contract.BookAuthors.BOOK_ID + " = ?", new String[]{Long.toString(bookId)});
-    }
 }
