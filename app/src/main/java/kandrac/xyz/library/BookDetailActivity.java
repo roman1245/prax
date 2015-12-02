@@ -21,6 +21,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,7 +57,8 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     private BookDetailBinding binding;
     private MenuItem mBorrowMenuItem;
 
-    private boolean mBorrowed;
+    private boolean mBorrowed = true;
+    private String name;
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -69,6 +71,12 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
 
     @Bind(R.id.subtitle)
     TextView subtitle;
+
+    @Bind(R.id.book_borrow_image)
+    ImageView borrowImage;
+
+    @Bind(R.id.book_borrow)
+    TextView borrowText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,7 +148,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                             .into(cover);
                 }
                 break;
-            case LOADER_CONTACT: {
+            case LOADER_CONTACT:
                 if (!data.moveToFirst()) {
                     break;
                 }
@@ -155,10 +163,15 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                 cv.put(Contract.BorrowInfo.BORROW_NAME, data.getString(0));
                 cv.put(Contract.BorrowInfo.BORROW_MAIL, data.getString(1));
                 getContentResolver().insert(Contract.BorrowInfo.CONTENT_URI, cv);
-            }
+                break;
             case LOADER_BORROW_DETAIL:
                 // no borrow details provided means book is not provided, enable borrow button
-                mBorrowed = data.getCount() == 0;
+                mBorrowed = data.getCount() != 0;
+
+                if (data.moveToFirst() && data.getCount() != 0) {
+                    name = data.getString(data.getColumnIndex(Contract.BorrowInfo.BORROW_MAIL));
+                }
+
                 checkBorrowed();
         }
     }
@@ -170,8 +183,13 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
 
     private void checkBorrowed() {
         if (mBorrowMenuItem != null) {
-            mBorrowMenuItem.setVisible(mBorrowed);
+            // allow borrow book if book is not borrowed
+            mBorrowMenuItem.setVisible(!mBorrowed);
         }
+
+        borrowImage.setVisibility(mBorrowed ? View.VISIBLE : View.GONE);
+        borrowText.setVisibility(mBorrowed ? View.VISIBLE : View.GONE);
+        borrowText.setText(name);
     }
 
     // ToolBar option menu
