@@ -150,10 +150,10 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                 break;
             case LOADER_CONTACT:
                 if (!data.moveToFirst()) {
+                    // TODO: replace
+                    Toast.makeText(this, "no data to obtain", Toast.LENGTH_SHORT).show();
                     break;
                 }
-
-                Toast.makeText(this, data.getString(0) + "," + data.getString(1), Toast.LENGTH_SHORT).show();
 
                 String contactId = contactUri.getLastPathSegment();
                 ContentValues cv = new ContentValues();
@@ -169,7 +169,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                 mBorrowed = data.getCount() != 0;
 
                 if (data.moveToFirst() && data.getCount() != 0) {
-                    name = data.getString(data.getColumnIndex(Contract.BorrowInfo.BORROW_MAIL));
+                    name = data.getString(data.getColumnIndex(Contract.BorrowInfo.BORROW_NAME));
                 }
 
                 checkBorrowed();
@@ -256,15 +256,16 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
 
     @Override
     public void onActivityResult(int reqCode, int resultCode, Intent data) {
-        super.onActivityResult(reqCode, resultCode, data);
-
         switch (reqCode) {
             case (PICK_CONTACT_ACTION): {
                 if (resultCode == Activity.RESULT_OK) {
                     contactUri = data.getData();
-                    getSupportLoaderManager().initLoader(LOADER_CONTACT, null, this);
+                    getSupportLoaderManager().restartLoader(LOADER_CONTACT, null, this);
                 }
+                break;
             }
+            default:
+                super.onActivityResult(reqCode, resultCode, data);
         }
     }
 }
