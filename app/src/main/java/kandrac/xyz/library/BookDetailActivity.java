@@ -17,11 +17,13 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,7 +60,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     private MenuItem mBorrowMenuItem;
 
     private boolean mBorrowed = true;
-    private String name;
+    private BorrowDetails borrowDetails;
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -76,7 +78,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     ImageView borrowImage;
 
     @Bind(R.id.book_borrow)
-    TextView borrowText;
+    Button borrowButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,7 +126,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         int id = loader.getId();
         switch (id) {
-            case LOADER_BOOK:
+            case LOADER_BOOK: {
                 if (data.getCount() == 1) {
                     Book book = new Book(data);
                     binding.setBook(book);
@@ -148,31 +150,43 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                             .into(cover);
                 }
                 break;
-            case LOADER_CONTACT:
+            }
+            case LOADER_CONTACT: {
                 if (!data.moveToFirst()) {
                     // TODO: replace
                     Toast.makeText(this, "no data to obtain", Toast.LENGTH_SHORT).show();
                     break;
                 }
 
+                long dateFrom = new Date(System.currentTimeMillis()).getTime();
+                String name = data.getString(0);
+
                 String contactId = contactUri.getLastPathSegment();
                 ContentValues cv = new ContentValues();
                 cv.put(Contract.BorrowInfo.BORROW_BOOK_ID, mBookId);
                 cv.put(Contract.BorrowInfo.BORROW_TO, contactId);
-                cv.put(Contract.BorrowInfo.BORROW_DATE_BORROWED, new Date(System.currentTimeMillis()).getTime());
-                cv.put(Contract.BorrowInfo.BORROW_NAME, data.getString(0));
+                cv.put(Contract.BorrowInfo.BORROW_DATE_BORROWED, dateFrom);
+                cv.put(Contract.BorrowInfo.BORROW_NAME, name);
                 cv.put(Contract.BorrowInfo.BORROW_MAIL, data.getString(1));
                 getContentResolver().insert(Contract.BorrowInfo.CONTENT_URI, cv);
+
                 break;
-            case LOADER_BORROW_DETAIL:
+            }
+            case LOADER_BORROW_DETAIL: {
                 // no borrow details provided means book is not provided, enable borrow button
                 mBorrowed = data.getCount() != 0;
 
                 if (data.moveToFirst() && data.getCount() != 0) {
-                    name = data.getString(data.getColumnIndex(Contract.BorrowInfo.BORROW_NAME));
+                    borrowDetails = new BorrowDetails(
+                            data.getLong(data.getColumnIndex(Contract.BorrowInfo.BORROW_ID)),
+                            data.getString(data.getColumnIndex(Contract.BorrowInfo.BORROW_NAME)),
+                            data.getLong(data.getColumnIndex(Contract.BorrowInfo.BORROW_DATE_BORROWED)),
+                            data.getLong(data.getColumnIndex(Contract.BorrowInfo.BORROW_DATE_RETURNED))
+                    );
                 }
 
                 checkBorrowed();
+            }
         }
     }
 
@@ -187,12 +201,22 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
             mBorrowMenuItem.setVisible(!mBorrowed);
         }
 
-        borrowImage.setVisibility(mBorrowed ? View.VISIBLE : View.GONE);
-        borrowText.setVisibility(mBorrowed ? View.VISIBLE : View.GONE);
-        borrowText.setText(name);
+        if (mBorrowed && borrowDetails != null) {
+            borrowImage.setVisibility(View.VISIBLE);
+            borrowButton.setVisibility(View.VISIBLE);
+            borrowButton.setText(borrowDetails.name);
+            borrowButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    BorrowFragment.getInstance(borrowDetails.name, borrowDetails.dateFrom, borrowDetails.dateTo, borrowDetails.id).show(getFragmentManager(), null);
+                }
+            });
+        } else {
+            borrowImage.setVisibility(View.GONE);
+            borrowButton.setVisibility(View.GONE);
+        }
     }
 
-    // ToolBar option menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.book_detail_menu, menu);
@@ -266,6 +290,20 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
             }
             default:
                 super.onActivityResult(reqCode, resultCode, data);
+        }
+    }
+
+    private class BorrowDetails {
+        long id;
+        String name;
+        long dateFrom;
+        long dateTo;
+
+        public BorrowDetails(long id, String name, long dateFrom, long dateTo) {
+            this.id = id;
+            this.name = name;
+            this.dateFrom = dateFrom;
+            this.dateTo = dateTo;
         }
     }
 }

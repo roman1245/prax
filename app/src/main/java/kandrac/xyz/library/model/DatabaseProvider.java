@@ -235,9 +235,9 @@ public class DatabaseProvider extends ContentProvider {
                 return uri;
             }
             case BORROW_INFO: {
-                db.insert(Database.Tables.BORROW_INFO, null, values);
+                long result = db.insert(Database.Tables.BORROW_INFO, null, values);
                 getContext().getContentResolver().notifyChange(uri, null);
-                return uri;
+                return Contract.BorrowInfo.buildUri(result);
             }
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);

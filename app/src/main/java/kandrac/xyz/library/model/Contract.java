@@ -209,6 +209,7 @@ public class Contract {
          */
         public static final String DEFAULT_SORT = BORROW_DATE_BORROWED + " ASC";
 
+        // TODO: book
         public static Uri buildUri(long bookId) {
             return CONTENT_URI.buildUpon().appendPath(Long.toString(bookId)).build();
         }

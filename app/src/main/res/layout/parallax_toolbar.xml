@@ -27,13 +27,6 @@
             android:src="@drawable/navigation_back"
             app:layout_collapseMode="parallax" />
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="bottom"
-            android:src="@drawable/gradient"
-            app:layout_collapseMode="parallax" />
-
         <TextView
             android:id="@+id/subtitle"
             style="@style/Base.TextAppearance.AppCompat.Medium"
