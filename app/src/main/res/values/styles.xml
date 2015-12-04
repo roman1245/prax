@@ -9,10 +9,12 @@
     </style>
 
     <!-- More specified for this APIs -->
-    <style name="AppTheme.Base" parent="@style/AppTheme"/>
+    <style name="AppTheme.Base" parent="@style/AppTheme" />
+
+    <style name="AppTheme.Base.NoStatusBar" parent="@style/AppTheme.Base" />
 
     <!-- Supported since API 21-->
-    <style name="AppTheme.NoStatusBar" parent="@style/AppTheme.Base"/>
+    <style name="AppTheme.NoStatusBar" parent="@style/AppTheme.Base" />
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
