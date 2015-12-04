@@ -1,4 +1,5 @@
 -dontwarn retrofit.**
+-dontwarn okio.**
 -keep class retrofit.** { *; }
 -keepattributes Signature
 -keepattributes Exceptions
@@ -14,3 +15,5 @@
 -keepclasseswithmembernames class * {
     @butterknife.* <methods>;
 }
+
+-keep class android.support.v7.widget.SearchView { *; }

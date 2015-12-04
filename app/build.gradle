@@ -11,18 +11,18 @@ android {
         targetSdkVersion 23
         versionCode 6
         versionName "0.2.0"
+        buildConfigField 'String', 'BOOKS_API_URL', '"https://www.googleapis.com"'
     }
 
     buildTypes {
 
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
 
         debug {
             buildConfigField 'String', 'BOOKS_API_KEY', '"AIzaSyCJJ0MF8D795z4RyA-Q5FRRJnn5bf1hVw0"'
-            buildConfigField 'String', 'BOOKS_API_URL', '"https://www.googleapis.com"'
         }
     }
 

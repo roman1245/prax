@@ -1,7 +1,5 @@
 package kandrac.xyz.library;
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -108,10 +106,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         inflater.inflate(R.menu.main_menu, menu);
 
         // Associate searchable configuration with the SearchView
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         MenuItem searchMenuItem = menu.findItem(R.id.search);
         searchView = (SearchView) searchMenuItem.getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
