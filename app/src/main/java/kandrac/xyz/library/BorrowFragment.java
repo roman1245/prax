@@ -79,12 +79,13 @@ public class BorrowFragment extends DialogFragment {
         dateFrom.setText("Borrowed: " + dateFormat.format(new Date(mFrom)));
         dateTo.setText("Returned:" + dateFormat.format(new Date(mTo)));
         name.setText(mName);
+
         returnButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ContentValues cv = new ContentValues();
                 cv.put(Contract.BorrowInfo.BORROW_DATE_RETURNED, new Date(System.currentTimeMillis()).getTime());
-                getActivity().getContentResolver().update(Contract.BorrowInfo.CONTENT_URI, cv, Contract.BorrowInfo.BORROW_BOOK_ID + " = ? ", new String[]{Long.toString(mId)});
+                getActivity().getContentResolver().update(Contract.BorrowInfo.buildUri(mId), cv, null, null);
                 dismiss();
             }
         });

@@ -43,6 +43,7 @@ public class DatabaseProvider extends ContentProvider {
     public static final int BOOKS_AUTHORS = 400;
 
     public static final int BORROW_INFO = 500;
+    public static final int BORROW_INFO_ID = 503;
     public static final int BORROW_INFO_BY_BOOK = 501;
 
     public static final int BOOKS_BORROW = 502;
@@ -54,6 +55,8 @@ public class DatabaseProvider extends ContentProvider {
         uriMatcher.addURI(authority, "books", BOOKS);
         uriMatcher.addURI(authority, "books/#", BOOK_ID);
         uriMatcher.addURI(authority, "books/#/authors", AUTHOR_BY_BOOK);
+        uriMatcher.addURI(authority, "books/#/borrowinfo", BORROW_INFO_BY_BOOK);
+
         uriMatcher.addURI(authority, "authors", AUTHORS);
         uriMatcher.addURI(authority, "authors/#", AUTHOR_ID);
         uriMatcher.addURI(authority, "authors/#/books", BOOK_BY_AUTHOR);
@@ -63,7 +66,7 @@ public class DatabaseProvider extends ContentProvider {
 
         uriMatcher.addURI(authority, "books/authors", BOOKS_AUTHORS);
         uriMatcher.addURI(authority, "borrowinfo", BORROW_INFO);
-        uriMatcher.addURI(authority, "borrowinfo/#", BORROW_INFO_BY_BOOK);
+        uriMatcher.addURI(authority, "borrowinfo/#", BORROW_INFO_ID);
 
         uriMatcher.addURI(authority, "books/borrowinfo", BOOKS_BORROW);
 
@@ -166,6 +169,7 @@ public class DatabaseProvider extends ContentProvider {
                 break;
             case BOOKS_BORROW:
                 qb.setTables(Database.Tables.BOOKS_JOIN_BORROW);
+                qb.setDistinct(true);
                 sortOrder = sortOrder == null ? Contract.Books.DEFAULT_SORT : sortOrder;
                 break;
             default:
@@ -234,9 +238,19 @@ public class DatabaseProvider extends ContentProvider {
                 getContext().getContentResolver().notifyChange(uri, null);
                 return uri;
             }
+            case BORROW_INFO_BY_BOOK: {
+                long bookId = Contract.Books.getBookId(uri);
+                values.put(Contract.BorrowInfo.BORROW_BOOK_ID, bookId);
+
+                long result = db.insert(Database.Tables.BORROW_INFO, null, values);
+                getContext().getContentResolver().notifyChange(uri, null);
+                getContext().getContentResolver().notifyChange(Contract.Books.CONTENT_URI, null);
+                return Contract.BorrowInfo.buildUri(result);
+            }
             case BORROW_INFO: {
                 long result = db.insert(Database.Tables.BORROW_INFO, null, values);
                 getContext().getContentResolver().notifyChange(uri, null);
+                getContext().getContentResolver().notifyChange(Contract.Books.CONTENT_URI, null);
                 return Contract.BorrowInfo.buildUri(result);
             }
             default:
@@ -346,6 +360,7 @@ public class DatabaseProvider extends ContentProvider {
         return count;
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         int count;
@@ -381,18 +396,19 @@ public class DatabaseProvider extends ContentProvider {
                         (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
                 break;
             }
-            case BORROW_INFO: {
-                count = db.update(Database.Tables.BORROW_INFO, values, selection, selectionArgs);
+            case BORROW_INFO_ID: {
+                long id = Contract.BorrowInfo.getBookId(uri);
+                count = db.update(Database.Tables.BORROW_INFO, values, Contract.BorrowInfo.BORROW_ID + " = ? ", new String[]{Long.toString(id)});
+                // TODO: notify just concrete book
+                getContext().getContentResolver().notifyChange(Contract.Books.CONTENT_URI, null);
                 break;
             }
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
 
-        Context context = getContext();
-        if (context != null) {
-            context.getContentResolver().notifyChange(uri, null);
-        }
+        getContext().getContentResolver().notifyChange(uri, null);
+
         return count;
     }
 

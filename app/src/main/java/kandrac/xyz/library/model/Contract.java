@@ -103,6 +103,10 @@ public class Contract {
         public static long getBookId(Uri uri) {
             return Long.parseLong(uri.getPathSegments().get(1));
         }
+
+        public static Uri buildBorrowInfoUri(long bookId) {
+            return CONTENT_URI.buildUpon().appendPath(Long.toString(bookId)).appendPath(PATH_BORROW_INFO).build();
+        }
     }
 
     /**
@@ -209,9 +213,8 @@ public class Contract {
          */
         public static final String DEFAULT_SORT = BORROW_DATE_BORROWED + " ASC";
 
-        // TODO: book
-        public static Uri buildUri(long bookId) {
-            return CONTENT_URI.buildUpon().appendPath(Long.toString(bookId)).build();
+        public static Uri buildUri(long borrowId) {
+            return CONTENT_URI.buildUpon().appendPath(Long.toString(borrowId)).build();
         }
 
         public static long getBookId(Uri uri) {
