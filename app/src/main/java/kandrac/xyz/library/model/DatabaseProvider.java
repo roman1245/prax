@@ -307,9 +307,10 @@ public class DatabaseProvider extends ContentProvider {
         return db.compileStatement(selectStatement).simpleQueryForLong();
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
-        int count;
+        int count = 0;
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
         switch (uriMatcher.match(uri)) {
@@ -329,8 +330,19 @@ public class DatabaseProvider extends ContentProvider {
             }
             case AUTHOR_ID: {
                 long id = Contract.Authors.getAuthorId(uri);
-                count = db.delete(Database.Tables.AUTHORS, Contract.Authors.AUTHOR_ID + " = " + id +
+
+                count += db.delete(
+                        Database.Tables.BOOKS,
+                        Contract.Books.BOOK_ID + " IN (SELECT "
+                                + Contract.BookAuthors.BOOK_ID + " FROM " + Database.Tables.BOOKS_AUTHORS +
+                                " WHERE " + Contract.BookAuthors.AUTHOR_ID + " = ?)",
+                        new String[]{Long.toString(id)});
+
+                getContext().getContentResolver().notifyChange(Contract.Books.CONTENT_URI, null);
+
+                count += db.delete(Database.Tables.AUTHORS, Contract.Authors.AUTHOR_ID + " = " + id +
                         (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
+
                 break;
             }
             case PUBLISHERS: {
@@ -341,6 +353,8 @@ public class DatabaseProvider extends ContentProvider {
                 long id = Contract.Publishers.getPublisherId(uri);
                 count = db.delete(Database.Tables.PUBLISHERS, Contract.Publishers.PUBLISHER_ID + " = " + id +
                         (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
+
+                getContext().getContentResolver().notifyChange(Contract.Books.CONTENT_URI, null);
                 break;
             }
             case BOOKS_AUTHORS: {
@@ -351,10 +365,7 @@ public class DatabaseProvider extends ContentProvider {
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
 
-        Context context = getContext();
-        if (context != null) {
-            context.getContentResolver().notifyChange(uri, null);
-        }
+        getContext().getContentResolver().notifyChange(uri, null);
         return count;
     }
 

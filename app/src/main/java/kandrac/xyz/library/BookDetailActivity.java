@@ -194,7 +194,9 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
         int id = loader.getId();
         switch (id) {
             case LOADER_BOOK: {
-                bindBook(new Book(data));
+                if (data != null && data.getCount() > 0) {
+                    bindBook(new Book(data));
+                }
                 break;
             }
             case LOADER_CONTACT: {

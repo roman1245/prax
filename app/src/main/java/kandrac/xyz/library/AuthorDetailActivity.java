@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
@@ -105,11 +106,22 @@ public class AuthorDetailActivity extends AppCompatActivity implements LoaderMan
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.author_detail_menu, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
             case android.R.id.home:
                 finish();
+                return true;
+            case R.id.action_delete:
+                getContentResolver().delete(Contract.Authors.buildAuthorUri(mAuthorId), null, null);
+                finish();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
