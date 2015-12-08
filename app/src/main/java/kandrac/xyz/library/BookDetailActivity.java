@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.Date;
 
 import butterknife.Bind;
@@ -124,8 +125,10 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
         isbn.setText(book.isbn);
         description.setText(book.description);
 
+        File imageFile = book.imageFilePath == null ? null : new File(book.imageFilePath);
+
         Picasso.with(this)
-                .load(book.imageFilePath)
+                .load(imageFile != null && imageFile.exists() ? imageFile : null)
                 .placeholder(R.drawable.navigation_back)
                 .resize(cover.getMeasuredWidth(), cover.getMeasuredHeight())
                 .centerInside()
