@@ -71,7 +71,7 @@ public class BookListFragment extends SubtitledFragment implements LoaderManager
      * @return instance
      */
     public static BookListFragment getBorrowedBooksInstance() {
-        return getInstance(R.string.menu_books_borrowed, Contract.BorrowInfo.BORROW_DATE_RETURNED + " = 0", false, MainActivity.BORROWED_BOOK_LIST_LOADER);
+        return getInstance(R.string.menu_books_borrowed, Contract.Books.BOOK_BORROWED + " = 1", false, MainActivity.BORROWED_BOOK_LIST_LOADER);
     }
 
     /**
@@ -142,7 +142,7 @@ public class BookListFragment extends SubtitledFragment implements LoaderManager
 
             return new CursorLoader(
                     getActivity(),
-                    Contract.BOOKS_BORROW_URI,
+                    Contract.Books.CONTENT_URI,
                     DatabaseUtils.getFullColumnNames(
                             Database.Tables.BOOKS, new String[]{
                                     Contract.Books.BOOK_ID,

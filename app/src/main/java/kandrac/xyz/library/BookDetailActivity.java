@@ -151,7 +151,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
             borrowButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    BorrowFragment.getInstance(details.name, details.dateFrom, details.dateTo, details.id).show(getFragmentManager(), null);
+                    BorrowFragment.getInstance(mBookId, details.name, details.dateFrom, details.dateTo, details.id).show(getFragmentManager(), null);
                 }
             });
             displayShare = false;
@@ -207,11 +207,15 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                 final String name = data.getString(ContactRequest.NAME_COLUMN);
 
                 String contactId = contactUri.getLastPathSegment();
-                ContentValues cv = new ContentValues();
-                cv.put(Contract.BorrowInfo.BORROW_TO, contactId);
-                cv.put(Contract.BorrowInfo.BORROW_DATE_BORROWED, dateFrom);
-                cv.put(Contract.BorrowInfo.BORROW_NAME, name);
-                getContentResolver().insert(Contract.Books.buildBorrowInfoUri(mBookId), cv);
+                ContentValues borrowContentValues = new ContentValues();
+                borrowContentValues.put(Contract.BorrowInfo.BORROW_TO, contactId);
+                borrowContentValues.put(Contract.BorrowInfo.BORROW_DATE_BORROWED, dateFrom);
+                borrowContentValues.put(Contract.BorrowInfo.BORROW_NAME, name);
+                getContentResolver().insert(Contract.Books.buildBorrowInfoUri(mBookId), borrowContentValues);
+
+                ContentValues bookContentValues = new ContentValues();
+                bookContentValues.put(Contract.Books.BOOK_BORROWED, true);
+                getContentResolver().update(Contract.Books.buildBookUri(mBookId), bookContentValues, null, null);
 
                 break;
             }

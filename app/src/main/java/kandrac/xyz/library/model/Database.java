@@ -49,6 +49,7 @@ public class Database extends SQLiteOpenHelper {
                     Contract.Books.BOOK_IMAGE_FILE + " TEXT," +
                     Contract.Books.BOOK_IMAGE_URL + " TEXT," +
                     Contract.Books.BOOK_AUTHORS_READ + " TEXT," +
+                    Contract.Books.BOOK_BORROWED + " BOOLEAN," +
                     Contract.Books.BOOK_PUBLISHER_ID + " INTEGER " + References.PUBLISHERS_ID + ")";
 
     public static final String AUTHORS_CREATE_TABLE =

@@ -23,11 +23,13 @@ import kandrac.xyz.library.model.Contract;
 public class BorrowFragment extends DialogFragment {
 
     private static final String EXTRA_ID = "id";
+    private static final String EXTRA_BOOK_ID = "book_id";
     private static final String EXTRA_FROM = "from";
     private static final String EXTRA_TO = "to";
     private static final String EXTRA_NAME = "name";
 
     private long mId;
+    private long mBookId;
     private long mFrom;
     private long mTo;
     private String mName;
@@ -46,10 +48,11 @@ public class BorrowFragment extends DialogFragment {
 
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd. MM. yyyy", Locale.getDefault());
 
-    public static BorrowFragment getInstance(String name, long from, long to, long id) {
+    public static BorrowFragment getInstance(long bookId, String name, long from, long to, long id) {
         BorrowFragment result = new BorrowFragment();
         Bundle arguments = new Bundle();
         arguments.putLong(EXTRA_ID, id);
+        arguments.putLong(EXTRA_BOOK_ID, bookId);
         arguments.putLong(EXTRA_FROM, from);
         arguments.putLong(EXTRA_TO, to);
         arguments.putString(EXTRA_NAME, name);
@@ -61,6 +64,7 @@ public class BorrowFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mId = getArguments().getLong(EXTRA_ID);
+        mBookId = getArguments().getLong(EXTRA_BOOK_ID);
         mFrom = getArguments().getLong(EXTRA_FROM);
         mTo = getArguments().getLong(EXTRA_TO);
         mName = getArguments().getString(EXTRA_NAME);
@@ -86,6 +90,10 @@ public class BorrowFragment extends DialogFragment {
                 ContentValues cv = new ContentValues();
                 cv.put(Contract.BorrowInfo.BORROW_DATE_RETURNED, new Date(System.currentTimeMillis()).getTime());
                 getActivity().getContentResolver().update(Contract.BorrowInfo.buildUri(mId), cv, null, null);
+
+                ContentValues bookContentValues = new ContentValues();
+                bookContentValues.put(Contract.Books.BOOK_BORROWED, false);
+                getActivity().getContentResolver().update(Contract.Books.buildBookUri(mBookId), bookContentValues, null, null);
                 dismiss();
             }
         });

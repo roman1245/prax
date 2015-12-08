@@ -244,13 +244,11 @@ public class DatabaseProvider extends ContentProvider {
 
                 long result = db.insert(Database.Tables.BORROW_INFO, null, values);
                 getContext().getContentResolver().notifyChange(uri, null);
-                getContext().getContentResolver().notifyChange(Contract.Books.CONTENT_URI, null);
                 return Contract.BorrowInfo.buildUri(result);
             }
             case BORROW_INFO: {
                 long result = db.insert(Database.Tables.BORROW_INFO, null, values);
                 getContext().getContentResolver().notifyChange(uri, null);
-                getContext().getContentResolver().notifyChange(Contract.Books.CONTENT_URI, null);
                 return Contract.BorrowInfo.buildUri(result);
             }
             default:
@@ -399,8 +397,6 @@ public class DatabaseProvider extends ContentProvider {
             case BORROW_INFO_ID: {
                 long id = Contract.BorrowInfo.getBookId(uri);
                 count = db.update(Database.Tables.BORROW_INFO, values, Contract.BorrowInfo.BORROW_ID + " = ? ", new String[]{Long.toString(id)});
-                // TODO: notify just concrete book
-                getContext().getContentResolver().notifyChange(Contract.Books.CONTENT_URI, null);
                 break;
             }
             default:
