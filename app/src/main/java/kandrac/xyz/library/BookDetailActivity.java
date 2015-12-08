@@ -9,6 +9,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
+import android.provider.ContactsContract.Data;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.ActivityCompat;
@@ -169,14 +171,18 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                 return new CursorLoader(this, Contract.Books.buildBookUri(mBookId), null, null, null, null);
             case LOADER_CONTACT:
                 // invoked after result came from Contacts
+                // TODO: check ContactsContract.CommonDataKinds.Email.CONTENT_URI to get Email or
+                // developer.android.com/reference/android/provider/ContactsContract.Data.html and MIME types
+
                 String contactId = contactUri.getLastPathSegment();
                 return new CursorLoader(
                         this,
-                        ContactsContract.CommonDataKinds.Email.CONTENT_URI,
-                        new String[]{ContactsContract.Data.DISPLAY_NAME, ContactsContract.CommonDataKinds.Email.DATA1},
-                        ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
+                        Data.CONTENT_URI,
+                        ContactRequest.GENERAL_COLUMNS,
+                        ContactRequest.GENERAL_SELECTION,
                         new String[]{contactId},
                         null);
+
             case LOADER_BORROW_DETAIL:
                 return new CursorLoader(this, Contract.Books.buildBorrowInfoUri(mBookId), null, Contract.BorrowInfo.BORROW_DATE_RETURNED + " = 0", null, null);
         }
@@ -193,21 +199,18 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
             }
             case LOADER_CONTACT: {
                 if (!data.moveToFirst()) {
-                    // TODO: replace
-                    Toast.makeText(this, "no data to obtain", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.unexpected_error_occurs, Toast.LENGTH_SHORT).show();
                     break;
                 }
 
                 final long dateFrom = new Date(System.currentTimeMillis()).getTime();
-                final String name = data.getString(0);
-                final String mail = data.getString(1);
+                final String name = data.getString(ContactRequest.NAME_COLUMN);
 
                 String contactId = contactUri.getLastPathSegment();
                 ContentValues cv = new ContentValues();
                 cv.put(Contract.BorrowInfo.BORROW_TO, contactId);
                 cv.put(Contract.BorrowInfo.BORROW_DATE_BORROWED, dateFrom);
                 cv.put(Contract.BorrowInfo.BORROW_NAME, name);
-                cv.put(Contract.BorrowInfo.BORROW_MAIL, mail);
                 getContentResolver().insert(Contract.Books.buildBorrowInfoUri(mBookId), cv);
 
                 break;
@@ -327,5 +330,23 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
             this.dateFrom = dateFrom;
             this.dateTo = dateTo;
         }
+    }
+
+    /**
+     * Helper interface for creating Contact Requests
+     */
+    @SuppressWarnings("unused")
+    private interface ContactRequest {
+
+        // WHERE Statements
+        String GENERAL_SELECTION = Data.CONTACT_ID + " = ?";
+        String PHONE_SELECTION = GENERAL_SELECTION + " AND " + Data.MIMETYPE + "='" + Phone.CONTENT_ITEM_TYPE + "'";
+
+        // selection columns
+        String[] GENERAL_COLUMNS = new String[]{Data.DISPLAY_NAME};
+        String[] PHONE_COLUMNS = new String[]{Phone.NUMBER};
+
+        int NAME_COLUMN = 0;
+
     }
 }

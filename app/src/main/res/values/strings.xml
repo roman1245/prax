@@ -3,6 +3,9 @@
     <!-- Application texts -->
     <string name="app_name">Library</string>
 
+    <!-- General errors and messages -->
+    <string name="unexpected_error_occurs">An unexpected error occurs</string>
+
     <!-- Action strings (mostly used in Toolbar) -->
     <string name="action_save">Save</string>
     <string name="action_edit">Edit</string>
