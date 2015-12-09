@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -95,7 +96,7 @@ public class AuthorDetailActivity extends AppCompatActivity implements LoaderMan
         if (data.getCount() > 0) {
             Author author = new Author(data);
             binding.setAuthor(author);
-            collapsingToolbarLayout.setTitle(author.name);
+            collapsingToolbarLayout.setTitle(TextUtils.isEmpty(author.name) ? getString(R.string.author_unknown) : author.name);
 
             adapter.setCursor(data);
             adapter.notifyDataSetChanged();

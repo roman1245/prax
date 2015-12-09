@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -96,7 +97,7 @@ public class PublisherDetailActivity extends AppCompatActivity implements Loader
         if (data.getCount() > 0) {
             Publisher publisher = new Publisher(data);
             binding.setPublisher(publisher);
-            collapsingToolbarLayout.setTitle(publisher.name);
+            collapsingToolbarLayout.setTitle(TextUtils.isEmpty(publisher.name) ? getString(R.string.publisher_unknown) : publisher.name);
 
             adapter.setCursor(data);
             adapter.notifyDataSetChanged();

@@ -36,7 +36,13 @@ public final class DatabaseStoreUtils {
 
         long bookId = saveBookOnly(contentResolver, book, publisherId);
 
-        for (Author author : book.authors) {
+        if (book.authors != null && book.authors.length > 0) {
+            for (Author author : book.authors) {
+                long authorId = saveAuthor(contentResolver, author);
+                saveBookAuthor(contentResolver, bookId, authorId);
+            }
+        } else {
+            Author author = new Author.Builder().setName("").build();
             long authorId = saveAuthor(contentResolver, author);
             saveBookAuthor(contentResolver, bookId, authorId);
         }

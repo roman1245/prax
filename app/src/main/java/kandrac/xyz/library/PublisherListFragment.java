@@ -3,7 +3,6 @@ package kandrac.xyz.library;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -12,13 +11,15 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import kandrac.xyz.library.databinding.PublisherListItemBinding;
 import kandrac.xyz.library.model.Contract;
 import kandrac.xyz.library.model.obj.Publisher;
 
@@ -106,8 +107,14 @@ public class PublisherListFragment extends SubtitledFragment implements LoaderMa
     private class PublishCursorAdapter extends RecyclerView.Adapter<PublishCursorAdapter.BindingHolder> {
 
         public class BindingHolder extends RecyclerView.ViewHolder {
+
+            ImageView image;
+            TextView text;
+
             public BindingHolder(View rowView) {
                 super(rowView);
+                image = (ImageView) rowView.findViewById(R.id.image);
+                text = (TextView) rowView.findViewById(R.id.line1);
             }
         }
 
@@ -120,7 +127,7 @@ public class PublisherListFragment extends SubtitledFragment implements LoaderMa
         @Override
         public BindingHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            return new BindingHolder(PublisherListItemBinding.inflate(inflater, parent, false).getRoot());
+            return new BindingHolder(inflater.inflate(R.layout.publisher_list_item, parent, false));
         }
 
         @Override
@@ -128,8 +135,7 @@ public class PublisherListFragment extends SubtitledFragment implements LoaderMa
             mCursor.moveToPosition(position);
             final Publisher publisher = new Publisher(mCursor);
 
-            PublisherListItemBinding binding = DataBindingUtil.getBinding(holder.itemView);
-            binding.setPublisher(publisher);
+            holder.text.setText(TextUtils.isEmpty(publisher.name) ? getString(R.string.publisher_unknown) : publisher.name);
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
