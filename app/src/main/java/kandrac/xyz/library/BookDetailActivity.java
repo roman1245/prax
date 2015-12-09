@@ -281,7 +281,6 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                 new AlertDialog.Builder(this)
                         .setTitle(R.string.dialog_book_delete_title)
                         .setMessage(R.string.dialog_book_delete_message)
-                        .setIcon(R.drawable.ic_book)
                         .setCancelable(true)
                         .setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
                             @Override
