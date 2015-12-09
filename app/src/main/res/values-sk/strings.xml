@@ -13,6 +13,7 @@
     <string name="action_borrow">Požičať</string>
     <string name="action_search">Hľadať</string>
     <string name="action_ok">OK</string>
+    <string name="action_cancel">Zrušiť</string>
 
     <!-- Basic Image Content descriptors -->
     <string name="book_list_item">Kniha</string>
@@ -58,4 +59,14 @@
     Aplikácia ako ju vidíte teraz je len vo svojich začiatkoch a množstvo zo spomenutých funkcií sama
     nemá. Je však od začiatku pripravená na to, aby Vám poskytla maximálnu možnosť využitia jej
     funkcií.</string>
+
+    <!-- Dialog Actions -->
+    <string name="dialog_book_delete_title">Vymazať knihu</string>
+    <string name="dialog_book_delete_message">Naozaj chceš vymazať túto knihu?</string>
+
+    <string name="dialog_author_delete_title">Vymazať autora</string>
+    <string name="dialog_author_delete_message">Naozaj chceš vymazať tohto autora aj všetky knihy ktoré napísal?</string>
+
+    <string name="dialog_publisher_delete_title">Vymazať vydavateľa</string>
+    <string name="dialog_publisher_delete_message">Naozaj chceš vymazať tohto vydavateľa aj všetky knihy ktoré vydal?</string>
 </resources>

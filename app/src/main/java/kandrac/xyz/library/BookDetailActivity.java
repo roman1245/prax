@@ -3,6 +3,7 @@ package kandrac.xyz.library;
 import android.Manifest;
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -18,6 +19,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -276,8 +278,27 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                 return true;
             }
             case R.id.action_delete: {
-                getContentResolver().delete(Contract.Books.buildBookUri(mBookId), null, null);
-                finish();
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.dialog_book_delete_title)
+                        .setMessage(R.string.dialog_book_delete_message)
+                        .setIcon(R.drawable.ic_book)
+                        .setCancelable(true)
+                        .setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                getContentResolver().delete(Contract.Books.buildBookUri(mBookId), null, null);
+                                dialog.dismiss();
+                                finish();
+                            }
+                        })
+                        .setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .create()
+                        .show();
                 return true;
             }
             case android.R.id.home: {

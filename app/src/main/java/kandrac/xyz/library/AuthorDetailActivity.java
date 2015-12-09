@@ -1,5 +1,6 @@
 package kandrac.xyz.library;
 
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -119,8 +121,27 @@ public class AuthorDetailActivity extends AppCompatActivity implements LoaderMan
                 finish();
                 return true;
             case R.id.action_delete:
-                getContentResolver().delete(Contract.Authors.buildAuthorUri(mAuthorId), null, null);
-                finish();
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.dialog_author_delete_title)
+                        .setMessage(R.string.dialog_author_delete_message)
+                        .setIcon(R.drawable.ic_author)
+                        .setCancelable(true)
+                        .setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                getContentResolver().delete(Contract.Authors.buildAuthorUri(mAuthorId), null, null);
+                                dialog.dismiss();
+                                finish();
+                            }
+                        })
+                        .setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .create()
+                        .show();
                 return true;
         }
         return super.onOptionsItemSelected(item);
