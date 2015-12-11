@@ -16,10 +16,14 @@ android {
 
     signingConfigs {
         release {
-            storeFile file(System.getenv("KANDRAC_KEYSTORE"))
-            storePassword System.getenv("KANDRAC_KEYSTORE_PASS")
-            keyAlias System.getenv("LIBRARY_KEY_ALIAS")
-            keyPassword System.getenv("LIBRARY_KEY_PASS")
+            if (System.getenv("KANDRAC_KEYSTORE") != null)
+                storeFile file(System.getenv("KANDRAC_KEYSTORE"))
+            if (System.getenv("KANDRAC_KEYSTORE_PASS") != null)
+                storePassword System.getenv("KANDRAC_KEYSTORE_PASS")
+            if (System.getenv("LIBRARY_KEY_ALIAS") != null)
+                keyAlias System.getenv("LIBRARY_KEY_ALIAS")
+            if (System.getenv("LIBRARY_KEY_PASS") != null)
+                keyPassword System.getenv("LIBRARY_KEY_PASS")
         }
     }
 
