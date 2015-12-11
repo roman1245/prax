@@ -4,8 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.hardware.Camera;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -14,6 +12,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.CommonStatusCodes;
+import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.MultiProcessor;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
@@ -22,7 +21,6 @@ import java.io.IOException;
 
 import kandrac.xyz.library.barcode.BarcodeGraphic;
 import kandrac.xyz.library.barcode.BarcodeTrackerFactory;
-import kandrac.xyz.library.barcode.ui.CameraSource;
 import kandrac.xyz.library.barcode.ui.CameraSourcePreview;
 import kandrac.xyz.library.barcode.ui.GraphicOverlay;
 
@@ -96,19 +94,11 @@ public class BarcodeActivity extends AppCompatActivity {
             }
         }
 
-        CameraSource.Builder builder = new CameraSource.Builder(getApplicationContext(), barcodeDetector)
-                .setFacing(CameraSource.CAMERA_FACING_BACK)
+        mCameraSource = new CameraSource.Builder(getApplicationContext(), barcodeDetector)
+                .setFacing(com.google.android.gms.vision.CameraSource.CAMERA_FACING_BACK)
+                .setRequestedFps(15.0f)
+                .setAutoFocusEnabled(true)
                 .setRequestedPreviewSize(1600, 1024)
-                .setRequestedFps(15.0f);
-
-        // make sure that auto focus is an available option
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            builder = builder.setFocusMode(
-                    autoFocus ? Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE : null);
-        }
-
-        mCameraSource = builder
-                .setFlashMode(useFlash ? Camera.Parameters.FLASH_MODE_TORCH : null)
                 .build();
     }
 

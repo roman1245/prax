@@ -11,6 +11,7 @@ import android.view.SurfaceView;
 import android.view.ViewGroup;
 
 import com.google.android.gms.common.images.Size;
+import com.google.android.gms.vision.CameraSource;
 
 import java.io.IOException;
 
@@ -74,16 +75,7 @@ public class CameraSourcePreview extends ViewGroup {
         if (mStartRequested && mSurfaceAvailable) {
             mCameraSource.start(mSurfaceView.getHolder());
             if (mOverlay != null) {
-                Size size = mCameraSource.getPreviewSize();
-                int min = Math.min(size.getWidth(), size.getHeight());
-                int max = Math.max(size.getWidth(), size.getHeight());
-                if (isPortraitMode()) {
-                    // Swap width and height sizes when in portrait, since it will be rotated by
-                    // 90 degrees
-                    mOverlay.setCameraInfo(min, max, mCameraSource.getCameraFacing());
-                } else {
-                    mOverlay.setCameraInfo(max, min, mCameraSource.getCameraFacing());
-                }
+                mOverlay.setCameraInfo(getWidth(), getHeight(), mCameraSource.getCameraFacing());
                 mOverlay.clear();
             }
             mStartRequested = false;
@@ -97,7 +89,7 @@ public class CameraSourcePreview extends ViewGroup {
             try {
                 startIfReady();
             } catch (SecurityException se) {
-                Log.e(TAG,"Do not have permission to start the camera", se);
+                Log.e(TAG, "Do not have permission to start the camera", se);
             } catch (IOException e) {
                 Log.e(TAG, "Could not start camera source.", e);
             }
@@ -138,16 +130,20 @@ public class CameraSourcePreview extends ViewGroup {
 
         // Computes height and width for potentially doing fit width.
         int childWidth = layoutWidth;
-        int childHeight = (int)(((float) layoutWidth / (float) width) * height);
+        int childHeight = (int) (((float) layoutWidth / (float) width) * height);
 
         // If height is too tall using fit width, does fit height instead.
         if (childHeight > layoutHeight) {
             childHeight = layoutHeight;
-            childWidth = (int)(((float) layoutHeight / (float) height) * width);
+            childWidth = (int) (((float) layoutHeight / (float) height) * width);
         }
 
         for (int i = 0; i < getChildCount(); ++i) {
-            getChildAt(i).layout(0, 0, childWidth, childHeight);
+            getChildAt(i).layout(
+                    (getMeasuredWidth() - childWidth) / 2,
+                    (getMeasuredHeight() - childHeight) / 2,
+                    childWidth + (getMeasuredWidth() - childWidth) / 2,
+                    childHeight + (getMeasuredHeight() - childHeight) / 2);
         }
 
         try {

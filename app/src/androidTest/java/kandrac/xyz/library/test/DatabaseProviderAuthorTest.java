@@ -42,7 +42,7 @@ public class DatabaseProviderAuthorTest extends ProviderTestCase2<DatabaseProvid
     public void testUriAuthor() {
         long test1 = Contract.Authors.getAuthorId(Uri.parse("content://xyz.kandrac.Library/authors/1"));
         String test2 = Contract.Authors.buildAuthorUri(1).toString();
-        String test3 = Contract.Authors.buildBooksUri("1").toString();
+        String test3 = Contract.Authors.buildBooksUri(1).toString();
 
         assertEquals(1, test1);
         assertEquals("content://xyz.kandrac.Library/authors/1", test2);
