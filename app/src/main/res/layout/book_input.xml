@@ -35,161 +35,152 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <!-- Main content -->
-            <GridLayout
+            <android.support.v7.widget.GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:columnCount="3"
-                android:orientation="horizontal"
-                android:useDefaultMargins="true"
+                android:layout_margin="12dp"
+                app:columnCount="3"
+                app:orientation="horizontal"
+                app:useDefaultMargins="true"
                 tools:showIn="@layout/book_input">
 
                 <ImageView
-                    android:layout_column="0"
                     android:layout_marginEnd="8dp"
                     android:layout_marginRight="8dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_row="0"
                     android:contentDescription="@string/edit_book_info"
                     android:src="@drawable/ic_book"
-                    android:tint="@color/md_grey_700" />
+                    android:tint="@color/md_grey_700"
+                    app:layout_column="0"
+                    app:layout_gravity="center_vertical"
+                    app:layout_row="0" />
 
                 <EditText
                     android:id="@+id/book_input_title"
-                    android:layout_column="1"
-                    android:layout_columnSpan="2"
-                    android:layout_gravity="fill"
-                    android:layout_marginTop="8dp"
-                    android:layout_row="0"
-                    android:ems="0"
+                    android:layout_width="0dp"
                     android:hint="@string/edit_book_title"
                     android:inputType="text"
                     android:singleLine="true"
                     android:text="@{book.title}"
+                    app:layout_column="1"
+                    app:layout_columnSpan="2"
+                    app:layout_gravity="fill"
+                    app:layout_row="0"
                     tools:text="The Lord of the Rings" />
 
                 <EditText
                     android:id="@+id/book_input_subtitle"
-                    android:layout_column="1"
-                    android:layout_columnSpan="2"
-                    android:layout_gravity="fill"
-                    android:layout_marginTop="8dp"
-                    android:layout_row="1"
-                    android:ems="0"
+                    android:layout_width="0dp"
                     android:hint="@string/edit_book_subtitle"
                     android:inputType="text"
                     android:singleLine="true"
                     android:text="@{book.subtitle}"
+                    app:layout_column="1"
+                    app:layout_columnSpan="2"
+                    app:layout_gravity="fill"
+                    app:layout_row="1"
                     tools:text="The Return of the King" />
 
                 <ImageView
-                    android:layout_column="0"
-                    android:layout_marginTop="28dp"
-                    android:layout_row="2"
                     android:contentDescription="@string/edit_book_info"
                     android:src="@drawable/ic_author"
-                    android:tint="@color/md_grey_700" />
+                    android:tint="@color/md_grey_700"
+                    app:layout_column="0"
+                    app:layout_gravity="center_vertical"
+                    app:layout_row="2" />
 
                 <AutoCompleteTextView
                     android:id="@+id/book_input_author"
-                    android:layout_column="1"
-                    android:layout_columnSpan="2"
-                    android:layout_gravity="fill"
-                    android:layout_marginTop="16dp"
-                    android:ems="0"
+                    android:layout_width="0dp"
                     android:hint="@string/edit_book_author"
                     android:inputType="text"
                     android:singleLine="true"
                     android:text="@{book.authorsReadable}"
+                    app:layout_column="1"
+                    app:layout_columnSpan="2"
+                    app:layout_gravity="fill"
                     tools:text="John Ronald Reuel Tolkien" />
 
                 <ImageView
-                    android:layout_column="0"
-                    android:layout_marginTop="28dp"
-                    android:layout_row="3"
                     android:contentDescription="@string/edit_book_info"
                     android:src="@drawable/ic_tie"
-                    android:tint="@color/md_grey_700" />
+                    android:tint="@color/md_grey_700"
+                    app:layout_column="0"
+                    app:layout_gravity="center_vertical"
+                    app:layout_row="3" />
 
                 <AutoCompleteTextView
                     android:id="@+id/book_input_publisher"
-                    android:layout_column="1"
-                    android:layout_columnSpan="2"
-                    android:layout_gravity="fill"
-                    android:layout_marginTop="16dp"
-                    android:ems="0"
+                    android:layout_width="0dp"
                     android:hint="@string/edit_book_publisher"
                     android:inputType="text"
                     android:singleLine="true"
                     android:text=""
+                    app:layout_column="1"
+                    app:layout_columnSpan="2"
+                    app:layout_gravity="fill"
                     tools:text="Slovart" />
 
                 <ImageView
-                    android:layout_column="0"
-                    android:layout_marginTop="28dp"
-                    android:layout_row="4"
                     android:contentDescription="@string/edit_book_info"
                     android:src="@drawable/ic_barcode"
-                    android:tint="@color/md_grey_700" />
+                    android:tint="@color/md_grey_700"
+                    app:layout_column="0"
+                    app:layout_gravity="center_vertical"
+                    app:layout_row="4" />
 
                 <EditText
                     android:id="@+id/book_input_isbn"
-                    android:layout_column="1"
-                    android:layout_columnSpan="2"
-                    android:layout_gravity="fill"
-                    android:layout_marginTop="16dp"
-                    android:ems="0"
+                    android:layout_width="0dp"
                     android:hint="@string/edit_book_isbn"
                     android:inputType="number"
                     android:text="@{book.isbn}"
+                    app:layout_column="1"
+                    app:layout_columnSpan="2"
+                    app:layout_gravity="fill"
                     tools:text="0802356555" />
 
                 <ImageView
-                    android:layout_column="0"
-                    android:layout_marginTop="28dp"
-                    android:layout_row="5"
+                    android:layout_marginTop="8dp"
                     android:contentDescription="@string/edit_book_cover"
                     android:src="@drawable/ic_camera"
-                    android:tint="@color/md_grey_700" />
+                    android:tint="@color/md_grey_700"
+                    app:layout_column="0"
+                    app:layout_row="5" />
 
                 <ImageView
                     android:id="@+id/book_input_cover_image"
                     android:layout_width="96dp"
                     android:layout_height="96dp"
-                    android:layout_column="1"
-                    android:layout_marginTop="24dp"
                     android:background="#ddd"
                     android:contentDescription="@string/edit_book_cover"
                     android:scaleType="centerInside"
-                    android:src="@drawable/ic_book_white" />
+                    android:src="@drawable/ic_book_white"
+                    app:layout_column="1" />
 
                 <Button
                     android:id="@+id/book_input_cover"
                     style="@style/Base.Widget.AppCompat.Button.Borderless.Theme"
-                    android:layout_column="2"
-                    android:layout_marginTop="24dp"
-                    android:gravity="fill"
-                    android:text="@string/edit_book_change_cover" />
+                    android:text="@string/edit_book_change_cover"
+                    app:layout_column="2" />
 
                 <ImageView
-                    android:layout_column="0"
-                    android:layout_marginTop="28dp"
-                    android:layout_row="6"
+                    android:layout_marginTop="8dp"
                     android:contentDescription="@string/edit_book_info"
                     android:src="@drawable/ic_pencil"
-                    android:tint="@color/md_grey_700" />
+                    android:tint="@color/md_grey_700"
+                    app:layout_column="0"
+                    app:layout_row="6" />
 
                 <EditText
                     android:id="@+id/book_input_description_edit"
-                    android:layout_column="1"
-                    android:layout_columnSpan="2"
-                    android:layout_gravity="fill"
-                    android:layout_marginTop="16dp"
-                    android:ems="0"
+                    android:layout_width="0dp"
                     android:hint="@string/edit_book_description"
                     android:text="@{book.description}"
+                    app:layout_column="1"
+                    app:layout_columnSpan="2"
+                    app:layout_gravity="fill"
                     tools:text="This book was completely awesome! It was about some small Hobbit." />
-            </GridLayout>
+            </android.support.v7.widget.GridLayout>
         </ScrollView>
 
         <!-- FAB - scan button -->
