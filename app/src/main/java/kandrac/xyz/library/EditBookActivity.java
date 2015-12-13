@@ -267,6 +267,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 .setImageFilePath(imageFileName)
                 .setDescription(mDescritpion.getText().toString())
                 .setImageUrlPath(imageUrl)
+                .setPublisherReadable(mPublisherEdit.getText().toString())
                 .setAuthorsRedable(authorsReadable)
                 .build();
 

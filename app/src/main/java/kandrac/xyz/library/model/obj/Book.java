@@ -19,6 +19,7 @@ public class Book {
     public final String imageFilePath;
     public final String imageUrlPath;
     public final String authorsReadable;
+    public final String publisherReadable;
 
     public Author[] authors;
     public Publisher publisher;
@@ -36,6 +37,7 @@ public class Book {
         imageFilePath = getString(cursor, Contract.Books.BOOK_IMAGE_FILE);
         imageUrlPath = getString(cursor, Contract.Books.BOOK_IMAGE_URL);
         authorsReadable = getString(cursor, Contract.Books.BOOK_AUTHORS_READ);
+        publisherReadable = getString(cursor, Contract.Books.BOOK_PUBLISHER_READ);
     }
 
     private static int getInt(Cursor cursor, String columnName) {
@@ -64,6 +66,7 @@ public class Book {
         imageUrlPath = builder.imageUrlPath;
         authors = builder.authors;
         authorsReadable = builder.authorsReadable;
+        publisherReadable = builder.publisherReadable;
     }
 
     public ContentValues getContentValues() {
@@ -91,6 +94,7 @@ public class Book {
         private Publisher publisher;
         public Author[] authors;
         public String authorsReadable;
+        public String publisherReadable;
 
         public Builder setId(long id) {
             this.id = id;
@@ -146,6 +150,11 @@ public class Book {
             return this;
         }
 
+        public Builder setPublisherReadable(String publisherReadable) {
+            this.publisherReadable = publisherReadable;
+            return this;
+        }
+
         public Builder setAuthors(Author[] authors) {
             this.authors = authors;
             return this;
@@ -154,18 +163,5 @@ public class Book {
         public Book build() {
             return new Book(this);
         }
-    }
-
-    @Override
-    public String toString() {
-        return "Book{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", subtitle='" + subtitle + '\'' +
-                ", description='" + description + '\'' +
-                ", isbn='" + isbn + '\'' +
-                ", imageFilePath='" + imageFilePath + '\'' +
-                ", authorsReadable='" + authorsReadable + '\'' +
-                '}';
     }
 }

@@ -87,6 +87,9 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     @Bind(R.id.book_detail_description)
     TextView description;
 
+    @Bind(R.id.book_detail_publisher)
+    TextView publisher;
+
     @Bind(R.id.book_detail_borrow_image)
     ImageView borrowImage;
 
@@ -128,6 +131,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
         author.setText(book.authorsReadable);
         isbn.setText(book.isbn);
         description.setText(book.description);
+        publisher.setText(book.publisherReadable);
 
         File imageFile = book.imageFilePath == null ? null : new File(book.imageFilePath);
 

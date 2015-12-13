@@ -71,6 +71,7 @@ public final class DatabaseStoreUtils {
         bookContentValues.put(Contract.Books.BOOK_ISBN, book.isbn);
         bookContentValues.put(Contract.Books.BOOK_AUTHORS_READ, book.authorsReadable);
         bookContentValues.put(Contract.Books.BOOK_PUBLISHER_ID, publisherId);
+        bookContentValues.put(Contract.Books.BOOK_PUBLISHER_READ, book.publisherReadable);
 
         if (book.id > 0) {
             contentResolver.update(Contract.Books.buildBookUri(book.id), bookContentValues, null, null);
