@@ -18,6 +18,7 @@
     <!-- Placeholders -->
     <string name="author_unknown">Unknown Author</string>
     <string name="publisher_unknown">Unknown Publisher</string>
+    <string name="parallax_cover">Cover</string>
 
     <!-- Basic Image Content descriptors -->
     <string name="book_list_item">Book Item</string>

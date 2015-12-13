@@ -96,7 +96,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     @Bind(R.id.book_input_isbn)
     EditText mIsbnEdit;
 
-    @Bind(R.id.book_input_cover_image)
+    @Bind(R.id.parallax_cover_image)
     ImageView mImageEdit;
 
     @Bind(R.id.book_input_cover)

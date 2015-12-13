@@ -22,6 +22,7 @@
     <!-- Basic Image Content descriptors -->
     <string name="book_list_item">Kniha</string>
     <string name="author_list_item">Autor</string>
+    <string name="parallax_cover">Obrázok</string>
 
     <!-- Edit/Input Book Screen -->
     <string name="edit_book_author">Autor</string>

@@ -42,7 +42,7 @@ public class PublisherDetailActivity extends AppCompatActivity implements Loader
     @Bind(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbarLayout;
 
-    @Bind(R.id.book_input_cover_image)
+    @Bind(R.id.parallax_cover_image)
     ImageView cover;
 
     @Bind(R.id.list)

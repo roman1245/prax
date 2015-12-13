@@ -73,10 +73,10 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     @Bind(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbarLayout;
 
-    @Bind(R.id.book_input_cover_image)
+    @Bind(R.id.parallax_cover_image)
     ImageView cover;
 
-    @Bind(R.id.subtitle)
+    @Bind(R.id.parallax_cover_subtitle)
     TextView subtitle;
 
     @Bind(R.id.book_detail_author)

@@ -2,7 +2,6 @@ package kandrac.xyz.library;
 
 import android.content.DialogInterface;
 import android.database.Cursor;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.LoaderManager;
@@ -17,11 +16,9 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import kandrac.xyz.library.databinding.AuthorDetailBinding;
 import kandrac.xyz.library.model.Contract;
 import kandrac.xyz.library.model.Database;
 import kandrac.xyz.library.model.obj.Author;
@@ -34,16 +31,12 @@ public class AuthorDetailActivity extends AppCompatActivity implements LoaderMan
 
     public static final String EXTRA_AUTHOR_ID = "author_id_extra";
     private long mAuthorId;
-    private AuthorDetailBinding binding;
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
 
     @Bind(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbarLayout;
-
-    @Bind(R.id.book_input_cover_image)
-    ImageView cover;
 
     @Bind(R.id.list)
     RecyclerView recyclerView;
@@ -54,7 +47,7 @@ public class AuthorDetailActivity extends AppCompatActivity implements LoaderMan
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = DataBindingUtil.setContentView(this, R.layout.author_detail);
+        setContentView(R.layout.author_detail);
 
         ButterKnife.bind(this);
 
@@ -95,9 +88,7 @@ public class AuthorDetailActivity extends AppCompatActivity implements LoaderMan
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data.getCount() > 0) {
             Author author = new Author(data);
-            binding.setAuthor(author);
             collapsingToolbarLayout.setTitle(TextUtils.isEmpty(author.name) ? getString(R.string.author_unknown) : author.name);
-
             adapter.setCursor(data);
             adapter.notifyDataSetChanged();
         }
