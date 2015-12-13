@@ -2,7 +2,6 @@ package kandrac.xyz.library;
 
 import android.content.DialogInterface;
 import android.database.Cursor;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.LoaderManager;
@@ -21,7 +20,6 @@ import android.widget.ImageView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import kandrac.xyz.library.databinding.PublisherDetailBinding;
 import kandrac.xyz.library.model.Contract;
 import kandrac.xyz.library.model.Database;
 import kandrac.xyz.library.model.obj.Publisher;
@@ -34,7 +32,6 @@ public class PublisherDetailActivity extends AppCompatActivity implements Loader
 
     public static final String EXTRA_PUBLISHER_ID = "publisher_id_extra";
     private long mPublisherId;
-    private PublisherDetailBinding binding;
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -54,7 +51,7 @@ public class PublisherDetailActivity extends AppCompatActivity implements Loader
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = DataBindingUtil.setContentView(this, R.layout.publisher_detail);
+        setContentView(R.layout.publisher_detail);
 
         ButterKnife.bind(this);
 
@@ -96,7 +93,7 @@ public class PublisherDetailActivity extends AppCompatActivity implements Loader
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data.getCount() > 0) {
             Publisher publisher = new Publisher(data);
-            binding.setPublisher(publisher);
+
             collapsingToolbarLayout.setTitle(TextUtils.isEmpty(publisher.name) ? getString(R.string.publisher_unknown) : publisher.name);
 
             adapter.setCursor(data);

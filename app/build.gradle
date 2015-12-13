@@ -49,10 +49,6 @@ android {
             applicationId = "kandrac.xyz.library.free"
         }
     }
-
-    dataBinding {
-        enabled = true
-    }
 }
 
 repositories {

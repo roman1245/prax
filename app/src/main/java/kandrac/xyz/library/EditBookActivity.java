@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -43,7 +42,6 @@ import java.util.Date;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import kandrac.xyz.library.databinding.BookInputBinding;
 import kandrac.xyz.library.model.Contract;
 import kandrac.xyz.library.model.DatabaseStoreUtils;
 import kandrac.xyz.library.model.obj.Author;
@@ -70,7 +68,6 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     public static final int BOOK_LOADER = 1;
 
     private Long mBookId;
-    private BookInputBinding binding;
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_BARCODE = 2;
@@ -112,7 +109,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.book_input);
+        setContentView(R.layout.book_input);
 
         ButterKnife.bind(this);
 
@@ -459,10 +456,26 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 // bind book data
                 if (data.getCount() == 1) {
                     Book book = new Book(data);
-                    binding.setBook(book);
+                    setBook(book);
                 }
                 break;
             default:
+        }
+    }
+
+    private void setBook(Book book) {
+        mAuthorEdit.setText(book.authorsReadable);
+        mPublisherEdit.setText(book.publisherReadable);
+        mTitleEdit.setText(book.title);
+        mSubitleEdit.setText(book.subtitle);
+        mIsbnEdit.setText(book.isbn);
+        mDescritpion.setText(book.description);
+
+        if (book.imageFilePath != null) {
+            File imageFile = new File(book.imageFilePath);
+            if (imageFile.exists()) {
+                Picasso.with(this).load(imageFile).into(mImageEdit);
+            }
         }
     }
 
