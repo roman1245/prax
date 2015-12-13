@@ -211,6 +211,9 @@ public class BookListFragment extends SubtitledFragment implements LoaderManager
             adapter.notifyDataSetChanged();
             list.setVisibility(View.VISIBLE);
             mEmpty.setVisibility(View.GONE);
+        } else {
+            list.setVisibility(View.GONE);
+            mEmpty.setVisibility(View.VISIBLE);
         }
     }
 

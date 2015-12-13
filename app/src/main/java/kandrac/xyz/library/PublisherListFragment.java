@@ -93,6 +93,9 @@ public class PublisherListFragment extends SubtitledFragment implements LoaderMa
             adapter.notifyDataSetChanged();
             list.setVisibility(View.VISIBLE);
             mEmpty.setVisibility(View.GONE);
+        } else {
+            list.setVisibility(View.GONE);
+            mEmpty.setVisibility(View.VISIBLE);
         }
     }
 
