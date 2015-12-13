@@ -73,4 +73,8 @@
 
     <string name="dialog_publisher_delete_title">Vymazať vydavateľa</string>
     <string name="dialog_publisher_delete_message">Naozaj chceš vymazať tohto vydavateľa aj všetky knihy ktoré vydal?</string>
+
+    <string name="dialog_return_book_title">Vrátenie knihy</string>
+    <string name="dialog_return_book_message">%1$s si od teba požičal/a knihu dňa %2$s. Čo chcete s knihou urobiť?</string>
+    <string name="dialog_return_book_positive">Vrátiť knihu</string>
 </resources>

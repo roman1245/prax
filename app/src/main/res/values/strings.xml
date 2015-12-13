@@ -74,4 +74,8 @@
 
     <string name="dialog_publisher_delete_title">Delete Publisher</string>
     <string name="dialog_publisher_delete_message">Are you sure you want to delete this publisher and all the books he published?</string>
+
+    <string name="dialog_return_book_title">Book Return</string>
+    <string name="dialog_return_book_message">%1$s has borrowed the book from you in %2$s. What would you like to do with this book?</string>
+    <string name="dialog_return_book_positive">Return book</string>
 </resources>

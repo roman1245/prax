@@ -39,6 +39,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import kandrac.xyz.library.model.Contract;
 import kandrac.xyz.library.model.obj.Book;
+import kandrac.xyz.library.utils.DateUtils;
 
 /**
  * Shows all the details about book based on its ID from {@link #EXTRA_BOOK_ID}.
@@ -157,7 +158,31 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
             borrowButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    BorrowFragment.getInstance(mBookId, details.name, details.dateFrom, details.dateTo, details.id).show(getFragmentManager(), null);
+
+                    new AlertDialog.Builder(BookDetailActivity.this)
+                            .setTitle(R.string.dialog_return_book_title)
+                            .setMessage(getString(R.string.dialog_return_book_message, details.name, DateUtils.dateFormat.format(details.dateFrom)))
+                            .setPositiveButton(R.string.dialog_return_book_positive, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    ContentValues cv = new ContentValues();
+                                    cv.put(Contract.BorrowInfo.BORROW_DATE_RETURNED, new Date(System.currentTimeMillis()).getTime());
+                                    getContentResolver().update(Contract.BorrowInfo.buildUri(details.id), cv, null, null);
+
+                                    ContentValues bookContentValues = new ContentValues();
+                                    bookContentValues.put(Contract.Books.BOOK_BORROWED, false);
+                                    getContentResolver().update(Contract.Books.buildBookUri(mBookId), bookContentValues, null, null);
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setCancelable(true)
+                            .setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .create().show();
                 }
             });
             displayShare = false;

@@ -26,16 +26,6 @@
         android:gravity="center"
         tools:text="Date borrowed: 22.11.2015" />
 
-    <TextView
-        android:id="@+id/borrow_date_to"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:gravity="center"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        tools:text="Expected return: 22.1.2016" />
-
     <Button
         android:id="@+id/borrow_return"
         style="@style/Base.Widget.AppCompat.Button.Borderless.Theme"
