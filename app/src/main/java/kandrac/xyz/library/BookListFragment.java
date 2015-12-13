@@ -15,6 +15,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -27,7 +28,7 @@ import kandrac.xyz.library.utils.BookCursorAdapter;
 /**
  * Fragment with list of all books without any pre scripted selection. This fragment also contains
  * {@link FloatingActionButton} for basic actions.
- * <p/>
+ * <p>
  * Created by kandrac on 20/10/15.
  */
 public class BookListFragment extends SubtitledFragment implements LoaderManager.LoaderCallbacks<Cursor>, Searchable {
@@ -47,6 +48,9 @@ public class BookListFragment extends SubtitledFragment implements LoaderManager
 
     @Bind(R.id.fab)
     public FloatingActionButton mFab;
+
+    @Bind(R.id.list_empty)
+    public TextView mEmpty;
 
     @OnClick(R.id.fab)
     public void addItem(View view) {
@@ -78,14 +82,14 @@ public class BookListFragment extends SubtitledFragment implements LoaderManager
      * Get instance of {@link BookListFragment} for setting all custom fields. {@code title} hold
      * the title representing this fragments content (for example: old books, borrowed books, all
      * books etc.)
-     * <p/>
+     * <p>
      * {@code filter} should be closely related to {@code title} because it contains
      * string that will be added to search selection String and specifies which books exactly will
      * be shown. Always use column names from {@link kandrac.xyz.library.model.Contract.BorrowInfo}
      * or {@link kandrac.xyz.library.model.Contract.Books}
-     * <p/>
+     * <p>
      * {@code addButtonVisible} determines whether button for adding new books is visible or not
-     * <p/>
+     * <p>
      * {@code loaderId} is unique id that will be used with this instance only. It should not be
      * same for 2 or more fragments inside one activity.
      *
@@ -126,6 +130,7 @@ public class BookListFragment extends SubtitledFragment implements LoaderManager
         list.setLayoutManager(new LinearLayoutManager(getActivity()));
         list.setAdapter(adapter);
         mFab.setVisibility(mAddButton ? View.VISIBLE : View.GONE);
+        mEmpty.setText(mAddButton ? R.string.book_list_empty : R.string.book_borrowed_list_empty);
 
         // Init database loading
         getActivity().getSupportLoaderManager().initLoader(mLoaderId, null, this);
@@ -201,8 +206,12 @@ public class BookListFragment extends SubtitledFragment implements LoaderManager
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        adapter.setCursor(data);
-        adapter.notifyDataSetChanged();
+        if (data.getCount() > 0) {
+            adapter.setCursor(data);
+            adapter.notifyDataSetChanged();
+            list.setVisibility(View.VISIBLE);
+            mEmpty.setVisibility(View.GONE);
+        }
     }
 
     @Override

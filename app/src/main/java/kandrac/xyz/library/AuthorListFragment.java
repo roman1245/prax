@@ -38,6 +38,9 @@ public class AuthorListFragment extends SubtitledFragment implements LoaderManag
     @Bind(R.id.fab)
     FloatingActionButton mFab;
 
+    @Bind(R.id.list_empty)
+    public TextView mEmpty;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -45,6 +48,7 @@ public class AuthorListFragment extends SubtitledFragment implements LoaderManag
         ButterKnife.bind(this, result);
 
         mFab.setVisibility(View.GONE);
+        mEmpty.setText(R.string.author_list_empty);
 
         adapter = new AuthorCursorAdapter();
         list.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -84,8 +88,12 @@ public class AuthorListFragment extends SubtitledFragment implements LoaderManag
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        adapter.setCursor(data);
-        adapter.notifyDataSetChanged();
+        if (data.getCount() > 0) {
+            adapter.setCursor(data);
+            adapter.notifyDataSetChanged();
+            list.setVisibility(View.VISIBLE);
+            mEmpty.setVisibility(View.GONE);
+        }
     }
 
     @Override

@@ -24,6 +24,12 @@
     <string name="author_list_item">Autor</string>
     <string name="parallax_cover">Obrázok</string>
 
+    <!-- List Empty Descriptors -->
+    <string name="book_list_empty">Zoznam kníh je zatiaľ prázdny.\nPre pridanie nových kníh stlač tlačidlo + v pravom dolnom rohu alebo si pozri ďalšie možnosti v bočnom menu, ktoré otvoríš vľavo hore.</string>
+    <string name="book_borrowed_list_empty">Zoznam požičaných kníh je zatiaľ prázdny.\nPre požičanie kníh vyber knihu zo zoznamu kníh a stlač tlačidlo pre požičiavanie.</string>
+    <string name="author_list_empty">Zoznam autorov je zatiaľ prázdny.\nPrví autori sa zobrazia s prvým pridaním knihy.</string>
+    <string name="publisher_list_empty">Zoznam vydavateľov je zatiaľ prázdny.\nPrví vydavatelia sa zobrazia s prvým pridaním knihy.</string>
+
     <!-- Edit/Input Book Screen -->
     <string name="edit_book_author">Autor</string>
     <string name="edit_book_publisher">Publisher</string>
