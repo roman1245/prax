@@ -5,9 +5,10 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.test.ProviderTestCase2;
 
-import kandrac.xyz.library.model.Contract;
-import kandrac.xyz.library.model.DatabaseProvider;
-import kandrac.xyz.library.model.obj.Book;
+import xyz.kandrac.library.model.Contract;
+import xyz.kandrac.library.model.DatabaseProvider;
+import xyz.kandrac.library.model.obj.Book;
+
 
 /**
  * Created by kandrac on 21/11/15.

@@ -5,7 +5,7 @@ android {
     buildToolsVersion '23.0.2'
 
     defaultConfig {
-        applicationId "kandrac.xyz.library"
+        applicationId "xyz.kandrac.library"
         testApplicationId "kandrac.xyz.library.test"
         minSdkVersion 16
         targetSdkVersion 23
@@ -43,10 +43,10 @@ android {
 
     productFlavors {
         pro {
-            applicationId = "kandrac.xyz.library.pro"
+            applicationId = "xyz.kandrac.library.pro"
         }
         free {
-            applicationId = "kandrac.xyz.library.free"
+            applicationId = "xyz.kandrac.library.free"
         }
     }
 }
