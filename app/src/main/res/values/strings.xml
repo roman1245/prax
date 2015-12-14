@@ -85,4 +85,8 @@
     <string name="dialog_return_book_title">Book Return</string>
     <string name="dialog_return_book_message">%1$s has borrowed the book from you in %2$s. What would you like to do with this book?</string>
     <string name="dialog_return_book_positive">Return book</string>
+
+    <!-- Notification strings -->
+    <string name="notification_book_borrowed_reminder_title">Book borrowed reminder</string>
+    <string name="notification_book_borrowed_reminder_message">Book %1$s by %2$s was borrowed quite some time before. Do you want to contact owner?</string>
 </resources>

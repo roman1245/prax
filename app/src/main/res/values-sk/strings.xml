@@ -84,4 +84,8 @@
     <string name="dialog_return_book_title">Vrátenie knihy</string>
     <string name="dialog_return_book_message">%1$s si od teba požičal/a knihu dňa %2$s. Čo chcete s knihou urobiť?</string>
     <string name="dialog_return_book_positive">Vrátiť knihu</string>
+
+    <!-- Notification strings -->
+    <string name="notification_book_borrowed_reminder_title">Pripomenutie požičania knihy</string>
+    <string name="notification_book_borrowed_reminder_message">Dávnejšie si požičal knihu %1$s od %2$s. Chcete to pripomenúť dlžníkovi?</string>
 </resources>

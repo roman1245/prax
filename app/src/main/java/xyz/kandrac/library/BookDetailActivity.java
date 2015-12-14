@@ -172,6 +172,8 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                                     ContentValues bookContentValues = new ContentValues();
                                     bookContentValues.put(Contract.Books.BOOK_BORROWED, false);
                                     getContentResolver().update(Contract.Books.buildBookUri(mBookId), bookContentValues, null, null);
+
+                                    NotificationReceiver.cancelNotification(BookDetailActivity.this, mBookId);
                                     dialog.dismiss();
                                 }
                             })
@@ -250,6 +252,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                 bookContentValues.put(Contract.Books.BOOK_BORROWED, true);
                 getContentResolver().update(Contract.Books.buildBookUri(mBookId), bookContentValues, null, null);
 
+                NotificationReceiver.prepareNotification(this, 20, mBookId);
                 break;
             }
             case LOADER_BORROW_DETAIL: {
@@ -315,6 +318,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 getContentResolver().delete(Contract.Books.buildBookUri(mBookId), null, null);
+                                NotificationReceiver.cancelNotification(BookDetailActivity.this, mBookId);
                                 dialog.dismiss();
                                 finish();
                             }
