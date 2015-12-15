@@ -1,14 +1,15 @@
 package xyz.kandrac.library;
 
+import android.app.Fragment;
+import android.app.LoaderManager;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -26,7 +27,7 @@ import xyz.kandrac.library.model.obj.Publisher;
 /**
  * Created by kandrac on 22/10/15.
  */
-public class PublisherListFragment extends SubtitledFragment implements LoaderManager.LoaderCallbacks<Cursor>, Searchable {
+public class PublisherListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, Searchable {
 
     PublishCursorAdapter adapter;
 
@@ -55,7 +56,7 @@ public class PublisherListFragment extends SubtitledFragment implements LoaderMa
         list.setAdapter(adapter);
 
         // Init database loading
-        getActivity().getSupportLoaderManager().initLoader(MainActivity.PUBLISHER_LIST_LOADER, null, this);
+        getActivity().getLoaderManager().initLoader(MainActivity.PUBLISHER_LIST_LOADER, null, this);
 
         return result;
     }
@@ -106,13 +107,8 @@ public class PublisherListFragment extends SubtitledFragment implements LoaderMa
     @Override
     public boolean requestSearch(String query) {
         searchQuery = query;
-        getActivity().getSupportLoaderManager().restartLoader(MainActivity.PUBLISHER_LIST_LOADER, null, this);
+        getActivity().getLoaderManager().restartLoader(MainActivity.PUBLISHER_LIST_LOADER, null, this);
         return true;
-    }
-
-    @Override
-    public int getTitle() {
-        return R.string.menu_publishers;
     }
 
     private class PublishCursorAdapter extends RecyclerView.Adapter<PublishCursorAdapter.BindingHolder> {

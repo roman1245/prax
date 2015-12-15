@@ -1,14 +1,15 @@
 package xyz.kandrac.library;
 
+import android.app.Fragment;
+import android.app.LoaderManager;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -26,7 +27,7 @@ import xyz.kandrac.library.model.obj.Author;
 /**
  * Created by kandrac on 22/10/15.
  */
-public class AuthorListFragment extends SubtitledFragment implements LoaderManager.LoaderCallbacks<Cursor>, Searchable {
+public class AuthorListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, Searchable {
 
     AuthorCursorAdapter adapter;
 
@@ -55,7 +56,7 @@ public class AuthorListFragment extends SubtitledFragment implements LoaderManag
         list.setAdapter(adapter);
 
         // Init database loading
-        getActivity().getSupportLoaderManager().initLoader(MainActivity.AUTHOR_LIST_LOADER, null, this);
+        getActivity().getLoaderManager().initLoader(MainActivity.AUTHOR_LIST_LOADER, null, this);
 
         return result;
     }
@@ -106,13 +107,8 @@ public class AuthorListFragment extends SubtitledFragment implements LoaderManag
     @Override
     public boolean requestSearch(String query) {
         searchQuery = query;
-        getActivity().getSupportLoaderManager().restartLoader(MainActivity.AUTHOR_LIST_LOADER, null, this);
+        getActivity().getLoaderManager().restartLoader(MainActivity.AUTHOR_LIST_LOADER, null, this);
         return true;
-    }
-
-    @Override
-    public int getTitle() {
-        return R.string.menu_authors;
     }
 
     private class AuthorCursorAdapter extends RecyclerView.Adapter<AuthorCursorAdapter.BindingHolder> {
@@ -151,7 +147,7 @@ public class AuthorListFragment extends SubtitledFragment implements LoaderManag
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getContext(), AuthorDetailActivity.class);
+                    Intent intent = new Intent(getActivity(), AuthorDetailActivity.class);
                     intent.putExtra(AuthorDetailActivity.EXTRA_AUTHOR_ID, author.id);
                     startActivity(intent);
                 }

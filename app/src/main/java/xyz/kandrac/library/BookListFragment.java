@@ -1,14 +1,14 @@
 package xyz.kandrac.library;
 
+import android.app.Fragment;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -31,14 +31,12 @@ import xyz.kandrac.library.utils.BookCursorAdapter;
  * <p>
  * Created by kandrac on 20/10/15.
  */
-public class BookListFragment extends SubtitledFragment implements LoaderManager.LoaderCallbacks<Cursor>, Searchable {
+public class BookListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, Searchable {
 
-    private static final String EXTRA_TITLE = "title";
     private static final String EXTRA_FILTER = "filter";
     private static final String EXTRA_ADD_BUTTON = "button";
     private static final String EXTRA_LOADER_ID = "loader_id";
 
-    private int mTitleRes;
     private int mLoaderId;
     private String mFilter;
     private boolean mAddButton;
@@ -66,7 +64,7 @@ public class BookListFragment extends SubtitledFragment implements LoaderManager
      * @return instance
      */
     public static BookListFragment getInstance() {
-        return getInstance(R.string.menu_books_mine, null, true, MainActivity.BOOK_LIST_LOADER);
+        return getInstance(null, true, MainActivity.BOOK_LIST_LOADER);
     }
 
     /**
@@ -75,7 +73,7 @@ public class BookListFragment extends SubtitledFragment implements LoaderManager
      * @return instance
      */
     public static BookListFragment getBorrowedBooksInstance() {
-        return getInstance(R.string.menu_books_borrowed, Contract.Books.BOOK_BORROWED + " = 1", false, MainActivity.BORROWED_BOOK_LIST_LOADER);
+        return getInstance(Contract.Books.BOOK_BORROWED + " = 1", false, MainActivity.BORROWED_BOOK_LIST_LOADER);
     }
 
     /**
@@ -85,23 +83,21 @@ public class BookListFragment extends SubtitledFragment implements LoaderManager
      * <p>
      * {@code filter} should be closely related to {@code title} because it contains
      * string that will be added to search selection String and specifies which books exactly will
-     * be shown. Always use column names from {@link kandrac.xyz.library.model.Contract.BorrowInfo}
-     * or {@link kandrac.xyz.library.model.Contract.Books}
+     * be shown. Always use column names from {@link xyz.kandrac.library.model.Contract.BorrowInfo}
+     * or {@link xyz.kandrac.library.model.Contract.Books}
      * <p>
      * {@code addButtonVisible} determines whether button for adding new books is visible or not
      * <p>
      * {@code loaderId} is unique id that will be used with this instance only. It should not be
      * same for 2 or more fragments inside one activity.
      *
-     * @param title            of fragment
      * @param filter           to be added to selection
      * @param addButtonVisible add button visibility
      * @return instance
      */
-    public static BookListFragment getInstance(@StringRes int title, String filter, boolean addButtonVisible, int loaderId) {
+    public static BookListFragment getInstance(String filter, boolean addButtonVisible, int loaderId) {
         BookListFragment result = new BookListFragment();
         Bundle arguments = new Bundle();
-        arguments.putInt(EXTRA_TITLE, title);
         arguments.putInt(EXTRA_LOADER_ID, loaderId);
         arguments.putString(EXTRA_FILTER, filter);
         arguments.putBoolean(EXTRA_ADD_BUTTON, addButtonVisible);
@@ -114,7 +110,6 @@ public class BookListFragment extends SubtitledFragment implements LoaderManager
         super.onCreate(savedInstanceState);
         Bundle arguments = getArguments();
 
-        mTitleRes = arguments.getInt(EXTRA_TITLE);
         mLoaderId = arguments.getInt(EXTRA_LOADER_ID);
         mFilter = arguments.getString(EXTRA_FILTER);
         mAddButton = arguments.getBoolean(EXTRA_ADD_BUTTON);
@@ -126,14 +121,14 @@ public class BookListFragment extends SubtitledFragment implements LoaderManager
         View result = inflater.inflate(R.layout.book_list_fragment, container, false);
         ButterKnife.bind(this, result);
 
-        adapter = new BookCursorAdapter(getContext());
+        adapter = new BookCursorAdapter(getActivity());
         list.setLayoutManager(new LinearLayoutManager(getActivity()));
         list.setAdapter(adapter);
         mFab.setVisibility(mAddButton ? View.VISIBLE : View.GONE);
         mEmpty.setText(mAddButton ? R.string.book_list_empty : R.string.book_borrowed_list_empty);
 
         // Init database loading
-        getActivity().getSupportLoaderManager().initLoader(mLoaderId, null, this);
+        getActivity().getLoaderManager().initLoader(mLoaderId, null, this);
 
         return result;
     }
@@ -224,12 +219,7 @@ public class BookListFragment extends SubtitledFragment implements LoaderManager
     @Override
     public boolean requestSearch(String query) {
         searchQuery = query;
-        getActivity().getSupportLoaderManager().restartLoader(mLoaderId, null, this);
+        getActivity().getLoaderManager().restartLoader(mLoaderId, null, this);
         return true;
-    }
-
-    @Override
-    public int getTitle() {
-        return mTitleRes;
     }
 }

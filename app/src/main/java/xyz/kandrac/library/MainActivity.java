@@ -1,8 +1,9 @@
 package xyz.kandrac.library;
 
+import android.app.Fragment;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -24,7 +25,7 @@ import xyz.kandrac.library.views.DummyDrawerCallback;
  *
  * @see NavigationView
  */
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SubtitledFragment.ChangeTitleListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     // Loader constants. Ensure that fragments are using this constants and not the
     public static final int BOOK_LIST_LOADER = 1;
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         setContentView(R.layout.book_list);
         ButterKnife.bind(this);
 
@@ -74,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // setup first fragment
         mShownFragment = BookListFragment.getInstance();
-        getSupportFragmentManager()
+        getFragmentManager()
                 .beginTransaction()
                 .add(R.id.fragment_container, mShownFragment)
                 .commit();
@@ -155,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         // Get fragment to show
-        SubtitledFragment fragmentToShow = getFragmentToShow(menuItem.getItemId());
+        Fragment fragmentToShow = getFragmentToShow(menuItem.getItemId());
 
         if (fragmentToShow == null) {
             return false;
@@ -164,10 +166,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // close drawers and use replace fragment
         drawerLayout.closeDrawers();
 
-        getSupportFragmentManager()
+        getFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragment_container, fragmentToShow)
                 .commit();
+
+        // change title
+        if (mActionBar != null) {
+            mActionBar.setTitle(menuItem.getTitle());
+        }
 
         // remember
         mShownFragment = fragmentToShow;
@@ -184,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * @param menuItemId ID of menu item
      * @return null if nothing to be shown
      */
-    private SubtitledFragment getFragmentToShow(final int menuItemId) {
+    private Fragment getFragmentToShow(final int menuItemId) {
         switch (menuItemId) {
             case R.id.main_navigation_about:
                 // about dialog doesn't run any fragment only displays About dialog now
@@ -199,16 +206,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return new AuthorListFragment();
             case R.id.main_navigation_publishers:
                 return new PublisherListFragment();
+            case R.id.main_navigation_settings:
+                return new SettingsFragment();
             default:
                 return null;
-        }
-    }
-
-    @Override
-    public void onTitleLoaded(String title) {
-        // change title
-        if (mActionBar != null) {
-            mActionBar.setTitle(title);
         }
     }
 }
