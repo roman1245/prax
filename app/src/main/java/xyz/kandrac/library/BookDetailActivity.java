@@ -14,6 +14,8 @@ import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.Data;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -37,6 +39,7 @@ import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import xyz.kandrac.library.model.Contract;
 import xyz.kandrac.library.model.obj.Book;
 import xyz.kandrac.library.utils.DateUtils;
@@ -64,7 +67,6 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     Uri contactUri;
 
     private Long mBookId;
-    private boolean displayShare;
 
     // Layout binding
     @Bind(R.id.toolbar)
@@ -96,6 +98,19 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
 
     @Bind(R.id.book_detail_borrow)
     Button borrowButton;
+
+    @Bind(R.id.fab)
+    FloatingActionButton fab;
+
+    @OnClick(R.id.fab)
+    public void share(View v) {
+        int readContactPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
+        if (readContactPermission == PackageManager.PERMISSION_GRANTED) {
+            searchContact();
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, PICK_CONTACT_PERMISSION);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -174,6 +189,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                                     getContentResolver().update(Contract.Books.buildBookUri(mBookId), bookContentValues, null, null);
 
                                     NotificationReceiver.cancelNotification(BookDetailActivity.this, mBookId);
+                                    anchorFab(R.id.appbar);
                                     dialog.dismiss();
                                 }
                             })
@@ -187,11 +203,12 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                             .create().show();
                 }
             });
-            displayShare = false;
+            anchorFab(View.NO_ID);
+            fab.setVisibility(View.GONE);
         } else {
             borrowImage.setVisibility(View.GONE);
             borrowButton.setVisibility(View.GONE);
-            displayShare = true;
+            anchorFab(R.id.appbar);
         }
 
         supportInvalidateOptionsMenu();
@@ -253,6 +270,8 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                 getContentResolver().update(Contract.Books.buildBookUri(mBookId), bookContentValues, null, null);
 
                 NotificationReceiver.prepareNotification(this, 20, mBookId);
+                anchorFab(View.NO_ID);
+                fab.setVisibility(View.GONE);
                 break;
             }
             case LOADER_BORROW_DETAIL: {
@@ -284,13 +303,6 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        menu.findItem(R.id.action_borrow).setVisible(displayShare);
-        return true;
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
@@ -298,15 +310,6 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                 Intent intent = new Intent(this, EditBookActivity.class);
                 intent.putExtra(EditBookActivity.EXTRA_BOOK_ID, mBookId);
                 startActivity(intent);
-                return true;
-            }
-            case R.id.action_borrow: {
-                int readContactPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
-                if (readContactPermission == PackageManager.PERMISSION_GRANTED) {
-                    searchContact();
-                } else {
-                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, PICK_CONTACT_PERMISSION);
-                }
                 return true;
             }
             case R.id.action_delete: {
@@ -407,5 +410,11 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
 
         int NAME_COLUMN = 0;
 
+    }
+
+    private void anchorFab(int id) {
+        CoordinatorLayout.LayoutParams p = (CoordinatorLayout.LayoutParams) fab.getLayoutParams();
+        p.setAnchorId(id);
+        fab.setLayoutParams(p);
     }
 }
