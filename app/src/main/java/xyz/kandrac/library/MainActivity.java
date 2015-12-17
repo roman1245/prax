@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static final int AUTHOR_LIST_LOADER = 2;
     public static final int PUBLISHER_LIST_LOADER = 3;
     public static final int BORROWED_BOOK_LIST_LOADER = 4;
+    public static final int WISH_LIST_BOOK_LIST_LOADER = 5;
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -202,6 +203,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return BookListFragment.getInstance();
             case R.id.main_navigation_borrowed:
                 return BookListFragment.getBorrowedBooksInstance();
+            case R.id.main_navigation_wish_list:
+                return BookListFragment.getWishListBooksInstance();
             case R.id.main_navigation_authors:
                 return new AuthorListFragment();
             case R.id.main_navigation_publishers:

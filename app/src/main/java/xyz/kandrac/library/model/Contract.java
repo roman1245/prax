@@ -26,6 +26,7 @@ public class Contract {
         String BOOK_AUTHORS_READ = "book_authors_readable";
         String BOOK_PUBLISHER_READ = "book_publisher_readable";
         String BOOK_BORROWED = "book_borrowed";
+        String BOOK_WISH_LIST = "book_wish";
     }
 
     interface AuthorsColumns {
@@ -58,7 +59,6 @@ public class Contract {
     public static final String PATH_BOOKS = "books";
     public static final String PATH_AUTHORS = "authors";
     public static final String PATH_PUBLISHERS = "publishers";
-    public static final String PATH_BOOKS_AUTHORS = "books/authors";
     public static final String PATH_BORROW_INFO = "borrowinfo";
 
     // Base URI specification (authority and its URI representation)
@@ -66,7 +66,6 @@ public class Contract {
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
     public static final Uri BOOKS_AUTHORS_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_BOOKS).appendPath(PATH_AUTHORS).build();
-    public static final Uri BOOKS_BORROW_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_BOOKS).appendPath(PATH_BORROW_INFO).build();
 
     /**
      *

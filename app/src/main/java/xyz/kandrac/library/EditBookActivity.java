@@ -61,6 +61,8 @@ import xyz.kandrac.library.utils.DisplayUtils;
 public class EditBookActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, Callback<BookResponse> {
 
     public static final String EXTRA_BOOK_ID = "book_id_extra";
+    public static final String EXTRA_WISH_LIST = "wish_list_extra";
+
     private static final String TAG = EditBookActivity.class.getName();
 
     public static final String SAVE_STATE_FILE_NAME = "save_state_file_name";
@@ -68,6 +70,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     public static final int BOOK_LOADER = 1;
 
     private Long mBookId;
+    private boolean mToWishList;
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_BARCODE = 2;
@@ -106,6 +109,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     String imageUrl;
 
     // Basic Activity Tasks
+    @SuppressWarnings("SimplifiableConditionalExpression")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,7 +128,8 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
         Bundle extras = getIntent().getExtras();
 
-        mBookId = (extras != null) ? mBookId = extras.getLong(EXTRA_BOOK_ID, -1) : -1;
+        mBookId = (extras != null) ? extras.getLong(EXTRA_BOOK_ID, -1) : -1;
+        mToWishList = (extras != null) ? extras.getBoolean(EXTRA_WISH_LIST) : false;
 
         if (mBookId > 0) {
             getSupportLoaderManager().initLoader(BOOK_LOADER, null, this);
@@ -266,6 +271,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 .setImageUrlPath(imageUrl)
                 .setPublisherReadable(mPublisherEdit.getText().toString())
                 .setAuthorsRedable(authorsReadable)
+                .setWish(mToWishList)
                 .build();
 
         DatabaseStoreUtils.saveBook(getContentResolver(), book);
@@ -470,6 +476,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         mSubitleEdit.setText(book.subtitle);
         mIsbnEdit.setText(book.isbn);
         mDescritpion.setText(book.description);
+        mToWishList = book.wish;
 
         if (book.imageFilePath != null) {
             File imageFile = new File(book.imageFilePath);

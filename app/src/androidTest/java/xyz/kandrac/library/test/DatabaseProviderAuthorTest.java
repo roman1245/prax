@@ -89,7 +89,6 @@ public class DatabaseProviderAuthorTest extends ProviderTestCase2<DatabaseProvid
      * <p>
      * Test whether insertion returns correct value for insert with conflict. Expected result:
      * Single unchanged author.
-     * TODO: implement more fields for author and try whether author is really unchanged
      */
     public void testInsertConflict() {
 

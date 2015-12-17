@@ -21,6 +21,7 @@ public class Book {
     public final String imageUrlPath;
     public final String authorsReadable;
     public final String publisherReadable;
+    public final boolean wish;
 
     public Author[] authors;
     public Publisher publisher;
@@ -39,6 +40,7 @@ public class Book {
         imageUrlPath = getString(cursor, Contract.Books.BOOK_IMAGE_URL);
         authorsReadable = getString(cursor, Contract.Books.BOOK_AUTHORS_READ);
         publisherReadable = getString(cursor, Contract.Books.BOOK_PUBLISHER_READ);
+        wish = getInt(cursor, Contract.Books.BOOK_WISH_LIST) == 1;
     }
 
     private static int getInt(Cursor cursor, String columnName) {
@@ -68,6 +70,7 @@ public class Book {
         authors = builder.authors;
         authorsReadable = builder.authorsReadable;
         publisherReadable = builder.publisherReadable;
+        wish = builder.wish;
     }
 
     public ContentValues getContentValues() {
@@ -91,6 +94,7 @@ public class Book {
         private String imageFilePath;
         private String imageUrlPath;
         private String subtitle;
+        private boolean wish;
 
         private Publisher publisher;
         public Author[] authors;
@@ -158,6 +162,11 @@ public class Book {
 
         public Builder setAuthors(Author[] authors) {
             this.authors = authors;
+            return this;
+        }
+
+        public Builder setWish(boolean wish) {
+            this.wish = wish;
             return this;
         }
 

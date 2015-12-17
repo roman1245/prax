@@ -50,7 +50,8 @@ public class Database extends SQLiteOpenHelper {
                     Contract.Books.BOOK_IMAGE_URL + " TEXT," +
                     Contract.Books.BOOK_AUTHORS_READ + " TEXT," +
                     Contract.Books.BOOK_PUBLISHER_READ + " TEXT," +
-                    Contract.Books.BOOK_BORROWED + " BOOLEAN," +
+                    Contract.Books.BOOK_BORROWED + " BOOLEAN DEFAULT 0," +
+                    Contract.Books.BOOK_WISH_LIST + " BOOLEAN DEFAULT 0," +
                     Contract.Books.BOOK_PUBLISHER_ID + " INTEGER " + References.PUBLISHERS_ID + " ON DELETE CASCADE)";
 
     public static final String AUTHORS_CREATE_TABLE =
