@@ -149,6 +149,10 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
         description.setText(book.description);
         publisher.setText(book.publisherReadable);
 
+        if (book.wish) {
+            fab.setVisibility(View.GONE);
+        }
+
         File imageFile = book.imageFilePath == null ? null : new File(book.imageFilePath);
 
         Picasso.with(this)
