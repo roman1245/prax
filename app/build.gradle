@@ -11,7 +11,6 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0.0"
-        buildConfigField 'String', 'BOOKS_API_URL', '"https://www.googleapis.com"'
     }
 
     signingConfigs {
@@ -36,17 +35,16 @@ android {
         }
 
         debug {
-            buildConfigField 'String', 'BOOKS_API_KEY', '"AIzaSyCJJ0MF8D795z4RyA-Q5FRRJnn5bf1hVw0"'
             applicationIdSuffix '.debug'
         }
     }
 
     productFlavors {
         pro {
-            applicationId = "xyz.kandrac.library.pro"
+            applicationIdSuffix ".pro"
         }
         free {
-            applicationId = "xyz.kandrac.library.free"
+            applicationIdSuffix ".free"
         }
     }
 }

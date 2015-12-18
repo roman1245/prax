@@ -26,7 +26,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FilterQueryProvider;
 import android.widget.ImageView;
@@ -35,48 +34,52 @@ import com.google.android.gms.common.api.CommonStatusCodes;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import retrofit.Callback;
-import retrofit.Response;
-import retrofit.Retrofit;
 import xyz.kandrac.library.model.Contract;
 import xyz.kandrac.library.model.DatabaseStoreUtils;
 import xyz.kandrac.library.model.obj.Author;
 import xyz.kandrac.library.model.obj.Book;
 import xyz.kandrac.library.model.obj.Publisher;
-import xyz.kandrac.library.net.BookResponse;
-import xyz.kandrac.library.net.GoogleBooksUtils;
-import xyz.kandrac.library.net.OkHttpConfigurator;
 import xyz.kandrac.library.utils.DisplayUtils;
 
 /**
  * Created by VizGhar on 11.10.2015.
  */
-public class EditBookActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, Callback<BookResponse> {
-
-    public static final String EXTRA_BOOK_ID = "book_id_extra";
-    public static final String EXTRA_WISH_LIST = "wish_list_extra";
+public class EditBookActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String TAG = EditBookActivity.class.getName();
 
-    public static final String SAVE_STATE_FILE_NAME = "save_state_file_name";
+    // Activity extras
+    public static final String EXTRA_BOOK_ID = "book_id_extra";
+    public static final String EXTRA_WISH_LIST = "wish_list_extra";
 
+    // Save instance state constants
+    private static final String SAVE_STATE_FILE_NAME = "save_state_file_name";
+    private static final String SAVE_STATE_IMAGE_URL = "save_state_image_url";
+    private static final String SAVE_STATE_BOOK_ID = "save_state_book_id";
+    private static final String SAVE_STATE_WISH_LIST = "save_state_wish";
+
+    // Loaders
     public static final int BOOK_LOADER = 1;
 
+    // Globals
     private Long mBookId;
     private boolean mToWishList;
+    private String imageFileName;
+    private String imageUrl;
 
-    static final int REQUEST_IMAGE_CAPTURE = 1;
-    static final int REQUEST_BARCODE = 2;
+    // Requests to other activities
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final int REQUEST_BARCODE = 2;
 
-    private static final int TAKE_PHOTO_PERMISSIONS = 2;
-    private static final int BARCODE_PERMISSIONS = 3;
+    // Permission requests
+    private static final int PERMISSION_TAKE_PHOTO = 2;
+    private static final int PERMISSION_BARCODE = 3;
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -91,7 +94,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     EditText mTitleEdit;
 
     @Bind(R.id.book_input_subtitle)
-    EditText mSubitleEdit;
+    EditText mSubtitleEdit;
 
     @Bind(R.id.book_input_isbn)
     EditText mIsbnEdit;
@@ -99,14 +102,8 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     @Bind(R.id.parallax_cover_image)
     ImageView mImageEdit;
 
-    @Bind(R.id.book_input_cover)
-    Button mCoverButton;
-
     @Bind(R.id.book_input_description_edit)
-    EditText mDescritpion;
-
-    String imageFileName;
-    String imageUrl;
+    EditText mDescription;
 
     // Basic Activity Tasks
     @SuppressWarnings("SimplifiableConditionalExpression")
@@ -126,19 +123,28 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
             ab.setDisplayShowHomeEnabled(true);
         }
 
+        // handle extras
         Bundle extras = getIntent().getExtras();
-
-        mBookId = (extras != null) ? extras.getLong(EXTRA_BOOK_ID, -1) : -1;
-        mToWishList = (extras != null) ? extras.getBoolean(EXTRA_WISH_LIST) : false;
+        if (extras != null) {
+            mBookId = extras.getLong(EXTRA_BOOK_ID, 0);
+            mToWishList = extras.getBoolean(EXTRA_WISH_LIST);
+        } else {
+            mBookId = 0l;
+            mToWishList = false;
+        }
 
         if (mBookId > 0) {
             getSupportLoaderManager().initLoader(BOOK_LOADER, null, this);
         }
 
+        // set adapters for autocomplete fields
         setAuthorAdapter();
         setPublisherAdapter();
     }
 
+    /**
+     * Set Adapter for author autocomplete field
+     */
     private void setAuthorAdapter() {
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(
                 this,
@@ -163,6 +169,9 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         });
     }
 
+    /**
+     * Set Adapter for publisher autocomplete field
+     */
     private void setPublisherAdapter() {
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(
                 this,
@@ -196,13 +205,6 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                     if (data != null) {
                         String barcode = data.getStringExtra(BarcodeActivity.BARCODE_TEXT);
                         mIsbnEdit.setText(barcode);
-                        String searchQuery = GoogleBooksUtils.getSearchQuery(GoogleBooksUtils.QUERY_ISBN, barcode);
-
-                        OkHttpConfigurator
-                                .getInstance()
-                                .getApi()
-                                .getBooksByQuery(searchQuery)
-                                .enqueue(this);
                     }
                 }
                 break;
@@ -264,10 +266,10 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 .setPublisher(publisher)
                 .setAuthors(authors)
                 .setTitle(mTitleEdit.getText().toString())
-                .setSubtitle(mSubitleEdit.getText().toString())
+                .setSubtitle(mSubtitleEdit.getText().toString())
                 .setIsbn(mIsbnEdit.getText().toString())
                 .setImageFilePath(imageFileName)
-                .setDescription(mDescritpion.getText().toString())
+                .setDescription(mDescription.getText().toString())
                 .setImageUrlPath(imageUrl)
                 .setPublisherReadable(mPublisherEdit.getText().toString())
                 .setAuthorsRedable(authorsReadable)
@@ -278,7 +280,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         finish();
     }
 
-    // Open Camevra for taking image of Book Cover
+    // Open Camera for taking image of Book Cover
     @OnClick(R.id.book_input_cover)
     public void takePhoto(View view) {
         int cameraPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
@@ -293,21 +295,21 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 requestPermissions(
                         view,
                         R.string.edit_book_take_photo_permission,
-                        TAKE_PHOTO_PERMISSIONS,
+                        PERMISSION_TAKE_PHOTO,
                         Manifest.permission.CAMERA);
                 break;
             case 2:
                 requestPermissions(
                         view,
                         R.string.edit_book_take_photo_permission,
-                        TAKE_PHOTO_PERMISSIONS,
+                        PERMISSION_TAKE_PHOTO,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE);
                 break;
             case 3:
                 requestPermissions(
                         view,
                         R.string.edit_book_take_photo_permission,
-                        TAKE_PHOTO_PERMISSIONS,
+                        PERMISSION_TAKE_PHOTO,
                         Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE);
                 break;
             default:
@@ -323,7 +325,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
             requestPermissions(
                     view,
                     R.string.edit_book_barcode_permission,
-                    BARCODE_PERMISSIONS,
+                    PERMISSION_BARCODE,
                     Manifest.permission.CAMERA);
         } else {
             startActivityForResult(new Intent(this, BarcodeActivity.class), REQUEST_BARCODE);
@@ -333,12 +335,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                Log.e(TAG, ex.getMessage());
-            }
+            File photoFile = createImageFile();
             if (photoFile != null) {
                 Uri uri = Uri.fromFile(photoFile);
                 Log.d(TAG, "taking picture to store into " + uri.toString());
@@ -392,7 +389,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                                            @NonNull int[] grantResults) {
 
         switch (requestCode) {
-            case TAKE_PHOTO_PERMISSIONS: {
+            case PERMISSION_TAKE_PHOTO: {
                 boolean execute = true;
                 for (int grantResult : grantResults) {
                     if (grantResult != PackageManager.PERMISSION_GRANTED) {
@@ -413,7 +410,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                         .show();
                 break;
             }
-            case BARCODE_PERMISSIONS: {
+            case PERMISSION_BARCODE: {
                 if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     startActivityForResult(new Intent(this, BarcodeActivity.class), REQUEST_BARCODE);
                     return;
@@ -432,7 +429,12 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         }
     }
 
-    private File createImageFile() throws IOException {
+    /**
+     * Create unique file name for storing image file from camera
+     *
+     * @return file created
+     */
+    private File createImageFile() {
         // Create an image file name
         String timeStamp = SimpleDateFormat.getDateTimeInstance().format(new Date());
         String fileName = "JPEG_" + timeStamp + "_";
@@ -462,20 +464,25 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 // bind book data
                 if (data.getCount() == 1) {
                     Book book = new Book(data);
-                    setBook(book);
+                    bindBook(book);
                 }
                 break;
             default:
         }
     }
 
-    private void setBook(Book book) {
+    /**
+     * Bind book to view
+     *
+     * @param book to bind
+     */
+    private void bindBook(Book book) {
         mAuthorEdit.setText(book.authorsReadable);
         mPublisherEdit.setText(book.publisherReadable);
         mTitleEdit.setText(book.title);
-        mSubitleEdit.setText(book.subtitle);
+        mSubtitleEdit.setText(book.subtitle);
         mIsbnEdit.setText(book.isbn);
-        mDescritpion.setText(book.description);
+        mDescription.setText(book.description);
         mToWishList = book.wish;
 
         if (book.imageFilePath != null) {
@@ -491,60 +498,49 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
     }
 
-    public Cursor getAuthorCursor(CharSequence str) {
+    /**
+     * Get Author names filtered by input
+     *
+     * @param filter for author names
+     * @return authors
+     */
+    public Cursor getAuthorCursor(CharSequence filter) {
         String select = Contract.Authors.AUTHOR_NAME + " LIKE ? ";
-        String[] selectArgs = {"%" + str + "%"};
+        String[] selectArgs = {"%" + filter + "%"};
         String[] contactsProjection = new String[]{BaseColumns._ID, Contract.Authors.AUTHOR_NAME};
 
         return getContentResolver().query(Contract.Authors.CONTENT_URI, contactsProjection, select, selectArgs, null);
     }
 
-    public Cursor getPublisherCursor(CharSequence str) {
+    /**
+     * Get Publisher names filtered by input
+     *
+     * @param filter for publisher names
+     * @return publishers
+     */
+    public Cursor getPublisherCursor(CharSequence filter) {
         String select = Contract.Publishers.PUBLISHER_NAME + " LIKE ? ";
-        String[] selectArgs = {"%" + str + "%"};
+        String[] selectArgs = {"%" + filter + "%"};
         String[] contactsProjection = new String[]{BaseColumns._ID, Contract.Publishers.PUBLISHER_NAME};
 
         return getContentResolver().query(Contract.Publishers.CONTENT_URI, contactsProjection, select, selectArgs, null);
     }
 
     @Override
-    public void onResponse(Response<BookResponse> response, Retrofit retrofit) {
-        if (response.isSuccess()) {
-            BookResponse s = response.body();
-            if (s.totalItems > 0) {
-                for (BookResponse.Book book : s.books) {
-                    if (book.volumeInfo != null) {
-                        mPublisherEdit.setText(book.volumeInfo.publisher);
-                        mTitleEdit.setText(book.volumeInfo.title);
-                        mDescritpion.setText(book.volumeInfo.description);
-                        mAuthorEdit.setText(book.volumeInfo.authors[0]);
-
-                        if (book.volumeInfo.imageLinks != null) {
-                            imageUrl = book.volumeInfo.imageLinks.thumbnail;
-                            Picasso.with(this).load(imageUrl).into(mImageEdit);
-                        }
-                    }
-                }
-            }
-        } else {
-            Log.d(TAG, "Error parsing response");
-        }
-    }
-
-    @Override
-    public void onFailure(Throwable t) {
-
-    }
-
-    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(SAVE_STATE_FILE_NAME, imageFileName);
+        outState.putString(SAVE_STATE_IMAGE_URL, imageUrl);
+        outState.putLong(SAVE_STATE_BOOK_ID, mBookId);
+        outState.putBoolean(SAVE_STATE_WISH_LIST, mToWishList);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         imageFileName = savedInstanceState.getString(SAVE_STATE_FILE_NAME);
+        imageUrl = savedInstanceState.getString(SAVE_STATE_IMAGE_URL);
+        mBookId = savedInstanceState.getLong(SAVE_STATE_BOOK_ID);
+        mToWishList = savedInstanceState.getBoolean(SAVE_STATE_WISH_LIST);
     }
 }
