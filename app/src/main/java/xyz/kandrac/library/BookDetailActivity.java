@@ -24,6 +24,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -78,8 +79,14 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     @Bind(R.id.parallax_cover_image)
     ImageView cover;
 
-    @Bind(R.id.parallax_cover_subtitle)
-    TextView subtitle;
+    @Bind(R.id.book_detail_isbn_image)
+    ImageView isbnImage;
+
+    @Bind(R.id.book_detail_description_image)
+    ImageView descritionImage;
+
+    @Bind(R.id.book_detail_full_book_name)
+    TextView fullTitle;
 
     @Bind(R.id.book_detail_author)
     TextView author;
@@ -143,11 +150,33 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     private void bindBook(Book book) {
 
         collapsingToolbarLayout.setTitle(book.title);
-        subtitle.setText(book.subtitle);
-        author.setText(book.authorsReadable);
-        isbn.setText(book.isbn);
-        description.setText(book.description);
-        publisher.setText(book.publisherReadable);
+
+        if (TextUtils.isEmpty(book.subtitle)) {
+            fullTitle.setText(book.title);
+        } else {
+            fullTitle.setText(getString(R.string.format_book_title_subtitle, book.title, book.subtitle));
+        }
+
+        author.setText(TextUtils.isEmpty(book.authorsReadable) ? getString(R.string.author_unknown) : book.authorsReadable);
+        publisher.setText(TextUtils.isEmpty(book.publisherReadable) ? getString(R.string.publisher_unknown) : book.publisherReadable);
+
+        if (TextUtils.isEmpty(book.isbn)) {
+            isbn.setVisibility(View.GONE);
+            isbnImage.setVisibility(View.GONE);
+        } else {
+            isbn.setText(book.isbn);
+            isbn.setVisibility(View.VISIBLE);
+            isbnImage.setVisibility(View.VISIBLE);
+        }
+
+        if (TextUtils.isEmpty(book.description)) {
+            description.setVisibility(View.GONE);
+            descritionImage.setVisibility(View.GONE);
+        } else {
+            description.setText(book.description);
+            description.setVisibility(View.VISIBLE);
+            descritionImage.setVisibility(View.VISIBLE);
+        }
 
         if (book.wish) {
             fab.setVisibility(View.GONE);

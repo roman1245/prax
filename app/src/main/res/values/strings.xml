@@ -6,6 +6,9 @@
     <!-- General errors and messages -->
     <string name="unexpected_error_occurs">An unexpected error occurs</string>
 
+    <!-- General formatting strings -->
+    <string name="format_book_title_subtitle">%1$s: %2$s</string>
+
     <!-- Action strings (mostly used in Toolbar) -->
     <string name="action_save">Save</string>
     <string name="action_edit">Edit</string>

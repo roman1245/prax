@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-        setContentView(R.layout.book_list);
+        setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
         // Action Bar settings

@@ -169,7 +169,6 @@ public class BookListFragment extends Fragment implements LoaderManager.LoaderCa
 
         // Init database loading
         getActivity().getLoaderManager().initLoader(mLoaderId, null, this);
-
         return result;
     }
 
