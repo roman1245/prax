@@ -25,13 +25,19 @@ import xyz.kandrac.library.model.Contract;
 import xyz.kandrac.library.model.obj.Author;
 
 /**
+ * List of authors displayed in this fragment is based on data stored in
+ * {@link xyz.kandrac.library.model.Contract.Authors} table. List contains all
+ * non-deleted authors and on clicking author line {@link AuthorDetailActivity}
+ * starts. To see details about the UI please reffer to
+ * {@link xyz.kandrac.library.AuthorListFragment.AuthorCursorAdapter}
+ * <p/>
  * Created by kandrac on 22/10/15.
  */
 public class AuthorListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, Searchable {
 
-    AuthorCursorAdapter adapter;
+    private AuthorCursorAdapter mAdapter;
 
-    String searchQuery;
+    private String mSearchQuery;
 
     @Bind(R.id.list)
     RecyclerView list;
@@ -51,11 +57,10 @@ public class AuthorListFragment extends Fragment implements LoaderManager.Loader
         mFab.setVisibility(View.GONE);
         mEmpty.setText(R.string.author_list_empty);
 
-        adapter = new AuthorCursorAdapter();
+        mAdapter = new AuthorCursorAdapter();
         list.setLayoutManager(new LinearLayoutManager(getActivity()));
-        list.setAdapter(adapter);
+        list.setAdapter(mAdapter);
 
-        // Init database loading
         getActivity().getLoaderManager().initLoader(MainActivity.AUTHOR_LIST_LOADER, null, this);
 
         return result;
@@ -68,10 +73,10 @@ public class AuthorListFragment extends Fragment implements LoaderManager.Loader
             String selection = null;
             String[] selectionArgs = null;
 
-            if (searchQuery != null && searchQuery.length() > 1) {
+            if (mSearchQuery != null && mSearchQuery.length() > 1) {
                 selection = Contract.Authors.AUTHOR_NAME + " LIKE ?";
                 selectionArgs = new String[]{
-                        "%" + searchQuery + "%"
+                        "%" + mSearchQuery + "%"
                 };
             }
 
@@ -90,8 +95,8 @@ public class AuthorListFragment extends Fragment implements LoaderManager.Loader
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data.getCount() > 0) {
-            adapter.setCursor(data);
-            adapter.notifyDataSetChanged();
+            mAdapter.setCursor(data);
+            mAdapter.notifyDataSetChanged();
             list.setVisibility(View.VISIBLE);
             mEmpty.setVisibility(View.GONE);
         } else {
@@ -106,17 +111,25 @@ public class AuthorListFragment extends Fragment implements LoaderManager.Loader
 
     @Override
     public boolean requestSearch(String query) {
-        searchQuery = query;
+        mSearchQuery = query;
         getActivity().getLoaderManager().restartLoader(MainActivity.AUTHOR_LIST_LOADER, null, this);
         return true;
     }
 
+    /**
+     * Adapter for getting views based on {@link Cursor} provided and transformed to {@link Author}
+     * object. The view displayed is based on @layout/author_list_item
+     */
     private class AuthorCursorAdapter extends RecyclerView.Adapter<AuthorCursorAdapter.BindingHolder> {
 
+        /**
+         * ViewHolder for {@link xyz.kandrac.library.AuthorListFragment.AuthorCursorAdapter}'s
+         * list items.
+         */
         public class BindingHolder extends RecyclerView.ViewHolder {
 
-            ImageView image;
-            TextView text;
+            private ImageView image;
+            private TextView text;
 
             public BindingHolder(View rowView) {
                 super(rowView);
@@ -125,7 +138,7 @@ public class AuthorListFragment extends Fragment implements LoaderManager.Loader
             }
         }
 
-        Cursor mCursor;
+        private Cursor mCursor;
 
         public void setCursor(Cursor cursor) {
             mCursor = cursor;

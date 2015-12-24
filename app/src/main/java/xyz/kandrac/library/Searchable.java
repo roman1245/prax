@@ -3,7 +3,7 @@ package xyz.kandrac.library;
 /**
  * Implement this interface in all classes that provides searching capabilities (For example
  * {@code ListView}s that requires filtering based on search).
- * <p>
+ * <p/>
  * Created by VizGhar on 23.10.2015.
  */
 public interface Searchable {

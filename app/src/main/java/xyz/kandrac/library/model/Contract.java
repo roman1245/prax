@@ -5,12 +5,20 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
+ * Contracts linked to {@link Database} that should be easily used via {@link DatabaseProvider}.
+ * In order to access data from database please use URI's from these classes:
+ * <ul>
+ * <li>{@link Books}</li>
+ * <li>{@link Authors}</li>
+ * <li>{@link Publishers}</li>
+ * <li>{@link BorrowInfo}</li>
+ * </ul>
+ * <p/>
  * Created by kandrac on 26/10/15.
  */
-public class Contract {
+public final class Contract {
 
     private Contract() {
-
     }
 
     // Database Columns
@@ -68,7 +76,18 @@ public class Contract {
     public static final Uri BOOKS_AUTHORS_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_BOOKS).appendPath(PATH_AUTHORS).build();
 
     /**
-     *
+     * Details about Book contract can be obtained from:
+     * <ul>
+     * <li>Table name: {@link xyz.kandrac.library.model.Database.Tables#BOOKS}</li>
+     * <li>Table columns: {@link xyz.kandrac.library.model.Contract.BooksColumns}</li>
+     * <li>Requests for {@link android.content.ContentProvider} from:
+     * <ul>
+     * <li>{@link #CONTENT_URI} or</li>
+     * <li>methods from this class</li>
+     * </ul>
+     * </li>
+     * </ul>
+     * To see more detailed info about requests please see {@link DatabaseProvider} constants
      */
     public static class Books implements BooksColumns {
 
@@ -111,7 +130,18 @@ public class Contract {
     }
 
     /**
-     *
+     * Details about Author contract can be obtained from:
+     * <ul>
+     * <li>Table name: {@link xyz.kandrac.library.model.Database.Tables#AUTHORS}</li>
+     * <li>Table columns: {@link xyz.kandrac.library.model.Contract.AuthorsColumns}</li>
+     * <li>Requests for {@link android.content.ContentProvider} from:
+     * <ul>
+     * <li>{@link #CONTENT_URI} or</li>
+     * <li>methods from this class</li>
+     * </ul>
+     * </li>
+     * </ul>
+     * To see more detailed info about requests please see {@link DatabaseProvider} constants
      */
     public static class Authors implements AuthorsColumns {
 
@@ -151,7 +181,18 @@ public class Contract {
     }
 
     /**
-     *
+     * Details about Publisher contract can be obtained from:
+     * <ul>
+     * <li>Table name: {@link xyz.kandrac.library.model.Database.Tables#PUBLISHERS}</li>
+     * <li>Table columns: {@link xyz.kandrac.library.model.Contract.PublishersColumns}</li>
+     * <li>Requests for {@link android.content.ContentProvider} from:
+     * <ul>
+     * <li>{@link #CONTENT_URI} or</li>
+     * <li>methods from this class</li>
+     * </ul>
+     * </li>
+     * </ul>
+     * To see more detailed info about requests please see {@link DatabaseProvider} constants
      */
     public static class Publishers implements PublishersColumns {
 
@@ -202,6 +243,20 @@ public class Contract {
         }
     }
 
+    /**
+     * Details about Book Borrow Info contract can be obtained from:
+     * <ul>
+     * <li>Table name: {@link xyz.kandrac.library.model.Database.Tables#BORROW_INFO}</li>
+     * <li>Table columns: {@link xyz.kandrac.library.model.Contract.BorrowInfoColumns}</li>
+     * <li>Requests for {@link android.content.ContentProvider} from:
+     * <ul>
+     * <li>{@link #CONTENT_URI} or</li>
+     * <li>methods from this class</li>
+     * </ul>
+     * </li>
+     * </ul>
+     * To see more detailed info about requests please see {@link DatabaseProvider} constants
+     */
     public static class BorrowInfo implements BorrowInfoColumns {
 
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_BORROW_INFO).build();

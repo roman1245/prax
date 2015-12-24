@@ -8,6 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
+ * This is the dialog that should be displayed when user requests for About page.
+ * It contains details about developer's intentions for this application. To see
+ * content directly please see @layout/about_frament where the main content is
+ * defined in @string/about_text
+ * <p/>
+ * It will be visible the same way for each device since it should be only simple
+ * dialog and it won't replace any fragment.
+ * <p/>
  * Created by VizGhar on 19.10.2015.
  */
 public class AboutDialog extends DialogFragment {

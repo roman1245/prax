@@ -25,18 +25,20 @@ import xyz.kandrac.library.barcode.ui.CameraSourcePreview;
 import xyz.kandrac.library.barcode.ui.GraphicOverlay;
 
 /**
+ * Activity that displays barcode scanner. This was implemented based on Google Vision
+ * samples, that can be easily found on web, but heavily modified to fit needs of this
+ * application.
+ * <p/>
  * Created by VizGhar on 18.10.2015.
  */
 public class BarcodeActivity extends AppCompatActivity {
 
     private static final String TAG = "Barcode-reader";
 
-    // intent request code to handle updating play services if needed.
     private static final int RC_HANDLE_GMS = 9001;
 
     // constants used to pass extra data in the intent
     public static final String AUTO_FOCUS = "AUTO_FOCUS";
-    public static final String USE_FLASH = "USE_FLASH";
     public static final String BARCODE_TEXT = "Barcode";
 
     private CameraSource mCameraSource;
@@ -57,9 +59,8 @@ public class BarcodeActivity extends AppCompatActivity {
 
         // read parameters from the intent used to launch the activity.
         boolean autoFocus = getIntent().getBooleanExtra(AUTO_FOCUS, true);
-        boolean useFlash = getIntent().getBooleanExtra(USE_FLASH, false);
 
-        createCameraSource(autoFocus, useFlash);
+        createCameraSource(autoFocus);
     }
 
     /**
@@ -71,7 +72,7 @@ public class BarcodeActivity extends AppCompatActivity {
      * the constant.
      */
     @SuppressLint("InlinedApi")
-    private void createCameraSource(boolean autoFocus, boolean useFlash) {
+    private void createCameraSource(boolean autoFocus) {
         Context context = getApplicationContext();
 
         BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(context).setBarcodeFormats(Barcode.ISBN | Barcode.EAN_13).build();
@@ -97,7 +98,7 @@ public class BarcodeActivity extends AppCompatActivity {
         mCameraSource = new CameraSource.Builder(getApplicationContext(), barcodeDetector)
                 .setFacing(com.google.android.gms.vision.CameraSource.CAMERA_FACING_BACK)
                 .setRequestedFps(15.0f)
-                .setAutoFocusEnabled(true)
+                .setAutoFocusEnabled(autoFocus)
                 .setRequestedPreviewSize(1600, 1024)
                 .build();
     }
@@ -157,7 +158,6 @@ public class BarcodeActivity extends AppCompatActivity {
             }
         }
     }
-
 
     private void complete(String barcode) {
         Intent data = new Intent();

@@ -25,11 +25,20 @@ import xyz.kandrac.library.model.obj.Author;
 import xyz.kandrac.library.utils.BookCursorAdapter;
 
 /**
+ * Activity that displays details about current author, based on {@link #EXTRA_AUTHOR_ID}.
+ * For simplicity and minimalistic application approach, there are only books linked to
+ * author displayed.
+ * <p/>
+ * This Activity should only run in case we are running on mobile device. Currently only
+ * mobile devices are supported and this activity doesn't contain any fragment. This will
+ * be fixed same time as tablet version is introduced.
+ * <p/>
  * Created by VizGhar on 25.10.2015.
  */
 public class AuthorDetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String EXTRA_AUTHOR_ID = "author_id_extra";
+
     private long mAuthorId;
 
     @Bind(R.id.toolbar)
@@ -41,7 +50,7 @@ public class AuthorDetailActivity extends AppCompatActivity implements LoaderMan
     @Bind(R.id.list)
     RecyclerView recyclerView;
 
-    BookCursorAdapter adapter;
+    private BookCursorAdapter mAuthorBooksAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +60,6 @@ public class AuthorDetailActivity extends AppCompatActivity implements LoaderMan
 
         ButterKnife.bind(this);
 
-        // set ToolBar
         setSupportActionBar(toolbar);
 
         ActionBar ab = getSupportActionBar();
@@ -60,11 +68,12 @@ public class AuthorDetailActivity extends AppCompatActivity implements LoaderMan
             ab.setDisplayShowHomeEnabled(true);
         }
 
-        adapter = new BookCursorAdapter(this);
+        mAuthorBooksAdapter = new BookCursorAdapter(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(mAuthorBooksAdapter);
 
         mAuthorId = getIntent().getExtras().getLong(EXTRA_AUTHOR_ID);
+
         getSupportLoaderManager().initLoader(1, null, this);
     }
 
@@ -89,8 +98,8 @@ public class AuthorDetailActivity extends AppCompatActivity implements LoaderMan
         if (data.getCount() > 0) {
             Author author = new Author(data);
             collapsingToolbarLayout.setTitle(TextUtils.isEmpty(author.name) ? getString(R.string.author_unknown) : author.name);
-            adapter.setCursor(data);
-            adapter.notifyDataSetChanged();
+            mAuthorBooksAdapter.setCursor(data);
+            mAuthorBooksAdapter.notifyDataSetChanged();
         }
     }
 
