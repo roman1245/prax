@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="64dp"
     android:layout_margin="8dp"
     android:background="?attr/selectableItemBackground"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:padding="8dp">
 
     <ImageView
-        android:id="@+id/image"
+        android:id="@+id/list_item_publisher_image"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
         android:background="@color/md_grey_400"
         android:contentDescription="@string/author_list_item"
         android:scaleType="center"
@@ -22,11 +19,10 @@
         android:tint="@android:color/white" />
 
     <TextView
-        android:id="@+id/line1"
-        android:layout_width="match_parent"
+        android:id="@+id/list_item_publisher_name"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_toEndOf="@id/image"
-        android:layout_toRightOf="@id/image"
+        android:layout_margin="16dp"
         android:gravity="center_vertical"
         tools:text="Slovart" />
-</RelativeLayout>
+</LinearLayout>

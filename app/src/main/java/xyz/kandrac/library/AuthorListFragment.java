@@ -120,8 +120,8 @@ public class AuthorListFragment extends Fragment implements LoaderManager.Loader
 
             public BindingHolder(View rowView) {
                 super(rowView);
-                image = (ImageView) rowView.findViewById(R.id.image);
-                text = (TextView) rowView.findViewById(R.id.line1);
+                image = (ImageView) rowView.findViewById(R.id.list_item_author_image);
+                text = (TextView) rowView.findViewById(R.id.list_item_author_name);
             }
         }
 

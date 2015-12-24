@@ -28,9 +28,9 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Bi
 
         public BindingHolder(View rowView) {
             super(rowView);
-            image = (ImageView) rowView.findViewById(R.id.image);
-            title = (TextView) rowView.findViewById(R.id.line1);
-            subtitle = (TextView) rowView.findViewById(R.id.line2);
+            image = (ImageView) rowView.findViewById(R.id.list_item_book_image);
+            title = (TextView) rowView.findViewById(R.id.list_item_book_title);
+            subtitle = (TextView) rowView.findViewById(R.id.list_item_book_subtitle);
         }
     }
 
@@ -65,7 +65,7 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Bi
             }
         });
 
-        xyz.kandrac.library.utils.DisplayUtils.displayScaledImage(mContext, book.imageFilePath, (ImageView) holder.itemView.findViewById(R.id.image));
+        xyz.kandrac.library.utils.DisplayUtils.displayScaledImage(mContext, book.imageFilePath, (ImageView) holder.itemView.findViewById(R.id.list_item_author_image));
         holder.title.setText(book.title);
         holder.subtitle.setText(book.authorsReadable);
     }

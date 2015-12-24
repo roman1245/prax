@@ -120,8 +120,8 @@ public class PublisherListFragment extends Fragment implements LoaderManager.Loa
 
             public BindingHolder(View rowView) {
                 super(rowView);
-                image = (ImageView) rowView.findViewById(R.id.image);
-                text = (TextView) rowView.findViewById(R.id.line1);
+                image = (ImageView) rowView.findViewById(R.id.list_item_publisher_image);
+                text = (TextView) rowView.findViewById(R.id.list_item_publisher_name);
             }
         }
 
@@ -147,7 +147,7 @@ public class PublisherListFragment extends Fragment implements LoaderManager.Loa
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getContext(), PublisherDetailActivity.class);
+                    Intent intent = new Intent(getActivity(), PublisherDetailActivity.class);
                     intent.putExtra(PublisherDetailActivity.EXTRA_PUBLISHER_ID, publisher.id);
                     startActivity(intent);
                 }
