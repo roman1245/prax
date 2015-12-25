@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +20,14 @@ import xyz.kandrac.library.model.obj.Book;
  */
 public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.BindingHolder> {
 
-    Context mContext;
+    private Context mContext;
+    private Cursor mCursor;
 
     public class BindingHolder extends RecyclerView.ViewHolder {
-        ImageView image;
-        TextView title;
-        TextView subtitle;
+
+        private ImageView image;
+        private TextView title;
+        private TextView subtitle;
 
         public BindingHolder(View rowView) {
             super(rowView);
@@ -34,15 +37,14 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Bi
         }
     }
 
-
     public BookCursorAdapter(Context context) {
         mContext = context;
     }
 
-    Cursor mCursor;
-
     public void setCursor(Cursor cursor) {
+        Log.d("jano", "" + cursor.getCount());
         mCursor = cursor;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -65,7 +67,7 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Bi
             }
         });
 
-        xyz.kandrac.library.utils.DisplayUtils.displayScaledImage(mContext, book.imageFilePath, (ImageView) holder.itemView.findViewById(R.id.list_item_author_image));
+        DisplayUtils.displayScaledImage(mContext, book.imageFilePath, holder.image);
         holder.title.setText(book.title);
         holder.subtitle.setText(book.authorsReadable);
     }
@@ -73,7 +75,11 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Bi
     @Override
     public int getItemCount() {
         if (mCursor != null) {
+            Log.d("BookCursorAdapter", Integer.toString(mCursor.getCount()));
             return mCursor.getCount();
-        } else return 0;
+        } else {
+            Log.d("BookCursorAdapter", "0");
+            return 0;
+        }
     }
 }
