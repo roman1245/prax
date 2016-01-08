@@ -1,7 +1,6 @@
 package xyz.kandrac.library.model.obj;
 
 import android.content.ContentValues;
-import android.database.Cursor;
 
 import xyz.kandrac.library.model.Contract;
 
@@ -19,44 +18,11 @@ public class Book {
     public final String isbn;
     public final String imageFilePath;
     public final String imageUrlPath;
-    public final String authorsReadable;
     public final String publisherReadable;
     public final boolean wish;
 
     public Author[] authors;
     public Publisher publisher;
-
-    public Book(Cursor cursor) {
-        if (cursor.getPosition() < 0) {
-            cursor.moveToFirst();
-        }
-        id = getInt(cursor, Contract.Books.BOOK_ID);
-        title = getString(cursor, Contract.Books.BOOK_TITLE);
-        subtitle = getString(cursor, Contract.Books.BOOK_SUBTITLE);
-        description = getString(cursor, Contract.Books.BOOK_DESCRIPTION);
-        isbn = getString(cursor, Contract.Books.BOOK_ISBN);
-        publisher = getPublisher(cursor, Contract.Publishers.PUBLISHER_NAME);
-        imageFilePath = getString(cursor, Contract.Books.BOOK_IMAGE_FILE);
-        imageUrlPath = getString(cursor, Contract.Books.BOOK_IMAGE_URL);
-        authorsReadable = getString(cursor, Contract.Books.BOOK_AUTHORS_READ);
-        publisherReadable = getString(cursor, Contract.Books.BOOK_PUBLISHER_READ);
-        wish = getInt(cursor, Contract.Books.BOOK_WISH_LIST) == 1;
-    }
-
-    private static int getInt(Cursor cursor, String columnName) {
-        int index = cursor.getColumnIndex(columnName);
-        return index == -1 ? 0 : cursor.getInt(index);
-    }
-
-    private static String getString(Cursor cursor, String columnName) {
-        int index = cursor.getColumnIndex(columnName);
-        return index == -1 ? null : cursor.getString(index);
-    }
-
-    private static Publisher getPublisher(Cursor cursor, String columnName) {
-        int index = cursor.getColumnIndex(columnName);
-        return index == -1 ? null : new Publisher(cursor);
-    }
 
     private Book(Builder builder) {
         id = builder.id;
@@ -68,7 +34,6 @@ public class Book {
         imageFilePath = builder.imageFilePath;
         imageUrlPath = builder.imageUrlPath;
         authors = builder.authors;
-        authorsReadable = builder.authorsReadable;
         publisherReadable = builder.publisherReadable;
         wish = builder.wish;
     }
@@ -81,7 +46,6 @@ public class Book {
         contentValues.put(Contract.Books.BOOK_ISBN, isbn);
         contentValues.put(Contract.Books.BOOK_IMAGE_FILE, imageFilePath);
         contentValues.put(Contract.Books.BOOK_IMAGE_URL, imageUrlPath);
-        contentValues.put(Contract.Books.BOOK_AUTHORS_READ, authorsReadable);
         return contentValues;
     }
 
@@ -98,7 +62,6 @@ public class Book {
 
         private Publisher publisher;
         public Author[] authors;
-        public String authorsReadable;
         public String publisherReadable;
 
         public Builder setId(long id) {
@@ -131,15 +94,6 @@ public class Book {
             return this;
         }
 
-        public Builder setPublisher(long publisherId) {
-            if (publisher != null) {
-                publisher.id = publisherId;
-            } else {
-                publisher = new Publisher.Builder().setId(publisherId).build();
-            }
-            return this;
-        }
-
         public Builder setImageFilePath(String filePath) {
             this.imageFilePath = filePath;
             return this;
@@ -147,11 +101,6 @@ public class Book {
 
         public Builder setImageUrlPath(String url) {
             this.imageUrlPath = url;
-            return this;
-        }
-
-        public Builder setAuthorsRedable(String authorsReadable) {
-            this.authorsReadable = authorsReadable;
             return this;
         }
 

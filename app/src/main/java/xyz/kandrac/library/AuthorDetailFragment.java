@@ -3,7 +3,6 @@ package xyz.kandrac.library;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -18,7 +17,6 @@ import android.view.ViewGroup;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import xyz.kandrac.library.model.obj.Author;
 import xyz.kandrac.library.utils.BookCursorAdapter;
 
 /**
@@ -61,17 +59,11 @@ public class AuthorDetailFragment extends Fragment {
 
         ButterKnife.bind(this, result);
 
-        mAuthorBooksAdapter = new BookCursorAdapter(getActivity());
+        mAuthorBooksAdapter = new BookCursorAdapter.Builder().setActivity(getActivity()).setAuthor(1).build();
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(mAuthorBooksAdapter);
 
         return result;
-    }
-
-    public void processCursor(Cursor data) {
-        Author author = new Author(data);
-        mAuthorDelete.onChangeAuthorName(author.name);
-        mAuthorBooksAdapter.setCursor(data);
     }
 
     @Override

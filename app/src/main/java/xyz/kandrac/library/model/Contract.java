@@ -31,7 +31,6 @@ public final class Contract {
         String BOOK_IMAGE_FILE = "book_image_file";
         String BOOK_PUBLISHER_ID = "book_publisher_id";
         String BOOK_IMAGE_URL = "book_image_url";
-        String BOOK_AUTHORS_READ = "book_authors_readable";
         String BOOK_PUBLISHER_READ = "book_publisher_readable";
         String BOOK_BORROWED = "book_borrowed";
         String BOOK_WISH_LIST = "book_wish";
@@ -61,6 +60,11 @@ public final class Contract {
         String BORROW_NAME = "borrow_name";
         String BORROW_DATE_BORROWED = "date_borrowed";
         String BORROW_DATE_RETURNED = "date_returned";
+    }
+
+    // Aliases
+    public interface ConcatAliases {
+        String AUTHORS_CONCAT_ALIAS = "concat";
     }
 
     // URI Paths
@@ -102,12 +106,15 @@ public final class Contract {
          */
         public static final String DEFAULT_SORT = BOOK_TITLE + " ASC";
 
-
         /**
          * Build {@link Uri} for requested {@link #BOOK_ID}.
          */
         public static Uri buildBookUri(long bookId) {
             return CONTENT_URI.buildUpon().appendPath(Long.toString(bookId)).build();
+        }
+
+        public static Uri buildBookPublisherUri(long bookId) {
+            return CONTENT_URI.buildUpon().appendPath(Long.toString(bookId)).appendPath(PATH_PUBLISHERS).build();
         }
 
         /**

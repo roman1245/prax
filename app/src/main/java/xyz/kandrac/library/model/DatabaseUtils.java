@@ -13,6 +13,14 @@ public final class DatabaseUtils {
 
     }
 
+    public static String getDistinctColumn(String columnName) {
+        return "DISTINCT " + columnName;
+    }
+
+    public static String getConcat(String columnName, String alias) {
+        return "group_concat(" + columnName + ") AS " + alias;
+    }
+
     public static String[] getFullColumnNames(String table, String[] columnNames) {
         for (int i = 0; i < columnNames.length; i++) {
             columnNames[i] = table + "." + columnNames[i];

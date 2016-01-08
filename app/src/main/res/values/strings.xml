@@ -91,5 +91,5 @@
 
     <!-- Notification strings -->
     <string name="notification_book_borrowed_reminder_title">Book borrowed reminder</string>
-    <string name="notification_book_borrowed_reminder_message">Book %1$s by %2$s was borrowed quite some time before. Do you want to contact owner?</string>
+    <string name="notification_book_borrowed_reminder_message">Book %1$s was borrowed quite some time before. Do you want to contact owner?</string>
 </resources>

@@ -1,19 +1,14 @@
 package xyz.kandrac.library;
 
 import android.content.DialogInterface;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -21,14 +16,12 @@ import android.widget.ImageView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import xyz.kandrac.library.model.Contract;
-import xyz.kandrac.library.model.Database;
-import xyz.kandrac.library.model.obj.Publisher;
 import xyz.kandrac.library.utils.BookCursorAdapter;
 
 /**
  * Created by VizGhar on 25.10.2015.
  */
-public class PublisherDetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class PublisherDetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_PUBLISHER_ID = "publisher_id_extra";
     private long mPublisherId;
@@ -64,46 +57,15 @@ public class PublisherDetailActivity extends AppCompatActivity implements Loader
             ab.setDisplayShowHomeEnabled(true);
         }
 
-        adapter = new BookCursorAdapter(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
         mPublisherId = getIntent().getExtras().getLong(EXTRA_PUBLISHER_ID);
-        getSupportLoaderManager().initLoader(1, null, this);
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-
-        return new CursorLoader(
-                this,
-                Contract.Publishers.buildBooksUri(mPublisherId),
-                new String[]{
-                        Contract.Publishers.PUBLISHER_NAME,
-                        Database.Tables.BOOKS + "." + Contract.Books.BOOK_ID,
-                        Contract.Books.BOOK_TITLE,
-                        Contract.Books.BOOK_IMAGE_FILE,
-                        Contract.Books.BOOK_AUTHORS_READ
-                },
-                null, null, null
-        );
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (data.getCount() > 0) {
-            Publisher publisher = new Publisher(data);
-
-            collapsingToolbarLayout.setTitle(TextUtils.isEmpty(publisher.name) ? getString(R.string.publisher_unknown) : publisher.name);
-
-            adapter.setCursor(data);
-            adapter.notifyDataSetChanged();
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
+        adapter = new BookCursorAdapter.Builder()
+                .setPublisher(mPublisherId)
+                .setWishList(BookCursorAdapter.FALSE)
+                .setActivity(this)
+                .build();
     }
 
     @Override

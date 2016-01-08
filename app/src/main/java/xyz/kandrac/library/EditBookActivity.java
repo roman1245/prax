@@ -45,6 +45,7 @@ import xyz.kandrac.library.model.DatabaseStoreUtils;
 import xyz.kandrac.library.model.obj.Author;
 import xyz.kandrac.library.model.obj.Book;
 import xyz.kandrac.library.model.obj.Publisher;
+import xyz.kandrac.library.utils.BookCursorAdapter;
 import xyz.kandrac.library.utils.DisplayUtils;
 
 /**
@@ -127,7 +128,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             mBookId = extras.getLong(EXTRA_BOOK_ID, 0);
-            mToWishList = extras.getBoolean(EXTRA_WISH_LIST);
+            mToWishList = extras.getInt(EXTRA_WISH_LIST) == BookCursorAdapter.TRUE;
         } else {
             mBookId = 0l;
             mToWishList = false;
@@ -272,7 +273,6 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 .setDescription(mDescription.getText().toString())
                 .setImageUrlPath(imageUrl)
                 .setPublisherReadable(mPublisherEdit.getText().toString())
-                .setAuthorsRedable(authorsReadable)
                 .setWish(mToWishList)
                 .build();
 
@@ -461,11 +461,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
         switch (id) {
             case BOOK_LOADER:
-                // bind book data
-                if (data.getCount() == 1) {
-                    Book book = new Book(data);
-                    bindBook(book);
-                }
+                bindBook(data);
                 break;
             default:
         }
@@ -474,23 +470,58 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     /**
      * Bind book to view
      *
-     * @param book to bind
+     * @param data to bind
      */
-    private void bindBook(Book book) {
-        mAuthorEdit.setText(book.authorsReadable);
-        mPublisherEdit.setText(book.publisherReadable);
-        mTitleEdit.setText(book.title);
-        mSubtitleEdit.setText(book.subtitle);
-        mIsbnEdit.setText(book.isbn);
-        mDescription.setText(book.description);
-        mToWishList = book.wish;
+    private void bindBook(Cursor data) {
+        if (data.getCount() != 1) {
+            return;
+        }
 
-        if (book.imageFilePath != null) {
-            File imageFile = new File(book.imageFilePath);
+        data.moveToFirst();
+
+        String title = data.getString(data.getColumnIndex(Contract.Books.BOOK_TITLE));
+        String subtitle = data.getString(data.getColumnIndex(Contract.Books.BOOK_SUBTITLE));
+        String isbn = data.getString(data.getColumnIndex(Contract.Books.BOOK_ISBN));
+        String description = data.getString(data.getColumnIndex(Contract.Books.BOOK_DESCRIPTION));
+        String path = data.getString(data.getColumnIndex(Contract.Books.BOOK_IMAGE_FILE));
+        boolean wish = data.getInt(data.getColumnIndex(Contract.Books.BOOK_WISH_LIST)) == 1;
+
+        mTitleEdit.setText(title);
+        mSubtitleEdit.setText(subtitle);
+        mIsbnEdit.setText(isbn);
+        mDescription.setText(description);
+        mToWishList = wish;
+
+        if (path != null) {
+            File imageFile = new File(path);
             if (imageFile.exists()) {
                 Picasso.with(this).load(imageFile).into(mImageEdit);
             }
         }
+    }
+
+    private void bindAuthors(Cursor authorsCursor) {
+        if (authorsCursor == null || authorsCursor.getCount() == 0 || !authorsCursor.moveToFirst()) {
+            return;
+        }
+
+        String result = authorsCursor.getString(authorsCursor.getColumnIndex(Contract.Authors.AUTHOR_NAME));
+
+        while (authorsCursor.moveToNext()) {
+            result += ", " + authorsCursor.getString(authorsCursor.getColumnIndex(Contract.Authors.AUTHOR_NAME));
+        }
+
+        mAuthorEdit.setText(result);
+    }
+
+    private void bindPublisher(Cursor publisherCursor) {
+        if (publisherCursor == null || publisherCursor.getCount() == 0 || !publisherCursor.moveToFirst()) {
+            return;
+        }
+
+        String result = publisherCursor.getString(publisherCursor.getColumnIndex(Contract.Publishers.PUBLISHER_NAME));
+
+        mPublisherEdit.setText(result);
     }
 
     @Override

@@ -42,7 +42,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import xyz.kandrac.library.model.Contract;
-import xyz.kandrac.library.model.obj.Book;
 import xyz.kandrac.library.utils.DateUtils;
 
 /**
@@ -58,6 +57,8 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     static final int LOADER_BOOK = 1;
     static final int LOADER_CONTACT = 2;
     static final int LOADER_BORROW_DETAIL = 3;
+    static final int LOADER_AUTHOR = 4;
+    static final int LOADER_PUBLISHER = 5;
 
     // PERMISSIONS
     static final int PICK_CONTACT_PERMISSION = 1;
@@ -92,10 +93,10 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     TextView author;
 
     @Bind(R.id.book_detail_isbn)
-    TextView isbn;
+    TextView isbnText;
 
     @Bind(R.id.book_detail_description)
-    TextView description;
+    TextView descriptionText;
 
     @Bind(R.id.book_detail_publisher)
     TextView publisher;
@@ -139,50 +140,76 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
         mBookId = getIntent().getExtras().getLong(EXTRA_BOOK_ID);
 
         getSupportLoaderManager().initLoader(LOADER_BOOK, null, this);
+        getSupportLoaderManager().initLoader(LOADER_AUTHOR, null, this);
+        getSupportLoaderManager().initLoader(LOADER_PUBLISHER, null, this);
         getSupportLoaderManager().initLoader(LOADER_BORROW_DETAIL, null, this);
+    }
+
+    private void bindAuthors(Cursor authorsCursor) {
+        if (authorsCursor == null || authorsCursor.getCount() == 0 || !authorsCursor.moveToFirst()) {
+            author.setText(getString(R.string.author_unknown));
+            return;
+        }
+
+        String result = "";
+        result += authorsCursor.getString(authorsCursor.getColumnIndex(Contract.Authors.AUTHOR_NAME));
+
+        while (authorsCursor.moveToNext()) {
+            result += ", " + authorsCursor.getString(authorsCursor.getColumnIndex(Contract.Authors.AUTHOR_NAME));
+        }
+
+        author.setText(TextUtils.isEmpty(result) ? getString(R.string.author_unknown) : result);
     }
 
     /**
      * Binds book to content
-     *
-     * @param book to bind
      */
-    private void bindBook(Book book) {
+    private void bindBook(Cursor bookCursor) {
 
-        collapsingToolbarLayout.setTitle(book.title);
-
-        if (TextUtils.isEmpty(book.subtitle)) {
-            fullTitle.setText(book.title);
-        } else {
-            fullTitle.setText(getString(R.string.format_book_title_subtitle, book.title, book.subtitle));
+        if (!bookCursor.moveToFirst()) {
+            return;
         }
 
-        author.setText(TextUtils.isEmpty(book.authorsReadable) ? getString(R.string.author_unknown) : book.authorsReadable);
-        publisher.setText(TextUtils.isEmpty(book.publisherReadable) ? getString(R.string.publisher_unknown) : book.publisherReadable);
+        String title = bookCursor.getString(bookCursor.getColumnIndex(Contract.Books.BOOK_TITLE));
+        String subtitle = bookCursor.getString(bookCursor.getColumnIndex(Contract.Books.BOOK_SUBTITLE));
+        String isbn = bookCursor.getString(bookCursor.getColumnIndex(Contract.Books.BOOK_ISBN));
+        String description = bookCursor.getString(bookCursor.getColumnIndex(Contract.Books.BOOK_DESCRIPTION));
+        boolean wish = bookCursor.getInt(bookCursor.getColumnIndex(Contract.Books.BOOK_WISH_LIST)) == 1;
+        String filePath = bookCursor.getString(bookCursor.getColumnIndex(Contract.Books.BOOK_IMAGE_FILE));
 
-        if (TextUtils.isEmpty(book.isbn)) {
-            isbn.setVisibility(View.GONE);
+        collapsingToolbarLayout.setTitle(title);
+
+        if (TextUtils.isEmpty(subtitle)) {
+            fullTitle.setText(title);
+        } else {
+            fullTitle.setText(getString(R.string.format_book_title_subtitle, title, subtitle));
+        }
+
+//        publisher.setText(TextUtils.isEmpty(book.publisherReadable) ? getString(R.string.publisher_unknown) : book.publisherReadable);
+
+        if (TextUtils.isEmpty(isbn)) {
+            isbnText.setVisibility(View.GONE);
             isbnImage.setVisibility(View.GONE);
         } else {
-            isbn.setText(book.isbn);
-            isbn.setVisibility(View.VISIBLE);
+            isbnText.setText(isbn);
+            isbnText.setVisibility(View.VISIBLE);
             isbnImage.setVisibility(View.VISIBLE);
         }
 
-        if (TextUtils.isEmpty(book.description)) {
-            description.setVisibility(View.GONE);
+        if (TextUtils.isEmpty(description)) {
+            descriptionText.setVisibility(View.GONE);
             descritionImage.setVisibility(View.GONE);
         } else {
-            description.setText(book.description);
-            description.setVisibility(View.VISIBLE);
+            descriptionText.setText(description);
+            descriptionText.setVisibility(View.VISIBLE);
             descritionImage.setVisibility(View.VISIBLE);
         }
 
-        if (book.wish) {
+        if (wish) {
             fab.setVisibility(View.GONE);
         }
 
-        File imageFile = book.imageFilePath == null ? null : new File(book.imageFilePath);
+        File imageFile = filePath == null ? null : new File(filePath);
 
         Picasso.with(this)
                 .load(imageFile != null && imageFile.exists() ? imageFile : null)
@@ -251,7 +278,23 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         switch (id) {
             case LOADER_BOOK:
-                return new CursorLoader(this, Contract.Books.buildBookUri(mBookId), null, null, null, null);
+
+                return new CursorLoader(
+                        this,
+                        Contract.Books.buildBookUri(mBookId),
+                        new String[]{
+                                Contract.Books.BOOK_ID,
+                                Contract.Books.BOOK_TITLE,
+                                Contract.Books.BOOK_SUBTITLE,
+                                Contract.Books.BOOK_ISBN,
+                                Contract.Books.BOOK_DESCRIPTION,
+                                Contract.Books.BOOK_WISH_LIST,
+                                Contract.Books.BOOK_IMAGE_FILE
+                        },
+                        null,
+                        null,
+                        null);
+
             case LOADER_CONTACT:
                 // invoked after result came from Contacts
                 // TODO: check ContactsContract.CommonDataKinds.Email.CONTENT_URI to get Email or
@@ -266,6 +309,30 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                         new String[]{contactId},
                         null);
 
+            case LOADER_AUTHOR:
+
+                return new CursorLoader(
+                        this,
+                        Contract.Books.buildBookWithAuthorUri(mBookId),
+                        new String[]{
+                                Contract.Authors.AUTHOR_NAME
+                        },
+                        null,
+                        null,
+                        null);
+
+            case LOADER_PUBLISHER:
+
+                return new CursorLoader(
+                        this,
+                        Contract.Books.buildBookPublisherUri(mBookId),
+                        new String[]{
+                                Contract.Publishers.PUBLISHER_NAME
+                        },
+                        null,
+                        null,
+                        null);
+
             case LOADER_BORROW_DETAIL:
                 return new CursorLoader(this, Contract.Books.buildBorrowInfoUri(mBookId), null, Contract.BorrowInfo.BORROW_DATE_RETURNED + " = 0", null, null);
         }
@@ -276,12 +343,18 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         int id = loader.getId();
         switch (id) {
-            case LOADER_BOOK: {
-                if (data != null && data.getCount() > 0) {
-                    bindBook(new Book(data));
-                }
+            case LOADER_BOOK:
+                bindBook(data);
                 break;
-            }
+
+            case LOADER_AUTHOR:
+                bindAuthors(data);
+                break;
+
+            case LOADER_PUBLISHER:
+                bindPublisher(data);
+                break;
+
             case LOADER_CONTACT: {
                 if (!data.moveToFirst()) {
                     Toast.makeText(this, R.string.unexpected_error_occurs, Toast.LENGTH_SHORT).show();
@@ -322,6 +395,17 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                 }
             }
         }
+    }
+
+    private void bindPublisher(Cursor publisherCursor) {
+        if (publisherCursor == null || publisherCursor.getCount() == 0 || !publisherCursor.moveToFirst()) {
+            publisher.setText(getString(R.string.publisher_unknown));
+            return;
+        }
+
+        String result = publisherCursor.getString(publisherCursor.getColumnIndex(Contract.Publishers.PUBLISHER_NAME));
+
+        publisher.setText(TextUtils.isEmpty(result) ? getString(R.string.publisher_unknown) : result);
     }
 
     @Override

@@ -12,7 +12,6 @@ import android.database.Cursor;
 import java.util.concurrent.TimeUnit;
 
 import xyz.kandrac.library.model.Contract;
-import xyz.kandrac.library.model.obj.Book;
 import xyz.kandrac.library.utils.DateUtils;
 
 /**
@@ -27,11 +26,11 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         long bookId = Contract.Books.getBookId(intent.getData());
 
-        Cursor bookCursor = context.getContentResolver().query(Contract.Books.buildBookUri(bookId), null, null, null, null);
+        Cursor bookCursor = context.getContentResolver().query(Contract.Books.buildBookUri(bookId), new String[]{Contract.Books.BOOK_TITLE}, null, null, null);
 
         if (bookCursor != null && bookCursor.getCount() > 0 && bookCursor.moveToFirst()) {
 
-            Book book = new Book(bookCursor);
+            String title = bookCursor.getString(bookCursor.getColumnIndex(Contract.Books.BOOK_TITLE));
 
             if (bookCursor.getInt(bookCursor.getColumnIndex(Contract.Books.BOOK_BORROWED)) == 0) {
                 bookCursor.close();
@@ -42,10 +41,10 @@ public class NotificationReceiver extends BroadcastReceiver {
             notificationIntent.putExtra(BookDetailActivity.EXTRA_BOOK_ID, bookId);
 
             // TODO: notification for multiple books? modify setNumber and message content
-            Notification notif = new Notification.Builder(context)
+            Notification notification = new Notification.Builder(context)
                     .setSmallIcon(R.drawable.ic_author)
                     .setNumber(1)
-                    .setContentText(context.getString(R.string.notification_book_borrowed_reminder_message, book.title, book.authors))
+                    .setContentText(context.getString(R.string.notification_book_borrowed_reminder_message, title))
                     .setContentTitle(context.getString(R.string.notification_book_borrowed_reminder_title))
                     .setPriority(Notification.PRIORITY_DEFAULT)
                     .setAutoCancel(true)
@@ -54,7 +53,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
             NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-            manager.notify(1, notif);
+            manager.notify(1, notification);
         } else if (bookCursor != null) {
             bookCursor.close();
         }

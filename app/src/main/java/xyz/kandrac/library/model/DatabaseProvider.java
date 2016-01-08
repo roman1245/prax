@@ -39,6 +39,7 @@ public class DatabaseProvider extends ContentProvider {
 
     public static final int PUBLISHERS = 300;
     public static final int PUBLISHER_ID = 301;
+    public static final int PUBLISHER_BY_BOOK = 302;
 
     public static final int BOOKS_AUTHORS = 400;
 
@@ -56,6 +57,7 @@ public class DatabaseProvider extends ContentProvider {
         uriMatcher.addURI(authority, "books/#", BOOK_ID);
         uriMatcher.addURI(authority, "books/#/authors", AUTHOR_BY_BOOK);
         uriMatcher.addURI(authority, "books/#/borrowinfo", BORROW_INFO_BY_BOOK);
+        uriMatcher.addURI(authority, "books/#/publishers", PUBLISHER_BY_BOOK);
 
         uriMatcher.addURI(authority, "authors", AUTHORS);
         uriMatcher.addURI(authority, "authors/#", AUTHOR_ID);
@@ -95,6 +97,8 @@ public class DatabaseProvider extends ContentProvider {
                 return Contract.Books.CONTENT_TYPE;
             case PUBLISHERS:
                 return Contract.Publishers.CONTENT_TYPE;
+            case PUBLISHER_BY_BOOK:
+                return Contract.Publishers.CONTENT_ITEM_TYPE;
             case PUBLISHER_ID:
                 return Contract.Publishers.CONTENT_ITEM_TYPE;
             case BOOKS_AUTHORS:
@@ -116,6 +120,7 @@ public class DatabaseProvider extends ContentProvider {
     public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        String group = null;
 
         switch (uriMatcher.match(uri)) {
             case BOOKS:
@@ -146,12 +151,19 @@ public class DatabaseProvider extends ContentProvider {
                 qb.setTables(Database.Tables.PUBLISHERS);
                 sortOrder = sortOrder == null ? Contract.Publishers.DEFAULT_SORT : sortOrder;
                 break;
+            case PUBLISHER_BY_BOOK:
+                qb.setTables(Database.Tables.BOOKS_JOIN_PUBLISHERS);
+                qb.appendWhere(Database.Tables.BOOKS + "." + Contract.Books.BOOK_ID + "=" + Contract.Books.getBookId(uri));
+                sortOrder = sortOrder == null ? Contract.Publishers.DEFAULT_SORT : sortOrder;
+                break;
             case PUBLISHER_ID:
                 qb.setTables(Database.Tables.PUBLISHERS);
                 qb.appendWhere(Contract.Publishers.PUBLISHER_ID + "=" + Contract.Publishers.getPublisherId(uri));
                 break;
             case BOOKS_AUTHORS:
                 qb.setTables(Database.Tables.BOOKS_JOIN_AUTHORS);
+                qb.setDistinct(true);
+                group = Database.Tables.BOOKS + "." + Contract.Books.BOOK_ID;
                 sortOrder = sortOrder == null ? Contract.Books.DEFAULT_SORT : sortOrder;
                 break;
             case BOOK_BY_PUBLISHER:
@@ -176,7 +188,8 @@ public class DatabaseProvider extends ContentProvider {
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
 
-        Cursor cursor = qb.query(db, projection, selection, selectionArgs, null, null, sortOrder);
+        Cursor cursor = qb.query(db, projection, selection, selectionArgs, group, null, sortOrder);
+
         Context context = getContext();
         if (context != null) {
             cursor.setNotificationUri(context.getContentResolver(), uri);
@@ -322,6 +335,8 @@ public class DatabaseProvider extends ContentProvider {
                 long id = Contract.Books.getBookId(uri);
                 count = db.delete(Database.Tables.BOOKS, Contract.Books.BOOK_ID + " = " + id +
                         (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
+                getContext().getContentResolver().notifyChange(Contract.Books.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(Contract.BOOKS_AUTHORS_URI, null);
                 break;
             }
             case AUTHORS: {
@@ -383,6 +398,8 @@ public class DatabaseProvider extends ContentProvider {
             case BOOK_ID: {
                 long id = Contract.Books.getBookId(uri);
                 count = db.update(Database.Tables.BOOKS, values, Contract.Books.BOOK_ID + " = ?", new String[]{Long.toString(id)});
+                getContext().getContentResolver().notifyChange(Contract.Books.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(Contract.BOOKS_AUTHORS_URI, null);
                 break;
             }
             case AUTHORS: {
