@@ -21,14 +21,13 @@ import xyz.kandrac.library.utils.BookCursorAdapter;
 
 /**
  * Displays details about given author.
- * <p/>
+ * <p>
  * Created by kandrac on 24/12/15.
  */
 public class AuthorDetailFragment extends Fragment {
 
     private static final String EXTRA_AUTHOR_ID = "author_id_extra";
 
-    private BookCursorAdapter mAuthorBooksAdapter;
     private AuthorFragmentCallbacks mAuthorDelete;
     private long mAuthorId;
 
@@ -67,9 +66,9 @@ public class AuthorDetailFragment extends Fragment {
 
         ButterKnife.bind(this, result);
 
-        mAuthorBooksAdapter = new BookCursorAdapter.Builder().setActivity(getActivity()).setAuthor(mAuthorId).build();
+        BookCursorAdapter adapter = new BookCursorAdapter.Builder().setActivity(getActivity()).setAuthor(mAuthorId).build();
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(mAuthorBooksAdapter);
+        recyclerView.setAdapter(adapter);
 
         return result;
     }
