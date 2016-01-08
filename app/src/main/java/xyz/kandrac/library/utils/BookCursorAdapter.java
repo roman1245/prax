@@ -27,33 +27,52 @@ import xyz.kandrac.library.model.Database;
 import xyz.kandrac.library.model.DatabaseUtils;
 
 /**
- * Adapter for {@link RecyclerView} that automatically handles requests for books based on 3
+ * Adapter for {@link RecyclerView} that automatically handles requests for books based on 5
  * identifiers:
  * <ol>
  * <li><strong>Loader ID</strong>: so that no conflicts in loading data will occur</li>
  * <li><strong>Wish List</strong>: whether books belongs to wish list or not</li>
  * <li><strong>Borrowed</strong>: whether books were borrowed or not</li>
+ * <li><strong>Author ID</strong>: ID of some of the authors</li>
+ * <li><strong>Publisher ID</strong>: ID of book publisher</li>
  * </ol>
- * <p/>
- * There is also provided interface for getting changes in count of books in cursor currently
+ * To properly set those values please use {@link xyz.kandrac.library.utils.BookCursorAdapter.Builder}
+ * and all its setter methods.
+ * <p>
+ * There is also interface provided for getting changes in count of books in cursor currently
  * handled. This can be used when cursor is being freed and you want to handle such situation by
- * displaying placeholder. There is no default behavior provided for such situations, but can
- * be extended in future.
- * <p/>
+ * displaying placeholder. There is no default behavior provided for such situation. This listener
+ * can also be set in mentioned {@code Builder}.
+ * <p>
+ * Cursor is listening for {@link Contract#BOOKS_AUTHORS_URI} notification uri
+ * <p>
  * Created by kandrac on 23/11/15.
+ *
+ * @see xyz.kandrac.library.utils.BookCursorAdapter.CursorSizeChangedListener
  */
-public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.BindingHolder> implements LoaderManager.LoaderCallbacks<Cursor> {
+public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.ViewHolder> implements LoaderManager.LoaderCallbacks<Cursor> {
 
-
+    // Field state possible values
     public static final int ANY = -1;
     public static final int TRUE = 1;
     public static final int FALSE = 0;
 
+    /**
+     * Based on field state we can identify whether some of search query attributes are mandatory,
+     * forbidden or its value is not necessary
+     */
     @IntDef({ANY, TRUE, FALSE})
     @Retention(RetentionPolicy.SOURCE)
     public @interface FieldState {
     }
 
+    /**
+     * Based on {@link xyz.kandrac.library.utils.BookCursorAdapter.FieldState} get its String
+     * representation needed for database queries
+     *
+     * @param state to get value from
+     * @return state String representation
+     */
     private static String getFieldStateStringValue(@FieldState int state) {
         switch (state) {
             case TRUE:
@@ -66,7 +85,7 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Bi
     }
 
     /**
-     * Interface for listening changes in Cursor length.
+     * Interface for listening changes in Cursor length inside {@link BookCursorAdapter}.
      */
     public interface CursorSizeChangedListener {
 
@@ -92,13 +111,14 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Bi
     private int mLastCount = -1;                    // Last count of books in adapter
     private String mSearchQuery = "";               // Filter is based on this search query
     private CursorSizeChangedListener mListener;    // Listener for book counter
-    private String mSelectionString;                //
-    private ArrayList<String> mSelectionArguments;  //
-    private int mLoaderId;                          //
-    private Activity mActivity;                     //
+    private String mSelectionString;                // Where part of selection query
+    private ArrayList<String> mSelectionArguments;  // Selection arguments without filter arguments
+    private int mLoaderId;                          // Loader id to be used with queries
+    private Activity mActivity;                     // To make operations on
 
     /**
-     * Default constructor with no values set
+     * Default constructor with no values set, proper setting of the adapter is handled in
+     * {@link xyz.kandrac.library.utils.BookCursorAdapter.Builder}
      */
     private BookCursorAdapter() {
     }
@@ -112,7 +132,15 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Bi
         mSearchQuery = filter;
     }
 
-    public String[] getSelectionArguments() {
+    /**
+     * Merges {@link #mSearchQuery} filter string with rest of the selection arguments from
+     * {@link #mSelectionArguments}. Filter is intended to be updated multiple times while
+     * other selection arguments not (like author id or publisher id). To change search query
+     * {@link #setFilter(String)} have to be used
+     *
+     * @return all selection arguments
+     */
+    private String[] getSelectionArguments() {
         ArrayList<String> result = new ArrayList<>();
         result.add(mSearchQuery);
         result.add(mSearchQuery);
@@ -126,13 +154,14 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Bi
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        // handle only set loader, because you can receive other loader calls from same activity
         if (id == mLoaderId) {
             return new CursorLoader(
-                    mActivity,
-                    Contract.BOOKS_AUTHORS_URI,
-                    PROJECTION,
-                    mSelectionString,
-                    getSelectionArguments(),
+                    mActivity,                  // activity required for cursor loading
+                    Contract.BOOKS_AUTHORS_URI, // keep in mind we are listening for books/authors
+                    PROJECTION,                 // static projection columns, cannot be edited
+                    mSelectionString,           // static selection string from initialization
+                    getSelectionArguments(),    // dynamically updated selection arguments
                     null);
         } else {
             return null;
@@ -141,15 +170,18 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Bi
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mCursor = data;
-        int count = data.getCount();
-        if (mLastCount != count) {
-            mLastCount = count;
-            if (mListener != null) {
-                mListener.onCountChanged(count);
+        // handle only set loader, because you can receive other loader calls from same activity
+        if (loader.getId() == mLoaderId) {
+            mCursor = data;                     // data set changed, don't forget to notify parent
+            int count = data.getCount();
+            if (mLastCount != count) {          // count changed callback handling
+                mLastCount = count;
+                if (mListener != null) {
+                    mListener.onCountChanged(count);
+                }
             }
+            notifyDataSetChanged();
         }
-        notifyDataSetChanged();
     }
 
     @Override
@@ -164,15 +196,16 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Bi
     }
 
     /**
-     * View holder for this adapter
+     * {@link BookCursorAdapter}'s {@code ViewHolder}. Required for using with {@link RecyclerView}
+     * and really the best practice in order to be efficient with {@link android.widget.AdapterView}
      */
-    public class BindingHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView image;
         private TextView title;
         private TextView subtitle;
 
-        public BindingHolder(View rowView) {
+        public ViewHolder(View rowView) {
             super(rowView);
             image = (ImageView) rowView.findViewById(R.id.list_item_book_image);
             title = (TextView) rowView.findViewById(R.id.list_item_book_title);
@@ -181,20 +214,22 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Bi
     }
 
     @Override
-    public BindingHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        return new BindingHolder(inflater.inflate(R.layout.book_list_item, parent, false));
+        return new ViewHolder(inflater.inflate(R.layout.book_list_item, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(BindingHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
         mCursor.moveToPosition(position);
 
+        // get values from cursor on given position
         final Long bookId = mCursor.getLong(mCursor.getColumnIndex(Contract.Books.BOOK_ID));
         final String bookTitle = mCursor.getString(mCursor.getColumnIndex(Contract.Books.BOOK_TITLE));
         final String authors = mCursor.getString(mCursor.getColumnIndex(Contract.ConcatAliases.AUTHORS_CONCAT_ALIAS));
         final String image = mCursor.getString(mCursor.getColumnIndex(Contract.Books.BOOK_IMAGE_FILE));
 
+        // update view with cursor values
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -218,20 +253,20 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Bi
         }
     }
 
+    /**
+     * Use this {@code Builder} to create proper {@link BookCursorAdapter} that can be used with
+     * your {@link RecyclerView}.
+     */
     public static class Builder {
 
-        @FieldState
-        int wishList = ANY;
-
-        @FieldState
-        int borrowed = ANY;
-
-        long publisher = ANY;
-        long author = ANY;
-        int loaderId = 1;
-        Activity activity;
-        CursorSizeChangedListener listener;
-        String filter = "";
+        // fields
+        @FieldState private int wishList = ANY;
+        @FieldState private int borrowed = ANY;
+        private long publisher = ANY;
+        private long author = ANY;
+        private int loaderId = 1;
+        private Activity activity;
+        private CursorSizeChangedListener listener;
 
 
         public Builder setWishList(@FieldState int wishList) {
@@ -256,11 +291,6 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Bi
 
         public Builder setLoaderId(int loaderId) {
             this.loaderId = loaderId;
-            return this;
-        }
-
-        public Builder setFilter(String filter) {
-            this.filter = filter;
             return this;
         }
 
