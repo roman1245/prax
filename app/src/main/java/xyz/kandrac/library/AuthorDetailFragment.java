@@ -26,19 +26,27 @@ import xyz.kandrac.library.utils.BookCursorAdapter;
  */
 public class AuthorDetailFragment extends Fragment {
 
+    private static final String EXTRA_AUTHOR_ID = "author_id_extra";
+
     private BookCursorAdapter mAuthorBooksAdapter;
     private AuthorFragmentCallbacks mAuthorDelete;
+    private long mAuthorId;
 
     @Bind(R.id.list)
     RecyclerView recyclerView;
 
-    public static AuthorDetailFragment getInstance() {
-        return new AuthorDetailFragment();
+    public static AuthorDetailFragment getInstance(long authorId) {
+        AuthorDetailFragment result = new AuthorDetailFragment();
+        Bundle arguments = new Bundle();
+        arguments.putLong(EXTRA_AUTHOR_ID, authorId);
+        result.setArguments(arguments);
+        return result;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mAuthorId = getArguments().getLong(EXTRA_AUTHOR_ID);
         setHasOptionsMenu(true);
     }
 
@@ -59,7 +67,7 @@ public class AuthorDetailFragment extends Fragment {
 
         ButterKnife.bind(this, result);
 
-        mAuthorBooksAdapter = new BookCursorAdapter.Builder().setActivity(getActivity()).setAuthor(1).build();
+        mAuthorBooksAdapter = new BookCursorAdapter.Builder().setActivity(getActivity()).setAuthor(mAuthorId).build();
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(mAuthorBooksAdapter);
 

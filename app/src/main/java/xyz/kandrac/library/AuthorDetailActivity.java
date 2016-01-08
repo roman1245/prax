@@ -57,7 +57,7 @@ public class AuthorDetailActivity extends AppCompatActivity implements AuthorDet
         mAuthorId = getIntent().getExtras().getLong(EXTRA_AUTHOR_ID);
 
         if (savedInstanceState == null) {
-            Fragment mDetailFragment = AuthorDetailFragment.getInstance();
+            Fragment mDetailFragment = AuthorDetailFragment.getInstance(mAuthorId);
             getFragmentManager().beginTransaction().add(R.id.content, mDetailFragment, AUTHOR_DETAIL_FRAGMENT).commit();
         }
     }

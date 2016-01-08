@@ -10,7 +10,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -143,7 +142,6 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Bi
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mCursor = data;
-        Log.d("jano", "setting cursor with notification" + mCursor.getNotificationUri().toString());
         int count = data.getCount();
         if (mLastCount != count) {
             mLastCount = count;

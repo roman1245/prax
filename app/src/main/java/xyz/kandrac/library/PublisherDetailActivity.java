@@ -58,7 +58,6 @@ public class PublisherDetailActivity extends AppCompatActivity {
         }
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(adapter);
 
         mPublisherId = getIntent().getExtras().getLong(EXTRA_PUBLISHER_ID);
         adapter = new BookCursorAdapter.Builder()
@@ -66,6 +65,8 @@ public class PublisherDetailActivity extends AppCompatActivity {
                 .setWishList(BookCursorAdapter.FALSE)
                 .setActivity(this)
                 .build();
+
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
