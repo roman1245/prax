@@ -25,14 +25,11 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         long bookId = Contract.Books.getBookId(intent.getData());
 
-
         Intent notificationIntent = new Intent(context, BookDetailActivity.class);
         notificationIntent.putExtra(BookDetailActivity.EXTRA_BOOK_ID, bookId);
 
-        // TODO: notification for multiple books? modify setNumber and message content
         Notification notification = new Notification.Builder(context)
-                .setSmallIcon(R.drawable.ic_author)
-                .setNumber(1)
+                .setSmallIcon(R.drawable.ic_book_white)
                 .setContentText(context.getString(R.string.notification_book_borrowed_reminder_message))
                 .setContentTitle(context.getString(R.string.notification_book_borrowed_reminder_title))
                 .setPriority(Notification.PRIORITY_DEFAULT)
