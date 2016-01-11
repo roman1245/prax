@@ -66,7 +66,9 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     private static final String SAVE_STATE_WISH_LIST = "save_state_wish";
 
     // Loaders
-    public static final int BOOK_LOADER = 1;
+    public static final int LOADER_BOOK = 1;
+    public static final int LOADER_AUTHOR = 2;
+    public static final int LOADER_PUBLISHER = 3;
 
     // Globals
     private Long mBookId;
@@ -135,7 +137,9 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         }
 
         if (mBookId > 0) {
-            getSupportLoaderManager().initLoader(BOOK_LOADER, null, this);
+            getSupportLoaderManager().initLoader(LOADER_BOOK, null, this);
+            getSupportLoaderManager().initLoader(LOADER_AUTHOR, null, this);
+            getSupportLoaderManager().initLoader(LOADER_PUBLISHER, null, this);
         }
 
         // set adapters for autocomplete fields
@@ -447,8 +451,28 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         switch (id) {
-            case BOOK_LOADER:
+            case LOADER_BOOK:
                 return new CursorLoader(this, Contract.Books.buildBookUri(mBookId), null, null, null, null);
+            case LOADER_AUTHOR:
+                return new CursorLoader(
+                        this,
+                        Contract.Books.buildBookWithAuthorUri(mBookId),
+                        new String[]{
+                                Contract.Authors.AUTHOR_NAME
+                        },
+                        null,
+                        null,
+                        null);
+            case LOADER_PUBLISHER:
+                return new CursorLoader(
+                        this,
+                        Contract.Books.buildBookPublisherUri(mBookId),
+                        new String[]{
+                                Contract.Publishers.PUBLISHER_NAME
+                        },
+                        null,
+                        null,
+                        null);
             default:
                 return null;
         }
@@ -459,9 +483,18 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         int id = loader.getId();
 
         switch (id) {
-            case BOOK_LOADER:
+            case LOADER_BOOK:
                 bindBook(data);
                 break;
+
+            case LOADER_AUTHOR:
+                bindAuthors(data);
+                break;
+
+            case LOADER_PUBLISHER:
+                bindPublisher(data);
+                break;
+
             default:
         }
     }
