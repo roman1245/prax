@@ -18,7 +18,6 @@ public class Book {
     public final String isbn;
     public final String imageFilePath;
     public final String imageUrlPath;
-    public final String publisherReadable;
     public final boolean wish;
 
     public Author[] authors;
@@ -34,7 +33,6 @@ public class Book {
         imageFilePath = builder.imageFilePath;
         imageUrlPath = builder.imageUrlPath;
         authors = builder.authors;
-        publisherReadable = builder.publisherReadable;
         wish = builder.wish;
     }
 
@@ -62,7 +60,6 @@ public class Book {
 
         private Publisher publisher;
         public Author[] authors;
-        public String publisherReadable;
 
         public Builder setId(long id) {
             this.id = id;
@@ -101,11 +98,6 @@ public class Book {
 
         public Builder setImageUrlPath(String url) {
             this.imageUrlPath = url;
-            return this;
-        }
-
-        public Builder setPublisherReadable(String publisherReadable) {
-            this.publisherReadable = publisherReadable;
             return this;
         }
 

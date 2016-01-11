@@ -71,7 +71,6 @@ public final class DatabaseStoreUtils {
         bookContentValues.put(Contract.Books.BOOK_IMAGE_URL, book.imageUrlPath);
         bookContentValues.put(Contract.Books.BOOK_ISBN, book.isbn);
         bookContentValues.put(Contract.Books.BOOK_PUBLISHER_ID, publisherId);
-        bookContentValues.put(Contract.Books.BOOK_PUBLISHER_READ, book.publisherReadable);
         bookContentValues.put(Contract.Books.BOOK_WISH_LIST, book.wish);
 
         if (book.id > 0) {

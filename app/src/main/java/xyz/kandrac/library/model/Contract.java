@@ -31,7 +31,6 @@ public final class Contract {
         String BOOK_IMAGE_FILE = "book_image_file";
         String BOOK_PUBLISHER_ID = "book_publisher_id";
         String BOOK_IMAGE_URL = "book_image_url";
-        String BOOK_PUBLISHER_READ = "book_publisher_readable";
         String BOOK_BORROWED = "book_borrowed";
         String BOOK_WISH_LIST = "book_wish";
     }
