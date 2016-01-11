@@ -92,4 +92,9 @@
     <!-- Notification strings -->
     <string name="notification_book_borrowed_reminder_title">Book borrowed reminder</string>
     <string name="notification_book_borrowed_reminder_message">Please check your borrowed books</string>
+
+    <!-- Preferences -->
+    <string name="preferences_notifications_category">Notifications</string>
+    <string name="preferences_notifications_borrowed_title">Borrowed books notification</string>
+    <string name="preferences_notifications_borrowed_set">Notify me about borrowed book in %s days</string>
 </resources>

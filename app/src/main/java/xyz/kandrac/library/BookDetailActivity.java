@@ -5,10 +5,12 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.Data;
@@ -375,7 +377,10 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                 bookContentValues.put(Contract.Books.BOOK_BORROWED, true);
                 getContentResolver().update(Contract.Books.buildBookUri(mBookId), bookContentValues, null, null);
 
-                NotificationReceiver.prepareNotification(this, 20, mBookId);
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+                int notifyInDays = Integer.parseInt(sharedPref.getString(SettingsFragment.KEY_PREF_NOTIFICATION_DAYS, "20"));
+
+                NotificationReceiver.prepareNotification(this, notifyInDays, mBookId);
                 anchorFab(View.NO_ID);
                 fab.setVisibility(View.GONE);
                 break;
