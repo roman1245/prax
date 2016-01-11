@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import xyz.kandrac.library.BookDetailActivity;
 import xyz.kandrac.library.R;
@@ -130,6 +132,7 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
      */
     public void setFilter(String filter) {
         mSearchQuery = filter;
+        mActivity.getLoaderManager().restartLoader(mLoaderId, null, this);
     }
 
     /**
@@ -142,10 +145,10 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
      */
     private String[] getSelectionArguments() {
         ArrayList<String> result = new ArrayList<>();
-        result.add(mSearchQuery);
-        result.add(mSearchQuery);
-        result.add(mSearchQuery);
-        result.add(mSearchQuery);
+        result.add("%" + mSearchQuery + "%");
+        result.add("%" + mSearchQuery + "%");
+        result.add("%" + mSearchQuery + "%");
+        result.add("%" + mSearchQuery + "%");
         result.addAll(mSelectionArguments);
 
         String[] arrayResult = new String[mSelectionArguments.size() + 4];
@@ -154,6 +157,8 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Log.d("jano", "selection string = " + mSelectionString);
+        Log.d("jano", "selection args = " + Arrays.toString(getSelectionArguments()));
         // handle only set loader, because you can receive other loader calls from same activity
         if (id == mLoaderId) {
             return new CursorLoader(
