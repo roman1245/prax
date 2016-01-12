@@ -137,9 +137,12 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         }
 
         if (mBookId > 0) {
+            setTitle(R.string.title_edit_book);
             getSupportLoaderManager().initLoader(LOADER_BOOK, null, this);
             getSupportLoaderManager().initLoader(LOADER_AUTHOR, null, this);
             getSupportLoaderManager().initLoader(LOADER_PUBLISHER, null, this);
+        } else {
+            setTitle(R.string.title_add_new_book);
         }
 
         // set adapters for autocomplete fields

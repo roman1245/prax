@@ -9,6 +9,10 @@
     <!-- General formatting strings -->
     <string name="format_book_title_subtitle">%1$s: %2$s</string>
 
+    <!-- -->
+    <string name="title_add_new_book">Nová kniha</string>
+    <string name="title_edit_book">Úprava knihy</string>
+
     <!-- Action strings (mostly used in Toolbar) -->
     <string name="action_save">Uložiť</string>
     <string name="action_edit">Upraviť</string>

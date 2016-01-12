@@ -82,7 +82,6 @@
 
         <activity
             android:name=".EditBookActivity"
-            android:label="Add New Book"
             android:screenOrientation="portrait" />
 
         <activity
