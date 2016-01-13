@@ -8,47 +8,11 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="18" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
-    <compatible-screens>
-        <!-- all small size screens -->
-        <screen
-            android:screenDensity="ldpi"
-            android:screenSize="small" />
-        <screen
-            android:screenDensity="mdpi"
-            android:screenSize="small" />
-        <screen
-            android:screenDensity="hdpi"
-            android:screenSize="small" />
-        <screen
-            android:screenDensity="xhdpi"
-            android:screenSize="small" />
-        <!-- all normal size screens -->
-        <screen
-            android:screenDensity="ldpi"
-            android:screenSize="normal" />
-        <screen
-            android:screenDensity="mdpi"
-            android:screenSize="normal" />
-        <screen
-            android:screenDensity="hdpi"
-            android:screenSize="normal" />
-        <screen
-            android:screenDensity="xhdpi"
-            android:screenSize="normal" />
-        <!-- all large size screens -->
-        <screen
-            android:screenDensity="ldpi"
-            android:screenSize="large" />
-        <screen
-            android:screenDensity="mdpi"
-            android:screenSize="large" />
-        <screen
-            android:screenDensity="hdpi"
-            android:screenSize="large" />
-        <screen
-            android:screenDensity="xhdpi"
-            android:screenSize="large" />
-    </compatible-screens>
+    <supports-screens
+        android:smallScreens="true"
+        android:normalScreens="true"
+        android:largeScreens="true"
+        android:anyDensity="true" />
 
     <application
         android:allowBackup="true"
