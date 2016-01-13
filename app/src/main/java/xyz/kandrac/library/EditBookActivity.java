@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.BaseColumns;
@@ -294,7 +295,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
         int permissions = 0;
         permissions |= (cameraPermission == PackageManager.PERMISSION_GRANTED) ? 0 : 1;
-        permissions |= (writePermission == PackageManager.PERMISSION_GRANTED) ? 0 : 2;
+        permissions |= (writePermission == PackageManager.PERMISSION_GRANTED || Build.VERSION.SDK_INT > 18) ? 0 : 2;
 
         switch (permissions) {
             case 1:
@@ -444,9 +445,9 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         // Create an image file name
         String timeStamp = SimpleDateFormat.getDateTimeInstance().format(new Date());
         String fileName = "JPEG_" + timeStamp + "_";
-        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File result = new File(storageDir, fileName + ".jpg");
-        imageFileName = result.getPath();
+        imageFileName = result.getAbsolutePath();
         Log.d(TAG, "Created file : " + imageFileName);
         return result;
     }
