@@ -146,7 +146,7 @@ public class AuthorListFragment extends Fragment implements LoaderManager.Loader
 
         @Override
         public BindingHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             return new BindingHolder(inflater.inflate(R.layout.author_list_item, parent, false));
         }
 
