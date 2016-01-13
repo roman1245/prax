@@ -66,7 +66,7 @@ public class AuthorDetailFragment extends Fragment {
 
         ButterKnife.bind(this, result);
 
-        BookCursorAdapter adapter = new BookCursorAdapter.Builder().setActivity(getActivity()).setAuthor(mAuthorId).build();
+        BookCursorAdapter adapter = new BookCursorAdapter.Builder().setActivity(getActivity()).setLoaderId(AuthorDetailActivity.LOADER_AUTHOR_DETAILS).setAuthor(mAuthorId).build();
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
 

@@ -1,8 +1,12 @@
 package xyz.kandrac.library;
 
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -21,7 +25,10 @@ import xyz.kandrac.library.utils.BookCursorAdapter;
 /**
  * Created by VizGhar on 25.10.2015.
  */
-public class PublisherDetailActivity extends AppCompatActivity {
+public class PublisherDetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    public static final int LOADER_PUBLISHER_NAME = 1;
+    public static final int LOADER_PUBLISHER_DETAILS = 2;
 
     public static final String EXTRA_PUBLISHER_ID = "publisher_id_extra";
     private long mPublisherId;
@@ -62,11 +69,14 @@ public class PublisherDetailActivity extends AppCompatActivity {
         mPublisherId = getIntent().getExtras().getLong(EXTRA_PUBLISHER_ID);
         adapter = new BookCursorAdapter.Builder()
                 .setPublisher(mPublisherId)
+                .setLoaderId(LOADER_PUBLISHER_DETAILS)
                 .setWishList(BookCursorAdapter.FALSE)
                 .setActivity(this)
                 .build();
 
         recyclerView.setAdapter(adapter);
+
+        getSupportLoaderManager().initLoader(LOADER_PUBLISHER_NAME, null, this);
     }
 
     @Override
@@ -106,5 +116,32 @@ public class PublisherDetailActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        if (id == LOADER_PUBLISHER_NAME) {
+            return new CursorLoader(
+                    this,
+                    Contract.Publishers.buildPublisherUri(mPublisherId),
+                    new String[]{Contract.Publishers.PUBLISHER_NAME},
+                    null,
+                    null,
+                    null);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (loader.getId() == LOADER_PUBLISHER_NAME && data.moveToFirst()) {
+            collapsingToolbarLayout.setTitle(data.getString(data.getColumnIndex(Contract.Publishers.PUBLISHER_NAME)));
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 }

@@ -1,8 +1,12 @@
 package xyz.kandrac.library;
 
 import android.app.Fragment;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -24,11 +28,14 @@ import xyz.kandrac.library.model.Contract;
  * <p/>
  * Created by VizGhar on 25.10.2015.
  */
-public class AuthorDetailActivity extends AppCompatActivity implements AuthorDetailFragment.AuthorFragmentCallbacks {
+public class AuthorDetailActivity extends AppCompatActivity implements AuthorDetailFragment.AuthorFragmentCallbacks, LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String EXTRA_AUTHOR_ID = "author_id_extra";
 
     public static final String AUTHOR_DETAIL_FRAGMENT = "author_detail";
+
+    public static final int LOADER_AUTHOR_NAME = 1;
+    public static final int LOADER_AUTHOR_DETAILS = 2;
 
     private long mAuthorId;
 
@@ -60,6 +67,8 @@ public class AuthorDetailActivity extends AppCompatActivity implements AuthorDet
             Fragment mDetailFragment = AuthorDetailFragment.getInstance(mAuthorId);
             getFragmentManager().beginTransaction().add(R.id.content, mDetailFragment, AUTHOR_DETAIL_FRAGMENT).commit();
         }
+
+        getSupportLoaderManager().initLoader(LOADER_AUTHOR_NAME, null, this);
     }
 
     @Override
@@ -82,5 +91,32 @@ public class AuthorDetailActivity extends AppCompatActivity implements AuthorDet
     @Override
     public void onChangeAuthorName(String name) {
         collapsingToolbarLayout.setTitle(TextUtils.isEmpty(name) ? getString(R.string.author_unknown) : name);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        if (id == LOADER_AUTHOR_NAME) {
+            return new CursorLoader(
+                    this,
+                    Contract.Authors.buildAuthorUri(mAuthorId),
+                    new String[] {Contract.Authors.AUTHOR_NAME},
+                    null,
+                    null,
+                    null);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (loader.getId() == LOADER_AUTHOR_NAME && data.moveToFirst()) {
+            onChangeAuthorName(data.getString(data.getColumnIndex(Contract.Authors.AUTHOR_NAME)));
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 }
