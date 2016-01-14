@@ -213,12 +213,21 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
 
         File imageFile = filePath == null ? null : new File(filePath);
 
-        Picasso.with(this)
-                .load(imageFile != null && imageFile.exists() ? imageFile : null)
-                .placeholder(R.drawable.navigation_back)
-                .resize(cover.getMeasuredWidth(), cover.getMeasuredHeight())
-                .centerInside()
-                .into(cover);
+        // TODO: do not use getMeasuredXXX
+        int width = cover.getMeasuredWidth();
+        int height = cover.getMeasuredHeight();
+        if (width == 0 && height == 0) {
+            Picasso.with(this)
+                    .load(R.drawable.navigation_back)
+                    .into(cover);
+        } else {
+            Picasso.with(this)
+                    .load(imageFile != null && imageFile.exists() ? imageFile : null)
+                    .placeholder(R.drawable.navigation_back)
+                    .resize(cover.getMeasuredWidth(), cover.getMeasuredHeight())
+                    .centerInside()
+                    .into(cover);
+        }
     }
 
     /**
