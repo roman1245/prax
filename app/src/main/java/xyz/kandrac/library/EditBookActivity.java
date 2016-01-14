@@ -37,6 +37,7 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -443,7 +444,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
      */
     private File createImageFile() {
         // Create an image file name
-        String timeStamp = SimpleDateFormat.getDateTimeInstance().format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(new Date());
         String fileName = "JPEG_" + timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File result = new File(storageDir, fileName + ".jpg");
