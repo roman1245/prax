@@ -25,6 +25,7 @@
     <!-- Placeholders -->
     <string name="author_unknown">Neznámy autor</string>
     <string name="publisher_unknown">Neznámy vydavateľ</string>
+    <string name="library_unknown">Neznáma knižnica</string>
 
     <!-- Basic Image Content descriptors -->
     <string name="book_list_item">Kniha</string>
@@ -36,6 +37,7 @@
     <string name="book_borrowed_list_empty">Zoznam požičaných kníh je zatiaľ prázdny.\nPre požičanie kníh vyber knihu zo zoznamu kníh a stlač tlačidlo pre požičiavanie.</string>
     <string name="author_list_empty">Zoznam autorov je zatiaľ prázdny.\nPrví autori sa zobrazia s prvým pridaním knihy.</string>
     <string name="publisher_list_empty">Zoznam vydavateľov je zatiaľ prázdny.\nPrví vydavatelia sa zobrazia s prvým pridaním knihy.</string>
+    <string name="library_list_empty">Zoznam knižníc je zatiaľ prázdny.\nPrvá knižnica sa zobrazí pri prvom pridaní knihy.</string>
 
     <!-- Edit/Input Book Screen -->
     <string name="edit_book_author">Autor</string>
@@ -61,6 +63,7 @@
     <string name="menu_books_borrowed">Požičané knihy</string>
     <string name="menu_authors">Autori</string>
     <string name="menu_publishers">Vydavatelia</string>
+    <string name="menu_libraries">Knižnice</string>
     <string name="menu_settings">Nastavenia</string>
     <string name="menu_settings_about">O Aplikácii</string>
     <string name="menu_books_wish_list">Wishlist</string>
