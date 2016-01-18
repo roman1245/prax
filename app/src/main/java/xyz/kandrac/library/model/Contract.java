@@ -123,6 +123,10 @@ public final class Contract {
             return CONTENT_URI.buildUpon().appendPath(Long.toString(bookId)).appendPath(PATH_PUBLISHERS).build();
         }
 
+        public static Uri buildBookLibraryUri(long bookId) {
+            return CONTENT_URI.buildUpon().appendPath(Long.toString(bookId)).appendPath(PATH_LIBRARIES).build();
+        }
+
         /**
          * Build {@link Uri} for requested {@link #BOOK_ID}.
          */

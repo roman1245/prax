@@ -109,11 +109,30 @@
 
             <ImageView
                 android:contentDescription="@string/edit_book_info"
-                android:src="@drawable/ic_barcode"
+                android:src="@drawable/ic_library"
                 android:tint="@color/md_grey_700"
                 app:layout_column="0"
                 app:layout_gravity="center_vertical"
                 app:layout_row="4" />
+
+            <AutoCompleteTextView
+                android:id="@+id/book_input_library"
+                android:layout_width="0dp"
+                android:hint="@string/edit_book_library"
+                android:inputType="text"
+                android:singleLine="true"
+                app:layout_column="1"
+                app:layout_columnSpan="2"
+                app:layout_gravity="fill"
+                tools:text="Domáca" />
+
+            <ImageView
+                android:contentDescription="@string/edit_book_info"
+                android:src="@drawable/ic_barcode"
+                android:tint="@color/md_grey_700"
+                app:layout_column="0"
+                app:layout_gravity="center_vertical"
+                app:layout_row="5" />
 
             <EditText
                 android:id="@+id/book_input_isbn"
@@ -131,7 +150,7 @@
                 android:src="@drawable/ic_camera"
                 android:tint="@color/md_grey_700"
                 app:layout_column="0"
-                app:layout_row="5" />
+                app:layout_row="6" />
 
             <ImageView
                 android:id="@+id/parallax_cover_image"
@@ -155,7 +174,7 @@
                 android:src="@drawable/ic_pencil"
                 android:tint="@color/md_grey_700"
                 app:layout_column="0"
-                app:layout_row="6" />
+                app:layout_row="7" />
 
             <EditText
                 android:id="@+id/book_input_description_edit"

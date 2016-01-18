@@ -40,6 +40,7 @@
     <!-- Edit/Input Book Screen -->
     <string name="edit_book_author">Author</string>
     <string name="edit_book_publisher">Publisher</string>
+    <string name="edit_book_library">Library</string>
     <string name="edit_book_title">Book Title</string>
     <string name="edit_book_subtitle">Book Subtitle</string>
     <string name="edit_book_isbn">ISBN</string>

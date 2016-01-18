@@ -72,6 +72,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     public static final int LOADER_BOOK = 1;
     public static final int LOADER_AUTHOR = 2;
     public static final int LOADER_PUBLISHER = 3;
+    public static final int LOADER_LIBRARY = 4;
 
     // Globals
     private Long mBookId;
@@ -95,6 +96,9 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
     @Bind(R.id.book_input_publisher)
     AutoCompleteTextView mPublisherEdit;
+
+    @Bind(R.id.book_input_library)
+    AutoCompleteTextView mLibraryEdit;
 
     @Bind(R.id.book_input_title)
     EditText mTitleEdit;
@@ -144,6 +148,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
             getSupportLoaderManager().initLoader(LOADER_BOOK, null, this);
             getSupportLoaderManager().initLoader(LOADER_AUTHOR, null, this);
             getSupportLoaderManager().initLoader(LOADER_PUBLISHER, null, this);
+            getSupportLoaderManager().initLoader(LOADER_LIBRARY, null, this);
         } else {
             setTitle(R.string.title_add_new_book);
         }
@@ -151,6 +156,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         // set adapters for autocomplete fields
         setAuthorAdapter();
         setPublisherAdapter();
+        setLibraryAdapter();
     }
 
     /**
@@ -202,6 +208,33 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         adapter.setCursorToStringConverter(new SimpleCursorAdapter.CursorToStringConverter() {
             public CharSequence convertToString(Cursor cur) {
                 int index = cur.getColumnIndex(Contract.Publishers.PUBLISHER_NAME);
+                return cur.getString(index);
+            }
+        });
+    }
+
+    /**
+     * Set Adapter for library autocomplete field
+     */
+    private void setLibraryAdapter() {
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(
+                this,
+                android.R.layout.simple_list_item_1,
+                null,
+                new String[]{Contract.Libraries.LIBRARY_NAME},
+                new int[]{android.R.id.text1},
+                0);
+        mLibraryEdit.setAdapter(adapter);
+
+        adapter.setFilterQueryProvider(new FilterQueryProvider() {
+            public Cursor runQuery(CharSequence str) {
+                return getLibraryCursor(str);
+            }
+        });
+
+        adapter.setCursorToStringConverter(new SimpleCursorAdapter.CursorToStringConverter() {
+            public CharSequence convertToString(Cursor cur) {
+                int index = cur.getColumnIndex(Contract.Libraries.LIBRARY_NAME);
                 return cur.getString(index);
             }
         });
@@ -265,7 +298,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 .build();
 
         Library library = new Library.Builder()
-                .setName("")
+                .setName(mLibraryEdit.getText().toString())
                 .build();
 
         String[] authorsSplit = TextUtils.split(authorsReadable, ",");
@@ -484,6 +517,16 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                         null,
                         null,
                         null);
+            case LOADER_LIBRARY:
+                return new CursorLoader(
+                        this,
+                        Contract.Books.buildBookLibraryUri(mBookId),
+                        new String[]{
+                                Contract.Libraries.LIBRARY_NAME
+                        },
+                        null,
+                        null,
+                        null);
             default:
                 return null;
         }
@@ -504,6 +547,10 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
             case LOADER_PUBLISHER:
                 bindPublisher(data);
+                break;
+
+            case LOADER_LIBRARY:
+                bindLibrary(data);
                 break;
 
             default:
@@ -567,6 +614,16 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         mPublisherEdit.setText(result);
     }
 
+    private void bindLibrary(Cursor libraryCursor) {
+        if (libraryCursor == null || libraryCursor.getCount() == 0 || !libraryCursor.moveToFirst()) {
+            return;
+        }
+
+        String result = libraryCursor.getString(libraryCursor.getColumnIndex(Contract.Libraries.LIBRARY_NAME));
+
+        mLibraryEdit.setText(result);
+    }
+
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
@@ -598,6 +655,20 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         String[] contactsProjection = new String[]{BaseColumns._ID, Contract.Publishers.PUBLISHER_NAME};
 
         return getContentResolver().query(Contract.Publishers.CONTENT_URI, contactsProjection, select, selectArgs, null);
+    }
+
+    /**
+     * Get Library names filtered by input
+     *
+     * @param filter for publisher names
+     * @return libraries
+     */
+    public Cursor getLibraryCursor(CharSequence filter) {
+        String select = Contract.Libraries.LIBRARY_NAME + " LIKE ? ";
+        String[] selectArgs = {"%" + filter + "%"};
+        String[] contactsProjection = new String[]{BaseColumns._ID, Contract.Libraries.LIBRARY_NAME};
+
+        return getContentResolver().query(Contract.Libraries.CONTENT_URI, contactsProjection, select, selectArgs, null);
     }
 
     @Override

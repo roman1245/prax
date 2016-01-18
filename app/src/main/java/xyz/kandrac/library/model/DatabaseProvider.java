@@ -213,6 +213,11 @@ public class DatabaseProvider extends ContentProvider {
                 qb.setTables(Database.Tables.BOOKS_JOIN_LIBRARIES);
                 qb.appendWhere(Database.Tables.LIBRARIES + "." + Contract.Libraries.LIBRARY_ID + "=" + Contract.Libraries.getLibraryId(uri));
                 break;
+            case LIBRARY_BY_BOOK:
+                qb.setTables(Database.Tables.BOOKS_JOIN_LIBRARIES);
+                qb.appendWhere(Database.Tables.BOOKS + "." + Contract.Books.BOOK_ID + "=" + Contract.Books.getBookId(uri));
+                sortOrder = sortOrder == null ? Contract.Libraries.DEFAULT_SORT : sortOrder;
+                break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
