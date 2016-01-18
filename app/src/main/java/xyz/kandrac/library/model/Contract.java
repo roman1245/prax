@@ -30,6 +30,7 @@ public final class Contract {
         String BOOK_DESCRIPTION = "book_description";
         String BOOK_IMAGE_FILE = "book_image_file";
         String BOOK_PUBLISHER_ID = "book_publisher_id";
+        String BOOK_LIBRARY_ID = "book_library_id";
         String BOOK_IMAGE_URL = "book_image_url";
         String BOOK_BORROWED = "book_borrowed";
         String BOOK_WISH_LIST = "book_wish";
@@ -43,6 +44,11 @@ public final class Contract {
     interface PublishersColumns {
         String PUBLISHER_ID = BaseColumns._ID;
         String PUBLISHER_NAME = "publisher_name";
+    }
+
+    interface LibrariesColumns {
+        String LIBRARY_ID = BaseColumns._ID;
+        String LIBRARY_NAME = "library_name";
     }
 
     interface BookAuthorsColumns {
@@ -70,6 +76,7 @@ public final class Contract {
     public static final String PATH_BOOKS = "books";
     public static final String PATH_AUTHORS = "authors";
     public static final String PATH_PUBLISHERS = "publishers";
+    public static final String PATH_LIBRARIES = "libraries";
     public static final String PATH_BORROW_INFO = "borrowinfo";
 
     // Base URI specification (authority and its URI representation)
@@ -233,6 +240,57 @@ public final class Contract {
          * Read {@link #PUBLISHER_ID} from {@link Authors} {@link Uri}.
          */
         public static long getPublisherId(Uri uri) {
+            return Long.parseLong(uri.getPathSegments().get(1));
+        }
+    }
+
+    /**
+     * Details about Libraries contract can be obtained from:
+     * <ul>
+     * <li>Table name: {@link xyz.kandrac.library.model.Database.Tables#LIBRARIES}</li>
+     * <li>Table columns: {@link xyz.kandrac.library.model.Contract.LibrariesColumns}</li>
+     * <li>Requests for {@link android.content.ContentProvider} from:
+     * <ul>
+     * <li>{@link #CONTENT_URI} or</li>
+     * <li>methods from this class</li>
+     * </ul>
+     * </li>
+     * </ul>
+     * To see more detailed info about requests please see {@link DatabaseProvider} constants
+     */
+    public static class Libraries implements LibrariesColumns {
+
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_LIBRARIES).build();
+
+        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.libraries";
+        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.libraries";
+
+
+        /**
+         * Default "ORDER BY" clause.
+         */
+        public static final String DEFAULT_SORT = LIBRARY_NAME + " ASC";
+
+
+        /**
+         * Build {@link Uri} for requested {@link #LIBRARY_ID}.
+         */
+        public static Uri buildLibraryUri(long libraryId) {
+            return CONTENT_URI.buildUpon().appendPath(Long.toString(libraryId)).build();
+        }
+
+        /**
+         * Build {@link Uri} that references any {@link Books} associated
+         * with the requested {@link #LIBRARY_ID}.
+         */
+        public static Uri buildBooksUri(long publisherId) {
+            return CONTENT_URI.buildUpon().appendPath(Long.toString(publisherId)).appendPath(PATH_BOOKS).build();
+        }
+
+        /**
+         * Read {@link #LIBRARY_ID} from {@link Libraries} {@link Uri}.
+         */
+        public static long getLibraryId(Uri uri) {
             return Long.parseLong(uri.getPathSegments().get(1));
         }
     }

@@ -6,6 +6,7 @@ import android.net.Uri;
 
 import xyz.kandrac.library.model.obj.Author;
 import xyz.kandrac.library.model.obj.Book;
+import xyz.kandrac.library.model.obj.Library;
 import xyz.kandrac.library.model.obj.Publisher;
 
 
@@ -35,7 +36,9 @@ public final class DatabaseStoreUtils {
 
         long publisherId = savePublisher(contentResolver, book.publisher);
 
-        long bookId = saveBookOnly(contentResolver, book, publisherId);
+        long libraryId = saveLibrary(contentResolver, book.library);
+
+        long bookId = saveBookOnly(contentResolver, book, publisherId, libraryId);
 
         if (book.authors != null && book.authors.length > 0) {
             for (Author author : book.authors) {
@@ -60,7 +63,7 @@ public final class DatabaseStoreUtils {
      * @param publisherId     of existing publisher
      * @return book ID
      */
-    public static long saveBookOnly(ContentResolver contentResolver, Book book, long publisherId) {
+    public static long saveBookOnly(ContentResolver contentResolver, Book book, long publisherId, long libraryId) {
 
         ContentValues bookContentValues = new ContentValues();
 
@@ -71,6 +74,7 @@ public final class DatabaseStoreUtils {
         bookContentValues.put(Contract.Books.BOOK_IMAGE_URL, book.imageUrlPath);
         bookContentValues.put(Contract.Books.BOOK_ISBN, book.isbn);
         bookContentValues.put(Contract.Books.BOOK_PUBLISHER_ID, publisherId);
+        bookContentValues.put(Contract.Books.BOOK_LIBRARY_ID, libraryId);
         bookContentValues.put(Contract.Books.BOOK_WISH_LIST, book.wish);
 
         if (book.id > 0) {
@@ -98,6 +102,23 @@ public final class DatabaseStoreUtils {
         Uri publisherUri = contentResolver.insert(Contract.Publishers.CONTENT_URI, publisherContentValues);
 
         return Contract.Publishers.getPublisherId(publisherUri);
+    }
+
+    /**
+     * Save {@link Library} into database via provided {@link ContentResolver}.
+     *
+     * @param contentResolver for database
+     * @param library       to store
+     * @return publisher ID
+     */
+    public static long saveLibrary(ContentResolver contentResolver, Library library) {
+
+        ContentValues libraryContentValues = new ContentValues();
+        libraryContentValues.put(Contract.Libraries.LIBRARY_NAME, library.name);
+
+        Uri libraryUri = contentResolver.insert(Contract.Libraries.CONTENT_URI, libraryContentValues);
+
+        return Contract.Libraries.getLibraryId(libraryUri);
     }
 
     /**

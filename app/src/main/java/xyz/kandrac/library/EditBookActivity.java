@@ -46,6 +46,7 @@ import xyz.kandrac.library.model.Contract;
 import xyz.kandrac.library.model.DatabaseStoreUtils;
 import xyz.kandrac.library.model.obj.Author;
 import xyz.kandrac.library.model.obj.Book;
+import xyz.kandrac.library.model.obj.Library;
 import xyz.kandrac.library.model.obj.Publisher;
 import xyz.kandrac.library.utils.BookCursorAdapter;
 import xyz.kandrac.library.utils.DisplayUtils;
@@ -263,6 +264,10 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 .setName(mPublisherEdit.getText().toString())
                 .build();
 
+        Library library = new Library.Builder()
+                .setName("")
+                .build();
+
         String[] authorsSplit = TextUtils.split(authorsReadable, ",");
 
         Author[] authors = new Author[authorsSplit.length];
@@ -274,6 +279,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         Book book = new Book.Builder()
                 .setId(mBookId)
                 .setPublisher(publisher)
+                .setLibrary(library)
                 .setAuthors(authors)
                 .setTitle(mTitleEdit.getText().toString())
                 .setSubtitle(mSubtitleEdit.getText().toString())

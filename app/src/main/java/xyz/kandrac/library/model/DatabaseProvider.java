@@ -29,6 +29,7 @@ public class DatabaseProvider extends ContentProvider {
     // Books by author id (SELECT)
     public static final int BOOK_BY_AUTHOR = 102;
     public static final int BOOK_BY_PUBLISHER = 103;
+    public static final int BOOKS_BY_LIBRARY = 104;
 
     // Everything from authors (SELECT, INSERT, UPDATE, DELETE)
     public static final int AUTHORS = 200;
@@ -49,6 +50,10 @@ public class DatabaseProvider extends ContentProvider {
 
     public static final int BOOKS_BORROW = 502;
 
+    public static final int LIBRARIES = 600;
+    public static final int LIBRARY_ID = 601;
+    public static final int LIBRARY_BY_BOOK = 602;
+
     private static UriMatcher buildUriMatcher() {
         final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = Contract.CONTENT_AUTHORITY;
@@ -58,6 +63,7 @@ public class DatabaseProvider extends ContentProvider {
         uriMatcher.addURI(authority, "books/#/authors", AUTHOR_BY_BOOK);
         uriMatcher.addURI(authority, "books/#/borrowinfo", BORROW_INFO_BY_BOOK);
         uriMatcher.addURI(authority, "books/#/publishers", PUBLISHER_BY_BOOK);
+        uriMatcher.addURI(authority, "books/#/libraries", LIBRARY_BY_BOOK);
 
         uriMatcher.addURI(authority, "authors", AUTHORS);
         uriMatcher.addURI(authority, "authors/#", AUTHOR_ID);
@@ -72,6 +78,9 @@ public class DatabaseProvider extends ContentProvider {
 
         uriMatcher.addURI(authority, "books/borrowinfo", BOOKS_BORROW);
 
+        uriMatcher.addURI(authority, "libraries", LIBRARIES);
+        uriMatcher.addURI(authority, "libraries/#", LIBRARY_ID);
+        uriMatcher.addURI(authority, "libraries/#/books", BOOKS_BY_LIBRARY);
         return uriMatcher;
     }
 
@@ -111,6 +120,14 @@ public class DatabaseProvider extends ContentProvider {
                 return Contract.BorrowInfo.CONTENT_TYPE;
             case BOOKS_BORROW:
                 return Contract.Books.CONTENT_TYPE;
+            case LIBRARIES:
+                return Contract.Libraries.CONTENT_TYPE;
+            case LIBRARY_ID:
+                return Contract.Libraries.CONTENT_ITEM_TYPE;
+            case BOOKS_BY_LIBRARY:
+                return Contract.Books.CONTENT_TYPE;
+            case LIBRARY_BY_BOOK:
+                return Contract.Libraries.CONTENT_ITEM_TYPE;
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
@@ -184,6 +201,18 @@ public class DatabaseProvider extends ContentProvider {
                 qb.setDistinct(true);
                 sortOrder = sortOrder == null ? Contract.Books.DEFAULT_SORT : sortOrder;
                 break;
+            case LIBRARIES:
+                qb.setTables(Database.Tables.LIBRARIES);
+                sortOrder = sortOrder == null ? Contract.Libraries.DEFAULT_SORT : sortOrder;
+                break;
+            case LIBRARY_ID:
+                qb.setTables(Database.Tables.LIBRARIES);
+                qb.appendWhere(Contract.Libraries.LIBRARY_ID + "=" + Contract.Libraries.getLibraryId(uri));
+                break;
+            case BOOKS_BY_LIBRARY:
+                qb.setTables(Database.Tables.BOOKS_JOIN_LIBRARIES);
+                qb.appendWhere(Database.Tables.LIBRARIES + "." + Contract.Libraries.LIBRARY_ID + "=" + Contract.Libraries.getLibraryId(uri));
+                break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -245,6 +274,11 @@ public class DatabaseProvider extends ContentProvider {
                 long result = insertOrIgnore(db, values, Database.Tables.PUBLISHERS, Contract.Publishers.PUBLISHER_NAME);
                 getContext().getContentResolver().notifyChange(uri, null);
                 return Contract.Publishers.buildPublisherUri(result);
+            }
+            case LIBRARIES: {
+                long result = insertOrIgnore(db, values, Database.Tables.LIBRARIES, Contract.Libraries.LIBRARY_NAME);
+                getContext().getContentResolver().notifyChange(uri, null);
+                return Contract.Libraries.buildLibraryUri(result);
             }
             case BOOKS_AUTHORS: {
                 db.insert(Database.Tables.BOOKS_AUTHORS, null, values);

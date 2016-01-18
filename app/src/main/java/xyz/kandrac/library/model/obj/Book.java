@@ -22,6 +22,7 @@ public class Book {
 
     public Author[] authors;
     public Publisher publisher;
+    public Library library;
 
     private Book(Builder builder) {
         id = builder.id;
@@ -30,6 +31,7 @@ public class Book {
         description = builder.description;
         isbn = builder.isbn;
         publisher = builder.publisher;
+        library = builder.library;
         imageFilePath = builder.imageFilePath;
         imageUrlPath = builder.imageUrlPath;
         authors = builder.authors;
@@ -59,7 +61,8 @@ public class Book {
         private boolean wish;
 
         private Publisher publisher;
-        public Author[] authors;
+        private Author[] authors;
+        private Library library;
 
         public Builder setId(long id) {
             this.id = id;
@@ -88,6 +91,11 @@ public class Book {
 
         public Builder setPublisher(Publisher publisher) {
             this.publisher = publisher;
+            return this;
+        }
+
+        public Builder setLibrary(Library library) {
+            this.library = library;
             return this;
         }
 
