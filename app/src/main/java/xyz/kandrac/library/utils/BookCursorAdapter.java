@@ -265,6 +265,7 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
         @FieldState private int borrowed = ANY;
         private long publisher = ANY;
         private long author = ANY;
+        private long library = ANY;
         private int loaderId = 1;
         private Activity activity;
         private CursorSizeChangedListener listener;
@@ -282,6 +283,11 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
 
         public Builder setPublisher(long publisherId) {
             this.publisher = publisherId;
+            return this;
+        }
+
+        public Builder setLibrary(long library) {
+            this.library = library;
             return this;
         }
 
@@ -320,6 +326,11 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
             if (publisher != ANY) {
                 selectionString += " AND " + Contract.Books.BOOK_PUBLISHER_ID + " = ? ";
                 selectionArguments.add(Long.toString(publisher));
+            }
+
+            if (library != ANY) {
+                selectionString += " AND " + Contract.Books.BOOK_LIBRARY_ID + " = ? ";
+                selectionArguments.add(Long.toString(library));
             }
 
             if (author != ANY) {

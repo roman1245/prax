@@ -42,7 +42,7 @@
     <!-- Edit/Input Book Screen -->
     <string name="edit_book_author">Autor</string>
     <string name="edit_book_publisher">Publisher</string>
-    <string name="edit_book_library">Knižnica</string>
+    <string name="edit_book_library">Knižnica (Domov, Internát, &#8230;)</string>
     <string name="edit_book_title">Názov Knihy</string>
     <string name="edit_book_subtitle">Podtitulok knihy</string>
     <string name="edit_book_isbn">ISBN</string>
@@ -91,6 +91,9 @@
 
     <string name="dialog_publisher_delete_title">Vymazať vydavateľa</string>
     <string name="dialog_publisher_delete_message">Naozaj chceš vymazať tohto vydavateľa aj všetky knihy ktoré vydal?</string>
+
+    <string name="dialog_library_delete_title">Vymazať knižnicu</string>
+    <string name="dialog_library_delete_message">Naozaj chceš vymazať túto knižnicu aj všetky knihy v nej?</string>
 
     <string name="dialog_return_book_title">Vrátenie knihy</string>
     <string name="dialog_return_book_message">%1$s si od teba požičal/a knihu dňa %2$s. Čo chcete s knihou urobiť?</string>

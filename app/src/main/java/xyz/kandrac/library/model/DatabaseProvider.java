@@ -515,6 +515,17 @@ public class DatabaseProvider extends ContentProvider {
                 getContext().getContentResolver().notifyChange(uri, null);
                 break;
             }
+            case LIBRARIES: {
+                db.beginTransaction();
+                for (ContentValues contentValues : values) {
+                    db.insert(Database.Tables.LIBRARIES, null, contentValues);
+                    result++;
+                }
+                db.setTransactionSuccessful();
+                db.endTransaction();
+                getContext().getContentResolver().notifyChange(uri, null);
+                break;
+            }
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }

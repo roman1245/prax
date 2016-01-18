@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -146,9 +147,9 @@ public class LibraryListFragment extends Fragment implements LoaderManager.Loade
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    Intent intent = new Intent(getActivity(), PublisherDetailActivity.class);
-//                    intent.putExtra(PublisherDetailActivity.EXTRA_PUBLISHER_ID, library.id);
-//                    startActivity(intent);
+                    Intent intent = new Intent(getActivity(), LibraryDetailActivity.class);
+                    intent.putExtra(LibraryDetailActivity.EXTRA_LIBRARY_ID, library.id);
+                    startActivity(intent);
                 }
             });
         }

@@ -42,7 +42,7 @@
     <!-- Edit/Input Book Screen -->
     <string name="edit_book_author">Author</string>
     <string name="edit_book_publisher">Publisher</string>
-    <string name="edit_book_library">Library</string>
+    <string name="edit_book_library">Library (Home, Hostel, &#8230;)</string>
     <string name="edit_book_title">Book Title</string>
     <string name="edit_book_subtitle">Book Subtitle</string>
     <string name="edit_book_isbn">ISBN</string>
@@ -92,6 +92,9 @@
 
     <string name="dialog_publisher_delete_title">Delete Publisher</string>
     <string name="dialog_publisher_delete_message">Are you sure you want to delete this publisher and all the books he published?</string>
+
+    <string name="dialog_library_delete_title">Delete Library</string>
+    <string name="dialog_library_delete_message">Are you sure you want to delete this library and all the books from it?</string>
 
     <string name="dialog_return_book_title">Book Return</string>
     <string name="dialog_return_book_message">%1$s has borrowed the book from you in %2$s. What would you like to do with this book?</string>
