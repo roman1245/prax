@@ -48,6 +48,7 @@ import xyz.kandrac.library.model.obj.Author;
 import xyz.kandrac.library.model.obj.Book;
 import xyz.kandrac.library.model.obj.Library;
 import xyz.kandrac.library.model.obj.Publisher;
+import xyz.kandrac.library.snk.SnkContract;
 import xyz.kandrac.library.utils.BookCursorAdapter;
 import xyz.kandrac.library.utils.DisplayUtils;
 
@@ -249,6 +250,21 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                     if (data != null) {
                         String barcode = data.getStringExtra(BarcodeActivity.BARCODE_TEXT);
                         mIsbnEdit.setText(barcode);
+
+                        Cursor result = getContentResolver().query(SnkContract.Books.getBookIsbnUri(barcode), null, null, null, null);
+                        if (result != null && result.getCount() > 0 && result.moveToFirst()) {
+                            String title = result.getString(result.getColumnIndex(SnkContract.Books.BOOK_TITLE));
+                            String authors = result.getString(result.getColumnIndex(SnkContract.Books.BOOK_AUTHORS));
+                            String publisher = result.getString(result.getColumnIndex(SnkContract.Books.BOOK_PUBLISHER));
+
+                            mTitleEdit.setText(title);
+                            mAuthorEdit.setText(authors);
+                            mPublisherEdit.setText(publisher);
+                        }
+
+                        if (result != null) {
+                            result.close();
+                        }
                     }
                 }
                 break;

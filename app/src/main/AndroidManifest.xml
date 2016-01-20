@@ -77,6 +77,10 @@
             android:name=".model.DatabaseProvider"
             android:authorities="xyz.kandrac.Library"
             android:exported="false" />
+        <provider
+            android:name=".snk.SnkProvider"
+            android:authorities="xyz.kandrac.Library.snk"
+            android:exported="false" />
 
         <receiver
             android:name=".NotificationReceiver"
