@@ -67,10 +67,11 @@ public class LibraryDetailActivity extends AppCompatActivity implements LoaderMa
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         mLibraryId = getIntent().getExtras().getLong(EXTRA_LIBRARY_ID);
+
         adapter = new BookCursorAdapter.Builder()
                 .setLibrary(mLibraryId)
-                .setLoaderId(LOADER_LIBRARY_DETAILS)
                 .setWishList(BookCursorAdapter.FALSE)
+                .setLoaderId(LOADER_LIBRARY_DETAILS)
                 .setActivity(this)
                 .build();
 

@@ -112,7 +112,9 @@ public class Database extends SQLiteOpenHelper {
         switch (oldVersion) {
             case 1:
                 db.execSQL(LIBRARIES_CREATE_TABLE);
-                db.execSQL("ALTER TABLE books ADD " + Contract.Books.BOOK_LIBRARY_ID + " INTEGER " + References.LIBRARY_ID + " ON DELETE CASCADE");
+                db.execSQL("INSERT INTO " + Tables.LIBRARIES + " (" + Contract.Libraries.LIBRARY_NAME + ") VALUES ('')");
+                db.execSQL("ALTER TABLE " + Tables.BOOKS + " ADD " + Contract.Books.BOOK_LIBRARY_ID + " INTEGER " + References.LIBRARY_ID + " ON DELETE CASCADE");
+                db.execSQL("UPDATE " + Tables.BOOKS + " SET " + Contract.Books.BOOK_LIBRARY_ID + " = 1");
         }
     }
 }
