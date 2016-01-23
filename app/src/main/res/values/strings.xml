@@ -108,4 +108,10 @@
     <string name="preferences_notifications_category">Notifications</string>
     <string name="preferences_notifications_borrowed_title">Borrowed books notification</string>
     <string name="preferences_notifications_borrowed_set">Notify me about borrowed book in %s days</string>
+
+    <string name="preferences_libraries_category">Libraries</string>
+    <string name="preferences_libraries_enabled_title">Enable multiple libraries</string>
+    <string name="preferences_libraries_enabled_description">If checked you will be able to assign books to one of your libraries</string>
+    <string name="preferences_libraries_default_name_title">Default library</string>
+    <string name="preferences_libraries_default_name_description">Default library name to which books are assigned if name is not set</string>
 </resources>

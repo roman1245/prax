@@ -11,4 +11,18 @@
             android:title="@string/preferences_notifications_borrowed_title" />
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="@string/preferences_notifications_category">
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="library_enabled"
+            android:summary="@string/preferences_libraries_enabled_description"
+            android:title="@string/preferences_libraries_enabled_title" />
+
+        <EditTextPreference
+            android:defaultValue=""
+            android:key="default_library"
+            android:summary="@string/preferences_libraries_default_name_description"
+            android:title="@string/preferences_libraries_default_name_title" />
+    </PreferenceCategory>
+
 </PreferenceScreen>

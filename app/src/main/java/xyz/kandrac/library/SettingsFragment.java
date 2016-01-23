@@ -12,6 +12,8 @@ import android.preference.PreferenceManager;
 public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     public static final String KEY_PREF_NOTIFICATION_DAYS = "notification_days";
+    public static final String KEY_PREF_LIBRARY_DEFAULT = "default_library";
+    public static final String KEY_PREF_LIBRARY_ENABLED = "library_enabled";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -21,6 +23,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         addPreferencesFromResource(R.xml.preferences);
 
         setNotificationDays();
+        setDefaultLibrary();
     }
 
     @Override
@@ -28,6 +31,10 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                                           String key) {
         if (key.equals(KEY_PREF_NOTIFICATION_DAYS)) {
             setNotificationDays();
+        } else if (key.equals(KEY_PREF_LIBRARY_DEFAULT)) {
+            setDefaultLibrary();
+        } else if (key.equals(KEY_PREF_LIBRARY_ENABLED)) {
+            ((MainActivity) getActivity()).checkLibrariesPreferences();
         }
     }
 
@@ -46,11 +53,18 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     }
 
     private void setNotificationDays() {
-
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String notifyInDays = sharedPref.getString(SettingsFragment.KEY_PREF_NOTIFICATION_DAYS, "20");
 
         Preference notificationDaysPreference = findPreference(KEY_PREF_NOTIFICATION_DAYS);
         notificationDaysPreference.setSummary(getString(R.string.preferences_notifications_borrowed_set, notifyInDays));
+    }
+
+    private void setDefaultLibrary() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String defaultLibraryName = sharedPref.getString(SettingsFragment.KEY_PREF_LIBRARY_DEFAULT, "");
+
+        Preference defaultLibraryPreference = findPreference(KEY_PREF_LIBRARY_DEFAULT);
+        defaultLibraryPreference.setSummary(defaultLibraryName);
     }
 }

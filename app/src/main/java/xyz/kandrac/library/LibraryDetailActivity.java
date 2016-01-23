@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -136,9 +137,16 @@ public class LibraryDetailActivity extends AppCompatActivity implements LoaderMa
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        String title;
         if (loader.getId() == LOADER_LIBRARY_NAME && data.moveToFirst()) {
-            collapsingToolbarLayout.setTitle(data.getString(data.getColumnIndex(Contract.Libraries.LIBRARY_NAME)));
+            title = data.getString(data.getColumnIndex(Contract.Libraries.LIBRARY_NAME));
+            if (TextUtils.isEmpty(title)) {
+                title = getString(R.string.library_unknown);
+            }
+        } else {
+            title = getString(R.string.library_unknown);
         }
+        collapsingToolbarLayout.setTitle(title);
     }
 
     @Override

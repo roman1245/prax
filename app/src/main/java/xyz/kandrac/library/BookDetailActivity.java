@@ -61,6 +61,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     static final int LOADER_BORROW_DETAIL = 3;
     static final int LOADER_AUTHOR = 4;
     static final int LOADER_PUBLISHER = 5;
+    static final int LOADER_LIBRARY = 6;
 
     // PERMISSIONS
     static final int PICK_CONTACT_PERMISSION = 1;
@@ -86,7 +87,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     ImageView isbnImage;
 
     @Bind(R.id.book_detail_description_image)
-    ImageView descritionImage;
+    ImageView descriptionImage;
 
     @Bind(R.id.book_detail_full_book_name)
     TextView fullTitle;
@@ -103,8 +104,14 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     @Bind(R.id.book_detail_publisher)
     TextView publisher;
 
+    @Bind(R.id.book_detail_library)
+    TextView library;
+
     @Bind(R.id.book_detail_borrow_image)
     ImageView borrowImage;
+
+    @Bind(R.id.book_detail_library_icon)
+    ImageView libraryImage;
 
     @Bind(R.id.book_detail_borrow)
     Button borrowButton;
@@ -145,6 +152,18 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
         getSupportLoaderManager().initLoader(LOADER_AUTHOR, null, this);
         getSupportLoaderManager().initLoader(LOADER_PUBLISHER, null, this);
         getSupportLoaderManager().initLoader(LOADER_BORROW_DETAIL, null, this);
+        checkLibrariesPreferences();
+    }
+
+    public void checkLibrariesPreferences() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean enabled = sharedPref.getBoolean(SettingsFragment.KEY_PREF_LIBRARY_ENABLED, true);
+        if (!enabled) {
+            library.setVisibility(View.GONE);
+            libraryImage.setVisibility(View.GONE);
+        } else {
+            getSupportLoaderManager().initLoader(LOADER_LIBRARY, null, this);
+        }
     }
 
     private void bindAuthors(Cursor authorsCursor) {
@@ -200,11 +219,11 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
 
         if (TextUtils.isEmpty(description)) {
             descriptionText.setVisibility(View.GONE);
-            descritionImage.setVisibility(View.GONE);
+            descriptionImage.setVisibility(View.GONE);
         } else {
             descriptionText.setText(description);
             descriptionText.setVisibility(View.VISIBLE);
-            descritionImage.setVisibility(View.VISIBLE);
+            descriptionImage.setVisibility(View.VISIBLE);
         }
 
         if (wish) {
@@ -344,6 +363,18 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                         null,
                         null);
 
+            case LOADER_LIBRARY:
+
+                return new CursorLoader(
+                        this,
+                        Contract.Books.buildBookLibraryUri(mBookId),
+                        new String[]{
+                                Contract.Libraries.LIBRARY_NAME
+                        },
+                        null,
+                        null,
+                        null);
+
             case LOADER_BORROW_DETAIL:
                 return new CursorLoader(this, Contract.Books.buildBorrowInfoUri(mBookId), null, Contract.BorrowInfo.BORROW_DATE_RETURNED + " = 0", null, null);
         }
@@ -364,6 +395,10 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
 
             case LOADER_PUBLISHER:
                 bindPublisher(data);
+                break;
+
+            case LOADER_LIBRARY:
+                bindLibrary(data);
                 break;
 
             case LOADER_CONTACT: {
@@ -420,6 +455,17 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
         String result = publisherCursor.getString(publisherCursor.getColumnIndex(Contract.Publishers.PUBLISHER_NAME));
 
         publisher.setText(TextUtils.isEmpty(result) ? getString(R.string.publisher_unknown) : result);
+    }
+
+    private void bindLibrary(Cursor libraryCursor) {
+        if (libraryCursor == null || libraryCursor.getCount() == 0 || !libraryCursor.moveToFirst()) {
+            library.setText(getString(R.string.library_unknown));
+            return;
+        }
+
+        String result = libraryCursor.getString(libraryCursor.getColumnIndex(Contract.Libraries.LIBRARY_NAME));
+
+        library.setText(TextUtils.isEmpty(result) ? getString(R.string.library_unknown) : result);
     }
 
     @Override

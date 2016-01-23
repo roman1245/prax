@@ -108,6 +108,7 @@
                 tools:text="Slovart" />
 
             <ImageView
+                android:id="@+id/book_input_library_icon"
                 android:contentDescription="@string/edit_book_info"
                 android:src="@drawable/ic_library"
                 android:tint="@color/md_grey_700"

@@ -108,4 +108,10 @@
     <string name="preferences_notifications_borrowed_title">Notifikácie o požičaných knihách</string>
     <string name="preferences_notifications_borrowed_set">Upozorni ma o požičanej knihe o %s dní</string>
 
+    <string name="preferences_libraries_category">Knižnice</string>
+    <string name="preferences_libraries_enabled_title">Povoliť viacero knižníc</string>
+    <string name="preferences_libraries_enabled_description">Po zaškrtnutí budeš môcť priradiť knižku do samostatných knižníc</string>
+    <string name="preferences_libraries_default_name_title">Predvolená knižnica</string>
+    <string name="preferences_libraries_default_name_description">Predvolený názov knižnice, do ktorej sa budú knihy pridávať</string>
+
 </resources>

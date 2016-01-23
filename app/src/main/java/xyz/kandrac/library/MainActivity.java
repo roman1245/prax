@@ -1,6 +1,7 @@
 package xyz.kandrac.library;
 
 import android.app.Fragment;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
@@ -67,9 +68,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // Navigation View settings
         navigation.setNavigationItemSelectedListener(this);
-        MenuItem menuItem = navigation.getMenu().findItem(R.id.main_navigation_books);
-        menuItem.setChecked(true);
-        lastChecked = menuItem;
+
+        MenuItem booksMenuItem = navigation.getMenu().findItem(R.id.main_navigation_books);
+        booksMenuItem.setChecked(true);
+        lastChecked = booksMenuItem;
+
+        checkLibrariesPreferences();
 
         // Content settings
         if (savedInstanceState != null) {
@@ -92,6 +96,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         });
+    }
+
+    public void checkLibrariesPreferences() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean enabled = sharedPref.getBoolean(SettingsFragment.KEY_PREF_LIBRARY_ENABLED, true);
+        MenuItem librariesMenuItem = navigation.getMenu().findItem(R.id.main_navigation_libraries);
+        if (enabled) {
+            librariesMenuItem.setVisible(true);
+        } else {
+            librariesMenuItem.setVisible(false);
+        }
     }
 
     @Override

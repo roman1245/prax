@@ -2,12 +2,14 @@ package xyz.kandrac.library;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -98,6 +100,9 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     @Bind(R.id.book_input_publisher)
     AutoCompleteTextView mPublisherEdit;
 
+    @Bind(R.id.book_input_library_icon)
+    ImageView mLibraryImage;
+
     @Bind(R.id.book_input_library)
     AutoCompleteTextView mLibraryEdit;
 
@@ -154,10 +159,24 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
             setTitle(R.string.title_add_new_book);
         }
 
+        checkLibrariesPreferences();
+
         // set adapters for autocomplete fields
         setAuthorAdapter();
         setPublisherAdapter();
         setLibraryAdapter();
+    }
+
+    public void checkLibrariesPreferences() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean enabled = sharedPref.getBoolean(SettingsFragment.KEY_PREF_LIBRARY_ENABLED, true);
+        String name = sharedPref.getString(SettingsFragment.KEY_PREF_LIBRARY_DEFAULT, "");
+        if (!enabled) {
+            mLibraryEdit.setVisibility(View.GONE);
+            mLibraryImage.setVisibility(View.GONE);
+        } else {
+            mLibraryEdit.setText(name);
+        }
     }
 
     /**
