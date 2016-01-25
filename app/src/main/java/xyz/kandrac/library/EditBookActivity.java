@@ -67,9 +67,9 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
     // Save instance state constants
     private static final String SAVE_STATE_FILE_NAME = "save_state_file_name";
-    private static final String SAVE_STATE_IMAGE_URL = "save_state_image_url";
     private static final String SAVE_STATE_BOOK_ID = "save_state_book_id";
     private static final String SAVE_STATE_WISH_LIST = "save_state_wish";
+    private static final String SAVE_STATE_ORIGINAL_FILE = "save_state_original_file";
 
     // Loaders
     public static final int LOADER_BOOK = 1;
@@ -81,7 +81,6 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     private Long mBookId;
     private boolean mToWishList;
     private String imageFileName;
-    private String imageUrl;
 
     // Requests to other activities
     private static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -292,6 +291,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 if (resultCode == RESULT_OK) {
                     DisplayUtils.resizeImageFile(new File(imageFileName), 1024, 60);
                     DisplayUtils.displayScaledImage(this, imageFileName, mImageEdit);
+                    mImageEdit.setTag(imageFileName);
                 }
                 break;
             default:
@@ -348,9 +348,8 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 .setTitle(mTitleEdit.getText().toString())
                 .setSubtitle(mSubtitleEdit.getText().toString())
                 .setIsbn(mIsbnEdit.getText().toString())
-                .setImageFilePath(imageFileName)
+                .setImageFilePath((String) mImageEdit.getTag())
                 .setDescription(mDescription.getText().toString())
-                .setImageUrlPath(imageUrl)
                 .setWish(mToWishList)
                 .build();
 
@@ -611,6 +610,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         mIsbnEdit.setText(isbn);
         mDescription.setText(description);
         mToWishList = wish;
+        mImageEdit.setTag(path);
 
         if (path != null) {
             File imageFile = new File(path);
@@ -705,17 +705,18 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(SAVE_STATE_FILE_NAME, imageFileName);
-        outState.putString(SAVE_STATE_IMAGE_URL, imageUrl);
         outState.putLong(SAVE_STATE_BOOK_ID, mBookId);
         outState.putBoolean(SAVE_STATE_WISH_LIST, mToWishList);
+        outState.putString(SAVE_STATE_ORIGINAL_FILE, (String) mImageEdit.getTag());
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         imageFileName = savedInstanceState.getString(SAVE_STATE_FILE_NAME);
-        imageUrl = savedInstanceState.getString(SAVE_STATE_IMAGE_URL);
         mBookId = savedInstanceState.getLong(SAVE_STATE_BOOK_ID);
         mToWishList = savedInstanceState.getBoolean(SAVE_STATE_WISH_LIST);
+        String original = savedInstanceState.getString(SAVE_STATE_ORIGINAL_FILE);
+        mImageEdit.setTag(original);
     }
 }
