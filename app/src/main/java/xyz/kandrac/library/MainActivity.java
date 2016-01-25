@@ -203,6 +203,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .replace(R.id.fragment_container, fragmentToShow)
                 .commit();
 
+        if (fragmentToShow instanceof SettingsFragment) {
+            searchView.setVisibility(View.GONE);
+        } else {
+            searchView.setVisibility(View.VISIBLE);
+        }
+
         // change title
         if (mActionBar != null) {
             mActionBar.setTitle(menuItem.getTitle());
