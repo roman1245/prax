@@ -3,6 +3,7 @@ package xyz.kandrac.library;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -14,6 +15,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,6 +25,7 @@ import java.io.File;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import xyz.kandrac.library.model.Contract;
 import xyz.kandrac.library.utils.DisplayUtils;
 import xyz.kandrac.library.views.DummyDrawerCallback;
 
@@ -43,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static final int WISH_LIST_BOOK_LIST_LOADER = 6;
 
     public static final String PREFERENCE_PHOTOS_RESIZED = "photos_resized_preference";
+    public static final String PREFERENCE_PHOTOS_REMOVED = "photos_removed_preference";
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -105,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
+        removeUnusedPhotosIfNeeded();
         resizePhotosIfNeeded();
     }
 
@@ -242,6 +247,61 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             default:
                 return null;
         }
+    }
+
+    /**
+     * Remove unused photos from disk if they are not referenced in books table
+     */
+    private void removeUnusedPhotosIfNeeded() {
+        long lastTimeRemoval = PreferenceManager.getDefaultSharedPreferences(this).getLong(PREFERENCE_PHOTOS_REMOVED, 0);
+
+        if (System.currentTimeMillis() - lastTimeRemoval < 60_000 * 60 * 24) {
+            return;
+        }
+
+        File imageDirectory = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
+        if (imageDirectory != null) {
+            File[] files = imageDirectory.listFiles();
+
+            new AsyncTask<File, Integer, Void>() {
+
+                @Override
+                protected Void doInBackground(File... params) {
+
+                    int count = 0;
+
+                    for (File file : params) {
+                        String filePath = file.getAbsolutePath();
+
+                        // search for book with given file name
+                        Cursor cursor = MainActivity.this.getContentResolver().query(
+                                Contract.Books.CONTENT_URI,
+                                new String[]{Contract.Books.BOOK_ID},
+                                Contract.Books.BOOK_IMAGE_FILE + " = ?",
+                                new String[]{filePath},
+                                null
+                        );
+
+                        // remove book if found
+                        if (cursor == null || cursor.getCount() == 0) {
+                            if (file.delete()) {
+                                count++;
+                            }
+                        } else {
+                            cursor.close();
+                        }
+                    }
+
+                    Log.d(MainActivity.class.getSimpleName(), "deleted " + count + " files");
+
+                    return null;
+                }
+
+            }.execute(files);
+        }
+
+        PreferenceManager.getDefaultSharedPreferences(this).edit().putLong(PREFERENCE_PHOTOS_REMOVED, System.currentTimeMillis()).apply();
     }
 
     /**

@@ -515,11 +515,10 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     private File createImageFile() {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(new Date());
-        String fileName = "JPEG_" + timeStamp + "_";
+        String fileName = "book_" + timeStamp;
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File result = new File(storageDir, fileName + ".jpg");
         imageFileName = result.getAbsolutePath();
-        Log.d(TAG, "Created file : " + imageFileName);
         return result;
     }
 
