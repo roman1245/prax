@@ -13,6 +13,10 @@
     <string name="title_add_new_book">Nová kniha</string>
     <string name="title_edit_book">Úprava knihy</string>
 
+    <!-- Optimization -->
+    <string name="dialog_image_optimization_title">Optimalizujem aplikáciu</string>
+    <string name="dialog_image_optimization_message">Optimalizujem veľkosť obrázkov vnútri aplikácie</string>
+
     <!-- Action strings (mostly used in Toolbar) -->
     <string name="action_save">Uložiť</string>
     <string name="action_edit">Upraviť</string>

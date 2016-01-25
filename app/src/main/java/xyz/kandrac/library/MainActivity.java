@@ -1,8 +1,11 @@
 package xyz.kandrac.library;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,8 +19,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.io.File;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import xyz.kandrac.library.utils.DisplayUtils;
 import xyz.kandrac.library.views.DummyDrawerCallback;
 
 /**
@@ -35,6 +41,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static final int LIBRARY_LIST_LOADER = 4;
     public static final int BORROWED_BOOK_LIST_LOADER = 5;
     public static final int WISH_LIST_BOOK_LIST_LOADER = 6;
+
+    public static final String PREFERENCE_PHOTOS_RESIZED = "photos_resized_preference";
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -96,6 +104,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         });
+
+        resizePhotosIfNeeded();
     }
 
     public void checkLibrariesPreferences() {
@@ -232,5 +242,66 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             default:
                 return null;
         }
+    }
+
+    /**
+     * If resizing of photos was never invoked before, try to do so now. All images will be resized
+     * to 1024 width with 60% quality. This will keep application size significantly lower.
+     */
+    private void resizePhotosIfNeeded() {
+        boolean resized = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(PREFERENCE_PHOTOS_RESIZED, false);
+
+        if (!resized) {
+
+            File imageDirectory = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
+            if (imageDirectory != null) {
+                File[] files = imageDirectory.listFiles();
+
+                if (files.length > 0) {
+
+                    new AsyncTask<File, Integer, Void>() {
+
+                        ProgressDialog dialog;
+
+                        @Override
+                        protected void onPreExecute() {
+                            super.onPreExecute();
+                            dialog = new ProgressDialog(MainActivity.this);
+                            dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                            dialog.setMessage(getString(R.string.dialog_image_optimization_message));
+                            dialog.setTitle(R.string.dialog_image_optimization_title);
+                            dialog.setProgress(0);
+                            dialog.show();
+                        }
+
+                        @Override
+                        protected Void doInBackground(File... params) {
+                            float part = 100f / params.length;
+                            for (int i = 0; i < params.length; i++) {
+                                DisplayUtils.resizeImageFile(params[i], 1024, 60);
+                                publishProgress((int) (i * part));
+                            }
+                            return null;
+                        }
+
+                        @Override
+                        protected void onPostExecute(Void aVoid) {
+                            super.onPostExecute(aVoid);
+                            dialog.dismiss();
+                        }
+
+                        @Override
+                        protected void onProgressUpdate(Integer... values) {
+                            super.onProgressUpdate(values);
+                            dialog.setProgress(values[0]);
+                        }
+
+                    }.execute(files);
+                }
+            }
+        }
+
+        PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean(PREFERENCE_PHOTOS_RESIZED, true).apply();
     }
 }

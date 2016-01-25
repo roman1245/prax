@@ -13,6 +13,10 @@
     <string name="title_add_new_book">New Book</string>
     <string name="title_edit_book">Edit Book</string>
 
+    <!-- Optimization -->
+    <string name="dialog_image_optimization_title">Optimizing app</string>
+    <string name="dialog_image_optimization_message">Optimizing image sizes inside application</string>
+
     <!-- Action strings (mostly used in Toolbar) -->
     <string name="action_save">Save</string>
     <string name="action_edit">Edit</string>

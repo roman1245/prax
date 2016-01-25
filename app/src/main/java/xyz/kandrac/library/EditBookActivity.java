@@ -290,12 +290,8 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
             case REQUEST_IMAGE_CAPTURE:
                 // Handle Image Capture
                 if (resultCode == RESULT_OK) {
-                    Log.d(TAG, "display image : " + imageFileName);
-                    try {
-                        DisplayUtils.displayScaledImage(this, imageFileName, mImageEdit);
-                    } catch (Exception ex) {
-                        Log.e(TAG, "cannot open file", ex);
-                    }
+                    DisplayUtils.resizeImageFile(new File(imageFileName), 1024, 60);
+                    DisplayUtils.displayScaledImage(this, imageFileName, mImageEdit);
                 }
                 break;
             default:
