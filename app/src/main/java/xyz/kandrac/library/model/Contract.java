@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+import xyz.kandrac.library.BuildConfig;
+
 /**
  * Contracts linked to {@link Database} that should be easily used via {@link DatabaseProvider}.
  * In order to access data from database please use URI's from these classes:
@@ -80,7 +82,7 @@ public final class Contract {
     public static final String PATH_BORROW_INFO = "borrowinfo";
 
     // Base URI specification (authority and its URI representation)
-    public static final String CONTENT_AUTHORITY = "xyz.kandrac.Library";
+    public static final String CONTENT_AUTHORITY = BuildConfig.DATABASE_AUTHORITY;
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
     public static final Uri BOOKS_AUTHORS_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_BOOKS).appendPath(PATH_AUTHORS).build();

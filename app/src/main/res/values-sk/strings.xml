@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Application texts -->
-    <string name="app_name">Library</string>
+    <string name="app_name">Knižnica</string>
 
     <!-- General errors and messages -->
     <string name="unexpected_error_occurs">Vyskytla sa neočakávaná chyba</string>

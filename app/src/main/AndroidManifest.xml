@@ -75,11 +75,12 @@
 
         <provider
             android:name=".model.DatabaseProvider"
-            android:authorities="xyz.kandrac.Library"
+            android:authorities="${databaseAuthority}"
             android:exported="false" />
+
         <provider
             android:name=".snk.SnkProvider"
-            android:authorities="xyz.kandrac.Library.snk"
+            android:authorities="${snkDatabaseAuthority}"
             android:exported="false" />
 
         <receiver

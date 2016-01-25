@@ -3,6 +3,8 @@ package xyz.kandrac.library.snk;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+import xyz.kandrac.library.BuildConfig;
+
 /**
  * Created by kandrac on 20/01/16.
  */
@@ -24,7 +26,7 @@ public final class SnkContract {
     public static final String PATH_BOOKS = "books";
 
     // Base URI specification (authority and its URI representation)
-    public static final String CONTENT_AUTHORITY = "xyz.kandrac.Library.snk";
+    public static final String CONTENT_AUTHORITY = BuildConfig.SNK_DATABASE_AUTHORITY;
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
     public static class Books implements BooksColumns {
