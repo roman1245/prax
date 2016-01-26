@@ -25,13 +25,15 @@ public class NotificationReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         long bookId = Contract.Books.getBookId(intent.getData());
-        LogUtils.d(TAG, "Show notification request received for book " + bookId);
         showNotification(context, bookId);
     }
 
     private static void showNotification(Context context, long bookId) {
         Intent notificationIntent = new Intent(context, BookDetailActivity.class);
+
         notificationIntent.putExtra(BookDetailActivity.EXTRA_BOOK_ID, bookId);
+
+        LogUtils.d(TAG, "Show notification request received for book " + bookId);
 
         Notification notification = new Notification.Builder(context)
                 .setSmallIcon(R.drawable.ic_book_white)
@@ -39,12 +41,12 @@ public class NotificationReceiver extends BroadcastReceiver {
                 .setContentTitle(context.getString(R.string.notification_book_borrowed_reminder_title))
                 .setPriority(Notification.PRIORITY_DEFAULT)
                 .setAutoCancel(true)
-                .setContentIntent(PendingIntent.getActivity(context, 0, notificationIntent, 0))
+                .setContentIntent(PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT))
                 .build();
 
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        manager.notify((int) bookId, notification);
+        manager.notify(1, notification);
 
         PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(PREFERENCE_LAST_NOTIFICATION, System.currentTimeMillis()).apply();
     }

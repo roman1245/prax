@@ -138,6 +138,8 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
 
         mBookId = getIntent().getExtras().getLong(EXTRA_BOOK_ID);
 
+        LogUtils.d(LOG_TAG, "Showing book : " + mBookId);
+
         getSupportLoaderManager().initLoader(LOADER_BOOK, null, this);
         getSupportLoaderManager().initLoader(LOADER_AUTHOR, null, this);
         getSupportLoaderManager().initLoader(LOADER_PUBLISHER, null, this);
@@ -451,6 +453,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
             }
         }
     }
+
     private void bindPublisher(Cursor publisherCursor) {
         if (publisherCursor == null || publisherCursor.getCount() == 0 || !publisherCursor.moveToFirst()) {
             publisher.setText(getString(R.string.publisher_unknown));
@@ -578,6 +581,15 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
             default:
                 super.onActivityResult(reqCode, resultCode, data);
         }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        mBookId = getIntent().getExtras().getLong(EXTRA_BOOK_ID);
+
+        LogUtils.d(LOG_TAG, "Showing book from new intent : " + mBookId);
     }
 
     private class BorrowDetails {
