@@ -67,6 +67,7 @@ public final class Contract {
         String BORROW_NAME = "borrow_name";
         String BORROW_DATE_BORROWED = "date_borrowed";
         String BORROW_DATE_RETURNED = "date_returned";
+        String BORROW_NEXT_NOTIFICATION = "borrow_next_notify";
     }
 
     // Aliases

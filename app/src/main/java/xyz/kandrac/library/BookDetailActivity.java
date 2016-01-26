@@ -37,6 +37,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -269,6 +270,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                                 public void onClick(DialogInterface dialog, int which) {
                                     ContentValues cv = new ContentValues();
                                     cv.put(Contract.BorrowInfo.BORROW_DATE_RETURNED, new Date(System.currentTimeMillis()).getTime());
+                                    cv.put(Contract.BorrowInfo.BORROW_NEXT_NOTIFICATION, 0);
                                     getContentResolver().update(Contract.BorrowInfo.buildUri(details.id), cv, null, null);
 
                                     ContentValues bookContentValues = new ContentValues();
@@ -407,20 +409,28 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                 final String name = data.getString(ContactRequest.NAME_COLUMN);
 
                 String contactId = contactUri.getLastPathSegment();
+
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+                int notifyInDays = Integer.parseInt(sharedPref.getString(SettingsFragment.KEY_PREF_NOTIFICATION_DAYS, "20"));
+
+                Long timeToNotify =
+                        BuildConfig.DEBUG
+                                ? System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(notifyInDays)
+                                : DateUtils.getTodayHourTime(18) + TimeUnit.DAYS.toMillis(notifyInDays);
+
                 ContentValues borrowContentValues = new ContentValues();
                 borrowContentValues.put(Contract.BorrowInfo.BORROW_TO, contactId);
                 borrowContentValues.put(Contract.BorrowInfo.BORROW_DATE_BORROWED, dateFrom);
                 borrowContentValues.put(Contract.BorrowInfo.BORROW_NAME, name);
+                borrowContentValues.put(Contract.BorrowInfo.BORROW_NEXT_NOTIFICATION, timeToNotify);
+
                 getContentResolver().insert(Contract.Books.buildBorrowInfoUri(mBookId), borrowContentValues);
 
                 ContentValues bookContentValues = new ContentValues();
                 bookContentValues.put(Contract.Books.BOOK_BORROWED, true);
                 getContentResolver().update(Contract.Books.buildBookUri(mBookId), bookContentValues, null, null);
 
-                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-                int notifyInDays = Integer.parseInt(sharedPref.getString(SettingsFragment.KEY_PREF_NOTIFICATION_DAYS, "20"));
-
-                NotificationReceiver.prepareNotification(this, notifyInDays, mBookId);
+                NotificationReceiver.prepareNotification(this, timeToNotify, mBookId);
                 mBorrowed = true;
                 invalidateOptionsMenu();
                 break;
@@ -441,7 +451,6 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
             }
         }
     }
-
     private void bindPublisher(Cursor publisherCursor) {
         if (publisherCursor == null || publisherCursor.getCount() == 0 || !publisherCursor.moveToFirst()) {
             publisher.setText(getString(R.string.publisher_unknown));

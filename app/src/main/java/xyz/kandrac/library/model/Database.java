@@ -12,7 +12,7 @@ public class Database extends SQLiteOpenHelper {
 
 
     public static final String DATABASE_NAME = "library.db";
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 3;
 
     public Database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -86,6 +86,7 @@ public class Database extends SQLiteOpenHelper {
                     Contract.BorrowInfoColumns.BORROW_BOOK_ID + " INTEGER " + References.BOOKS_ID + " ON DELETE CASCADE, " +
                     Contract.BorrowInfoColumns.BORROW_TO + " TEXT, " +
                     Contract.BorrowInfoColumns.BORROW_DATE_BORROWED + " INTEGER, " +
+                    Contract.BorrowInfoColumns.BORROW_NEXT_NOTIFICATION + " INTEGER, " +
                     Contract.BorrowInfoColumns.BORROW_DATE_RETURNED + " INTEGER DEFAULT 0, " +
                     Contract.BorrowInfoColumns.BORROW_MAIL + " TEXT, " +
                     Contract.BorrowInfoColumns.BORROW_NAME + " TEXT, " +
@@ -115,6 +116,8 @@ public class Database extends SQLiteOpenHelper {
                 db.execSQL("INSERT INTO " + Tables.LIBRARIES + " (" + Contract.Libraries.LIBRARY_NAME + ") VALUES ('')");
                 db.execSQL("ALTER TABLE " + Tables.BOOKS + " ADD " + Contract.Books.BOOK_LIBRARY_ID + " INTEGER " + References.LIBRARY_ID + " ON DELETE CASCADE");
                 db.execSQL("UPDATE " + Tables.BOOKS + " SET " + Contract.Books.BOOK_LIBRARY_ID + " = 1");
+            case 2:
+                db.execSQL("ALTER TABLE " + Tables.BORROW_INFO + " ADD " + Contract.BorrowInfo.BORROW_NEXT_NOTIFICATION + " INTEGER");
         }
     }
 }
