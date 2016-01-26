@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.support.annotation.RequiresPermission;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.ViewGroup;
@@ -14,6 +13,8 @@ import com.google.android.gms.common.images.Size;
 import com.google.android.gms.vision.CameraSource;
 
 import java.io.IOException;
+
+import xyz.kandrac.library.utils.LogUtils;
 
 public class CameraSourcePreview extends ViewGroup {
     private static final String TAG = "CameraSourcePreview";
@@ -89,9 +90,9 @@ public class CameraSourcePreview extends ViewGroup {
             try {
                 startIfReady();
             } catch (SecurityException se) {
-                Log.e(TAG, "Do not have permission to start the camera", se);
+                LogUtils.e(TAG, "Do not have permission to start the camera", se);
             } catch (IOException e) {
-                Log.e(TAG, "Could not start camera source.", e);
+                LogUtils.e(TAG, "Could not start camera source.", e);
             }
         }
 
@@ -149,9 +150,9 @@ public class CameraSourcePreview extends ViewGroup {
         try {
             startIfReady();
         } catch (SecurityException se) {
-            Log.e(TAG, "Do not have permission to start the camera", se);
+            LogUtils.e(TAG, "Do not have permission to start the camera", se);
         } catch (IOException e) {
-            Log.e(TAG, "Could not start camera source.", e);
+            LogUtils.e(TAG, "Could not start camera source.", e);
         }
     }
 
@@ -164,7 +165,7 @@ public class CameraSourcePreview extends ViewGroup {
             return true;
         }
 
-        Log.d(TAG, "isPortraitMode returning false by default");
+        LogUtils.d(TAG, "isPortraitMode returning false by default");
         return false;
     }
 }

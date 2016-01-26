@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -23,6 +22,7 @@ import xyz.kandrac.library.barcode.BarcodeGraphic;
 import xyz.kandrac.library.barcode.BarcodeTrackerFactory;
 import xyz.kandrac.library.barcode.ui.CameraSourcePreview;
 import xyz.kandrac.library.barcode.ui.GraphicOverlay;
+import xyz.kandrac.library.utils.LogUtils;
 
 /**
  * Activity that displays barcode scanner. This was implemented based on Google Vision
@@ -85,13 +85,13 @@ public class BarcodeActivity extends AppCompatActivity {
         barcodeDetector.setProcessor(new MultiProcessor.Builder<>(barcodeFactory).build());
 
         if (!barcodeDetector.isOperational()) {
-            Log.w(TAG, "Detector dependencies are not yet available.");
+            LogUtils.w(TAG, "Detector dependencies are not yet available.");
             IntentFilter lowstorageFilter = new IntentFilter(Intent.ACTION_DEVICE_STORAGE_LOW);
             boolean hasLowStorage = registerReceiver(null, lowstorageFilter) != null;
 
             if (hasLowStorage) {
                 Toast.makeText(this, "low storage", Toast.LENGTH_LONG).show();
-                Log.w(TAG, "low storage");
+                LogUtils.w(TAG, "low storage");
             }
         }
 
@@ -152,7 +152,7 @@ public class BarcodeActivity extends AppCompatActivity {
             try {
                 mPreview.start(mCameraSource, mGraphicOverlay);
             } catch (IOException e) {
-                Log.e(TAG, "Unable to start camera source.", e);
+                LogUtils.e(TAG, "Unable to start camera source.", e);
                 mCameraSource.release();
                 mCameraSource = null;
             }

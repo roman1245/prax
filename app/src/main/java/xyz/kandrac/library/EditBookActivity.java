@@ -24,7 +24,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -53,6 +52,7 @@ import xyz.kandrac.library.model.obj.Publisher;
 import xyz.kandrac.library.snk.SnkContract;
 import xyz.kandrac.library.utils.BookCursorAdapter;
 import xyz.kandrac.library.utils.DisplayUtils;
+import xyz.kandrac.library.utils.LogUtils;
 
 /**
  * Created by VizGhar on 11.10.2015.
@@ -415,12 +415,12 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
             File photoFile = createImageFile();
             if (photoFile != null) {
                 Uri uri = Uri.fromFile(photoFile);
-                Log.d(TAG, "taking picture to store into " + uri.toString());
+                LogUtils.d(TAG, "taking picture to store into " + uri.toString());
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
         } else {
-            Log.d(TAG, "No application for taking photo available");
+            LogUtils.d(TAG, "No application for taking photo available");
         }
     }
 

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
@@ -44,7 +43,7 @@ public final class DisplayUtils {
 
     public static void resizeImageFile(File imageFile, int width, int quality) {
 
-        Log.d(LOG_TAG, "Resizing " + imageFile.getName() + " with size of " + imageFile.length()/1000 + "kB");
+        LogUtils.d(LOG_TAG, "Resizing " + imageFile.getName() + " with size of " + imageFile.length()/1000 + "kB");
 
         Bitmap b = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
         float ratio = (float) b.getWidth() / (float) b.getHeight();
@@ -61,19 +60,19 @@ public final class DisplayUtils {
             b.recycle();
             out.recycle();
         } catch (Exception e) {
-            Log.w(LOG_TAG, "Error occurs while scaling image", e);
+            LogUtils.w(LOG_TAG, "Error occurs while scaling image", e);
             return;
         }
 
         boolean renamed = file.renameTo(imageFile);
 
         if (renamed) {
-            Log.d(LOG_TAG, "File resized to size of " + imageFile.length() / 1000 + "kB");
+            LogUtils.d(LOG_TAG, "File resized to size of " + imageFile.length() / 1000 + "kB");
         } else {
             if (file.delete()) {
-                Log.d(LOG_TAG, "Unable to store resized image");
+                LogUtils.d(LOG_TAG, "Unable to store resized image");
             } else {
-                Log.d(LOG_TAG, "Unable to delete resized image");
+                LogUtils.d(LOG_TAG, "Unable to delete resized image");
             }
         }
     }
