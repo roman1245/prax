@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static final int BORROWED_BOOK_LIST_LOADER = 5;
     public static final int WISH_LIST_BOOK_LIST_LOADER = 6;
 
-    public static final String PREFERENCE_PHOTOS_RESIZED = "photos_resized_preference";
+    public static final String PREFERENCE_PHOTOS_RESIZED = "photos_resized_preference_2";
     public static final String PREFERENCE_PHOTOS_REMOVED = "photos_removed_preference";
 
     @Bind(R.id.toolbar)
@@ -315,6 +315,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * to 1024 width with 60% quality. This will keep application size significantly lower.
      */
     private void resizePhotosIfNeeded() {
+        PreferenceManager.getDefaultSharedPreferences(this).edit().remove("photos_resized_preference").apply();
         boolean resized = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(PREFERENCE_PHOTOS_RESIZED, false);
 
         if (!resized) {
