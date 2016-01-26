@@ -20,7 +20,8 @@ public final class DisplayUtils {
 
     public static final String LOG_TAG = "DisplayUtils";
 
-    private DisplayUtils(){}
+    private DisplayUtils() {
+    }
 
     public static void displayScaledImage(Context context, String imageFileName, ImageView imageView) {
         if (imageFileName != null) {
@@ -43,11 +44,17 @@ public final class DisplayUtils {
 
     public static void resizeImageFile(File imageFile, int width, int quality) {
 
-        LogUtils.d(LOG_TAG, "Resizing " + imageFile.getName() + " with size of " + imageFile.length()/1000 + "kB");
+        LogUtils.d(LOG_TAG, "Resizing " + imageFile.getName() + " with size of " + imageFile.length() / 1000 + "kB");
 
         Bitmap b = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+
+        if (b == null) {
+            LogUtils.w(LOG_TAG, "Cannot decode file to bitmap");
+            return;
+        }
+
         float ratio = (float) b.getWidth() / (float) b.getHeight();
-        Bitmap out = Bitmap.createScaledBitmap(b, width, (int) ((float)width / ratio), false);
+        Bitmap out = Bitmap.createScaledBitmap(b, width, (int) ((float) width / ratio), false);
 
         File file = new File(imageFile.getParent(), "temp.jpg");
         FileOutputStream fOut;
