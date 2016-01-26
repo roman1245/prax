@@ -16,8 +16,6 @@ import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.Data;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -42,9 +40,9 @@ import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import xyz.kandrac.library.model.Contract;
 import xyz.kandrac.library.utils.DateUtils;
+import xyz.kandrac.library.utils.LogUtils;
 
 /**
  * Shows all the details about book based on its ID from {@link #EXTRA_BOOK_ID}.
@@ -53,6 +51,7 @@ import xyz.kandrac.library.utils.DateUtils;
  */
 public class BookDetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    public static final String LOG_TAG = BookDetailActivity.class.getName();
     public static final String EXTRA_BOOK_ID = "book_id_extra";
 
     // LOADERS
@@ -116,18 +115,8 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     @Bind(R.id.book_detail_borrow)
     Button borrowButton;
 
-    @Bind(R.id.fab)
-    FloatingActionButton fab;
-
-    @OnClick(R.id.fab)
-    public void share(View v) {
-        int readContactPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
-        if (readContactPermission == PackageManager.PERMISSION_GRANTED) {
-            searchContact();
-        } else {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, PICK_CONTACT_PERMISSION);
-        }
-    }
+    private boolean mInWishList;
+    private boolean mBorrowed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,6 +141,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
         getSupportLoaderManager().initLoader(LOADER_AUTHOR, null, this);
         getSupportLoaderManager().initLoader(LOADER_PUBLISHER, null, this);
         getSupportLoaderManager().initLoader(LOADER_BORROW_DETAIL, null, this);
+
         checkLibrariesPreferences();
     }
 
@@ -191,23 +181,26 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
             return;
         }
 
+        LogUtils.d(LOG_TAG, "binding book");
+
         String title = bookCursor.getString(bookCursor.getColumnIndex(Contract.Books.BOOK_TITLE));
         String subtitle = bookCursor.getString(bookCursor.getColumnIndex(Contract.Books.BOOK_SUBTITLE));
         String isbn = bookCursor.getString(bookCursor.getColumnIndex(Contract.Books.BOOK_ISBN));
         String description = bookCursor.getString(bookCursor.getColumnIndex(Contract.Books.BOOK_DESCRIPTION));
-        boolean wish = bookCursor.getInt(bookCursor.getColumnIndex(Contract.Books.BOOK_WISH_LIST)) == 1;
+        mInWishList = bookCursor.getInt(bookCursor.getColumnIndex(Contract.Books.BOOK_WISH_LIST)) == 1;
         String filePath = bookCursor.getString(bookCursor.getColumnIndex(Contract.Books.BOOK_IMAGE_FILE));
 
+        LogUtils.v(LOG_TAG, "binding book title = " + title);
         collapsingToolbarLayout.setTitle(title);
 
+        LogUtils.v(LOG_TAG, "binding book subtitle = " + subtitle);
         if (TextUtils.isEmpty(subtitle)) {
             fullTitle.setText(title);
         } else {
             fullTitle.setText(getString(R.string.format_book_title_subtitle, title, subtitle));
         }
 
-//        publisher.setText(TextUtils.isEmpty(book.publisherReadable) ? getString(R.string.publisher_unknown) : book.publisherReadable);
-
+        LogUtils.v(LOG_TAG, "binding book isbn = " + isbn);
         if (TextUtils.isEmpty(isbn)) {
             isbnText.setVisibility(View.GONE);
             isbnImage.setVisibility(View.GONE);
@@ -217,6 +210,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
             isbnImage.setVisibility(View.VISIBLE);
         }
 
+        LogUtils.v(LOG_TAG, "binding book description = " + description);
         if (TextUtils.isEmpty(description)) {
             descriptionText.setVisibility(View.GONE);
             descriptionImage.setVisibility(View.GONE);
@@ -226,8 +220,10 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
             descriptionImage.setVisibility(View.VISIBLE);
         }
 
-        if (wish) {
-            fab.setVisibility(View.GONE);
+        LogUtils.d(LOG_TAG, "binding book wish = " + mInWishList);
+
+        if (mInWishList) {
+            invalidateOptionsMenu();
         }
 
         File imageFile = filePath == null ? null : new File(filePath);
@@ -257,6 +253,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
      */
     private void bindBorrowDetails(final BorrowDetails details) {
         if (details != null) {
+            mBorrowed = true;
             borrowImage.setVisibility(View.VISIBLE);
             borrowButton.setVisibility(View.VISIBLE);
             borrowButton.setText(details.name);
@@ -279,7 +276,8 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                                     getContentResolver().update(Contract.Books.buildBookUri(mBookId), bookContentValues, null, null);
 
                                     NotificationReceiver.cancelNotification(BookDetailActivity.this, mBookId);
-                                    anchorFab(R.id.appbar);
+                                    mBorrowed = false;
+                                    invalidateOptionsMenu();
                                     dialog.dismiss();
                                 }
                             })
@@ -293,15 +291,13 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                             .create().show();
                 }
             });
-            anchorFab(View.NO_ID);
-            fab.setVisibility(View.GONE);
         } else {
+            mBorrowed = false;
             borrowImage.setVisibility(View.GONE);
             borrowButton.setVisibility(View.GONE);
-            anchorFab(R.id.appbar);
         }
 
-        supportInvalidateOptionsMenu();
+        invalidateOptionsMenu();
     }
 
     @Override
@@ -425,8 +421,8 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                 int notifyInDays = Integer.parseInt(sharedPref.getString(SettingsFragment.KEY_PREF_NOTIFICATION_DAYS, "20"));
 
                 NotificationReceiver.prepareNotification(this, notifyInDays, mBookId);
-                anchorFab(View.NO_ID);
-                fab.setVisibility(View.GONE);
+                mBorrowed = true;
+                invalidateOptionsMenu();
                 break;
             }
             case LOADER_BORROW_DETAIL: {
@@ -480,9 +476,27 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem borrowItem = menu.findItem(R.id.action_borow);
+
+        borrowItem.setVisible(!mInWishList && !mBorrowed);
+
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
+            case R.id.action_borow: {
+                int readContactPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
+                if (readContactPermission == PackageManager.PERMISSION_GRANTED) {
+                    searchContact();
+                } else {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, PICK_CONTACT_PERMISSION);
+                }
+                return true;
+            }
             case R.id.action_edit: {
                 Intent intent = new Intent(this, EditBookActivity.class);
                 intent.putExtra(EditBookActivity.EXTRA_BOOK_ID, mBookId);
@@ -587,11 +601,5 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
 
         int NAME_COLUMN = 0;
 
-    }
-
-    private void anchorFab(int id) {
-        CoordinatorLayout.LayoutParams p = (CoordinatorLayout.LayoutParams) fab.getLayoutParams();
-        p.setAnchorId(id);
-        fab.setLayoutParams(p);
     }
 }

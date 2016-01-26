@@ -187,17 +187,4 @@
                 tools:visibility="visible" />
         </android.support.v7.widget.GridLayout>
     </android.support.v4.widget.NestedScrollView>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:src="@drawable/ic_share_white"
-        app:elevation="6dp"
-        app:fabSize="normal"
-        app:layout_anchor="@id/appbar"
-        app:layout_anchorGravity="bottom|right|end"
-        app:pressedTranslationZ="12dp" />
 </android.support.design.widget.CoordinatorLayout>

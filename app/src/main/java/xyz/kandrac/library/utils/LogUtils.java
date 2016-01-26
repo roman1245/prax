@@ -29,4 +29,10 @@ public final class LogUtils {
             Log.w(tag, message, exception);
         }
     }
+
+    public static void v(String tag, String message) {
+        if (BuildConfig.DEBUG) {
+            Log.v(tag, message);
+        }
+    }
 }
