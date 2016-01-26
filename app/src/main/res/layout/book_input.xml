@@ -135,15 +135,34 @@
                 app:layout_gravity="center_vertical"
                 app:layout_row="5" />
 
-            <EditText
-                android:id="@+id/book_input_isbn"
+            <LinearLayout
                 android:layout_width="0dp"
-                android:hint="@string/edit_book_isbn"
-                android:inputType="number"
+                android:layout_height="wrap_content"
                 app:layout_column="1"
                 app:layout_columnSpan="2"
-                app:layout_gravity="fill"
-                tools:text="0802356555" />
+                app:layout_gravity="fill">
+
+                <EditText
+                    android:id="@+id/book_input_isbn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_weight="1"
+                    android:hint="@string/edit_book_isbn"
+                    android:inputType="number"
+                    app:layout_gravity="fill"
+                    tools:text="0802356555" />
+
+                <Button
+                    android:id="@+id/book_input_scan"
+                    style="@style/Base.Widget.AppCompat.Button.Borderless.Theme"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/edit_book_scan"
+                    app:layout_column="2" />
+            </LinearLayout>
+
 
             <ImageView
                 android:layout_marginTop="8dp"
@@ -162,12 +181,6 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_book_white"
                 app:layout_column="1" />
-
-            <Button
-                android:id="@+id/book_input_cover"
-                style="@style/Base.Widget.AppCompat.Button.Borderless.Theme"
-                android:text="@string/edit_book_change_cover"
-                app:layout_column="2" />
 
             <ImageView
                 android:layout_marginTop="8dp"
@@ -195,7 +208,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="8dp"
-        android:src="@drawable/ic_barcode_white"
+        android:src="@drawable/ic_content_save"
         app:elevation="6dp"
         app:fabSize="normal"
         app:pressedTranslationZ="12dp" />

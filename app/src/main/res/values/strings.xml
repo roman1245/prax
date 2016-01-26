@@ -50,7 +50,7 @@
     <string name="edit_book_title">Book Title</string>
     <string name="edit_book_subtitle">Book Subtitle</string>
     <string name="edit_book_isbn">ISBN</string>
-    <string name="edit_book_change_cover">Change</string>
+    <string name="edit_book_scan">Scan</string>
     <string name="edit_book_description">Description</string>
 
     <string name="edit_book_info">Basic book info</string>

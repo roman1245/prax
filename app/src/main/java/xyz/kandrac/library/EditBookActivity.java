@@ -24,7 +24,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
@@ -299,66 +298,18 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         }
     }
 
-    // ToolBar option menu
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.book_add_menu, menu);
-        return true;
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            case R.id.action_save:
-                save();
-                return true;
             case android.R.id.home:
                 finish();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    // Storing result synchronously
-    private void save() {
-
-        String authorsReadable = mAuthorEdit.getText().toString();
-
-        Publisher publisher = new Publisher.Builder()
-                .setName(mPublisherEdit.getText().toString())
-                .build();
-
-        Library library = new Library.Builder()
-                .setName(mLibraryEdit.getText().toString())
-                .build();
-
-        String[] authorsSplit = TextUtils.split(authorsReadable, ",");
-
-        Author[] authors = new Author[authorsSplit.length];
-        for (int i = 0; i < authorsSplit.length; i++) {
-            String authorName = authorsSplit[i].trim();
-            authors[i] = new Author.Builder().setName(authorName).build();
-        }
-
-        Book book = new Book.Builder()
-                .setId(mBookId)
-                .setPublisher(publisher)
-                .setLibrary(library)
-                .setAuthors(authors)
-                .setTitle(mTitleEdit.getText().toString())
-                .setSubtitle(mSubtitleEdit.getText().toString())
-                .setIsbn(mIsbnEdit.getText().toString())
-                .setImageFilePath((String) mImageEdit.getTag())
-                .setDescription(mDescription.getText().toString())
-                .setWish(mToWishList)
-                .build();
-
-        DatabaseStoreUtils.saveBook(getContentResolver(), book);
-        finish();
-    }
-
     // Open Camera for taking image of Book Cover
-    @OnClick(R.id.book_input_cover)
+    @OnClick(R.id.parallax_cover_image)
     public void takePhoto(View view) {
         int cameraPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
         int writePermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -396,7 +347,45 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
     // Open Barcode scanner
     @OnClick(R.id.fab)
-    public void click(View view) {
+    public void save(View view) {
+
+        String authorsReadable = mAuthorEdit.getText().toString();
+
+        Publisher publisher = new Publisher.Builder()
+                .setName(mPublisherEdit.getText().toString())
+                .build();
+
+        Library library = new Library.Builder()
+                .setName(mLibraryEdit.getText().toString())
+                .build();
+
+        String[] authorsSplit = TextUtils.split(authorsReadable, ",");
+
+        Author[] authors = new Author[authorsSplit.length];
+        for (int i = 0; i < authorsSplit.length; i++) {
+            String authorName = authorsSplit[i].trim();
+            authors[i] = new Author.Builder().setName(authorName).build();
+        }
+
+        Book book = new Book.Builder()
+                .setId(mBookId)
+                .setPublisher(publisher)
+                .setLibrary(library)
+                .setAuthors(authors)
+                .setTitle(mTitleEdit.getText().toString())
+                .setSubtitle(mSubtitleEdit.getText().toString())
+                .setIsbn(mIsbnEdit.getText().toString())
+                .setImageFilePath((String) mImageEdit.getTag())
+                .setDescription(mDescription.getText().toString())
+                .setWish(mToWishList)
+                .build();
+
+        DatabaseStoreUtils.saveBook(getContentResolver(), book);
+        finish();
+    }
+
+    @OnClick(R.id.book_input_scan)
+    public void scan(View view) {
         int cameraPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
         if (cameraPermission != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(
