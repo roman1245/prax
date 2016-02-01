@@ -29,20 +29,20 @@
         <android.support.v7.widget.GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="12dp"
+            android:layout_margin="16dp"
             app:columnCount="3"
             app:orientation="horizontal"
             app:useDefaultMargins="true"
             tools:showIn="@layout/book_input">
 
             <ImageView
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginRight="12dp"
                 android:contentDescription="@string/edit_book_info"
                 android:src="@drawable/ic_book"
                 android:tint="@color/md_grey_700"
                 app:layout_column="0"
-                app:layout_gravity="center_vertical"
+                app:layout_gravity="center"
                 app:layout_row="0" />
 
             <EditText
@@ -170,6 +170,7 @@
                 android:src="@drawable/ic_camera"
                 android:tint="@color/md_grey_700"
                 app:layout_column="0"
+                app:layout_gravity="center_vertical"
                 app:layout_row="6" />
 
             <ImageView
@@ -188,6 +189,7 @@
                 android:src="@drawable/ic_pencil"
                 android:tint="@color/md_grey_700"
                 app:layout_column="0"
+                app:layout_gravity="center_vertical"
                 app:layout_row="7" />
 
             <EditText

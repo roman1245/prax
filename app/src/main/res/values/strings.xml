@@ -61,6 +61,13 @@
     <string name="edit_book_no_permission">We can\'t continue without those permissions. If you want to change them you can do so in your phone Settings.</string>
     <string name="edit_book_no_permission_title">Missing permissions</string>
 
+    <!-- Book Details Screen -->
+    <string name="book_detail_full_title">Book title:</string>
+    <string name="book_detail_authors">Authors:</string>
+    <string name="book_detail_publisher">Publisher:</string>
+    <string name="book_detail_library">Library:</string>
+    <string name="book_detail_isbn">ISBN/barcode:</string>
+
     <!-- Navigation menu items -->
     <string name="menu_books">Books</string>
     <string name="menu_books_mine">My Books</string>

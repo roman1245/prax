@@ -20,23 +20,28 @@
         android:scaleType="center"
         android:src="@drawable/ic_book_white" />
 
-    <TextView
-        android:id="@+id/list_item_book_title"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_toEndOf="@id/list_item_book_image"
         android:layout_toRightOf="@id/list_item_book_image"
-        android:textSize="16sp"
-        tools:text="Lord of the Rings - The Return of the King" />
+        android:gravity="center_vertical"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/list_item_book_subtitle"
-        style="@style/TextAppearance.AppCompat.Small"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/list_item_book_title"
-        android:layout_marginTop="4dp"
-        android:layout_toEndOf="@id/list_item_book_image"
-        android:layout_toRightOf="@id/list_item_book_image"
-        tools:text="John Ronald Reuel Tolkien" />
+        <TextView
+            android:id="@+id/list_item_book_title"
+            style="@style/TextAppearance.AppCompat.Small.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            tools:text="Lord of the Rings - The Return of the King" />
+
+        <TextView
+            android:id="@+id/list_item_book_subtitle"
+            style="@style/TextAppearance.AppCompat.Small"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            tools:text="John Ronald Reuel Tolkien" />
+    </LinearLayout>
 </RelativeLayout>

@@ -98,6 +98,9 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     @Bind(R.id.book_detail_isbn)
     TextView isbnText;
 
+    @Bind(R.id.book_detail_isbn_title)
+    TextView isbnTitle;
+
     @Bind(R.id.book_detail_description)
     TextView descriptionText;
 
@@ -206,10 +209,12 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
         LogUtils.v(LOG_TAG, "binding book isbn = " + isbn);
         if (TextUtils.isEmpty(isbn)) {
             isbnText.setVisibility(View.GONE);
+            isbnTitle.setVisibility(View.GONE);
             isbnImage.setVisibility(View.GONE);
         } else {
             isbnText.setText(isbn);
             isbnText.setVisibility(View.VISIBLE);
+            isbnTitle.setVisibility(View.VISIBLE);
             isbnImage.setVisibility(View.VISIBLE);
         }
 

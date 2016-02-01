@@ -45,7 +45,7 @@
 
     <!-- Edit/Input Book Screen -->
     <string name="edit_book_author">Autor</string>
-    <string name="edit_book_publisher">Publisher</string>
+    <string name="edit_book_publisher">Vydavateľ</string>
     <string name="edit_book_library">Knižnica (Domov, Internát, &#8230;)</string>
     <string name="edit_book_title">Názov Knihy</string>
     <string name="edit_book_subtitle">Podtitulok knihy</string>
@@ -60,6 +60,13 @@
 
     <string name="edit_book_no_permission">Bez týchto oprávnení nemôžeme pokračovať. Ak chcete zmeniť oprávenia urobte tak v Nastaveniach telefónu.</string>
     <string name="edit_book_no_permission_title">Chýbajúce oprávnenia</string>
+
+    <!-- Book Details Screen -->
+    <string name="book_detail_full_title">Názov knihy:</string>
+    <string name="book_detail_authors">Autori:</string>
+    <string name="book_detail_publisher">Vydavateľ:</string>
+    <string name="book_detail_library">Knižnica:</string>
+    <string name="book_detail_isbn">ISBN/čiarový kód:</string>
 
     <!-- Navigation menu items -->
     <string name="menu_books">Knihy</string>
@@ -78,13 +85,13 @@
     <string name="about_title">O aplikácii</string>
     <string name="about_producer">Ján Kandráč</string>
     <string name="about_text">Táto aplikácia vznikla ako alternatíva k viacerým aplikáciam, ktoré sa
-        venujú spracovaniu záznamov o papierových knihách. Žiadna z aplikácií ma nedokázala osloviť
+        venujú spracovaniu záznamov o knihách. Žiadna z aplikácií ma nedokázala osloviť
     natoľko aby som sa rozhodol pri nej ostať. Problémov bolo viacero, od nie najkrajšieho či dokonca
     nepoužiteľného prostredia, cez nemožnosť kategorizácie, hromadného vkladania, či zálohovania.
 
-    Aplikácia ako ju vidíte teraz je len vo svojich začiatkoch a množstvo zo spomenutých funkcií sama
-    nemá. Je však od začiatku pripravená na to, aby Vám poskytla maximálnu možnosť využitia jej
-    funkcií.</string>
+    Aplikácia ako ju vidíte teraz je len vo svojich začiatkoch a viacero spomenutých funkcií sama
+    nemá. Vznikla ako hobby a ako hobby sa bude aj naďalej rozvíjať. Ak máte akýkoľvek nápad, neváhajte
+    sa mi ozvať.</string>
 
     <!-- Dialog Actions -->
     <string name="dialog_book_delete_title">Vymazať knihu</string>

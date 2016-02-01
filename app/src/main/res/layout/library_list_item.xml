@@ -20,6 +20,7 @@
 
     <TextView
         android:id="@+id/list_item_library_name"
+        style="@style/TextAppearance.AppCompat.Small.Title"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginLeft="16dp"
