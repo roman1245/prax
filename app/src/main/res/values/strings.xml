@@ -121,7 +121,6 @@
     <string name="notification_book_borrowed_reminder_message">Please check your borrowed books</string>
 
     <!-- Preferences -->
-
     <string name="preferences_libraries_category">Libraries</string>
     <string name="preferences_libraries_enabled_title">Enable multiple libraries</string>
     <string name="preferences_libraries_enabled_description">If checked you will be able to assign books to one of your libraries</string>
