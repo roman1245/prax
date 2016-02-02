@@ -68,6 +68,11 @@
     <string name="book_detail_library">Knižnica:</string>
     <string name="book_detail_isbn">ISBN/čiarový kód:</string>
 
+    <!-- Book Borrow Texts -->
+    <string name="borrow_wrong_input">Prosím zadaj kedy sa ti má kniha vrátiť</string>
+    <string name="borrow_title">Požičať knihu</string>
+    <string name="borrow_message">O koľko dní by sa ti mala kniha vrátiť?</string>
+
     <!-- Navigation menu items -->
     <string name="menu_books">Knihy</string>
     <string name="menu_books_mine">Moje knihy</string>

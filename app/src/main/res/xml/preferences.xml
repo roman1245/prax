@@ -2,16 +2,6 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory android:title="@string/preferences_notifications_category">
-        <EditTextPreference
-            android:defaultValue="20"
-            android:key="notification_days"
-            android:maxLength="2"
-            android:numeric="signed"
-            android:summary="@string/preferences_notifications_borrowed_set"
-            android:title="@string/preferences_notifications_borrowed_title" />
-    </PreferenceCategory>
-
-    <PreferenceCategory android:title="@string/preferences_notifications_category">
         <SwitchPreference
             android:defaultValue="true"
             android:key="library_enabled"

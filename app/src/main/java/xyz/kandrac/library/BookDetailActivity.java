@@ -29,6 +29,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,7 +48,7 @@ import xyz.kandrac.library.utils.LogUtils;
 
 /**
  * Shows all the details about book based on its ID from {@link #EXTRA_BOOK_ID}.
- * <p/>
+ * <p>
  * Created by VizGhar on 18.10.2015.
  */
 public class BookDetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -387,7 +388,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(Loader<Cursor> loader, final Cursor data) {
         int id = loader.getId();
         switch (id) {
             case LOADER_BOOK:
@@ -412,34 +413,60 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                     break;
                 }
 
-                final long dateFrom = new Date(System.currentTimeMillis()).getTime();
-                final String name = data.getString(ContactRequest.NAME_COLUMN);
+                final View content = getLayoutInflater().inflate(R.layout.borrow_fragment, null);
 
-                String contactId = contactUri.getLastPathSegment();
+                new AlertDialog.Builder(this)
+                        .setView(content)
+                        .setMessage(R.string.borrow_message)
+                        .setTitle(R.string.borrow_title)
+                        .setPositiveButton(R.string.action_ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                EditText input = (EditText) content.findViewById(R.id.borrow_input);
+                                if (TextUtils.isEmpty(input.getText())) {
+                                    Toast.makeText(BookDetailActivity.this, R.string.borrow_wrong_input, Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
 
-                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-                int notifyInDays = Integer.parseInt(sharedPref.getString(SettingsFragment.KEY_PREF_NOTIFICATION_DAYS, "20"));
+                                final long dateFrom = new Date(System.currentTimeMillis()).getTime();
 
-                Long timeToNotify =
-                        BuildConfig.DEBUG
-                                ? System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(notifyInDays)
-                                : DateUtils.getTodayHourTime(18) + TimeUnit.DAYS.toMillis(notifyInDays);
+                                final String name = data.getString(BookDetailActivity.ContactRequest.NAME_COLUMN);
 
-                ContentValues borrowContentValues = new ContentValues();
-                borrowContentValues.put(Contract.BorrowInfo.BORROW_TO, contactId);
-                borrowContentValues.put(Contract.BorrowInfo.BORROW_DATE_BORROWED, dateFrom);
-                borrowContentValues.put(Contract.BorrowInfo.BORROW_NAME, name);
-                borrowContentValues.put(Contract.BorrowInfo.BORROW_NEXT_NOTIFICATION, timeToNotify);
+                                int notifyInDays = Integer.parseInt(input.getText().toString());
 
-                getContentResolver().insert(Contract.Books.buildBorrowInfoUri(mBookId), borrowContentValues);
+                                Long timeToNotify =
+                                        BuildConfig.DEBUG
+                                                ? System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(notifyInDays)
+                                                : DateUtils.getTodayHourTime(18) + TimeUnit.DAYS.toMillis(notifyInDays);
 
-                ContentValues bookContentValues = new ContentValues();
-                bookContentValues.put(Contract.Books.BOOK_BORROWED, true);
-                getContentResolver().update(Contract.Books.buildBookUri(mBookId), bookContentValues, null, null);
+                                ContentValues borrowContentValues = new ContentValues();
+                                borrowContentValues.put(Contract.BorrowInfo.BORROW_TO, contactUri.getLastPathSegment());
+                                borrowContentValues.put(Contract.BorrowInfo.BORROW_DATE_BORROWED, dateFrom);
+                                borrowContentValues.put(Contract.BorrowInfo.BORROW_NAME, name);
+                                borrowContentValues.put(Contract.BorrowInfo.BORROW_NEXT_NOTIFICATION, timeToNotify);
 
-                NotificationReceiver.prepareNotification(this, timeToNotify, mBookId);
-                mBorrowed = true;
-                invalidateOptionsMenu();
+                                getContentResolver().insert(Contract.Books.buildBorrowInfoUri(mBookId), borrowContentValues);
+
+                                ContentValues bookContentValues = new ContentValues();
+                                bookContentValues.put(Contract.Books.BOOK_BORROWED, true);
+                                getContentResolver().update(Contract.Books.buildBookUri(mBookId), bookContentValues, null, null);
+
+                                NotificationReceiver.prepareNotification(BookDetailActivity.this, timeToNotify, mBookId);
+
+                                dialog.dismiss();
+
+                                mBorrowed = true;
+                                invalidateOptionsMenu();
+                            }
+                        })
+                        .setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .show();
+
                 break;
             }
             case LOADER_BORROW_DETAIL: {
@@ -615,7 +642,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
      * Helper interface for creating Contact Requests
      */
     @SuppressWarnings("unused")
-    private interface ContactRequest {
+    public interface ContactRequest {
 
         // WHERE Statements
         String GENERAL_SELECTION = Data.CONTACT_ID + " = ?";

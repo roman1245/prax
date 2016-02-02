@@ -68,6 +68,11 @@
     <string name="book_detail_library">Library:</string>
     <string name="book_detail_isbn">ISBN/barcode:</string>
 
+    <!-- Book Borrow Texts -->
+    <string name="borrow_wrong_input">Please input number of days</string>
+    <string name="borrow_title">Borrow book</string>
+    <string name="borrow_message">Set in how many days you want to be notified about borrowed book</string>
+
     <!-- Navigation menu items -->
     <string name="menu_books">Books</string>
     <string name="menu_books_mine">My Books</string>
@@ -116,9 +121,6 @@
     <string name="notification_book_borrowed_reminder_message">Please check your borrowed books</string>
 
     <!-- Preferences -->
-    <string name="preferences_notifications_category">Notifications</string>
-    <string name="preferences_notifications_borrowed_title">Borrowed books notification</string>
-    <string name="preferences_notifications_borrowed_set">Notify me about borrowed book in %s days</string>
 
     <string name="preferences_libraries_category">Libraries</string>
     <string name="preferences_libraries_enabled_title">Enable multiple libraries</string>
