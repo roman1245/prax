@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 /**
  * This is the dialog that should be displayed when user requests for About page.
  * It contains details about developer's intentions for this application. To see
- * content directly please see @layout/about_fragment where the main content is
+ * content directly please see @layout/dialog_fragment_about where the main content is
  * defined in @string/about_text
  * <p/>
  * It will be visible the same way for each device since it should be only simple
@@ -23,6 +23,6 @@ public class AboutDialog extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.about_fragment, container, false);
+        return inflater.inflate(R.layout.dialog_fragment_about, container, false);
     }
 }

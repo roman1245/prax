@@ -127,7 +127,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.book_detail);
+        setContentView(R.layout.fragment_book_detail);
 
         ButterKnife.bind(this);
 
@@ -413,7 +413,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                     break;
                 }
 
-                final View content = getLayoutInflater().inflate(R.layout.borrow_fragment, null);
+                final View content = getLayoutInflater().inflate(R.layout.dialog_fragment_borrow, null);
 
                 new AlertDialog.Builder(this)
                         .setView(content)

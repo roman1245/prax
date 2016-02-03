@@ -134,7 +134,7 @@ public class LibraryListFragment extends Fragment implements LoaderManager.Loade
         @Override
         public BindingHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            return new BindingHolder(inflater.inflate(R.layout.library_list_item, parent, false));
+            return new BindingHolder(inflater.inflate(R.layout.list_item_library, parent, false));
         }
 
         @Override

@@ -49,7 +49,7 @@ public class AuthorDetailActivity extends AppCompatActivity implements AuthorDet
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_author_detail);
+        setContentView(R.layout.activity_detail);
 
         ButterKnife.bind(this);
 

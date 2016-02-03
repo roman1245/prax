@@ -134,7 +134,7 @@ public class PublisherListFragment extends Fragment implements LoaderManager.Loa
         @Override
         public BindingHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            return new BindingHolder(inflater.inflate(R.layout.publisher_list_item, parent, false));
+            return new BindingHolder(inflater.inflate(R.layout.list_item_publisher, parent, false));
         }
 
         @Override

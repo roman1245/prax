@@ -22,7 +22,7 @@
         android:layout_height="match_parent"
         android:visibility="invisible"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:listitem="@layout/book_list_item"
+        tools:listitem="@layout/list_item_book"
         tools:visibility="visible" />
 
     <android.support.design.widget.FloatingActionButton

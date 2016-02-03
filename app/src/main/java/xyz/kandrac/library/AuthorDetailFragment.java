@@ -62,7 +62,7 @@ public class AuthorDetailFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View result = inflater.inflate(R.layout.author_detail, container, false);
+        View result = inflater.inflate(R.layout.fragment_author_detail, container, false);
 
         ButterKnife.bind(this, result);
 

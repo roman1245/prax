@@ -118,7 +118,7 @@ public class AuthorListFragment extends Fragment implements LoaderManager.Loader
 
     /**
      * Adapter for getting views based on {@link Cursor} provided and transformed to {@link Author}
-     * object. The view displayed is based on @layout/author_list_item
+     * object. The view displayed is based on @layout/list_item_author
      */
     private class AuthorCursorAdapter extends RecyclerView.Adapter<AuthorCursorAdapter.BindingHolder> {
 
@@ -147,7 +147,7 @@ public class AuthorListFragment extends Fragment implements LoaderManager.Loader
         @Override
         public BindingHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            return new BindingHolder(inflater.inflate(R.layout.author_list_item, parent, false));
+            return new BindingHolder(inflater.inflate(R.layout.list_item_author, parent, false));
         }
 
         @Override

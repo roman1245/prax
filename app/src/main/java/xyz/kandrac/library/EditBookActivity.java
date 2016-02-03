@@ -124,7 +124,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.book_input);
+        setContentView(R.layout.fragment_book_edit);
 
         ButterKnife.bind(this);
 

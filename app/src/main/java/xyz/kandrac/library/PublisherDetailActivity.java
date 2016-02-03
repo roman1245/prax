@@ -51,7 +51,7 @@ public class PublisherDetailActivity extends AppCompatActivity implements Loader
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.publisher_detail);
+        setContentView(R.layout.fragment_publisher_detail);
 
         ButterKnife.bind(this);
 
