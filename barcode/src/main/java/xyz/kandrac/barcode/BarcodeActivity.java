@@ -1,16 +1,17 @@
-package xyz.kandrac.library;
+package xyz.kandrac.barcode;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.MultiProcessor;
 import com.google.android.gms.vision.barcode.Barcode;
@@ -18,11 +19,8 @@ import com.google.android.gms.vision.barcode.BarcodeDetector;
 
 import java.io.IOException;
 
-import xyz.kandrac.library.barcode.BarcodeGraphic;
-import xyz.kandrac.library.barcode.BarcodeTrackerFactory;
-import xyz.kandrac.library.barcode.ui.CameraSourcePreview;
-import xyz.kandrac.library.barcode.ui.GraphicOverlay;
-import xyz.kandrac.library.utils.LogUtils;
+import xyz.kandrac.barcode.ui.CameraSourcePreview;
+import xyz.kandrac.barcode.ui.GraphicOverlay;
 
 /**
  * Activity that displays barcode scanner. This was implemented based on Google Vision
@@ -85,13 +83,13 @@ public class BarcodeActivity extends AppCompatActivity {
         barcodeDetector.setProcessor(new MultiProcessor.Builder<>(barcodeFactory).build());
 
         if (!barcodeDetector.isOperational()) {
-            LogUtils.w(TAG, "Detector dependencies are not yet available.");
+            Log.w(TAG, "Detector dependencies are not yet available.");
             IntentFilter lowstorageFilter = new IntentFilter(Intent.ACTION_DEVICE_STORAGE_LOW);
             boolean hasLowStorage = registerReceiver(null, lowstorageFilter) != null;
 
             if (hasLowStorage) {
                 Toast.makeText(this, "low storage", Toast.LENGTH_LONG).show();
-                LogUtils.w(TAG, "low storage");
+                Log.w(TAG, "low storage");
             }
         }
 
@@ -152,7 +150,7 @@ public class BarcodeActivity extends AppCompatActivity {
             try {
                 mPreview.start(mCameraSource, mGraphicOverlay);
             } catch (IOException e) {
-                LogUtils.e(TAG, "Unable to start camera source.", e);
+                Log.e(TAG, "Unable to start camera source.", e);
                 mCameraSource.release();
                 mCameraSource = null;
             }
@@ -162,7 +160,7 @@ public class BarcodeActivity extends AppCompatActivity {
     private void complete(String barcode) {
         Intent data = new Intent();
         data.putExtra(BARCODE_TEXT, barcode);
-        setResult(CommonStatusCodes.SUCCESS, data);
+        setResult(Activity.RESULT_OK, data);
         finish();
     }
 }

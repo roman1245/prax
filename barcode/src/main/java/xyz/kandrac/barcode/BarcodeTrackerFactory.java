@@ -1,11 +1,11 @@
-package xyz.kandrac.library.barcode;
+package xyz.kandrac.barcode;
 
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.MultiProcessor;
 import com.google.android.gms.vision.Tracker;
 import com.google.android.gms.vision.barcode.Barcode;
 
-import xyz.kandrac.library.barcode.ui.GraphicOverlay;
+import xyz.kandrac.barcode.ui.GraphicOverlay;
 
 
 /**

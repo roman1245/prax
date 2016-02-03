@@ -6,15 +6,15 @@
     android:keepScreenOn="true"
     android:orientation="vertical">
 
-    <xyz.kandrac.library.barcode.ui.CameraSourcePreview
+    <xyz.kandrac.barcode.ui.CameraSourcePreview
         android:id="@+id/preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <xyz.kandrac.library.barcode.ui.GraphicOverlay
+        <xyz.kandrac.barcode.ui.GraphicOverlay
             android:id="@+id/graphicOverlay"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-    </xyz.kandrac.library.barcode.ui.CameraSourcePreview>
+    </xyz.kandrac.barcode.ui.CameraSourcePreview>
 </FrameLayout>

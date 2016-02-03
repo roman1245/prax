@@ -1,4 +1,4 @@
-package xyz.kandrac.library.barcode.ui;
+package xyz.kandrac.barcode.ui;
 
 import android.content.Context;
 import android.graphics.Canvas;

@@ -1,6 +1,7 @@
 package xyz.kandrac.library;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -31,7 +32,6 @@ import android.widget.EditText;
 import android.widget.FilterQueryProvider;
 import android.widget.ImageView;
 
-import com.google.android.gms.common.api.CommonStatusCodes;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -42,6 +42,7 @@ import java.util.Locale;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import xyz.kandrac.barcode.BarcodeActivity;
 import xyz.kandrac.library.model.Contract;
 import xyz.kandrac.library.model.DatabaseStoreUtils;
 import xyz.kandrac.library.model.obj.Author;
@@ -263,7 +264,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         switch (requestCode) {
             case REQUEST_BARCODE:
                 // Handle Barcode
-                if (resultCode == CommonStatusCodes.SUCCESS) {
+                if (resultCode == Activity.RESULT_OK) {
                     if (data != null) {
                         String barcode = data.getStringExtra(BarcodeActivity.BARCODE_TEXT);
                         mIsbnEdit.setText(barcode);

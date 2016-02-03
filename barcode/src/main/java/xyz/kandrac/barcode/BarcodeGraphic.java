@@ -1,4 +1,4 @@
-package xyz.kandrac.library.barcode;
+package xyz.kandrac.barcode;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -7,8 +7,7 @@ import android.graphics.RectF;
 
 import com.google.android.gms.vision.barcode.Barcode;
 
-import xyz.kandrac.library.barcode.ui.GraphicOverlay;
-
+import xyz.kandrac.barcode.ui.GraphicOverlay;
 
 /**
  * Created by VizGhar on 18.10.2015.
