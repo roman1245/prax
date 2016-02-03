@@ -1,4 +1,4 @@
-package xyz.kandrac.library;
+package xyz.kandrac.library.fragments.lists;
 
 import android.app.Fragment;
 import android.app.LoaderManager;
@@ -21,15 +21,19 @@ import android.widget.TextView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import xyz.kandrac.library.LibraryDetailActivity;
+import xyz.kandrac.library.MainActivity;
+import xyz.kandrac.library.R;
+import xyz.kandrac.library.Searchable;
 import xyz.kandrac.library.model.Contract;
-import xyz.kandrac.library.model.obj.Publisher;
+import xyz.kandrac.library.model.obj.Library;
 
 /**
  * Created by kandrac on 22/10/15.
  */
-public class PublisherListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, Searchable {
+public class LibraryBooksListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, Searchable {
 
-    PublishCursorAdapter adapter;
+    LibraryAdapter adapter;
 
     String searchQuery;
 
@@ -49,27 +53,27 @@ public class PublisherListFragment extends Fragment implements LoaderManager.Loa
         ButterKnife.bind(this, result);
 
         mFab.setVisibility(View.GONE);
-        mEmpty.setText(R.string.publisher_list_empty);
+        mEmpty.setText(R.string.library_list_empty);
 
-        adapter = new PublishCursorAdapter();
+        adapter = new LibraryAdapter();
         list.setLayoutManager(new LinearLayoutManager(getActivity()));
         list.setAdapter(adapter);
 
         // Init database loading
-        getActivity().getLoaderManager().initLoader(MainActivity.PUBLISHER_LIST_LOADER, null, this);
+        getActivity().getLoaderManager().initLoader(MainActivity.LIBRARY_LIST_LOADER, null, this);
 
         return result;
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        if (id == MainActivity.PUBLISHER_LIST_LOADER) {
+        if (id == MainActivity.LIBRARY_LIST_LOADER) {
 
             String selection = null;
             String[] selectionArgs = null;
 
             if (searchQuery != null && searchQuery.length() > 1) {
-                selection = Contract.Publishers.PUBLISHER_NAME + " LIKE ?";
+                selection = Contract.Libraries.LIBRARY_NAME + " LIKE ?";
                 selectionArgs = new String[]{
                         "%" + searchQuery + "%"
                 };
@@ -77,8 +81,8 @@ public class PublisherListFragment extends Fragment implements LoaderManager.Loa
 
             return new CursorLoader(
                     getActivity(),
-                    Contract.Publishers.CONTENT_URI,
-                    new String[]{Contract.Publishers.PUBLISHER_ID, Contract.Publishers.PUBLISHER_NAME},
+                    Contract.Libraries.CONTENT_URI,
+                    new String[]{Contract.Libraries.LIBRARY_ID, Contract.Libraries.LIBRARY_NAME},
                     selection,
                     selectionArgs,
                     null);
@@ -107,11 +111,11 @@ public class PublisherListFragment extends Fragment implements LoaderManager.Loa
     @Override
     public boolean requestSearch(String query) {
         searchQuery = query;
-        getActivity().getLoaderManager().restartLoader(MainActivity.PUBLISHER_LIST_LOADER, null, this);
+        getActivity().getLoaderManager().restartLoader(MainActivity.LIBRARY_LIST_LOADER, null, this);
         return true;
     }
 
-    private class PublishCursorAdapter extends RecyclerView.Adapter<PublishCursorAdapter.BindingHolder> {
+    private class LibraryAdapter extends RecyclerView.Adapter<LibraryAdapter.BindingHolder> {
 
         public class BindingHolder extends RecyclerView.ViewHolder {
 
@@ -120,8 +124,8 @@ public class PublisherListFragment extends Fragment implements LoaderManager.Loa
 
             public BindingHolder(View rowView) {
                 super(rowView);
-                image = (ImageView) rowView.findViewById(R.id.list_item_publisher_image);
-                text = (TextView) rowView.findViewById(R.id.list_item_publisher_name);
+                image = (ImageView) rowView.findViewById(R.id.list_item_library_image);
+                text = (TextView) rowView.findViewById(R.id.list_item_library_name);
             }
         }
 
@@ -134,21 +138,21 @@ public class PublisherListFragment extends Fragment implements LoaderManager.Loa
         @Override
         public BindingHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            return new BindingHolder(inflater.inflate(R.layout.list_item_publisher, parent, false));
+            return new BindingHolder(inflater.inflate(R.layout.list_item_library, parent, false));
         }
 
         @Override
         public void onBindViewHolder(BindingHolder holder, int position) {
             mCursor.moveToPosition(position);
-            final Publisher publisher = new Publisher(mCursor);
+            final Library library = new Library(mCursor);
 
-            holder.text.setText(TextUtils.isEmpty(publisher.name) ? getString(R.string.publisher_unknown) : publisher.name);
+            holder.text.setText(TextUtils.isEmpty(library.name) ? getString(R.string.library_unknown) : library.name);
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), PublisherDetailActivity.class);
-                    intent.putExtra(PublisherDetailActivity.EXTRA_PUBLISHER_ID, publisher.id);
+                    Intent intent = new Intent(getActivity(), LibraryDetailActivity.class);
+                    intent.putExtra(LibraryDetailActivity.EXTRA_LIBRARY_ID, library.id);
                     startActivity(intent);
                 }
             });

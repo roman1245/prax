@@ -43,6 +43,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import xyz.kandrac.barcode.BarcodeActivity;
+import xyz.kandrac.library.fragments.SettingsFragment;
 import xyz.kandrac.library.model.Contract;
 import xyz.kandrac.library.model.DatabaseStoreUtils;
 import xyz.kandrac.library.model.obj.Author;

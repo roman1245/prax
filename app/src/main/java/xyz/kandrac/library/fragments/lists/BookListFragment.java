@@ -1,4 +1,4 @@
-package xyz.kandrac.library;
+package xyz.kandrac.library.fragments.lists;
 
 import android.app.Fragment;
 import android.content.Intent;
@@ -15,6 +15,10 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import xyz.kandrac.library.EditBookActivity;
+import xyz.kandrac.library.MainActivity;
+import xyz.kandrac.library.R;
+import xyz.kandrac.library.Searchable;
 import xyz.kandrac.library.utils.BookCursorAdapter;
 
 /**

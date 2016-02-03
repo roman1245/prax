@@ -1,10 +1,13 @@
-package xyz.kandrac.library;
+package xyz.kandrac.library.fragments;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+
+import xyz.kandrac.library.MainActivity;
+import xyz.kandrac.library.R;
 
 /**
  * Created by kandrac on 15/12/15.

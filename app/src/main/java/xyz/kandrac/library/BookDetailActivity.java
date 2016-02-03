@@ -42,6 +42,7 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import xyz.kandrac.library.fragments.SettingsFragment;
 import xyz.kandrac.library.model.Contract;
 import xyz.kandrac.library.utils.DateUtils;
 import xyz.kandrac.library.utils.LogUtils;

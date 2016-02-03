@@ -1,4 +1,4 @@
-package xyz.kandrac.library;
+package xyz.kandrac.library.fragments.lists;
 
 import android.app.Fragment;
 import android.app.LoaderManager;
@@ -21,6 +21,10 @@ import android.widget.TextView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import xyz.kandrac.library.AuthorDetailActivity;
+import xyz.kandrac.library.MainActivity;
+import xyz.kandrac.library.R;
+import xyz.kandrac.library.Searchable;
 import xyz.kandrac.library.model.Contract;
 import xyz.kandrac.library.model.obj.Author;
 
@@ -29,11 +33,11 @@ import xyz.kandrac.library.model.obj.Author;
  * {@link xyz.kandrac.library.model.Contract.Authors} table. List contains all
  * non-deleted authors and on clicking author line {@link AuthorDetailActivity}
  * starts. To see details about the UI please reffer to
- * {@link xyz.kandrac.library.AuthorListFragment.AuthorCursorAdapter}
+ * {@link AuthorBooksListFragment.AuthorCursorAdapter}
  * <p/>
  * Created by kandrac on 22/10/15.
  */
-public class AuthorListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, Searchable {
+public class AuthorBooksListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, Searchable {
 
     private AuthorCursorAdapter mAdapter;
 
@@ -123,7 +127,7 @@ public class AuthorListFragment extends Fragment implements LoaderManager.Loader
     private class AuthorCursorAdapter extends RecyclerView.Adapter<AuthorCursorAdapter.BindingHolder> {
 
         /**
-         * ViewHolder for {@link xyz.kandrac.library.AuthorListFragment.AuthorCursorAdapter}'s
+         * ViewHolder for {@link AuthorBooksListFragment.AuthorCursorAdapter}'s
          * list items.
          */
         public class BindingHolder extends RecyclerView.ViewHolder {

@@ -1,4 +1,4 @@
-package xyz.kandrac.library;
+package xyz.kandrac.library.fragments;
 
 import android.app.Fragment;
 import android.content.Context;
@@ -17,6 +17,8 @@ import android.view.ViewGroup;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import xyz.kandrac.library.AuthorDetailActivity;
+import xyz.kandrac.library.R;
 import xyz.kandrac.library.utils.BookCursorAdapter;
 
 /**

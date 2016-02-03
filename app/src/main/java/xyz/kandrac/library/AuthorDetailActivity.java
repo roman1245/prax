@@ -15,6 +15,7 @@ import android.view.MenuItem;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import xyz.kandrac.library.fragments.AuthorDetailFragment;
 import xyz.kandrac.library.model.Contract;
 
 /**

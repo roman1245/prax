@@ -1,4 +1,4 @@
-package xyz.kandrac.library;
+package xyz.kandrac.library.fragments;
 
 import android.app.DialogFragment;
 import android.os.Bundle;
@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import xyz.kandrac.library.R;
 
 /**
  * This is the dialog that should be displayed when user requests for About page.
@@ -18,7 +20,7 @@ import android.view.ViewGroup;
  * <p/>
  * Created by VizGhar on 19.10.2015.
  */
-public class AboutDialog extends DialogFragment {
+public class AboutDialogFragment extends DialogFragment {
 
     @Nullable
     @Override
