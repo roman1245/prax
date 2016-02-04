@@ -25,6 +25,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
@@ -36,13 +37,18 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Callback;
+import retrofit2.Response;
 import xyz.kandrac.barcode.BarcodeActivity;
+import xyz.kandrac.library.api.RetrofitConfig;
+import xyz.kandrac.library.api.google.BooksResponse;
 import xyz.kandrac.library.fragments.SettingsFragment;
 import xyz.kandrac.library.model.Contract;
 import xyz.kandrac.library.model.DatabaseStoreUtils;
@@ -279,6 +285,34 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                             mTitleEdit.setText(title);
                             mAuthorEdit.setText(authors);
                             mPublisherEdit.setText(publisher);
+                        } else {
+
+                            RetrofitConfig.getInstance().getBooksApi().getBookByIsbn("isbn:" + barcode).enqueue(new Callback<BooksResponse>() {
+                                @Override
+                                public void onResponse(Response<BooksResponse> response) {
+
+                                    if (response.isSuccess()) {
+                                        BooksResponse books = response.body();
+                                        if (books.books != null && books.books.length > 0) {
+                                            BooksResponse.Book.VolumeInfo info = books.books[0].volumeInfo;
+                                            if (info == null) {
+                                                return;
+                                            }
+
+                                            mTitleEdit.setText(info.title);
+                                            mSubtitleEdit.setText(info.subtitle);
+                                            mAuthorEdit.setText(Arrays.toString(info.authors));
+                                            mPublisherEdit.setText(info.publisher);
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Throwable t) {
+                                    t.printStackTrace();
+                                    Log.e("jano", "chyba", t);
+                                }
+                            });
                         }
 
                         if (result != null) {
