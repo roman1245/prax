@@ -94,12 +94,10 @@
     <string name="notification_book_borrowed_reminder_message">Check the books you borrowed</string>
 
     <!-- Preferences -->
-    <string name="preferences_notifications_category">Notifications</string>
-    <string name="preferences_notifications_borrowed_title">Notifications about books you borrowed</string>
-    <string name="preferences_notifications_borrowed_set">Notify me about the book I borrowed in %s days.</string>
     <string name="preferences_libraries_category">Libraries</string>
     <string name="preferences_libraries_enabled_title">Allow multiple libraries</string>
     <string name="preferences_libraries_enabled_description">Marking this will allow you to add a book to individual libraries</string>
     <string name="preferences_libraries_default_name_title">Default library</string>
     <string name="preferences_libraries_default_name_description">Default library title to which new books will be automatically added</string>
+
 </resources>

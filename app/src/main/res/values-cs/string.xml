@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Application texts -->
+    <string name="app_name">Knihovna</string>
+
+    <!-- General errors and messages -->
+    <string name="unexpected_error_occurs">Došlo k neočekávané chybě</string>
+    <!-- General formatting strings -->
+    <string name="format_book_title_subtitle">%1$s: %2$s</string>
+
+
+    <string name="title_add_new_book">Nová kniha</string>
+    <string name="title_edit_book">Úprava knihy</string>
+
+    <!-- Optimization -->
+    <string name="dialog_image_optimization_title">Optimalizuji aplikaci</string>
+    <string name="dialog_image_optimization_message">Optimalizuji velikost obrázků uvnitř aplikace</string>
+
+    <!-- Action strings (mostly used in Toolbar) -->
+    <string name="action_save">Uložit</string>
+    <string name="action_edit">Upravit</string>
+    <string name="action_delete">Vymazat</string>
+    <string name="action_borrow">Půjčit</string>
+    <string name="action_search">Hledat</string>
+    <string name="action_ok">OK</string>
+    <string name="action_cancel">Zrušit</string>
+
+    <!-- Placeholders -->
+    <string name="author_unknown">Neznámý autor</string>
+    <string name="publisher_unknown">Neznámý vydavatel</string>
+    <string name="library_unknown">Neznámá knihovna</string>
+
+    <!-- Basic Image Content descriptors -->
+    <string name="book_list_item">Kniha</string>
+    <string name="author_list_item">Autor</string>
+    <string name="parallax_cover">obrázek</string>
+
+    <!-- List Empty Descriptors -->
+    <string name="book_list_empty">Seznam knih je zatím prázdný. Pro přidání nových knih stiskni tlačítko + v pravém dolním rohu nebo si viz další možnosti v postranním menu, které otevřeš vlevo nahoře.</string>
+    <string name="book_borrowed_list_empty">Seznam půjčených knih je zatím prázdný. Pro vypůjčení knih vyber knihu ze seznamu knih a stiskni tlačítko pro půjčování.</string>
+    <string name="author_list_empty">Seznam autorů je zatím prázdný. První autoři se zobrazí s prvním přidáním knihy.</string>
+    <string name="publisher_list_empty">Seznam vydavatelů je zatím prázdný. První vydavatelé se zobrazí s prvním přidáním knihy.</string>
+    <string name="library_list_empty">Seznam knihoven je zatím prázdný. První knihovna se zobrazí při prvním přidání knihy.</string>
+
+    <!-- Edit/Input Book Screen -->
+    <string name="edit_book_author">Autor</string>
+    <string name="edit_book_publisher">Vydavatel</string>
+    <string name="edit_book_library">Knihovna (Domov, Koleje, …)</string>
+    <string name="edit_book_title">Název Knihy</string>
+    <string name="edit_book_subtitle">Podtitulek knihy</string>
+    <string name="edit_book_isbn">ISBN</string>
+    <string name="edit_book_scan">Skenovat</string>
+    <string name="edit_book_description">Popis</string>
+    <string name="edit_book_info">Základní informace o knize</string>
+    <string name="edit_book_cover">Obálka Knihy</string>
+    <string name="edit_book_take_photo_permission">Potřebujeme od vás povolení pro focení a ukládání fotografií do vašeho telefonu</string>
+    <string name="edit_book_barcode_permission">Chcete-li skenovat čárový kód budeme potřebovat vaše povolení</string>
+    <string name="edit_book_no_permission">Bez těchto oprávnění nemůžeme pokračovat. Chcete-li změnit oprávnění učiňte tak v Nastavení telefonu.</string>
+    <string name="edit_book_no_permission_title">Chybějící oprávnění</string>
+
+    <!-- Navigation menu items -->
+    <string name="menu_books">Knihy</string>
+    <string name="menu_books_mine">Moje knihy</string>
+    <string name="menu_books_borrowed">Půjčené knihy</string>
+    <string name="menu_authors">Autoři</string>
+    <string name="menu_publishers">Vydavatelé</string>
+    <string name="menu_libraries">Knihovny</string>
+    <string name="menu_settings">Nastavení</string>
+    <string name="menu_settings_about">O Aplikaci</string>
+    <string name="menu_books_wish_list">Seznam přání</string>
+    <string name="soon">Již brzy…</string>
+    <string name="navigation_head">Hlavní navigace</string>
+    <!-- About -->
+    <string name="about_title">O aplikaci</string>
+    <string name="about_producer">Ján Kandráč</string>
+	<string name="about_text">Tato aplikace vznikla jako alternativa k mnoha aplikacím, které se věnují zpracovaní záznamů o papírových knihách.
+        Žádná aplikace mě nedokázala oslovit natolik abych při nich zůstal. Bylo v nich několik problémů od nepěkného nebo dokonce nepoužitelného
+        prostředí, přes nemožnost kategorizace, hromadného vkládání nebo zálohování.
+
+Aplikace jako jí vidíte teď je pouze ve svých začátcích a mnoho ze jmenovaných funkcí samanemá.
+        Je však od začátku připravená na to, aby vám poskytla maximální možnost využit její funkcí.</string>
+
+    <!-- Dialog Actions -->
+    <string name="dialog_book_delete_title">Smazat knihu</string>
+    <string name="dialog_book_delete_message">Opravdu chcete smazat tuto knihu?</string>
+    <string name="dialog_author_delete_title">Smazat autora</string>
+    <string name="dialog_author_delete_message">Opravdu chcete smazat tohoto autora i všechny knihy které napsal?</string>
+    <string name="dialog_publisher_delete_title">Smazat vydavatele</string>
+    <string name="dialog_publisher_delete_message">Opravdu chcete smazat tohoto vydavatele i všechny knihy které napsal?</string>
+    <string name="dialog_library_delete_title">Smazat knihovnu</string>
+    <string name="dialog_library_delete_message">Opravdu chcete smazat tuto knihovnu i všechny knihy v ní?</string>
+    <string name="dialog_return_book_title">Vrácení knihy</string>
+    <string name="dialog_return_book_message">XY si od tebe půjčil/a knihu dne % 2 $ s. Co chcete s knihou udělat?</string>
+    <string name="dialog_return_book_positive">Vrátit knihu</string>
+
+    <!-- Notification strings -->
+    <string name="notification_book_borrowed_reminder_title">Připomenutí zapůjčení knihy</string>
+    <string name="notification_book_borrowed_reminder_message">Zkontroluj si své půjčené knihy</string>
+
+    <!-- Preferences -->
+    <string name="preferences_libraries_category">Knihovny</string>
+    <string name="preferences_libraries_enabled_title">Povolit několik knihoven</string>
+    <string name="preferences_libraries_enabled_description">Po zatržení budeš moci přiřadit knížku do samostatných knihoven</string>
+    <string name="preferences_libraries_default_name_title">Výchozí knihovna</string>
+    <string name="preferences_libraries_default_name_description">Výchozí název knihovny, do které se budou knihy přidávat</string>
+
+</resources>
