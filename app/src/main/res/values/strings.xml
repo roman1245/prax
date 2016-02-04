@@ -4,8 +4,7 @@
     <string name="app_name">Library</string>
 
     <!-- General errors and messages -->
-    <string name="unexpected_error_occurs">An unexpected error occurs</string>
-
+    <string name="unexpected_error_occurs">Unexpected error occurred</string>
     <!-- General formatting strings -->
     <string name="format_book_title_subtitle">%1$s: %2$s</string>
 
@@ -14,116 +13,93 @@
     <string name="title_edit_book">Edit Book</string>
 
     <!-- Optimization -->
-    <string name="dialog_image_optimization_title">Optimizing app</string>
-    <string name="dialog_image_optimization_message">Optimizing image sizes inside application</string>
+    <string name="dialog_image_optimization_title">Optimizing the application</string>
+    <string name="dialog_image_optimization_message">Optimizing the size of images used in the application</string>
 
     <!-- Action strings (mostly used in Toolbar) -->
     <string name="action_save">Save</string>
     <string name="action_edit">Edit</string>
-    <string name="action_borrow">Borrow</string>
     <string name="action_delete">Delete</string>
+    <string name="action_borrow">Borrow</string>
     <string name="action_search">Search</string>
     <string name="action_ok">OK</string>
     <string name="action_cancel">Cancel</string>
 
     <!-- Placeholders -->
-    <string name="author_unknown">Unknown Author</string>
-    <string name="publisher_unknown">Unknown Publisher</string>
-    <string name="library_unknown">Unknown Library</string>
-    <string name="parallax_cover">Cover</string>
+    <string name="author_unknown">Author unknown</string>
+    <string name="publisher_unknown">Publisher unknown</string>
+    <string name="library_unknown">Library unknown</string>
 
     <!-- Basic Image Content descriptors -->
-    <string name="book_list_item">Book Item</string>
-    <string name="author_list_item">Book Item</string>
+    <string name="book_list_item">Book</string>
+    <string name="author_list_item">Author</string>
+    <string name="parallax_cover">Image</string>
 
     <!-- List Empty Descriptors -->
-    <string name="book_list_empty">Book list is empty so far.\nTo add new book press the + buton in bottom right corner or take a look at other options in side menu, that can be opened from top left.</string>
-    <string name="book_borrowed_list_empty">Borrowed book list is empty so far.\nTo borrow book select book from book list and press borrow button.</string>
-    <string name="author_list_empty">Author list is empty so far.\nFirst authors will appear beside first book addition.</string>
-    <string name="publisher_list_empty">Publisher list is empty so far.\nFirst publishers will appear beside first book addition.</string>
-    <string name="library_list_empty">Library list is empty so far.\nFirst library will appear beside first book addition.</string>
+    <string name="book_list_empty">The book list is currently empty.\nTo add new book, tap the + button located right, at the bottom of the screen or check the menu using the icon located left, at the upper part of the screen, for other options.</string>
+    <string name="book_borrowed_list_empty">The list of borrowed books is currently empty. \nTo borrow a book, choose a particular book from your list and tap button for borrowing</string>
+    <string name="author_list_empty">The list of authors is currently empty. \nAuthors will appear with the addition of the first book.</string>
+    <string name="publisher_list_empty">The list of publishers is currently empty. \nPublishers will appear with the addition of the first book.</string>
+    <string name="library_list_empty">the library list is currently empty. Libraries will appear with the addition of the first book.</string>
 
     <!-- Edit/Input Book Screen -->
     <string name="edit_book_author">Author</string>
     <string name="edit_book_publisher">Publisher</string>
-    <string name="edit_book_library">Library (Home, Hostel, &#8230;)</string>
+    <string name="edit_book_library">Library (Home, College…)</string>
     <string name="edit_book_title">Book Title</string>
-    <string name="edit_book_subtitle">Book Subtitle</string>
+    <string name="edit_book_subtitle">Additional Title</string>
     <string name="edit_book_isbn">ISBN</string>
     <string name="edit_book_scan">Scan</string>
     <string name="edit_book_description">Description</string>
-
-    <string name="edit_book_info">Basic book info</string>
-    <string name="edit_book_cover">Book Cover</string>
-    <string name="edit_book_take_photo_permission">We need your permission to take a photo and store it on your phone</string>
-    <string name="edit_book_barcode_permission">If you want to scan barcode we will need your permission to use camera</string>
-
-    <string name="edit_book_no_permission">We can\'t continue without those permissions. If you want to change them you can do so in your phone Settings.</string>
-    <string name="edit_book_no_permission_title">Missing permissions</string>
-
-    <!-- Book Details Screen -->
-    <string name="book_detail_full_title">Book title:</string>
-    <string name="book_detail_authors">Authors:</string>
-    <string name="book_detail_publisher">Publisher:</string>
-    <string name="book_detail_library">Library:</string>
-    <string name="book_detail_isbn">ISBN/barcode:</string>
-
-    <!-- Book Borrow Texts -->
-    <string name="borrow_wrong_input">Please input number of days</string>
-    <string name="borrow_title">Borrow book</string>
-    <string name="borrow_message">Set in how many days you want to be notified about borrowed book</string>
+    <string name="edit_book_info">Basic book information</string>
+    <string name="edit_book_cover">Cover</string>
+    <string name="edit_book_take_photo_permission">We need your permission to use your camera device to take and store pictures into your phone</string>
+    <string name="edit_book_barcode_permission">We need your permission scan the barcode</string>
+    <string name="edit_book_no_permission">We cannot continue without these permissions. If you wish to change the restrictions, access the phone settings to do so</string>
+    <string name="edit_book_no_permission_title">Permissions are missing</string>
 
     <!-- Navigation menu items -->
     <string name="menu_books">Books</string>
-    <string name="menu_books_mine">My Books</string>
-    <string name="menu_books_borrowed">Borrowed Books</string>
+    <string name="menu_books_mine">My books</string>
+    <string name="menu_books_borrowed">Books I borrowed</string>
     <string name="menu_authors">Authors</string>
     <string name="menu_publishers">Publishers</string>
     <string name="menu_libraries">Libraries</string>
     <string name="menu_settings">Settings</string>
     <string name="menu_settings_about">About</string>
     <string name="menu_books_wish_list">Wishlist</string>
-    <string name="soon">Soon…</string>
-    <string name="navigation_head">Main Navigation</string>
+    <string name="soon">Coming soon…</string>
+    <string name="navigation_head">Main navigation</string>
 
     <!-- About -->
-    <string name="about_title">About application</string>
+    <string name="about_title">About</string>
     <string name="about_producer">Ján Kandráč</string>
-    <string name="about_text">This application came as alternative to many Library applications. I\'m
-        talking about Library with paper books hold in your private or public library. There is no
-        application that matched my needs so I created this one.\n\n
-
-        Currently application is just at the beginning, therefor many of intended functionalities are
-        not present in it yet. I\'m planning to create beautiful user experience, add book categorization,
-        bulk inserting, backup functionality and some more.\n\n
-
-        Hope You are the one that finds this application useful.</string>
+    <string name="about_text">This application has been created as an alternative to various applications that are dedicated to handling data and information about paper-made books. None of the applications I encountered so far could attract me enough to stick with it. There were multiple issues - from not very pleasant or even user unfriendly interface to the inability to categorize, make bulk updates or backup alone. The application, as you can see it now, is in its beginnings and many of the options mentioned above are not yet present. However, from its very start is prepared to offer you the maximum use of its functionalities.</string>
 
     <!-- Dialog Actions -->
-    <string name="dialog_book_delete_title">Delete Book</string>
+    <string name="dialog_book_delete_title">Delete book</string>
     <string name="dialog_book_delete_message">Are you sure you want to delete this book?</string>
-
-    <string name="dialog_author_delete_title">Delete Author</string>
-    <string name="dialog_author_delete_message">Are you sure you want to delete this author and all the books he wrote?</string>
-
-    <string name="dialog_publisher_delete_title">Delete Publisher</string>
-    <string name="dialog_publisher_delete_message">Are you sure you want to delete this publisher and all the books he published?</string>
-
+    <string name="dialog_author_delete_title">Delete author</string>
+    <string name="dialog_author_delete_message">Are you sure you want to delete this author? All books written by this author will be deleted as well.</string>
+    <string name="dialog_publisher_delete_title">Delete publisher</string>
+    <string name="dialog_publisher_delete_message">Are you sure you want to delete this publisher? All books by this publisher will be deleted as well.</string>
     <string name="dialog_library_delete_title">Delete Library</string>
-    <string name="dialog_library_delete_message">Are you sure you want to delete this library and all the books from it?</string>
-
-    <string name="dialog_return_book_title">Book Return</string>
-    <string name="dialog_return_book_message">%1$s has borrowed the book from you in %2$s. What would you like to do with this book?</string>
+    <string name="dialog_library_delete_message">Are you sure you want to delete this library? All books inside this library will be deleted as well.</string>
+    <string name="dialog_return_book_title">Book return</string>
+    <string name="dialog_return_book_message">%1$s borrowed this book from you on %2$s. What would you like to do with this book next?</string>
     <string name="dialog_return_book_positive">Return book</string>
 
     <!-- Notification strings -->
-    <string name="notification_book_borrowed_reminder_title">Book borrowed reminder</string>
-    <string name="notification_book_borrowed_reminder_message">Please check your borrowed books</string>
+    <string name="notification_book_borrowed_reminder_title">Notification about borrowing a book</string>
+    <string name="notification_book_borrowed_reminder_message">Check the books you borrowed</string>
 
     <!-- Preferences -->
+    <string name="preferences_notifications_category">Notifications</string>
+    <string name="preferences_notifications_borrowed_title">Notifications about books you borrowed</string>
+    <string name="preferences_notifications_borrowed_set">Notify me about the book I borrowed in %s days.</string>
     <string name="preferences_libraries_category">Libraries</string>
-    <string name="preferences_libraries_enabled_title">Enable multiple libraries</string>
-    <string name="preferences_libraries_enabled_description">If checked you will be able to assign books to one of your libraries</string>
+    <string name="preferences_libraries_enabled_title">Allow multiple libraries</string>
+    <string name="preferences_libraries_enabled_description">Marking this will allow you to add a book to individual libraries</string>
     <string name="preferences_libraries_default_name_title">Default library</string>
-    <string name="preferences_libraries_default_name_description">Default library name to which books are assigned if name is not set</string>
+    <string name="preferences_libraries_default_name_description">Default library title to which new books will be automatically added</string>
 </resources>
