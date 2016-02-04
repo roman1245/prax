@@ -5,6 +5,7 @@
 
     <!-- General errors and messages -->
     <string name="unexpected_error_occurs">Unexpected error occurred</string>
+
     <!-- General formatting strings -->
     <string name="format_book_title_subtitle">%1$s: %2$s</string>
 
@@ -51,12 +52,26 @@
     <string name="edit_book_isbn">ISBN</string>
     <string name="edit_book_scan">Scan</string>
     <string name="edit_book_description">Description</string>
+
     <string name="edit_book_info">Basic book information</string>
     <string name="edit_book_cover">Cover</string>
     <string name="edit_book_take_photo_permission">We need your permission to use your camera device to take and store pictures into your phone</string>
     <string name="edit_book_barcode_permission">We need your permission scan the barcode</string>
+
     <string name="edit_book_no_permission">We cannot continue without these permissions. If you wish to change the restrictions, access the phone settings to do so</string>
     <string name="edit_book_no_permission_title">Permissions are missing</string>
+
+    <!-- Book Details Screen -->
+    <string name="book_detail_full_title">Book Title:</string>
+    <string name="book_detail_authors">Authors:</string>
+    <string name="book_detail_publisher">Publisher:</string>
+    <string name="book_detail_library">Library:</string>
+    <string name="book_detail_isbn">ISBN/barcode:</string>
+
+    <!-- Book Borrow Texts -->
+    <string name="borrow_wrong_input">Please, insert the time of expected notification</string>
+    <string name="borrow_title">Borrow book</string>
+    <string name="borrow_message">Select the number of days after which you wish to be notified about the borrowed book. If the book is returned earlier, the notification will be cancelled.</string>
 
     <!-- Navigation menu items -->
     <string name="menu_books">Books</string>
@@ -74,17 +89,28 @@
     <!-- About -->
     <string name="about_title">About</string>
     <string name="about_producer">Ján Kandráč</string>
-    <string name="about_text">This application has been created as an alternative to various applications that are dedicated to handling data and information about paper-made books. None of the applications I encountered so far could attract me enough to stick with it. There were multiple issues - from not very pleasant or even user unfriendly interface to the inability to categorize, make bulk updates or backup alone. The application, as you can see it now, is in its beginnings and many of the options mentioned above are not yet present. However, from its very start is prepared to offer you the maximum use of its functionalities.</string>
+    <string name="about_text">This application has been created as an alternative to various applications
+        that are dedicated to handling data and information about paper-made books.
+        None of the applications I encountered so far could attract me enough to stick with it.
+        There were multiple issues - from not very pleasant or even user unfriendly interface to the inability to categorize,
+        make bulk updates or backup alone.
+
+        The application, as you can see it now, is in its beginnings and many of the options mentioned above are not yet present.
+        However, from its very start is prepared to offer you the maximum use of its functionalities.</string>
 
     <!-- Dialog Actions -->
     <string name="dialog_book_delete_title">Delete book</string>
     <string name="dialog_book_delete_message">Are you sure you want to delete this book?</string>
+
     <string name="dialog_author_delete_title">Delete author</string>
     <string name="dialog_author_delete_message">Are you sure you want to delete this author? All books written by this author will be deleted as well.</string>
+
     <string name="dialog_publisher_delete_title">Delete publisher</string>
     <string name="dialog_publisher_delete_message">Are you sure you want to delete this publisher? All books by this publisher will be deleted as well.</string>
+
     <string name="dialog_library_delete_title">Delete Library</string>
     <string name="dialog_library_delete_message">Are you sure you want to delete this library? All books inside this library will be deleted as well.</string>
+
     <string name="dialog_return_book_title">Book return</string>
     <string name="dialog_return_book_message">%1$s borrowed this book from you on %2$s. What would you like to do with this book next?</string>
     <string name="dialog_return_book_positive">Return book</string>

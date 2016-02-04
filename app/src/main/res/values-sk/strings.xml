@@ -44,7 +44,7 @@
     <string name="library_list_empty">Zoznam knižníc je zatiaľ prázdny.\nPrvá knižnica sa zobrazí pri prvom pridaní knihy.</string>
 
     <!-- Edit/Input Book Screen -->
-    <string name="edit_book_author">Autor</string>
+    <string name="edit_book_author">Autori</string>
     <string name="edit_book_publisher">Vydavateľ</string>
     <string name="edit_book_library">Knižnica (Domov, Internát, &#8230;)</string>
     <string name="edit_book_title">Názov Knihy</string>
@@ -69,9 +69,9 @@
     <string name="book_detail_isbn">ISBN/čiarový kód:</string>
 
     <!-- Book Borrow Texts -->
-    <string name="borrow_wrong_input">Prosím zadaj kedy sa ti má kniha vrátiť</string>
-    <string name="borrow_title">Požičať knihu</string>
-    <string name="borrow_message">O koľko dní by sa ti mala kniha vrátiť?</string>
+    <string name="borrow_wrong_input">Prosím zadaj kedy ťa máme upozorniť</string>
+    <string name="borrow_title">Požičanie knihy</string>
+    <string name="borrow_message">Zadaj o koľko dní chceš dostať upozornenie o požičaní tejto knihy. Ak sa ti kniha stihne vrátiť skôr, upozornenie bude zrušené.</string>
 
     <!-- Navigation menu items -->
     <string name="menu_books">Knihy</string>
@@ -89,14 +89,14 @@
     <!-- About -->
     <string name="about_title">O aplikácii</string>
     <string name="about_producer">Ján Kandráč</string>
-    <string name="about_text">Táto aplikácia vznikla ako alternatíva k viacerým aplikáciam, ktoré sa
-        venujú spracovaniu záznamov o knihách. Žiadna z aplikácií ma nedokázala osloviť
-    natoľko aby som sa rozhodol pri nej ostať. Problémov bolo viacero, od nie najkrajšieho či dokonca
-    nepoužiteľného prostredia, cez nemožnosť kategorizácie, hromadného vkladania, či zálohovania.
+    <string name="about_text">Táto aplikácia vznikla ako alternatíva k viacerým aplikáciam,
+        ktoré sa venujú spracovaniu záznamov o knihách.
+        Žiadna aplikácia ma nedokázala osloviť natoľko aby som sa rozhodol pri nej ostať.
+        Problémov bolo viacero, od nie najkrajšieho či dokonca
+        nepoužiteľného prostredia, cez nemožnosť kategorizácie, hromadného vkladania, či zálohovania.
 
-    Aplikácia ako ju vidíte teraz je len vo svojich začiatkoch a viacero spomenutých funkcií sama
-    nemá. Vznikla ako hobby a ako hobby sa bude aj naďalej rozvíjať. Ak máte akýkoľvek nápad, neváhajte
-    sa mi ozvať.</string>
+        Aplikácia ako ju vidíte teraz je len vo svojich začiatkoch a viacero spomenutých funkcií sama nemá.
+        Je však od začiatku pripravená na to, aby vám poskytla maximálnu možnosť využitia jej funkcií.</string>
 
     <!-- Dialog Actions -->
     <string name="dialog_book_delete_title">Vymazať knihu</string>

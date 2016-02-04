@@ -43,7 +43,7 @@
     <string name="library_list_empty">Seznam knihoven je zatím prázdný. První knihovna se zobrazí při prvním přidání knihy.</string>
 
     <!-- Edit/Input Book Screen -->
-    <string name="edit_book_author">Autor</string>
+    <string name="edit_book_author">Autoři</string>
     <string name="edit_book_publisher">Vydavatel</string>
     <string name="edit_book_library">Knihovna (Domov, Koleje, …)</string>
     <string name="edit_book_title">Název Knihy</string>
@@ -55,8 +55,21 @@
     <string name="edit_book_cover">Obálka Knihy</string>
     <string name="edit_book_take_photo_permission">Potřebujeme od vás povolení pro focení a ukládání fotografií do vašeho telefonu</string>
     <string name="edit_book_barcode_permission">Chcete-li skenovat čárový kód budeme potřebovat vaše povolení</string>
+
     <string name="edit_book_no_permission">Bez těchto oprávnění nemůžeme pokračovat. Chcete-li změnit oprávnění učiňte tak v Nastavení telefonu.</string>
     <string name="edit_book_no_permission_title">Chybějící oprávnění</string>
+
+    <!-- Book Details Screen -->
+    <string name="book_detail_full_title">Název Knihy:</string>
+    <string name="book_detail_authors">Autoři:</string>
+    <string name="book_detail_publisher">Vydavatel:</string>
+    <string name="book_detail_library">Knihovna:</string>
+    <string name="book_detail_isbn">ISBN:</string>
+
+    <!-- Book Borrow Texts -->
+    <string name="borrow_wrong_input">Prosím zadej kdy tě máme upozornit</string>
+    <string name="borrow_title">Půjčení knihy</string>
+    <string name="borrow_message">Zadej do kolik dnů chceš dostat upozornění o půjčení této knihy. Pokud se ti kniha vrátí dříve, upozornění bude zrušeno.</string>
 
     <!-- Navigation menu items -->
     <string name="menu_books">Knihy</string>
@@ -73,11 +86,13 @@
     <!-- About -->
     <string name="about_title">O aplikaci</string>
     <string name="about_producer">Ján Kandráč</string>
-	<string name="about_text">Tato aplikace vznikla jako alternativa k mnoha aplikacím, které se věnují zpracovaní záznamů o papírových knihách.
-        Žádná aplikace mě nedokázala oslovit natolik abych při nich zůstal. Bylo v nich několik problémů od nepěkného nebo dokonce nepoužitelného
+	<string name="about_text">Tato aplikace vznikla jako alternativa k mnoha aplikacím,
+        které se věnují zpracovaní záznamů o knihách.
+        Žádná aplikace mě nedokázala oslovit natolik abych při nich zůstal.
+        Bylo v nich několik problémů od nepěkného nebo dokonce nepoužitelného
         prostředí, přes nemožnost kategorizace, hromadného vkládání nebo zálohování.
 
-Aplikace jako jí vidíte teď je pouze ve svých začátcích a mnoho ze jmenovaných funkcí samanemá.
+        Aplikace jako jí vidíte teď je pouze ve svých začátcích a mnoho ze jmenovaných funkcí sama nemá.
         Je však od začátku připravená na to, aby vám poskytla maximální možnost využit její funkcí.</string>
 
     <!-- Dialog Actions -->
