@@ -79,21 +79,12 @@
     <string name="menu_publishers">Vydavatelé</string>
     <string name="menu_libraries">Knihovny</string>
     <string name="menu_settings">Nastavení</string>
-    <string name="menu_settings_about">O Aplikaci</string>
     <string name="menu_books_wish_list">Seznam přání</string>
     <string name="soon">Již brzy…</string>
     <string name="navigation_head">Hlavní navigace</string>
     <!-- About -->
     <string name="about_title">O aplikaci</string>
     <string name="about_producer">Ján Kandráč</string>
-	<string name="about_text">Tato aplikace vznikla jako alternativa k mnoha aplikacím,
-        které se věnují zpracovaní záznamů o knihách.
-        Žádná aplikace mě nedokázala oslovit natolik abych při nich zůstal.
-        Bylo v nich několik problémů od nepěkného nebo dokonce nepoužitelného
-        prostředí, přes nemožnost kategorizace, hromadného vkládání nebo zálohování.
-
-        Aplikace jako jí vidíte teď je pouze ve svých začátcích a mnoho ze jmenovaných funkcí sama nemá.
-        Je však od začátku připravená na to, aby vám poskytla maximální možnost využit její funkcí.</string>
 
     <!-- Dialog Actions -->
     <string name="dialog_book_delete_title">Smazat knihu</string>

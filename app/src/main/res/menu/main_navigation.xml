@@ -53,11 +53,6 @@
                     android:id="@+id/main_navigation_settings"
                     android:icon="@drawable/ic_settings"
                     android:title="@string/menu_settings" />
-
-                <item
-                    android:id="@+id/main_navigation_about"
-                    android:icon="@drawable/ic_information_outline"
-                    android:title="@string/menu_settings_about" />
             </menu>
         </item>
     </group>

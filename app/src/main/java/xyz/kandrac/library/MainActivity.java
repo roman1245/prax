@@ -24,12 +24,11 @@ import java.io.File;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import xyz.kandrac.library.fragments.AboutDialogFragment;
+import xyz.kandrac.library.fragments.SettingsFragment;
 import xyz.kandrac.library.fragments.lists.AuthorBooksListFragment;
 import xyz.kandrac.library.fragments.lists.BookListFragment;
 import xyz.kandrac.library.fragments.lists.LibraryBooksListFragment;
 import xyz.kandrac.library.fragments.lists.PublisherBooksListFragment;
-import xyz.kandrac.library.fragments.SettingsFragment;
 import xyz.kandrac.library.model.Contract;
 import xyz.kandrac.library.utils.DisplayUtils;
 import xyz.kandrac.library.utils.LogUtils;
@@ -237,11 +236,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      */
     private Fragment getFragmentToShow(final int menuItemId) {
         switch (menuItemId) {
-            case R.id.main_navigation_about:
-                // about dialog doesn't run any fragment only displays About dialog now
-                drawerLayout.closeDrawers();
-                new AboutDialogFragment().show(getFragmentManager(), null);
-                return null;
             case R.id.main_navigation_books:
                 return BookListFragment.getInstance();
             case R.id.main_navigation_borrowed:

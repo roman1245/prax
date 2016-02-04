@@ -81,7 +81,6 @@
     <string name="menu_publishers">Vydavatelia</string>
     <string name="menu_libraries">Knižnice</string>
     <string name="menu_settings">Nastavenia</string>
-    <string name="menu_settings_about">O Aplikácii</string>
     <string name="menu_books_wish_list">Wishlist</string>
     <string name="soon">Čoskoro…</string>
     <string name="navigation_head">Hlavná navigácia</string>
@@ -89,14 +88,6 @@
     <!-- About -->
     <string name="about_title">O aplikácii</string>
     <string name="about_producer">Ján Kandráč</string>
-    <string name="about_text">Táto aplikácia vznikla ako alternatíva k viacerým aplikáciam,
-        ktoré sa venujú spracovaniu záznamov o knihách.
-        Žiadna aplikácia ma nedokázala osloviť natoľko aby som sa rozhodol pri nej ostať.
-        Problémov bolo viacero, od nie najkrajšieho či dokonca
-        nepoužiteľného prostredia, cez nemožnosť kategorizácie, hromadného vkladania, či zálohovania.
-
-        Aplikácia ako ju vidíte teraz je len vo svojich začiatkoch a viacero spomenutých funkcií sama nemá.
-        Je však od začiatku pripravená na to, aby vám poskytla maximálnu možnosť využitia jej funkcií.</string>
 
     <!-- Dialog Actions -->
     <string name="dialog_book_delete_title">Vymazať knihu</string>
