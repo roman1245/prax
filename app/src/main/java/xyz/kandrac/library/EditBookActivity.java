@@ -24,10 +24,14 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FilterQueryProvider;
 import android.widget.ImageView;
@@ -42,7 +46,11 @@ import java.util.Locale;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Callback;
+import retrofit2.Response;
 import xyz.kandrac.barcode.BarcodeActivity;
+import xyz.kandrac.library.api.RetrofitConfig;
+import xyz.kandrac.library.api.google.BooksResponse;
 import xyz.kandrac.library.fragments.SettingsFragment;
 import xyz.kandrac.library.model.Contract;
 import xyz.kandrac.library.model.DatabaseStoreUtils;
@@ -54,6 +62,7 @@ import xyz.kandrac.library.snk.SnkContract;
 import xyz.kandrac.library.utils.BookCursorAdapter;
 import xyz.kandrac.library.utils.DisplayUtils;
 import xyz.kandrac.library.utils.LogUtils;
+import xyz.kandrac.library.utils.StringUtils;
 
 /**
  * Created by VizGhar on 11.10.2015.
@@ -115,6 +124,9 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     @Bind(R.id.book_input_isbn)
     EditText mIsbnEdit;
 
+    @Bind(R.id.book_input_scan)
+    Button mScanButton;
+
     @Bind(R.id.parallax_cover_image)
     ImageView mImageEdit;
 
@@ -158,6 +170,27 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         } else {
             setTitle(R.string.title_add_new_book);
         }
+
+        mIsbnEdit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (mIsbnEdit.getText().length() == 0) {
+                    mScanButton.setText(R.string.edit_book_scan);
+                } else {
+                    mScanButton.setText(R.string.edit_book_search);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         checkLibrariesPreferences();
 
@@ -260,6 +293,51 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         });
     }
 
+    private void searchIsbn(String barcode) {
+        Cursor result = getContentResolver().query(SnkContract.Books.getBookIsbnUri(barcode), null, null, null, null);
+        if (result != null && result.getCount() > 0 && result.moveToFirst()) {
+            String title = result.getString(result.getColumnIndex(SnkContract.Books.BOOK_TITLE));
+            String authors = result.getString(result.getColumnIndex(SnkContract.Books.BOOK_AUTHORS));
+            String publisher = result.getString(result.getColumnIndex(SnkContract.Books.BOOK_PUBLISHER));
+
+            mTitleEdit.setText(title);
+            mAuthorEdit.setText(authors);
+            mPublisherEdit.setText(publisher);
+        } else {
+
+            RetrofitConfig.getInstance().getBooksApi().getBookByIsbn("isbn:" + barcode).enqueue(new Callback<BooksResponse>() {
+                @Override
+                public void onResponse(Response<BooksResponse> response) {
+
+                    if (response.isSuccess()) {
+                        BooksResponse books = response.body();
+                        if (books.books != null && books.books.length > 0) {
+                            BooksResponse.Book.VolumeInfo info = books.books[0].volumeInfo;
+                            if (info == null) {
+                                return;
+                            }
+
+                            mTitleEdit.setText(info.title);
+                            mSubtitleEdit.setText(info.subtitle);
+                            mAuthorEdit.setText(StringUtils.arrayToString(info.authors));
+                            mPublisherEdit.setText(info.publisher);
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    t.printStackTrace();
+                    Log.e("jano", "chyba", t);
+                }
+            });
+        }
+
+        if (result != null) {
+            result.close();
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
@@ -269,21 +347,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                     if (data != null) {
                         String barcode = data.getStringExtra(BarcodeActivity.BARCODE_TEXT);
                         mIsbnEdit.setText(barcode);
-
-                        Cursor result = getContentResolver().query(SnkContract.Books.getBookIsbnUri(barcode), null, null, null, null);
-                        if (result != null && result.getCount() > 0 && result.moveToFirst()) {
-                            String title = result.getString(result.getColumnIndex(SnkContract.Books.BOOK_TITLE));
-                            String authors = result.getString(result.getColumnIndex(SnkContract.Books.BOOK_AUTHORS));
-                            String publisher = result.getString(result.getColumnIndex(SnkContract.Books.BOOK_PUBLISHER));
-
-                            mTitleEdit.setText(title);
-                            mAuthorEdit.setText(authors);
-                            mPublisherEdit.setText(publisher);
-                        }
-
-                        if (result != null) {
-                            result.close();
-                        }
+                        searchIsbn(barcode);
                     }
                 }
                 break;
@@ -388,15 +452,19 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
     @OnClick(R.id.book_input_scan)
     public void scan(View view) {
-        int cameraPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
-        if (cameraPermission != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(
-                    view,
-                    R.string.edit_book_barcode_permission,
-                    PERMISSION_BARCODE,
-                    Manifest.permission.CAMERA);
+        if (mIsbnEdit.getText().length() == 0) {
+            int cameraPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+            if (cameraPermission != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(
+                        view,
+                        R.string.edit_book_barcode_permission,
+                        PERMISSION_BARCODE,
+                        Manifest.permission.CAMERA);
+            } else {
+                startActivityForResult(new Intent(this, BarcodeActivity.class), REQUEST_BARCODE);
+            }
         } else {
-            startActivityForResult(new Intent(this, BarcodeActivity.class), REQUEST_BARCODE);
+            searchIsbn(mIsbnEdit.getText().toString());
         }
     }
 

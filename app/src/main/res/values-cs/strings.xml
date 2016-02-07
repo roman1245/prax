@@ -50,6 +50,7 @@
     <string name="edit_book_subtitle">Podtitulek knihy</string>
     <string name="edit_book_isbn">ISBN</string>
     <string name="edit_book_scan">Skenovat</string>
+    <string name="edit_book_search">Hledat</string>
     <string name="edit_book_description">Popis</string>
     <string name="edit_book_info">Základní informace o knize</string>
     <string name="edit_book_cover">Obálka Knihy</string>
