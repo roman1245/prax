@@ -104,6 +104,8 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
     private static final String[] PROJECTION = new String[]{
             Database.Tables.BOOKS + "." + Contract.Books.BOOK_ID,
             Contract.Books.BOOK_TITLE,
+            Contract.Books.BOOK_WISH_LIST,
+            Contract.Books.BOOK_BORROWED,
             Contract.Books.BOOK_IMAGE_FILE,
             DatabaseUtils.getConcat(Contract.Authors.AUTHOR_NAME, Contract.ConcatAliases.AUTHORS_CONCAT_ALIAS)};
 
@@ -205,12 +207,16 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
         private ImageView image;
         private TextView title;
         private TextView subtitle;
+        private ImageView wishList;
+        private ImageView borrowed;
 
         public ViewHolder(View rowView) {
             super(rowView);
             image = (ImageView) rowView.findViewById(R.id.list_item_book_image);
             title = (TextView) rowView.findViewById(R.id.list_item_book_title);
             subtitle = (TextView) rowView.findViewById(R.id.list_item_book_subtitle);
+            wishList = (ImageView) rowView.findViewById(R.id.list_item_book_wish_list);
+            borrowed = (ImageView) rowView.findViewById(R.id.list_item_book_borrowed);
         }
     }
 
@@ -229,6 +235,8 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
         final String bookTitle = mCursor.getString(mCursor.getColumnIndex(Contract.Books.BOOK_TITLE));
         final String authors = mCursor.getString(mCursor.getColumnIndex(Contract.ConcatAliases.AUTHORS_CONCAT_ALIAS));
         final String image = mCursor.getString(mCursor.getColumnIndex(Contract.Books.BOOK_IMAGE_FILE));
+        final boolean wishList = mCursor.getInt(mCursor.getColumnIndex(Contract.Books.BOOK_WISH_LIST)) == 1;
+        final boolean borrowed = mCursor.getInt(mCursor.getColumnIndex(Contract.Books.BOOK_BORROWED)) == 1;
 
         // update view with cursor values
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -242,6 +250,8 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
 
         holder.title.setText(bookTitle);
         holder.subtitle.setText(authors);
+        holder.wishList.setVisibility(wishList ? View.VISIBLE : View.GONE);
+        holder.borrowed.setVisibility(borrowed ? View.VISIBLE : View.GONE);
         DisplayUtils.displayScaledImage(mActivity, image, holder.image);
     }
 
