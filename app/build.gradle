@@ -9,8 +9,8 @@ android {
         testApplicationId "kandrac.xyz.library.test"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 10
-        versionName "1.1.5"
+        versionCode 11
+        versionName "1.1.6"
 
         // Database authorities definitions
         buildConfigField 'String', 'DATABASE_AUTHORITY', '"xyz.kandrac.library"'
