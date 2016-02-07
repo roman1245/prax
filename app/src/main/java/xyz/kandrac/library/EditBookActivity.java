@@ -40,7 +40,6 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
@@ -63,6 +62,7 @@ import xyz.kandrac.library.snk.SnkContract;
 import xyz.kandrac.library.utils.BookCursorAdapter;
 import xyz.kandrac.library.utils.DisplayUtils;
 import xyz.kandrac.library.utils.LogUtils;
+import xyz.kandrac.library.utils.StringUtils;
 
 /**
  * Created by VizGhar on 11.10.2015.
@@ -319,7 +319,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
                             mTitleEdit.setText(info.title);
                             mSubtitleEdit.setText(info.subtitle);
-                            mAuthorEdit.setText(Arrays.toString(info.authors));
+                            mAuthorEdit.setText(StringUtils.arrayToString(info.authors));
                             mPublisherEdit.setText(info.publisher);
                         }
                     }
