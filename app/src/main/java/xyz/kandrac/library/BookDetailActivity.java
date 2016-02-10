@@ -112,6 +112,9 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     @Bind(R.id.book_detail_library)
     TextView library;
 
+    @Bind(R.id.book_detail_library_heading)
+    TextView libraryHead;
+
     @Bind(R.id.book_detail_borrow_image)
     ImageView borrowImage;
 
@@ -159,6 +162,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
         if (!enabled) {
             library.setVisibility(View.GONE);
             libraryImage.setVisibility(View.GONE);
+            libraryHead.setVisibility(View.GONE);
         } else {
             getSupportLoaderManager().initLoader(LOADER_LIBRARY, null, this);
         }
