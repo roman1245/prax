@@ -100,6 +100,8 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     private static final int PERMISSION_TAKE_PHOTO = 2;
     private static final int PERMISSION_BARCODE = 3;
 
+    private boolean startingActivity = false;
+
     @Bind(R.id.toolbar)
     Toolbar toolbar;
 
@@ -362,6 +364,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
             default:
                 super.onActivityResult(requestCode, resultCode, data);
         }
+        startingActivity = false;
     }
 
     @Override
@@ -460,7 +463,8 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                         R.string.edit_book_barcode_permission,
                         PERMISSION_BARCODE,
                         Manifest.permission.CAMERA);
-            } else {
+            } else if (!startingActivity) {
+                startingActivity = true;
                 startActivityForResult(new Intent(this, BarcodeActivity.class), REQUEST_BARCODE);
             }
         } else {
@@ -469,6 +473,11 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     }
 
     private void dispatchTakePictureIntent() {
+        // do not start image capture if another activity is about to run
+        if (startingActivity) {
+            return;
+        }
+
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             File photoFile = createImageFile();
@@ -476,6 +485,8 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 Uri uri = Uri.fromFile(photoFile);
                 LogUtils.d(TAG, "taking picture to store into " + uri.toString());
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+
+                startingActivity = true;
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
         } else {
@@ -548,7 +559,10 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
             }
             case PERMISSION_BARCODE: {
                 if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startActivityForResult(new Intent(this, BarcodeActivity.class), REQUEST_BARCODE);
+                    if (!startingActivity) {
+                        startingActivity = true;
+                        startActivityForResult(new Intent(this, BarcodeActivity.class), REQUEST_BARCODE);
+                    }
                     return;
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
