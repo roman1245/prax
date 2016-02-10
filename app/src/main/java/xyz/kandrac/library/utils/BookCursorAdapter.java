@@ -149,6 +149,7 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
         result.add("%" + mSearchQuery + "%");
         result.add("%" + mSearchQuery + "%");
         result.add("%" + mSearchQuery + "%");
+        result.add("%" + mSearchQuery + "%");
         result.addAll(mSelectionArguments);
 
         String[] arrayResult = new String[mSelectionArguments.size() + 4];
@@ -326,6 +327,7 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
 
             String selectionString = " ( " +
                     Contract.Books.BOOK_TITLE + " LIKE ? OR " +
+                    Contract.Books.BOOK_SUBTITLE + " LIKE ? OR " +
                     Contract.Authors.AUTHOR_NAME + " LIKE ? OR " +
                     Contract.Books.BOOK_DESCRIPTION + " LIKE ? OR " +
                     Contract.Books.BOOK_ISBN + " LIKE ?" +
