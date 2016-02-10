@@ -394,8 +394,8 @@ public class DatabaseProvider extends ContentProvider {
 
                 getContext().getContentResolver().notifyChange(Contract.Books.CONTENT_URI, null);
 
-                count += db.delete(Database.Tables.AUTHORS, Contract.Authors.AUTHOR_ID + " = " + id +
-                        (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
+                count += db.delete(Database.Tables.BOOKS_AUTHORS, Contract.BookAuthors.AUTHOR_ID + " = ?", new String[]{Long.toString(id)});
+                count += db.delete(Database.Tables.AUTHORS, Contract.Authors.AUTHOR_ID + " = ?", new String[]{Long.toString(id)});
 
                 break;
             }
@@ -404,11 +404,34 @@ public class DatabaseProvider extends ContentProvider {
                 break;
             }
             case PUBLISHER_ID: {
-                long id = Contract.Publishers.getPublisherId(uri);
-                count = db.delete(Database.Tables.PUBLISHERS, Contract.Publishers.PUBLISHER_ID + " = " + id +
-                        (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
+                long id = Contract.Libraries.getLibraryId(uri);
+
+                count += db.delete(
+                        Database.Tables.BOOKS,
+                        Contract.Books.BOOK_PUBLISHER_ID + "  = ?",
+                        new String[]{Long.toString(id)});
 
                 getContext().getContentResolver().notifyChange(Contract.Books.CONTENT_URI, null);
+
+                count += db.delete(Database.Tables.PUBLISHERS, Contract.Publishers.PUBLISHER_ID + " = ?", new String[]{Long.toString(id)});
+                break;
+            }
+            case LIBRARIES: {
+                count = db.delete(Database.Tables.LIBRARIES, selection, selectionArgs);
+                break;
+            }
+            case LIBRARY_ID: {
+                long id = Contract.Libraries.getLibraryId(uri);
+
+                count += db.delete(
+                        Database.Tables.BOOKS,
+                        Contract.Books.BOOK_LIBRARY_ID + "  = ?",
+                        new String[]{Long.toString(id)});
+
+                getContext().getContentResolver().notifyChange(Contract.Books.CONTENT_URI, null);
+
+                count += db.delete(Database.Tables.LIBRARIES, Contract.Libraries.LIBRARY_ID + " = ?", new String[]{Long.toString(id)});
+
                 break;
             }
             case BOOKS_AUTHORS: {
