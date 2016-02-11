@@ -61,6 +61,7 @@
 
     <string name="edit_book_no_permission">Bez týchto oprávnení nemôžeme pokračovať. Ak chcete zmeniť oprávenia urobte tak v Nastaveniach telefónu.</string>
     <string name="edit_book_no_permission_title">Chýbajúce oprávnenia</string>
+    <string name="edit_book_save_image_error">Chyba pri ukladaní fotografie, skúste to znova</string>
 
     <!-- Book Details Screen -->
     <string name="book_detail_full_title">Názov knihy:</string>

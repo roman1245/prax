@@ -61,6 +61,7 @@
 
     <string name="edit_book_no_permission">We cannot continue without these permissions. If you wish to change the restrictions, access the phone settings to do so</string>
     <string name="edit_book_no_permission_title">Permissions are missing</string>
+    <string name="edit_book_save_image_error">Error saving photo, please try again</string>
 
     <!-- Book Details Screen -->
     <string name="book_detail_full_title">Book Title:</string>

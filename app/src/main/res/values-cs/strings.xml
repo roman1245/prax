@@ -59,6 +59,7 @@
 
     <string name="edit_book_no_permission">Bez těchto oprávnění nemůžeme pokračovat. Chcete-li změnit oprávnění učiňte tak v Nastavení telefonu.</string>
     <string name="edit_book_no_permission_title">Chybějící oprávnění</string>
+    <string name="edit_book_save_image_error">Chyba při ukládání fotografie, zkuste to znovu</string>
 
     <!-- Book Details Screen -->
     <string name="book_detail_full_title">Název Knihy:</string>

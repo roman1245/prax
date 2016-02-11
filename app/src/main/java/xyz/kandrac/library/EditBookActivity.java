@@ -35,6 +35,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FilterQueryProvider;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -356,9 +357,13 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
             case REQUEST_IMAGE_CAPTURE:
                 // Handle Image Capture
                 if (resultCode == RESULT_OK) {
-                    DisplayUtils.resizeImageFile(new File(imageFileName), 1024, 60);
-                    DisplayUtils.displayScaledImage(this, imageFileName, mImageEdit);
-                    mImageEdit.setTag(imageFileName);
+                    try {
+                        DisplayUtils.resizeImageFile(new File(imageFileName), 1024, 60);
+                        DisplayUtils.displayScaledImage(this, imageFileName, mImageEdit);
+                        mImageEdit.setTag(imageFileName);
+                    } catch (OutOfMemoryError ex) {
+                        Toast.makeText(this, R.string.edit_book_save_image_error, Toast.LENGTH_LONG).show();
+                    }
                 }
                 break;
             default:
