@@ -6,8 +6,10 @@ import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,6 +27,7 @@ import xyz.kandrac.library.AuthorDetailActivity;
 import xyz.kandrac.library.MainActivity;
 import xyz.kandrac.library.R;
 import xyz.kandrac.library.Searchable;
+import xyz.kandrac.library.fragments.SettingsFragment;
 import xyz.kandrac.library.model.Contract;
 import xyz.kandrac.library.model.obj.Author;
 
@@ -169,6 +172,12 @@ public class AuthorBooksListFragment extends Fragment implements LoaderManager.L
                     startActivity(intent);
                 }
             });
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            boolean conservative = sharedPref.getBoolean(SettingsFragment.KEY_PREF_CONSERVATIVE_ENABLED, true);
+            if (!conservative) {
+                int[] colors = getResources().getIntArray(R.array.md_colors_500);
+                holder.image.setBackgroundColor(colors[(int) (author.id % colors.length)]);
+            }
         }
 
         @Override

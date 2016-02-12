@@ -6,10 +6,13 @@ import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.IntDef;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +25,7 @@ import java.util.ArrayList;
 
 import xyz.kandrac.library.BookDetailActivity;
 import xyz.kandrac.library.R;
+import xyz.kandrac.library.fragments.SettingsFragment;
 import xyz.kandrac.library.model.Contract;
 import xyz.kandrac.library.model.Database;
 import xyz.kandrac.library.model.DatabaseUtils;
@@ -253,7 +257,17 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
         holder.subtitle.setText(authors);
         holder.wishList.setVisibility(wishList ? View.VISIBLE : View.GONE);
         holder.borrowed.setVisibility(borrowed ? View.VISIBLE : View.GONE);
-        DisplayUtils.displayScaledImage(mActivity, image, holder.image);
+
+        if (!TextUtils.isEmpty(image)) {
+            DisplayUtils.displayScaledImage(mActivity, image, holder.image);
+        } else {
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mActivity);
+            boolean conservative = sharedPref.getBoolean(SettingsFragment.KEY_PREF_CONSERVATIVE_ENABLED, true);
+            if (!conservative) {
+                int[] colors = mActivity.getResources().getIntArray(R.array.md_colors_500);
+                holder.image.setBackgroundColor(colors[(int) (bookId % colors.length)]);
+            }
+        }
     }
 
     @Override
