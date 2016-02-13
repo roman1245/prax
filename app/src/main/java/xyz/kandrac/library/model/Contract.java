@@ -35,6 +35,7 @@ public final class Contract {
         String BOOK_LIBRARY_ID = "book_library_id";
         String BOOK_IMAGE_URL = "book_image_url";
         String BOOK_BORROWED = "book_borrowed";
+        String BOOK_BORROWED_TO_ME = "book_borrowed_to_me";
         String BOOK_WISH_LIST = "book_wish";
     }
 
@@ -70,20 +71,33 @@ public final class Contract {
         String BORROW_NEXT_NOTIFICATION = "borrow_next_notify";
     }
 
-    // Aliases
-    public interface ConcatAliases {
-        String AUTHORS_CONCAT_ALIAS = "concat";
+    public interface BorrowMeInfoColumns {
+        String BORROW_ID = BaseColumns._ID;
+        String BORROW_BOOK_ID = "borrow_me_book_id";
+        String BORROW_FROM = "borrow_me_from";
+        String BORROW_MAIL = "borrow_me_mail";
+        String BORROW_PHONE = "borrow_me_phone";
+        String BORROW_NAME = "borrow_me_name";
+        String BORROW_DATE_BORROWED = "borrow_me_date_borrowed";
+        String BORROW_DATE_RETURNED = "borrow_me_date_returned";
+        String BORROW_NEXT_NOTIFICATION = "borrow_me_next_notify";
     }
 
+    // Aliases
+    // Base URI specification (authority and its URI representation)
+    public static final String CONTENT_AUTHORITY = BuildConfig.DATABASE_AUTHORITY;
+    public interface ConcatAliases {
+        String AUTHORS_CONCAT_ALIAS = "concat";
+
+    }
     // URI Paths
     public static final String PATH_BOOKS = "books";
     public static final String PATH_AUTHORS = "authors";
     public static final String PATH_PUBLISHERS = "publishers";
     public static final String PATH_LIBRARIES = "libraries";
+
     public static final String PATH_BORROW_INFO = "borrowinfo";
 
-    // Base URI specification (authority and its URI representation)
-    public static final String CONTENT_AUTHORITY = BuildConfig.DATABASE_AUTHORITY;
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
     public static final Uri BOOKS_AUTHORS_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_BOOKS).appendPath(PATH_AUTHORS).build();
