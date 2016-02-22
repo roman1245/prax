@@ -119,4 +119,9 @@
     <string name="preferences_libraries_default_name_title">Predvolená knižnica</string>
     <string name="preferences_libraries_default_name_description">Predvolený názov knižnice, do ktorej sa budú knihy pridávať</string>
 
+    <!-- TODO: implement for other languages as well -->
+    <string name="preferences_import_export_category">Import, Export a Zlohovanie</string>
+    <string name="preferences_import_title">Import údajov z Excelu</string>
+    <string name="preferences_import_description">Klikni sem pre importovanie údajov vo formáte CSV</string>
+
 </resources>

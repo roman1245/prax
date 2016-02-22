@@ -15,4 +15,14 @@
             android:title="@string/preferences_libraries_default_name_title" />
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:title="@string/preferences_import_export_category">
+
+        <Preference
+            android:key="preferences_import"
+            android:summary="@string/preferences_import_description"
+            android:title="@string/preferences_import_title" />
+
+    </PreferenceCategory>
+
 </PreferenceScreen>
