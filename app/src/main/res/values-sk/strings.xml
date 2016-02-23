@@ -53,6 +53,8 @@
     <string name="edit_book_scan">Skenovať</string>
     <string name="edit_book_search">Hľadať</string>
     <string name="edit_book_description">Popis</string>
+    <!-- TODO: translate-->
+    <string name="edit_book_origin">Požičané od</string>
 
     <string name="edit_book_info">Základné informácie o knihe</string>
     <string name="edit_book_cover">Obálka Knihy</string>

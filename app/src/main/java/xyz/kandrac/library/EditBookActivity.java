@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -109,6 +110,12 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     @Bind(R.id.toolbar)
     Toolbar toolbar;
 
+    @Bind(R.id.book_input_origin_image)
+    ImageView mOriginImage;
+
+    @Bind(R.id.book_input_origin)
+    AutoCompleteTextView mOriginEdit;
+
     @Bind(R.id.book_input_author)
     AutoCompleteTextView mAuthorEdit;
 
@@ -169,6 +176,8 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
             mBorrowedToMe = false;
         }
 
+        setOriginVisibility(mBorrowedToMe);
+
         if (mBookId > 0) {
             setTitle(R.string.title_edit_book);
             getSupportLoaderManager().initLoader(LOADER_BOOK, null, this);
@@ -206,6 +215,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         setAuthorAdapter();
         setPublisherAdapter();
         setLibraryAdapter();
+        setBorrowedFromAdapter();
     }
 
     public void checkLibrariesPreferences() {
@@ -296,6 +306,30 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         adapter.setCursorToStringConverter(new SimpleCursorAdapter.CursorToStringConverter() {
             public CharSequence convertToString(Cursor cur) {
                 int index = cur.getColumnIndex(Contract.Libraries.LIBRARY_NAME);
+                return cur.getString(index);
+            }
+        });
+    }
+
+    private void setBorrowedFromAdapter() {
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(
+                this,
+                android.R.layout.simple_list_item_1,
+                null,
+                new String[]{ContactsContract.Contacts.DISPLAY_NAME},
+                new int[]{android.R.id.text1},
+                0);
+        mOriginEdit.setAdapter(adapter);
+
+        adapter.setFilterQueryProvider(new FilterQueryProvider() {
+            public Cursor runQuery(CharSequence str) {
+                return getContactCursor(str);
+            }
+        });
+
+        adapter.setCursorToStringConverter(new SimpleCursorAdapter.CursorToStringConverter() {
+            public CharSequence convertToString(Cursor cur) {
+                int index = cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
                 return cur.getString(index);
             }
         });
@@ -704,6 +738,13 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 Picasso.with(this).load(imageFile).into(mImageEdit);
             }
         }
+
+        setOriginVisibility(borrowedToMe);
+    }
+
+    private void setOriginVisibility(boolean visible) {
+        mOriginEdit.setVisibility(visible ? View.VISIBLE : View.GONE);
+        mOriginImage.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     private void bindAuthors(Cursor authorsCursor) {
@@ -785,6 +826,21 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         String[] contactsProjection = new String[]{BaseColumns._ID, Contract.Libraries.LIBRARY_NAME};
 
         return getContentResolver().query(Contract.Libraries.CONTENT_URI, contactsProjection, select, selectArgs, null);
+    }
+
+    public Cursor getContactCursor(CharSequence filter) {
+        if (filter != null) {
+            return getContentResolver().query(
+                    ContactsContract.Contacts.CONTENT_URI,
+                    new String[]{
+                            ContactsContract.Contacts.DISPLAY_NAME,
+                            ContactsContract.Contacts._ID,
+                    },
+                    ContactsContract.Contacts.DISPLAY_NAME + " LIKE ?",
+                    new String[]{"%" + filter.toString() + "%"},
+                    ContactsContract.Contacts.DISPLAY_NAME);
+        }
+        return null;
     }
 
     @Override
