@@ -108,6 +108,7 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
             Contract.Books.BOOK_TITLE,
             Contract.Books.BOOK_WISH_LIST,
             Contract.Books.BOOK_BORROWED,
+            Contract.Books.BOOK_BORROWED_TO_ME,
             Contract.Books.BOOK_IMAGE_FILE,
             DatabaseUtils.getConcat(Contract.Authors.AUTHOR_NAME, Contract.ConcatAliases.AUTHORS_CONCAT_ALIAS)};
 
@@ -212,6 +213,7 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
         private TextView subtitle;
         private ImageView wishList;
         private ImageView borrowed;
+        private ImageView borrowedToMe;
 
         public ViewHolder(View rowView) {
             super(rowView);
@@ -220,6 +222,7 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
             subtitle = (TextView) rowView.findViewById(R.id.list_item_book_subtitle);
             wishList = (ImageView) rowView.findViewById(R.id.list_item_book_wish_list);
             borrowed = (ImageView) rowView.findViewById(R.id.list_item_book_borrowed);
+            borrowedToMe = (ImageView) rowView.findViewById(R.id.list_item_book_borrowed_to_me);
         }
     }
 
@@ -240,6 +243,7 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
         final String image = mCursor.getString(mCursor.getColumnIndex(Contract.Books.BOOK_IMAGE_FILE));
         final boolean wishList = mCursor.getInt(mCursor.getColumnIndex(Contract.Books.BOOK_WISH_LIST)) == 1;
         final boolean borrowed = mCursor.getInt(mCursor.getColumnIndex(Contract.Books.BOOK_BORROWED)) == 1;
+        final boolean borrowedToMe = mCursor.getInt(mCursor.getColumnIndex(Contract.Books.BOOK_BORROWED_TO_ME)) == 1;
 
         // update view with cursor values
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -255,6 +259,7 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
         holder.subtitle.setText(authors);
         holder.wishList.setVisibility(wishList ? View.VISIBLE : View.GONE);
         holder.borrowed.setVisibility(borrowed ? View.VISIBLE : View.GONE);
+        holder.borrowedToMe.setVisibility(borrowedToMe ? View.VISIBLE : View.GONE);
         DisplayUtils.displayScaledImage(mActivity, image, holder.image);
     }
 
