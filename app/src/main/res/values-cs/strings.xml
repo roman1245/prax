@@ -98,7 +98,7 @@
     <string name="dialog_library_delete_title">Smazat knihovnu</string>
     <string name="dialog_library_delete_message">Opravdu chcete smazat tuto knihovnu i všechny knihy v ní?</string>
     <string name="dialog_return_book_title">Vrácení knihy</string>
-    <string name="dialog_return_book_message">XY si od tebe půjčil/a knihu dne % 2 $ s. Co chcete s knihou udělat?</string>
+    <string name="dialog_return_book_message">%1$s si od tebe půjčil/a knihu dne %2$s. Co chcete s knihou udělat?</string>
     <string name="dialog_return_book_positive">Vrátit knihu</string>
 
     <!-- Notification strings -->
