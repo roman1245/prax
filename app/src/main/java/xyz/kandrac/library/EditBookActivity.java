@@ -2,6 +2,7 @@ package xyz.kandrac.library;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -494,7 +495,18 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 .setBorrowedToMe(mBorrowedToMe)
                 .build();
 
-        DatabaseStoreUtils.saveBook(getContentResolver(), book);
+        long bookId = DatabaseStoreUtils.saveBook(getContentResolver(), book);
+
+        if (mBorrowedToMe) {
+            final long dateFrom = new Date(System.currentTimeMillis()).getTime();
+
+            ContentValues borrowContentValues = new ContentValues();
+            borrowContentValues.put(Contract.BorrowMeInfoColumns.BORROW_DATE_BORROWED, dateFrom);
+            borrowContentValues.put(Contract.BorrowMeInfoColumns.BORROW_NAME, mOriginEdit.getText().toString());
+
+            getContentResolver().insert(Contract.Books.buildBorrowedToMeInfoUri(bookId), borrowContentValues);
+        }
+
         finish();
     }
 

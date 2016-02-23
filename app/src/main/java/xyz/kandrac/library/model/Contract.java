@@ -97,6 +97,7 @@ public final class Contract {
     public static final String PATH_LIBRARIES = "libraries";
 
     public static final String PATH_BORROW_INFO = "borrowinfo";
+    public static final String PATH_BORROW_ME_INFO = "borrowmeinfo";
 
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
@@ -160,6 +161,10 @@ public final class Contract {
 
         public static Uri buildBorrowInfoUri(long bookId) {
             return CONTENT_URI.buildUpon().appendPath(Long.toString(bookId)).appendPath(PATH_BORROW_INFO).build();
+        }
+
+        public static Uri buildBorrowedToMeInfoUri(long bookId) {
+            return CONTENT_URI.buildUpon().appendPath(Long.toString(bookId)).appendPath(PATH_BORROW_ME_INFO).build();
         }
     }
 
@@ -345,6 +350,41 @@ public final class Contract {
     public static class BorrowInfo implements BorrowInfoColumns {
 
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_BORROW_INFO).build();
+
+        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.borrow";
+        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.borrow";
+
+        /**
+         * Default "ORDER BY" clause.
+         */
+        public static final String DEFAULT_SORT = BORROW_DATE_BORROWED + " ASC";
+
+        public static Uri buildUri(long borrowId) {
+            return CONTENT_URI.buildUpon().appendPath(Long.toString(borrowId)).build();
+        }
+
+        public static long getBookId(Uri uri) {
+            return Long.parseLong(uri.getPathSegments().get(1));
+        }
+    }
+
+    /**
+     * Details about Book Borrow Me contract can be obtained from:
+     * <ul>
+     * <li>Table name: {@link xyz.kandrac.library.model.Database.Tables#BORROW_ME}</li>
+     * <li>Table columns: {@link xyz.kandrac.library.model.Contract.BorrowMeInfoColumns}</li>
+     * <li>Requests for {@link android.content.ContentProvider} from:
+     * <ul>
+     * <li>{@link #CONTENT_URI} or</li>
+     * <li>methods from this class</li>
+     * </ul>
+     * </li>
+     * </ul>
+     * To see more detailed info about requests please see {@link DatabaseProvider} constants
+     */
+    public static class BorrowMeInfo implements BorrowMeInfoColumns {
+
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_BORROW_ME_INFO).build();
 
         public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.borrow";
         public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.borrow";

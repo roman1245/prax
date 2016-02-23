@@ -45,10 +45,10 @@ public class DatabaseProvider extends ContentProvider {
     public static final int BOOKS_AUTHORS = 400;
 
     public static final int BORROW_INFO = 500;
-    public static final int BORROW_INFO_ID = 503;
     public static final int BORROW_INFO_BY_BOOK = 501;
-
     public static final int BOOKS_BORROW = 502;
+    public static final int BORROW_INFO_ID = 503;
+    public static final int BORROW_ME_INFO_BY_BOOK = 504;
 
     public static final int LIBRARIES = 600;
     public static final int LIBRARY_ID = 601;
@@ -62,6 +62,7 @@ public class DatabaseProvider extends ContentProvider {
         uriMatcher.addURI(authority, "books/#", BOOK_ID);
         uriMatcher.addURI(authority, "books/#/authors", AUTHOR_BY_BOOK);
         uriMatcher.addURI(authority, "books/#/borrowinfo", BORROW_INFO_BY_BOOK);
+        uriMatcher.addURI(authority, "books/#/borrowmeinfo", BORROW_ME_INFO_BY_BOOK);
         uriMatcher.addURI(authority, "books/#/publishers", PUBLISHER_BY_BOOK);
         uriMatcher.addURI(authority, "books/#/libraries", LIBRARY_BY_BOOK);
 
@@ -297,6 +298,14 @@ public class DatabaseProvider extends ContentProvider {
                 long result = db.insert(Database.Tables.BORROW_INFO, null, values);
                 getContext().getContentResolver().notifyChange(uri, null);
                 return Contract.BorrowInfo.buildUri(result);
+            }
+            case BORROW_ME_INFO_BY_BOOK: {
+                long bookId = Contract.Books.getBookId(uri);
+                values.put(Contract.BorrowMeInfo.BORROW_BOOK_ID, bookId);
+
+                long result = db.insert(Database.Tables.BORROW_ME, null, values);
+                getContext().getContentResolver().notifyChange(uri, null);
+                return Contract.BorrowMeInfo.buildUri(result);
             }
             case BORROW_INFO: {
                 long result = db.insert(Database.Tables.BORROW_INFO, null, values);
