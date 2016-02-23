@@ -15,12 +15,12 @@
             android:title="@string/preferences_libraries_default_name_title" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/preferences_libraries_category">
+    <PreferenceCategory android:title="@string/preferences_visual_category">
         <SwitchPreference
             android:defaultValue="true"
             android:key="conservative_enabled"
-            android:summary="If checked only simple colors will be used throughout the application"
-            android:title="Use conservative colors" />
+            android:summary="@string/preferences_visual_conservative_description"
+            android:title="@string/preferences_visual_conservative_title" />
     </PreferenceCategory>
 
 </PreferenceScreen>

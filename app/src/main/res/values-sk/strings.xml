@@ -119,4 +119,8 @@
     <string name="preferences_libraries_default_name_title">Predvolená knižnica</string>
     <string name="preferences_libraries_default_name_description">Predvolený názov knižnice, do ktorej sa budú knihy pridávať</string>
 
+    <!-- TODO: translate-->
+    <string name="preferences_visual_category">Vzhľad aplikácie</string>
+    <string name="preferences_visual_conservative_title">Konzervatívne farby</string>
+    <string name="preferences_visual_conservative_description">Povoľ toto nastavenie pre zobrazenie jednoduchých farieb v zoznamoch kníh, autorov, vydavateľov a knižníc</string>
 </resources>
