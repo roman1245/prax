@@ -15,4 +15,12 @@
             android:title="@string/preferences_libraries_default_name_title" />
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="@string/preferences_visual_category">
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="conservative_enabled"
+            android:summary="@string/preferences_visual_conservative_description"
+            android:title="@string/preferences_visual_conservative_title" />
+    </PreferenceCategory>
+
 </PreferenceScreen>
