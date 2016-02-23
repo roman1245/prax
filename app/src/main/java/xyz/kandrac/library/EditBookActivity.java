@@ -81,6 +81,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     private static final String SAVE_STATE_FILE_NAME = "save_state_file_name";
     private static final String SAVE_STATE_BOOK_ID = "save_state_book_id";
     private static final String SAVE_STATE_WISH_LIST = "save_state_wish";
+    private static final String SAVE_STATE_BORROWED_TO_ME = "save_state_borrowed_to_me";
     private static final String SAVE_STATE_ORIGINAL_FILE = "save_state_original_file";
 
     // Loaders
@@ -92,6 +93,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     // Globals
     private Long mBookId;
     private boolean mToWishList;
+    private boolean mBorrowedToMe;
     private String imageFileName;
 
     // Requests to other activities
@@ -160,9 +162,11 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         if (extras != null) {
             mBookId = extras.getLong(EXTRA_BOOK_ID, 0);
             mToWishList = extras.getInt(EXTRA_WISH_LIST) == BookCursorAdapter.TRUE;
+            mBorrowedToMe = extras.getInt(EXTRA_BORROWED_TO_ME) == BookCursorAdapter.TRUE;
         } else {
-            mBookId = 0l;
+            mBookId = 0L;
             mToWishList = false;
+            mBorrowedToMe = false;
         }
 
         if (mBookId > 0) {
@@ -453,6 +457,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 .setImageFilePath((String) mImageEdit.getTag())
                 .setDescription(mDescription.getText().toString())
                 .setWish(mToWishList)
+                .setBorrowedToMe(mBorrowedToMe)
                 .build();
 
         DatabaseStoreUtils.saveBook(getContentResolver(), book);
@@ -786,6 +791,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         outState.putString(SAVE_STATE_FILE_NAME, imageFileName);
         outState.putLong(SAVE_STATE_BOOK_ID, mBookId);
         outState.putBoolean(SAVE_STATE_WISH_LIST, mToWishList);
+        outState.putBoolean(SAVE_STATE_BORROWED_TO_ME, mBorrowedToMe);
         outState.putString(SAVE_STATE_ORIGINAL_FILE, (String) mImageEdit.getTag());
     }
 
@@ -795,6 +801,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         imageFileName = savedInstanceState.getString(SAVE_STATE_FILE_NAME);
         mBookId = savedInstanceState.getLong(SAVE_STATE_BOOK_ID);
         mToWishList = savedInstanceState.getBoolean(SAVE_STATE_WISH_LIST);
+        mBorrowedToMe = savedInstanceState.getBoolean(SAVE_STATE_BORROWED_TO_ME);
         String original = savedInstanceState.getString(SAVE_STATE_ORIGINAL_FILE);
         mImageEdit.setTag(original);
     }
