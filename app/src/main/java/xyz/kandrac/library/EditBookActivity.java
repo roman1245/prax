@@ -688,12 +688,14 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         String description = data.getString(data.getColumnIndex(Contract.Books.BOOK_DESCRIPTION));
         String path = data.getString(data.getColumnIndex(Contract.Books.BOOK_IMAGE_FILE));
         boolean wish = data.getInt(data.getColumnIndex(Contract.Books.BOOK_WISH_LIST)) == 1;
+        boolean borrowedToMe = data.getInt(data.getColumnIndex(Contract.Books.BOOK_BORROWED_TO_ME)) == 1;
 
         mTitleEdit.setText(title);
         mSubtitleEdit.setText(subtitle);
         mIsbnEdit.setText(isbn);
         mDescription.setText(description);
         mToWishList = wish;
+        mBorrowedToMe = borrowedToMe;
         mImageEdit.setTag(path);
 
         if (path != null) {
