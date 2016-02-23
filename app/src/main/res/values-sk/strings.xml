@@ -110,6 +110,8 @@
 
     <string name="dialog_return_book_title">Vrátenie knihy</string>
     <string name="dialog_return_book_message">%1$s si od teba požičal/a knihu dňa %2$s. Čo chcete s knihou urobiť?</string>
+    <!-- TODO: translate-->
+    <string name="dialog_return_borrowed_book_message">Dňa %2$s si si požičal knihu od %1$s. Chceš knihu vrátiť?</string>
     <string name="dialog_return_book_positive">Vrátiť knihu</string>
 
     <!-- Notification strings -->

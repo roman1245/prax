@@ -61,9 +61,10 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     static final int LOADER_BOOK = 1;
     static final int LOADER_CONTACT = 2;
     static final int LOADER_BORROW_DETAIL = 3;
-    static final int LOADER_AUTHOR = 4;
-    static final int LOADER_PUBLISHER = 5;
-    static final int LOADER_LIBRARY = 6;
+    static final int LOADER_BORROW_ME_DETAIL = 4;
+    static final int LOADER_AUTHOR = 5;
+    static final int LOADER_PUBLISHER = 6;
+    static final int LOADER_LIBRARY = 7;
 
     // PERMISSIONS
     static final int PICK_CONTACT_PERMISSION = 1;
@@ -124,6 +125,12 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     @Bind(R.id.book_detail_borrow)
     Button borrowButton;
 
+    @Bind(R.id.book_detail_borrow_me_image)
+    ImageView borrowMeImage;
+
+    @Bind(R.id.book_detail_borrow_me)
+    Button borrowMeButton;
+
     private boolean mInWishList;
     private boolean mBorrowed;
     private boolean mBorrowedToMe;
@@ -153,6 +160,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
         getSupportLoaderManager().initLoader(LOADER_AUTHOR, null, this);
         getSupportLoaderManager().initLoader(LOADER_PUBLISHER, null, this);
         getSupportLoaderManager().initLoader(LOADER_BORROW_DETAIL, null, this);
+        getSupportLoaderManager().initLoader(LOADER_BORROW_ME_DETAIL, null, this);
 
         checkLibrariesPreferences();
     }
@@ -317,6 +325,61 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
         invalidateOptionsMenu();
     }
 
+    /**
+     * Binds borrowed info to content. If {@link xyz.kandrac.library.BookDetailActivity.BorrowDetails}
+     * is null,
+     *
+     * @param details to bind
+     */
+    private void bindBorrowMeDetails(final BorrowDetails details) {
+        if (details != null) {
+            mBorrowedToMe = true;
+            borrowMeImage.setVisibility(View.VISIBLE);
+            borrowMeButton.setVisibility(View.VISIBLE);
+            borrowMeButton.setText(details.name);
+            borrowMeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    new AlertDialog.Builder(BookDetailActivity.this)
+                            .setTitle(R.string.dialog_return_book_title)
+                            .setMessage(getString(R.string.dialog_return_borrowed_book_message, details.name, DateUtils.dateFormat.format(details.dateFrom)))
+                            .setPositiveButton(R.string.dialog_return_book_positive, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    ContentValues cv = new ContentValues();
+                                    cv.put(Contract.BorrowMeInfo.BORROW_DATE_RETURNED, new Date(System.currentTimeMillis()).getTime());
+                                    cv.put(Contract.BorrowMeInfo.BORROW_NEXT_NOTIFICATION, 0);
+                                    getContentResolver().update(Contract.BorrowMeInfo.buildUri(details.id), cv, null, null);
+
+                                    ContentValues bookContentValues = new ContentValues();
+                                    bookContentValues.put(Contract.Books.BOOK_BORROWED_TO_ME, false);
+                                    getContentResolver().update(Contract.Books.buildBookUri(mBookId), bookContentValues, null, null);
+
+                                    mBorrowedToMe = false;
+                                    invalidateOptionsMenu();
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setCancelable(true)
+                            .setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .create().show();
+                }
+            });
+        } else {
+            mBorrowedToMe = false;
+            borrowMeImage.setVisibility(View.GONE);
+            borrowMeButton.setVisibility(View.GONE);
+        }
+
+        invalidateOptionsMenu();
+    }
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         switch (id) {
@@ -391,6 +454,9 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
 
             case LOADER_BORROW_DETAIL:
                 return new CursorLoader(this, Contract.Books.buildBorrowInfoUri(mBookId), null, Contract.BorrowInfo.BORROW_DATE_RETURNED + " = 0", null, null);
+
+            case LOADER_BORROW_ME_DETAIL:
+                return new CursorLoader(this, Contract.Books.buildBorrowedToMeInfoUri(mBookId), null, Contract.BorrowMeInfo.BORROW_DATE_RETURNED + " = 0", null, null);
         }
         return null;
     }
@@ -489,6 +555,20 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
 
                 } else {
                     bindBorrowDetails(null);
+                }
+            }
+            case LOADER_BORROW_ME_DETAIL: {
+                if (data.moveToFirst() && data.getCount() != 0) {
+                    BorrowDetails borrowDetails = new BorrowDetails(
+                            data.getLong(data.getColumnIndex(Contract.BorrowMeInfo.BORROW_ID)),
+                            data.getString(data.getColumnIndex(Contract.BorrowMeInfo.BORROW_NAME)),
+                            data.getLong(data.getColumnIndex(Contract.BorrowMeInfo.BORROW_DATE_BORROWED)),
+                            data.getLong(data.getColumnIndex(Contract.BorrowMeInfo.BORROW_DATE_RETURNED))
+                    );
+                    LogUtils.d(LOG_TAG, "Borrow me: " + borrowDetails.toString());
+                    bindBorrowMeDetails(borrowDetails);
+                } else {
+                    bindBorrowMeDetails(null);
                 }
             }
         }
@@ -643,6 +723,16 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
             this.name = name;
             this.dateFrom = dateFrom;
             this.dateTo = dateTo;
+        }
+
+        @Override
+        public String toString() {
+            return "BorrowDetails{" +
+                    "id=" + id +
+                    ", name='" + name + '\'' +
+                    ", dateFrom=" + dateFrom +
+                    ", dateTo=" + dateTo +
+                    '}';
         }
     }
 
