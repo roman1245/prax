@@ -18,6 +18,11 @@
                     android:title="@string/menu_books_borrowed" />
 
                 <item
+                    android:id="@+id/main_navigation_borrowed_to_me"
+                    android:icon="@drawable/ic_borrowed_to_me"
+                    android:title="@string/menu_books_borrowed_to_me" />
+
+                <item
                     android:id="@+id/main_navigation_wish_list"
                     android:icon="@drawable/ic_heart_outline"
                     android:title="@string/menu_books_wish_list" />

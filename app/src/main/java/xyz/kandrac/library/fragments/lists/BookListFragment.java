@@ -24,35 +24,34 @@ import xyz.kandrac.library.utils.BookCursorAdapter;
 /**
  * Fragment with list of all books without any pre scripted selection. This fragment also contains
  * {@link FloatingActionButton} for basic actions.
- * <p>
+ * <p/>
  * Created by kandrac on 20/10/15.
  */
 public class BookListFragment extends Fragment implements Searchable, BookCursorAdapter.CursorSizeChangedListener {
 
     private static final String EXTRA_WISH_LIST = "wish_list";
     private static final String EXTRA_BORROWED = "borrowed";
+    private static final String EXTRA_BORROWED_TO_ME = "borrowed_to_me";
     private static final String EXTRA_NO_FILTER = "no_filter";
     private static final String EXTRA_ADD_BUTTON = "button";
     private static final String EXTRA_LOADER_ID = "loader_id";
 
     private int mLoaderId;
     private boolean mAddButton;
-    private @BookCursorAdapter.FieldState int mWishList;
-    private @BookCursorAdapter.FieldState int mBorrowed;
 
-    @Bind(R.id.list)
-    public RecyclerView list;
+    @BookCursorAdapter.FieldState private int mWishList;
+    @BookCursorAdapter.FieldState private int mBorrowed;
+    @BookCursorAdapter.FieldState private int mBorrowedToMe;
 
-    @Bind(R.id.fab)
-    public FloatingActionButton mFab;
-
-    @Bind(R.id.list_empty)
-    public TextView mEmpty;
+    @Bind(R.id.list) public RecyclerView list;
+    @Bind(R.id.fab) public FloatingActionButton mFab;
+    @Bind(R.id.list_empty) public TextView mEmpty;
 
     @OnClick(R.id.fab)
     public void addItem(View view) {
         Intent intent = new Intent(getActivity(), EditBookActivity.class);
         intent.putExtra(EditBookActivity.EXTRA_WISH_LIST, mWishList);
+        intent.putExtra(EditBookActivity.EXTRA_BORROWED_TO_ME, mBorrowedToMe);
         startActivity(intent);
     }
 
@@ -64,7 +63,7 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
      * @return instance
      */
     public static BookListFragment getInstance() {
-        return getInstance(BookCursorAdapter.FALSE, BookCursorAdapter.FALSE, true, MainActivity.BOOK_LIST_LOADER);
+        return getInstance(BookCursorAdapter.FALSE, BookCursorAdapter.FALSE, BookCursorAdapter.FALSE, true, MainActivity.BOOK_LIST_LOADER);
     }
 
     /**
@@ -73,7 +72,16 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
      * @return instance
      */
     public static BookListFragment getBorrowedBooksInstance() {
-        return getInstance(BookCursorAdapter.ANY, BookCursorAdapter.TRUE, false, MainActivity.BORROWED_BOOK_LIST_LOADER);
+        return getInstance(BookCursorAdapter.ANY, BookCursorAdapter.TRUE, BookCursorAdapter.FALSE, false, MainActivity.BORROWED_BOOK_LIST_LOADER);
+    }
+
+    /**
+     * Get instance of {@link BookListFragment}
+     *
+     * @return instance
+     */
+    public static BookListFragment getBorrowedToMeBooksInstance() {
+        return getInstance(BookCursorAdapter.ANY, BookCursorAdapter.FALSE, BookCursorAdapter.TRUE, true, MainActivity.BORROWED_TO_ME_LIST_LOADER);
     }
 
     /**
@@ -82,35 +90,42 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
      * @return instance
      */
     public static BookListFragment getWishListBooksInstance() {
-        return getInstance(BookCursorAdapter.TRUE, BookCursorAdapter.ANY, true, MainActivity.WISH_LIST_BOOK_LIST_LOADER);
+        return getInstance(BookCursorAdapter.TRUE, BookCursorAdapter.ANY, BookCursorAdapter.ANY, true, MainActivity.WISH_LIST_BOOK_LIST_LOADER);
     }
 
     /**
      * Get instance of {@link BookListFragment} for setting all custom fields. {@code title} hold
      * the title representing this fragments content (for example: old books, borrowed books, all
      * books etc.)
-     * <p>
+     * <p/>
      * {@code filter} should be closely related to {@code title} because it contains
      * string that will be added to search selection String and specifies which books exactly will
      * be shown. Always use column names from {@link xyz.kandrac.library.model.Contract.BorrowInfo}
      * or {@link xyz.kandrac.library.model.Contract.Books}
-     * <p>
+     * <p/>
      * {@code addButtonVisible} determines whether button for adding new books is visible or not
-     * <p>
+     * <p/>
      * {@code loaderId} is unique id that will be used with this instance only. It should not be
      * same for 2 or more fragments inside one activity.
      *
      * @param wishList         if items from wish-list should be displayed
      * @param borrowed         if borrowed items should be displayed
+     * @param borrowedToMe     if items borrowed to me should be displayed
      * @param addButtonVisible add button visibility
      * @return instance
      */
-    private static BookListFragment getInstance(@BookCursorAdapter.FieldState int wishList, @BookCursorAdapter.FieldState int borrowed, boolean addButtonVisible, int loaderId) {
+    private static BookListFragment getInstance(
+            @BookCursorAdapter.FieldState int wishList,
+            @BookCursorAdapter.FieldState int borrowed,
+            @BookCursorAdapter.FieldState int borrowedToMe,
+            boolean addButtonVisible,
+            int loaderId) {
         BookListFragment result = new BookListFragment();
         Bundle arguments = new Bundle();
 
         arguments.putInt(EXTRA_WISH_LIST, wishList);
         arguments.putInt(EXTRA_BORROWED, borrowed);
+        arguments.putInt(EXTRA_BORROWED_TO_ME, borrowedToMe);
         arguments.putBoolean(EXTRA_ADD_BUTTON, addButtonVisible);
         arguments.putBoolean(EXTRA_NO_FILTER, false);
         arguments.putInt(EXTRA_LOADER_ID, loaderId);
@@ -127,6 +142,7 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
 
         mWishList = arguments.getInt(EXTRA_WISH_LIST);
         mBorrowed = arguments.getInt(EXTRA_BORROWED);
+        mBorrowedToMe = arguments.getInt(EXTRA_BORROWED_TO_ME);
         mAddButton = arguments.getBoolean(EXTRA_ADD_BUTTON);
         mLoaderId = arguments.getInt(EXTRA_LOADER_ID);
     }
@@ -147,6 +163,7 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
                 .setListener(this)
                 .setWishList(mWishList)
                 .setBorrowed(mBorrowed)
+                .setBorrowedToMe(mBorrowedToMe)
                 .build();
 
         list.setAdapter(adapter);

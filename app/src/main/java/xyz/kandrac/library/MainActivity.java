@@ -48,7 +48,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static final int PUBLISHER_LIST_LOADER = 3;
     public static final int LIBRARY_LIST_LOADER = 4;
     public static final int BORROWED_BOOK_LIST_LOADER = 5;
-    public static final int WISH_LIST_BOOK_LIST_LOADER = 6;
+    public static final int BORROWED_TO_ME_LIST_LOADER = 6;
+    public static final int WISH_LIST_BOOK_LIST_LOADER = 7;
 
     public static final String PREFERENCE_PHOTOS_RESIZED = "photos_resized_preference_2";
     public static final String PREFERENCE_PHOTOS_REMOVED = "photos_removed_preference";
@@ -240,6 +241,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return BookListFragment.getInstance();
             case R.id.main_navigation_borrowed:
                 return BookListFragment.getBorrowedBooksInstance();
+            case R.id.main_navigation_borrowed_to_me:
+                return BookListFragment.getBorrowedToMeBooksInstance();
             case R.id.main_navigation_wish_list:
                 return BookListFragment.getWishListBooksInstance();
             case R.id.main_navigation_authors:

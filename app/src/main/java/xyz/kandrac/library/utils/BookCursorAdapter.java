@@ -79,6 +79,8 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
                 return "1";
             case FALSE:
                 return "0";
+            case ANY:
+                return "";
             default:
                 return null;
         }
@@ -274,6 +276,7 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
         // fields
         @FieldState private int wishList = ANY;
         @FieldState private int borrowed = ANY;
+        @FieldState private int borrowedToMe = ANY;
         private long publisher = ANY;
         private long author = ANY;
         private long library = ANY;
@@ -289,6 +292,11 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
 
         public Builder setBorrowed(@FieldState int borrowed) {
             this.borrowed = borrowed;
+            return this;
+        }
+
+        public Builder setBorrowedToMe(@FieldState int borrowedToMe) {
+            this.borrowedToMe = borrowedToMe;
             return this;
         }
 
@@ -358,6 +366,11 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
             if (borrowed != ANY) {
                 selectionString += " AND " + Contract.Books.BOOK_BORROWED + " = ?";
                 selectionArguments.add(getFieldStateStringValue(borrowed));
+            }
+
+            if (borrowedToMe != ANY) {
+                selectionString += " AND " + Contract.Books.BOOK_BORROWED_TO_ME + " = ?";
+                selectionArguments.add(getFieldStateStringValue(borrowedToMe));
             }
 
             result.mSelectionString = selectionString;

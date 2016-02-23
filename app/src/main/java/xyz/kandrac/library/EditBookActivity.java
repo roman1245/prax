@@ -75,6 +75,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     // Activity extras
     public static final String EXTRA_BOOK_ID = "book_id_extra";
     public static final String EXTRA_WISH_LIST = "wish_list_extra";
+    public static final String EXTRA_BORROWED_TO_ME = "borrowed_to_me_extra";
 
     // Save instance state constants
     private static final String SAVE_STATE_FILE_NAME = "save_state_file_name";
