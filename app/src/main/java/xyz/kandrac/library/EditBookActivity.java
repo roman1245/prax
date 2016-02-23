@@ -177,7 +177,8 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
             mBorrowedToMe = false;
         }
 
-        setOriginVisibility(mBorrowedToMe);
+        mOriginEdit.setVisibility(mBorrowedToMe ? View.VISIBLE : View.GONE);
+        mOriginImage.setVisibility(mBorrowedToMe ? View.VISIBLE : View.GONE);
 
         if (mBookId > 0) {
             setTitle(R.string.title_edit_book);
@@ -750,13 +751,6 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 Picasso.with(this).load(imageFile).into(mImageEdit);
             }
         }
-
-        setOriginVisibility(borrowedToMe);
-    }
-
-    private void setOriginVisibility(boolean visible) {
-        mOriginEdit.setVisibility(visible ? View.VISIBLE : View.GONE);
-        mOriginImage.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     private void bindAuthors(Cursor authorsCursor) {
