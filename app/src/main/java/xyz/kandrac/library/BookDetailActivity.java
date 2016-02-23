@@ -49,7 +49,7 @@ import xyz.kandrac.library.utils.LogUtils;
 
 /**
  * Shows all the details about book based on its ID from {@link #EXTRA_BOOK_ID}.
- * <p>
+ * <p/>
  * Created by VizGhar on 18.10.2015.
  */
 public class BookDetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -126,6 +126,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
 
     private boolean mInWishList;
     private boolean mBorrowed;
+    private boolean mBorrowedToMe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,6 +201,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
         String isbn = bookCursor.getString(bookCursor.getColumnIndex(Contract.Books.BOOK_ISBN));
         String description = bookCursor.getString(bookCursor.getColumnIndex(Contract.Books.BOOK_DESCRIPTION));
         mInWishList = bookCursor.getInt(bookCursor.getColumnIndex(Contract.Books.BOOK_WISH_LIST)) == 1;
+        mBorrowedToMe = bookCursor.getInt(bookCursor.getColumnIndex(Contract.Books.BOOK_BORROWED_TO_ME)) == 1;
         String filePath = bookCursor.getString(bookCursor.getColumnIndex(Contract.Books.BOOK_IMAGE_FILE));
 
         LogUtils.v(LOG_TAG, "binding book title = " + title);
@@ -330,6 +332,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                                 Contract.Books.BOOK_ISBN,
                                 Contract.Books.BOOK_DESCRIPTION,
                                 Contract.Books.BOOK_WISH_LIST,
+                                Contract.Books.BOOK_BORROWED_TO_ME,
                                 Contract.Books.BOOK_IMAGE_FILE
                         },
                         null,
@@ -528,7 +531,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem borrowItem = menu.findItem(R.id.action_borow);
 
-        borrowItem.setVisible(!mInWishList && !mBorrowed);
+        borrowItem.setVisible(!mInWishList && !mBorrowed && !mBorrowedToMe);
 
         return super.onPrepareOptionsMenu(menu);
     }
