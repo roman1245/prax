@@ -449,7 +449,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                 return new CursorLoader(this, Contract.Books.buildBorrowInfoUri(mBookId), null, Contract.BorrowInfo.BORROW_DATE_RETURNED + " = 0", null, null);
 
             case LOADER_BORROW_ME_DETAIL:
-                return new CursorLoader(this, Contract.Books.buildBorrowedToMeInfoUri(mBookId), null, Contract.BorrowMeInfo.BORROW_DATE_RETURNED + " = 0", null, null);
+                return new CursorLoader(this, Contract.Books.buildBorrowedToMeInfoUri(mBookId), null, null, null, null);
         }
         return null;
     }
@@ -545,10 +545,10 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                             data.getLong(data.getColumnIndex(Contract.BorrowInfo.BORROW_DATE_RETURNED))
                     );
                     bindBorrowDetails(borrowDetails);
-
                 } else {
                     bindBorrowDetails(null);
                 }
+                break;
             }
             case LOADER_BORROW_ME_DETAIL: {
                 if (data.moveToFirst() && data.getCount() != 0) {
@@ -563,6 +563,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                 } else {
                     bindBorrowMeDetails(null);
                 }
+                break;
             }
         }
     }
