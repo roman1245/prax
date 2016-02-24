@@ -80,6 +80,7 @@ public class DatabaseProvider extends ContentProvider {
         uriMatcher.addURI(authority, "borrowinfo/#", BORROW_INFO_ID);
 
         uriMatcher.addURI(authority, "books/borrowinfo", BOOKS_BORROW);
+        uriMatcher.addURI(authority, "borrowmeinfo/#", BORROW_ME_INFO_ID);
 
         uriMatcher.addURI(authority, "libraries", LIBRARIES);
         uriMatcher.addURI(authority, "libraries/#", LIBRARY_ID);
@@ -452,6 +453,11 @@ public class DatabaseProvider extends ContentProvider {
             }
             case BOOKS_AUTHORS: {
                 count = db.delete(Database.Tables.BOOKS_AUTHORS, selection, selectionArgs);
+                break;
+            }
+            case BORROW_ME_INFO_ID: {
+                long id = Contract.Libraries.getLibraryId(uri);
+                count = db.delete(Database.Tables.BORROW_ME, Contract.BorrowInfo.BORROW_ID + " = ?", new String[]{Long.toString(id)});
                 break;
             }
             default:

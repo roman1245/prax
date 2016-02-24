@@ -347,18 +347,11 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                             .setPositiveButton(R.string.dialog_return_book_positive, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    ContentValues cv = new ContentValues();
-                                    cv.put(Contract.BorrowMeInfo.BORROW_DATE_RETURNED, new Date(System.currentTimeMillis()).getTime());
-                                    cv.put(Contract.BorrowMeInfo.BORROW_NEXT_NOTIFICATION, 0);
-                                    getContentResolver().update(Contract.BorrowMeInfo.buildUri(details.id), cv, null, null);
-
-                                    ContentValues bookContentValues = new ContentValues();
-                                    bookContentValues.put(Contract.Books.BOOK_BORROWED_TO_ME, false);
-                                    getContentResolver().update(Contract.Books.buildBookUri(mBookId), bookContentValues, null, null);
-
+                                    getContentResolver().delete(Contract.BorrowMeInfo.buildUri(details.id), null, null);
+                                    getContentResolver().delete(Contract.Books.buildBookUri(mBookId), null, null);
                                     mBorrowedToMe = false;
-                                    invalidateOptionsMenu();
                                     dialog.dismiss();
+                                    finish();
                                 }
                             })
                             .setCancelable(true)
