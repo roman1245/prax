@@ -556,7 +556,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                             data.getLong(data.getColumnIndex(Contract.BorrowMeInfo.BORROW_ID)),
                             data.getString(data.getColumnIndex(Contract.BorrowMeInfo.BORROW_NAME)),
                             data.getLong(data.getColumnIndex(Contract.BorrowMeInfo.BORROW_DATE_BORROWED)),
-                            data.getLong(data.getColumnIndex(Contract.BorrowMeInfo.BORROW_DATE_RETURNED))
+                            0
                     );
                     LogUtils.d(LOG_TAG, "Borrow me: " + borrowDetails.toString());
                     bindBorrowMeDetails(borrowDetails);
@@ -745,6 +745,5 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
         String[] PHONE_COLUMNS = new String[]{Phone.NUMBER};
 
         int NAME_COLUMN = 0;
-
     }
 }

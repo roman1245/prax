@@ -74,13 +74,8 @@ public final class Contract {
     public interface BorrowMeInfoColumns {
         String BORROW_ID = BaseColumns._ID;
         String BORROW_BOOK_ID = "borrow_me_book_id";
-        String BORROW_FROM = "borrow_me_from";
-        String BORROW_MAIL = "borrow_me_mail";
-        String BORROW_PHONE = "borrow_me_phone";
         String BORROW_NAME = "borrow_me_name";
         String BORROW_DATE_BORROWED = "borrow_me_date_borrowed";
-        String BORROW_DATE_RETURNED = "borrow_me_date_returned";
-        String BORROW_NEXT_NOTIFICATION = "borrow_me_next_notify";
     }
 
     // Aliases

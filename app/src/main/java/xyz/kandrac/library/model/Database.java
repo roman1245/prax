@@ -98,13 +98,8 @@ public class Database extends SQLiteOpenHelper {
             "CREATE TABLE " + Tables.BORROW_ME + " (" +
                     Contract.BorrowMeInfoColumns.BORROW_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     Contract.BorrowMeInfoColumns.BORROW_BOOK_ID + " INTEGER " + References.BOOKS_ID + " ON DELETE CASCADE, " +
-                    Contract.BorrowMeInfoColumns.BORROW_FROM + " TEXT, " +
                     Contract.BorrowMeInfoColumns.BORROW_DATE_BORROWED + " INTEGER, " +
-                    Contract.BorrowMeInfoColumns.BORROW_NEXT_NOTIFICATION + " INTEGER, " +
-                    Contract.BorrowMeInfoColumns.BORROW_DATE_RETURNED + " INTEGER DEFAULT 0, " +
-                    Contract.BorrowMeInfoColumns.BORROW_MAIL + " TEXT, " +
-                    Contract.BorrowMeInfoColumns.BORROW_NAME + " TEXT, " +
-                    Contract.BorrowMeInfoColumns.BORROW_PHONE + " TEXT)";
+                    Contract.BorrowMeInfoColumns.BORROW_NAME + " TEXT)";
 
     @Override
     public void onConfigure(SQLiteDatabase db) {
