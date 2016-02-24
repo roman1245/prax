@@ -264,7 +264,7 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mActivity);
             boolean conservative = sharedPref.getBoolean(SettingsFragment.KEY_PREF_CONSERVATIVE_ENABLED, true);
             if (!conservative) {
-                int[] colors = mActivity.getResources().getIntArray(R.array.md_colors_500);
+                int[] colors = mActivity.getResources().getIntArray(R.array.md_colors_300);
                 holder.image.setBackgroundColor(colors[(int) (bookId % colors.length)]);
             }
         }
