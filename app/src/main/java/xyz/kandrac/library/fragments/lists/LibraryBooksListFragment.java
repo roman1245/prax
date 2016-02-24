@@ -163,7 +163,7 @@ public class LibraryBooksListFragment extends Fragment implements LoaderManager.
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
             boolean conservative = sharedPref.getBoolean(SettingsFragment.KEY_PREF_CONSERVATIVE_ENABLED, true);
             if (!conservative) {
-                int[] colors = getResources().getIntArray(R.array.md_colors_500);
+                int[] colors = getResources().getIntArray(R.array.md_colors_300);
                 holder.image.setBackgroundColor(colors[(int) (library.id % colors.length)]);
             }
         }
