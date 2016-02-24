@@ -45,10 +45,12 @@ public class DatabaseProvider extends ContentProvider {
     public static final int BOOKS_AUTHORS = 400;
 
     public static final int BORROW_INFO = 500;
-    public static final int BORROW_INFO_ID = 503;
     public static final int BORROW_INFO_BY_BOOK = 501;
-
     public static final int BOOKS_BORROW = 502;
+    public static final int BORROW_INFO_ID = 503;
+
+    public static final int BORROW_ME_INFO_BY_BOOK = 504;
+    public static final int BORROW_ME_INFO_ID = 505;
 
     public static final int LIBRARIES = 600;
     public static final int LIBRARY_ID = 601;
@@ -62,6 +64,7 @@ public class DatabaseProvider extends ContentProvider {
         uriMatcher.addURI(authority, "books/#", BOOK_ID);
         uriMatcher.addURI(authority, "books/#/authors", AUTHOR_BY_BOOK);
         uriMatcher.addURI(authority, "books/#/borrowinfo", BORROW_INFO_BY_BOOK);
+        uriMatcher.addURI(authority, "books/#/borrowmeinfo", BORROW_ME_INFO_BY_BOOK);
         uriMatcher.addURI(authority, "books/#/publishers", PUBLISHER_BY_BOOK);
         uriMatcher.addURI(authority, "books/#/libraries", LIBRARY_BY_BOOK);
 
@@ -77,6 +80,7 @@ public class DatabaseProvider extends ContentProvider {
         uriMatcher.addURI(authority, "borrowinfo/#", BORROW_INFO_ID);
 
         uriMatcher.addURI(authority, "books/borrowinfo", BOOKS_BORROW);
+        uriMatcher.addURI(authority, "borrowmeinfo/#", BORROW_ME_INFO_ID);
 
         uriMatcher.addURI(authority, "libraries", LIBRARIES);
         uriMatcher.addURI(authority, "libraries/#", LIBRARY_ID);
@@ -196,6 +200,11 @@ public class DatabaseProvider extends ContentProvider {
                 qb.appendWhere(Contract.BorrowInfo.BORROW_BOOK_ID + "=" + Contract.BorrowInfo.getBookId(uri));
                 sortOrder = sortOrder == null ? Contract.BorrowInfo.DEFAULT_SORT : sortOrder;
                 break;
+            case BORROW_ME_INFO_BY_BOOK:
+                qb.setTables(Database.Tables.BORROW_ME);
+                qb.appendWhere(Contract.BorrowMeInfo.BORROW_BOOK_ID + "=" + Contract.BorrowMeInfo.getBookId(uri));
+                sortOrder = sortOrder == null ? Contract.BorrowMeInfo.DEFAULT_SORT : sortOrder;
+                break;
             case BOOKS_BORROW:
                 qb.setTables(Database.Tables.BOOKS_JOIN_BORROW);
                 qb.setDistinct(true);
@@ -297,6 +306,14 @@ public class DatabaseProvider extends ContentProvider {
                 long result = db.insert(Database.Tables.BORROW_INFO, null, values);
                 getContext().getContentResolver().notifyChange(uri, null);
                 return Contract.BorrowInfo.buildUri(result);
+            }
+            case BORROW_ME_INFO_BY_BOOK: {
+                long bookId = Contract.Books.getBookId(uri);
+                values.put(Contract.BorrowMeInfo.BORROW_BOOK_ID, bookId);
+
+                long result = db.insert(Database.Tables.BORROW_ME, null, values);
+                getContext().getContentResolver().notifyChange(uri, null);
+                return Contract.BorrowMeInfo.buildUri(result);
             }
             case BORROW_INFO: {
                 long result = db.insert(Database.Tables.BORROW_INFO, null, values);
@@ -438,6 +455,11 @@ public class DatabaseProvider extends ContentProvider {
                 count = db.delete(Database.Tables.BOOKS_AUTHORS, selection, selectionArgs);
                 break;
             }
+            case BORROW_ME_INFO_ID: {
+                long id = Contract.Libraries.getLibraryId(uri);
+                count = db.delete(Database.Tables.BORROW_ME, Contract.BorrowInfo.BORROW_ID + " = ?", new String[]{Long.toString(id)});
+                break;
+            }
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -487,6 +509,11 @@ public class DatabaseProvider extends ContentProvider {
             case BORROW_INFO_ID: {
                 long id = Contract.BorrowInfo.getBookId(uri);
                 count = db.update(Database.Tables.BORROW_INFO, values, Contract.BorrowInfo.BORROW_ID + " = ? ", new String[]{Long.toString(id)});
+                break;
+            }
+            case BORROW_ME_INFO_ID: {
+                long id = Contract.BorrowMeInfo.getBookId(uri);
+                count = db.update(Database.Tables.BORROW_ME, values, Contract.BorrowMeInfo.BORROW_ID + " = ? ", new String[]{Long.toString(id)});
                 break;
             }
             default:

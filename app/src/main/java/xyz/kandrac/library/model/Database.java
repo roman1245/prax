@@ -12,7 +12,7 @@ public class Database extends SQLiteOpenHelper {
 
 
     public static final String DATABASE_NAME = "library.db";
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 4;
 
     public Database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -23,6 +23,7 @@ public class Database extends SQLiteOpenHelper {
         String AUTHORS = "authors";
         String PUBLISHERS = "publishers";
         String BORROW_INFO = "borrow_info";
+        String BORROW_ME = "borrow_me";
         String LIBRARIES = "libraries";
 
         // m-n connections
@@ -52,6 +53,7 @@ public class Database extends SQLiteOpenHelper {
                     Contract.Books.BOOK_IMAGE_FILE + " TEXT," +
                     Contract.Books.BOOK_IMAGE_URL + " TEXT," +
                     Contract.Books.BOOK_BORROWED + " BOOLEAN DEFAULT 0," +
+                    Contract.Books.BOOK_BORROWED_TO_ME + " BOOLEAN DEFAULT 0," +
                     Contract.Books.BOOK_WISH_LIST + " BOOLEAN DEFAULT 0," +
                     Contract.Books.BOOK_LIBRARY_ID + " INTEGER " + References.LIBRARY_ID + " ON DELETE CASCADE, " +
                     Contract.Books.BOOK_PUBLISHER_ID + " INTEGER " + References.PUBLISHERS_ID + " ON DELETE CASCADE)";
@@ -92,6 +94,13 @@ public class Database extends SQLiteOpenHelper {
                     Contract.BorrowInfoColumns.BORROW_NAME + " TEXT, " +
                     Contract.BorrowInfoColumns.BORROW_PHONE + " TEXT)";
 
+    public static final String BORROW_ME_CREATE_TABLE =
+            "CREATE TABLE " + Tables.BORROW_ME + " (" +
+                    Contract.BorrowMeInfoColumns.BORROW_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    Contract.BorrowMeInfoColumns.BORROW_BOOK_ID + " INTEGER " + References.BOOKS_ID + " ON DELETE CASCADE, " +
+                    Contract.BorrowMeInfoColumns.BORROW_DATE_BORROWED + " INTEGER, " +
+                    Contract.BorrowMeInfoColumns.BORROW_NAME + " TEXT)";
+
     @Override
     public void onConfigure(SQLiteDatabase db) {
         db.setForeignKeyConstraintsEnabled(true);
@@ -106,6 +115,7 @@ public class Database extends SQLiteOpenHelper {
         db.execSQL(BOOKS_CREATE_TABLE);
         db.execSQL(BOOKS_AUTHORS_CREATE_TABLE);
         db.execSQL(BORROW_INFO_CREATE_TABLE);
+        db.execSQL(BORROW_ME_CREATE_TABLE);
     }
 
     @Override
@@ -118,6 +128,9 @@ public class Database extends SQLiteOpenHelper {
                 db.execSQL("UPDATE " + Tables.BOOKS + " SET " + Contract.Books.BOOK_LIBRARY_ID + " = 1");
             case 2:
                 db.execSQL("ALTER TABLE " + Tables.BORROW_INFO + " ADD " + Contract.BorrowInfo.BORROW_NEXT_NOTIFICATION + " INTEGER");
+            case 3:
+                db.execSQL(BORROW_ME_CREATE_TABLE);
+                db.execSQL("ALTER TABLE " + Tables.BOOKS + " ADD " + Contract.Books.BOOK_BORROWED_TO_ME + " BOOLEAN");
         }
     }
 }

@@ -19,6 +19,7 @@ public class Book {
     public final String imageFilePath;
     public final String imageUrlPath;
     public final boolean wish;
+    public final boolean borrowedToMe;
 
     public Author[] authors;
     public Publisher publisher;
@@ -36,6 +37,7 @@ public class Book {
         imageUrlPath = builder.imageUrlPath;
         authors = builder.authors;
         wish = builder.wish;
+        borrowedToMe = builder.borrowedToMe;
     }
 
     public ContentValues getContentValues() {
@@ -59,7 +61,7 @@ public class Book {
         private String imageUrlPath;
         private String subtitle;
         private boolean wish;
-
+        private boolean borrowedToMe;
         private Publisher publisher;
         private Author[] authors;
         private Library library;
@@ -116,6 +118,11 @@ public class Book {
 
         public Builder setWish(boolean wish) {
             this.wish = wish;
+            return this;
+        }
+
+        public Builder setBorrowedToMe(boolean borrowedToMe) {
+            this.borrowedToMe = borrowedToMe;
             return this;
         }
 

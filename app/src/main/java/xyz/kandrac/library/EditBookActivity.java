@@ -2,6 +2,7 @@ package xyz.kandrac.library;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -75,11 +77,13 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     // Activity extras
     public static final String EXTRA_BOOK_ID = "book_id_extra";
     public static final String EXTRA_WISH_LIST = "wish_list_extra";
+    public static final String EXTRA_BORROWED_TO_ME = "borrowed_to_me_extra";
 
     // Save instance state constants
     private static final String SAVE_STATE_FILE_NAME = "save_state_file_name";
     private static final String SAVE_STATE_BOOK_ID = "save_state_book_id";
     private static final String SAVE_STATE_WISH_LIST = "save_state_wish";
+    private static final String SAVE_STATE_BORROWED_TO_ME = "save_state_borrowed_to_me";
     private static final String SAVE_STATE_ORIGINAL_FILE = "save_state_original_file";
 
     // Loaders
@@ -91,6 +95,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     // Globals
     private Long mBookId;
     private boolean mToWishList;
+    private boolean mBorrowedToMe;
     private String imageFileName;
 
     // Requests to other activities
@@ -100,11 +105,18 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     // Permission requests
     private static final int PERMISSION_TAKE_PHOTO = 2;
     private static final int PERMISSION_BARCODE = 3;
+    private static final int PERMISSION_PICK_CONTACT = 4;
 
     private boolean startingActivity = false;
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
+
+    @Bind(R.id.book_input_origin_image)
+    ImageView mOriginImage;
+
+    @Bind(R.id.book_input_origin)
+    AutoCompleteTextView mOriginEdit;
 
     @Bind(R.id.book_input_author)
     AutoCompleteTextView mAuthorEdit;
@@ -159,10 +171,19 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         if (extras != null) {
             mBookId = extras.getLong(EXTRA_BOOK_ID, 0);
             mToWishList = extras.getInt(EXTRA_WISH_LIST) == BookCursorAdapter.TRUE;
+            mBorrowedToMe = extras.getInt(EXTRA_BORROWED_TO_ME) == BookCursorAdapter.TRUE;
         } else {
-            mBookId = 0l;
+            mBookId = 0L;
             mToWishList = false;
+            mBorrowedToMe = false;
         }
+
+        if (mBorrowedToMe) {
+            requestPickContactPermission();
+        }
+
+        mOriginEdit.setVisibility(mBorrowedToMe ? View.VISIBLE : View.GONE);
+        mOriginImage.setVisibility(mBorrowedToMe ? View.VISIBLE : View.GONE);
 
         if (mBookId > 0) {
             setTitle(R.string.title_edit_book);
@@ -201,6 +222,18 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         setAuthorAdapter();
         setPublisherAdapter();
         setLibraryAdapter();
+        setBorrowedFromAdapter();
+    }
+
+    private void requestPickContactPermission() {
+        int pickContactPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
+        if (pickContactPermission != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(
+                    mOriginEdit,
+                    R.string.edit_book_barcode_contact_permission,
+                    PERMISSION_PICK_CONTACT,
+                    Manifest.permission.READ_CONTACTS);
+        }
     }
 
     public void checkLibrariesPreferences() {
@@ -291,6 +324,30 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         adapter.setCursorToStringConverter(new SimpleCursorAdapter.CursorToStringConverter() {
             public CharSequence convertToString(Cursor cur) {
                 int index = cur.getColumnIndex(Contract.Libraries.LIBRARY_NAME);
+                return cur.getString(index);
+            }
+        });
+    }
+
+    private void setBorrowedFromAdapter() {
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(
+                this,
+                android.R.layout.simple_list_item_1,
+                null,
+                new String[]{ContactsContract.Contacts.DISPLAY_NAME},
+                new int[]{android.R.id.text1},
+                0);
+        mOriginEdit.setAdapter(adapter);
+
+        adapter.setFilterQueryProvider(new FilterQueryProvider() {
+            public Cursor runQuery(CharSequence str) {
+                return getContactCursor(str);
+            }
+        });
+
+        adapter.setCursorToStringConverter(new SimpleCursorAdapter.CursorToStringConverter() {
+            public CharSequence convertToString(Cursor cur) {
+                int index = cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
                 return cur.getString(index);
             }
         });
@@ -452,9 +509,21 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 .setImageFilePath((String) mImageEdit.getTag())
                 .setDescription(mDescription.getText().toString())
                 .setWish(mToWishList)
+                .setBorrowedToMe(mBorrowedToMe)
                 .build();
 
-        DatabaseStoreUtils.saveBook(getContentResolver(), book);
+        long bookId = DatabaseStoreUtils.saveBook(getContentResolver(), book);
+
+        if (mBorrowedToMe) {
+            final long dateFrom = new Date(System.currentTimeMillis()).getTime();
+
+            ContentValues borrowContentValues = new ContentValues();
+            borrowContentValues.put(Contract.BorrowMeInfoColumns.BORROW_DATE_BORROWED, dateFrom);
+            borrowContentValues.put(Contract.BorrowMeInfoColumns.BORROW_NAME, mOriginEdit.getText().toString());
+
+            getContentResolver().insert(Contract.Books.buildBorrowedToMeInfoUri(bookId), borrowContentValues);
+        }
+
         finish();
     }
 
@@ -682,12 +751,14 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         String description = data.getString(data.getColumnIndex(Contract.Books.BOOK_DESCRIPTION));
         String path = data.getString(data.getColumnIndex(Contract.Books.BOOK_IMAGE_FILE));
         boolean wish = data.getInt(data.getColumnIndex(Contract.Books.BOOK_WISH_LIST)) == 1;
+        boolean borrowedToMe = data.getInt(data.getColumnIndex(Contract.Books.BOOK_BORROWED_TO_ME)) == 1;
 
         mTitleEdit.setText(title);
         mSubtitleEdit.setText(subtitle);
         mIsbnEdit.setText(isbn);
         mDescription.setText(description);
         mToWishList = wish;
+        mBorrowedToMe = borrowedToMe;
         mImageEdit.setTag(path);
 
         if (path != null) {
@@ -779,12 +850,28 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         return getContentResolver().query(Contract.Libraries.CONTENT_URI, contactsProjection, select, selectArgs, null);
     }
 
+    public Cursor getContactCursor(CharSequence filter) {
+        if (filter != null) {
+            return getContentResolver().query(
+                    ContactsContract.Contacts.CONTENT_URI,
+                    new String[]{
+                            ContactsContract.Contacts.DISPLAY_NAME,
+                            ContactsContract.Contacts._ID,
+                    },
+                    ContactsContract.Contacts.DISPLAY_NAME + " LIKE ?",
+                    new String[]{"%" + filter.toString() + "%"},
+                    ContactsContract.Contacts.DISPLAY_NAME);
+        }
+        return null;
+    }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(SAVE_STATE_FILE_NAME, imageFileName);
         outState.putLong(SAVE_STATE_BOOK_ID, mBookId);
         outState.putBoolean(SAVE_STATE_WISH_LIST, mToWishList);
+        outState.putBoolean(SAVE_STATE_BORROWED_TO_ME, mBorrowedToMe);
         outState.putString(SAVE_STATE_ORIGINAL_FILE, (String) mImageEdit.getTag());
     }
 
@@ -794,6 +881,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         imageFileName = savedInstanceState.getString(SAVE_STATE_FILE_NAME);
         mBookId = savedInstanceState.getLong(SAVE_STATE_BOOK_ID);
         mToWishList = savedInstanceState.getBoolean(SAVE_STATE_WISH_LIST);
+        mBorrowedToMe = savedInstanceState.getBoolean(SAVE_STATE_BORROWED_TO_ME);
         String original = savedInstanceState.getString(SAVE_STATE_ORIGINAL_FILE);
         mImageEdit.setTag(original);
     }

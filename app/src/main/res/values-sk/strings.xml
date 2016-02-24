@@ -53,11 +53,15 @@
     <string name="edit_book_scan">Skenovať</string>
     <string name="edit_book_search">Hľadať</string>
     <string name="edit_book_description">Popis</string>
+    <!-- TODO: translate-->
+    <string name="edit_book_origin">Požičané od</string>
 
     <string name="edit_book_info">Základné informácie o knihe</string>
     <string name="edit_book_cover">Obálka Knihy</string>
     <string name="edit_book_take_photo_permission">Potrebujeme od vás povolenie pre fotenie a ukladanie fotografií do vášho telefónu</string>
-    <string name="edit_book_barcode_permission">Ak chcete naskenovať čiarový kód budeme potrebovať vaše povolenie</string>
+    <string name="edit_book_barcode_permission">Ak chcete naskenovať čiarový kód, budeme potrebovať vaše povolenie</string>
+    <!-- TODO: translate-->
+    <string name="edit_book_barcode_contact_permission">Pre vyhľadávanie v kontaktoch, potrebujeme vaše povolenie</string>
 
     <string name="edit_book_no_permission">Bez týchto oprávnení nemôžeme pokračovať. Ak chcete zmeniť oprávenia urobte tak v Nastaveniach telefónu.</string>
     <string name="edit_book_no_permission_title">Chýbajúce oprávnenia</string>
@@ -79,6 +83,8 @@
     <string name="menu_books">Knihy</string>
     <string name="menu_books_mine">Moje knihy</string>
     <string name="menu_books_borrowed">Požičané knihy</string>
+    <!-- TODO: translate-->
+    <string name="menu_books_borrowed_to_me">Požičané od priateľov</string>
     <string name="menu_authors">Autori</string>
     <string name="menu_publishers">Vydavatelia</string>
     <string name="menu_libraries">Knižnice</string>
@@ -106,6 +112,8 @@
 
     <string name="dialog_return_book_title">Vrátenie knihy</string>
     <string name="dialog_return_book_message">%1$s si od teba požičal/a knihu dňa %2$s. Čo chcete s knihou urobiť?</string>
+    <!-- TODO: translate-->
+    <string name="dialog_return_borrowed_book_message">Dňa %2$s si si požičal knihu od %1$s. Chceš knihu vrátiť?</string>
     <string name="dialog_return_book_positive">Vrátiť knihu</string>
 
     <!-- Notification strings -->

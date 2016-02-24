@@ -35,6 +35,7 @@ public final class Contract {
         String BOOK_LIBRARY_ID = "book_library_id";
         String BOOK_IMAGE_URL = "book_image_url";
         String BOOK_BORROWED = "book_borrowed";
+        String BOOK_BORROWED_TO_ME = "book_borrowed_to_me";
         String BOOK_WISH_LIST = "book_wish";
     }
 
@@ -70,20 +71,29 @@ public final class Contract {
         String BORROW_NEXT_NOTIFICATION = "borrow_next_notify";
     }
 
-    // Aliases
-    public interface ConcatAliases {
-        String AUTHORS_CONCAT_ALIAS = "concat";
+    public interface BorrowMeInfoColumns {
+        String BORROW_ID = BaseColumns._ID;
+        String BORROW_BOOK_ID = "borrow_me_book_id";
+        String BORROW_NAME = "borrow_me_name";
+        String BORROW_DATE_BORROWED = "borrow_me_date_borrowed";
     }
 
+    // Aliases
+    // Base URI specification (authority and its URI representation)
+    public static final String CONTENT_AUTHORITY = BuildConfig.DATABASE_AUTHORITY;
+    public interface ConcatAliases {
+        String AUTHORS_CONCAT_ALIAS = "concat";
+
+    }
     // URI Paths
     public static final String PATH_BOOKS = "books";
     public static final String PATH_AUTHORS = "authors";
     public static final String PATH_PUBLISHERS = "publishers";
     public static final String PATH_LIBRARIES = "libraries";
-    public static final String PATH_BORROW_INFO = "borrowinfo";
 
-    // Base URI specification (authority and its URI representation)
-    public static final String CONTENT_AUTHORITY = BuildConfig.DATABASE_AUTHORITY;
+    public static final String PATH_BORROW_INFO = "borrowinfo";
+    public static final String PATH_BORROW_ME_INFO = "borrowmeinfo";
+
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
     public static final Uri BOOKS_AUTHORS_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_BOOKS).appendPath(PATH_AUTHORS).build();
@@ -146,6 +156,10 @@ public final class Contract {
 
         public static Uri buildBorrowInfoUri(long bookId) {
             return CONTENT_URI.buildUpon().appendPath(Long.toString(bookId)).appendPath(PATH_BORROW_INFO).build();
+        }
+
+        public static Uri buildBorrowedToMeInfoUri(long bookId) {
+            return CONTENT_URI.buildUpon().appendPath(Long.toString(bookId)).appendPath(PATH_BORROW_ME_INFO).build();
         }
     }
 
@@ -331,6 +345,41 @@ public final class Contract {
     public static class BorrowInfo implements BorrowInfoColumns {
 
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_BORROW_INFO).build();
+
+        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.borrow";
+        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.borrow";
+
+        /**
+         * Default "ORDER BY" clause.
+         */
+        public static final String DEFAULT_SORT = BORROW_DATE_BORROWED + " ASC";
+
+        public static Uri buildUri(long borrowId) {
+            return CONTENT_URI.buildUpon().appendPath(Long.toString(borrowId)).build();
+        }
+
+        public static long getBookId(Uri uri) {
+            return Long.parseLong(uri.getPathSegments().get(1));
+        }
+    }
+
+    /**
+     * Details about Book Borrow Me contract can be obtained from:
+     * <ul>
+     * <li>Table name: {@link xyz.kandrac.library.model.Database.Tables#BORROW_ME}</li>
+     * <li>Table columns: {@link xyz.kandrac.library.model.Contract.BorrowMeInfoColumns}</li>
+     * <li>Requests for {@link android.content.ContentProvider} from:
+     * <ul>
+     * <li>{@link #CONTENT_URI} or</li>
+     * <li>methods from this class</li>
+     * </ul>
+     * </li>
+     * </ul>
+     * To see more detailed info about requests please see {@link DatabaseProvider} constants
+     */
+    public static class BorrowMeInfo implements BorrowMeInfoColumns {
+
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_BORROW_ME_INFO).build();
 
         public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.borrow";
         public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.borrow";
