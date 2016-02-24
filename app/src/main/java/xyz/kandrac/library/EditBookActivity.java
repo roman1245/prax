@@ -105,6 +105,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     // Permission requests
     private static final int PERMISSION_TAKE_PHOTO = 2;
     private static final int PERMISSION_BARCODE = 3;
+    private static final int PERMISSION_PICK_CONTACT = 4;
 
     private boolean startingActivity = false;
 
@@ -177,6 +178,10 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
             mBorrowedToMe = false;
         }
 
+        if (mBorrowedToMe) {
+            requestPickContactPermission();
+        }
+
         mOriginEdit.setVisibility(mBorrowedToMe ? View.VISIBLE : View.GONE);
         mOriginImage.setVisibility(mBorrowedToMe ? View.VISIBLE : View.GONE);
 
@@ -218,6 +223,17 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         setPublisherAdapter();
         setLibraryAdapter();
         setBorrowedFromAdapter();
+    }
+
+    private void requestPickContactPermission() {
+        int pickContactPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
+        if (pickContactPermission != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(
+                    mOriginEdit,
+                    R.string.edit_book_barcode_contact_permission,
+                    PERMISSION_PICK_CONTACT,
+                    Manifest.permission.READ_CONTACTS);
+        }
     }
 
     public void checkLibrariesPreferences() {
