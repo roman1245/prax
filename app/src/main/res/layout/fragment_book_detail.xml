@@ -34,10 +34,10 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:contentDescription="@string/edit_book_info"
-                android:src="@drawable/ic_book"
                 android:tint="@color/md_grey_700"
                 app:layout_gravity="center"
-                app:layout_rowSpan="2" />
+                app:layout_rowSpan="2"
+                app:srcCompat="@drawable/ic_book" />
 
             <TextView
                 android:layout_width="0dp"
@@ -62,10 +62,10 @@
                 android:layout_height="24dp"
                 android:layout_marginTop="24dp"
                 android:contentDescription="@string/edit_book_info"
-                android:src="@drawable/ic_author"
                 android:tint="@color/md_grey_700"
                 app:layout_gravity="center"
-                app:layout_rowSpan="2" />
+                app:layout_rowSpan="2"
+                app:srcCompat="@drawable/ic_author" />
 
             <TextView
                 android:layout_width="0dp"
@@ -92,10 +92,10 @@
                 android:layout_height="24dp"
                 android:layout_marginTop="24dp"
                 android:contentDescription="@string/edit_book_info"
-                android:src="@drawable/ic_tie"
                 android:tint="@color/md_grey_700"
                 app:layout_gravity="center"
-                app:layout_rowSpan="2" />
+                app:layout_rowSpan="2"
+                app:srcCompat="@drawable/ic_tie" />
 
             <TextView
                 android:layout_width="0dp"
@@ -104,7 +104,7 @@
                 android:gravity="center_vertical"
                 android:text="@string/book_detail_publisher"
                 android:textIsSelectable="true"
-                app:layout_gravity="fill"/>
+                app:layout_gravity="fill" />
 
             <TextView
                 android:id="@+id/book_detail_publisher"
@@ -123,10 +123,10 @@
                 android:layout_height="24dp"
                 android:layout_marginTop="24dp"
                 android:contentDescription="@string/edit_book_info"
-                android:src="@drawable/ic_library"
                 android:tint="@color/md_grey_700"
                 app:layout_gravity="center"
-                app:layout_rowSpan="2" />
+                app:layout_rowSpan="2"
+                app:srcCompat="@drawable/ic_library" />
 
             <TextView
                 android:id="@+id/book_detail_library_heading"
@@ -136,7 +136,7 @@
                 android:gravity="center_vertical"
                 android:text="@string/book_detail_library"
                 android:textIsSelectable="true"
-                app:layout_gravity="fill"/>
+                app:layout_gravity="fill" />
 
             <TextView
                 android:id="@+id/book_detail_library"
@@ -155,10 +155,10 @@
                 android:layout_height="24dp"
                 android:layout_marginTop="24dp"
                 android:contentDescription="@string/edit_book_info"
-                android:src="@drawable/ic_barcode"
                 android:tint="@color/md_grey_700"
                 app:layout_gravity="center"
-                app:layout_rowSpan="2" />
+                app:layout_rowSpan="2"
+                app:srcCompat="@drawable/ic_barcode" />
 
             <TextView
                 android:id="@+id/book_detail_isbn_title"
@@ -168,7 +168,7 @@
                 android:gravity="center_vertical"
                 android:text="@string/book_detail_isbn"
                 android:textIsSelectable="true"
-                app:layout_gravity="fill"/>
+                app:layout_gravity="fill" />
 
             <TextView
                 android:id="@+id/book_detail_isbn"
@@ -187,10 +187,10 @@
                 android:layout_height="24dp"
                 android:layout_marginTop="24dp"
                 android:contentDescription="@string/edit_book_info"
-                android:src="@drawable/ic_pencil"
                 android:tint="@color/md_grey_700"
                 app:layout_column="0"
-                app:layout_gravity="center" />
+                app:layout_gravity="center"
+                app:srcCompat="@drawable/ic_pencil" />
 
             <TextView
                 android:id="@+id/book_detail_description"
@@ -207,12 +207,12 @@
                 android:layout_height="24dp"
                 android:layout_marginTop="24dp"
                 android:contentDescription="@string/edit_book_info"
-                android:src="@drawable/ic_share"
                 android:tint="@color/md_grey_700"
                 android:visibility="gone"
                 app:layout_column="0"
                 app:layout_gravity="center"
                 app:layout_row="11"
+                app:srcCompat="@drawable/ic_share"
                 tools:visibility="visible" />
 
             <Button
