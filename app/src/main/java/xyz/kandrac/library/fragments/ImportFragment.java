@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Fragment;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,7 +14,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -43,13 +48,13 @@ public class ImportFragment extends Fragment {
 
     private void invokeChooser() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("text/csv");
+        intent.setType("text/comma-separated-values");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
 
         // special intent for Samsung file manager
         Intent sIntent = new Intent("com.sec.android.app.myfiles.PICK_DATA");
         // if you want any file type, you can skip next line
-        sIntent.putExtra("CONTENT_TYPE", "text/csv");
+        sIntent.putExtra("CONTENT_TYPE", "text/comma-separated-values");
         sIntent.addCategory(Intent.CATEGORY_DEFAULT);
 
         Intent chooserIntent;
@@ -85,12 +90,23 @@ public class ImportFragment extends Fragment {
                 if (file.exists()) {
                     BackupUtils.importCsv(getActivity(), file);
                 } else {
-                    Toast.makeText(getActivity(), "error : " + data.getData().getPath(), Toast.LENGTH_LONG).show();
+                    try {
+                        readTextFromUri(data.getData());
+                    } catch (Exception ex) {
+                        Toast.makeText(getActivity(), "errror : " + data.getData().getPath(), Toast.LENGTH_LONG).show();
+                    }
                 }
                 break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    private void readTextFromUri(Uri uri) throws IOException {
+        InputStream inputStream = getActivity().getContentResolver().openInputStream(uri);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        BackupUtils.importCsv(getActivity(), reader);
+        inputStream.close();
     }
 
     @Override
