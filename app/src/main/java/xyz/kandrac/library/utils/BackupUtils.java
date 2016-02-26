@@ -4,7 +4,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 
 import com.opencsv.CSVReader;
 
@@ -13,6 +12,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+
+import xyz.kandrac.library.model.DatabaseStoreUtils;
+import xyz.kandrac.library.model.obj.Author;
+import xyz.kandrac.library.model.obj.Book;
+import xyz.kandrac.library.model.obj.Library;
+import xyz.kandrac.library.model.obj.Publisher;
 
 /**
  * Import and export database with this class
@@ -87,6 +92,15 @@ public final class BackupUtils {
     }
 
     private static void importCsvLine(ContentResolver contentResolver, String[] line) {
-        Log.d("Jano", "title: " + line[0] + "; authors: " + line[1] + "; publisher: " + line[2] + "; isbn: " + line[3]);
+
+        Book book = new Book.Builder()
+                .setTitle(line[0])
+                .setAuthors(new Author[]{new Author.Builder().setName(line[1]).build()})
+                .setPublisher(new Publisher.Builder().setName(line[2]).build())
+                .setIsbn(line[3])
+                .setLibrary(new Library.Builder().setName("").build())
+                .build();
+
+        DatabaseStoreUtils.saveBook(contentResolver, book);
     }
 }
