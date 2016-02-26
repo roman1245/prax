@@ -1,10 +1,10 @@
 package xyz.kandrac.library.fragments;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,11 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -48,19 +44,17 @@ public class ImportFragment extends Fragment {
 
     private void invokeChooser() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("text/comma-separated-values");
+        intent.setType("text/*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
 
         // special intent for Samsung file manager
         Intent sIntent = new Intent("com.sec.android.app.myfiles.PICK_DATA");
-        // if you want any file type, you can skip next line
-        sIntent.putExtra("CONTENT_TYPE", "text/comma-separated-values");
+        sIntent.putExtra("CONTENT_TYPE", "text/*");
         sIntent.addCategory(Intent.CATEGORY_DEFAULT);
 
         Intent chooserIntent;
 
         if (getActivity().getPackageManager().resolveActivity(sIntent, 0) != null) {
-            // it is device with samsung file manager
             chooserIntent = Intent.createChooser(sIntent, "Open file");
             chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{intent});
         } else {
@@ -86,27 +80,23 @@ public class ImportFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case CHOOSE_FILE_REQUEST:
-                File file = new File(data.getData().getPath());
-                if (file.exists()) {
-                    BackupUtils.importCsv(getActivity(), file);
-                } else {
+
+                if (resultCode == Activity.RESULT_OK) {
+
                     try {
-                        readTextFromUri(data.getData());
-                    } catch (Exception ex) {
+                        BackupUtils.importCSV(getActivity(), data.getData());
+                    } catch (IOException ex) {
                         Toast.makeText(getActivity(), "errror : " + data.getData().getPath(), Toast.LENGTH_LONG).show();
                     }
+
+                } else {
+                    Toast.makeText(getActivity(), "File not choosen", Toast.LENGTH_SHORT).show();
                 }
+
                 break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);
         }
-    }
-
-    private void readTextFromUri(Uri uri) throws IOException {
-        InputStream inputStream = getActivity().getContentResolver().openInputStream(uri);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-        BackupUtils.importCsv(getActivity(), reader);
-        inputStream.close();
     }
 
     @Override
