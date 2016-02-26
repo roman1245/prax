@@ -3,7 +3,9 @@ package xyz.kandrac.library.utils;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
+import android.provider.OpenableColumns;
 
 import com.opencsv.CSVReader;
 
@@ -102,5 +104,25 @@ public final class BackupUtils {
                 .build();
 
         DatabaseStoreUtils.saveBook(contentResolver, book);
+    }
+
+    /**
+     * Get File name based on its Uri
+     *
+     * @param context to get ContentResolver from
+     * @param uri     of file
+     * @return file name
+     */
+    public static String getFileName(Context context, Uri uri) {
+        Cursor fileData = context.getContentResolver().query(uri, new String[]{OpenableColumns.DISPLAY_NAME}, null, null, null);
+        String result;
+        if (fileData != null && fileData.moveToFirst()) {
+            result = fileData.getString(fileData.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+            fileData.close();
+        } else {
+            result = uri.getLastPathSegment();
+        }
+
+        return result;
     }
 }

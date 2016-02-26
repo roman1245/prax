@@ -39,6 +39,7 @@
                 android:text="@string/import_select_file" />
 
             <TextView
+                android:id="@+id/import_file_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@id/import_select_file"
