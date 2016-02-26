@@ -130,7 +130,7 @@ public class Database extends SQLiteOpenHelper {
                 db.execSQL("ALTER TABLE " + Tables.BORROW_INFO + " ADD " + Contract.BorrowInfo.BORROW_NEXT_NOTIFICATION + " INTEGER");
             case 3:
                 db.execSQL(BORROW_ME_CREATE_TABLE);
-                db.execSQL("ALTER TABLE " + Tables.BOOKS + " ADD " + Contract.Books.BOOK_BORROWED_TO_ME + " BOOLEAN");
+                db.execSQL("ALTER TABLE " + Tables.BOOKS + " ADD " + Contract.Books.BOOK_BORROWED_TO_ME + " BOOLEAN DEFAULT 0");
         }
     }
 }
