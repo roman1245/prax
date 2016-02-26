@@ -59,13 +59,10 @@
                 android:layout_below="@id/import_select_file"
                 android:text="@string/import_first_row" />
 
-            <Switch
-                android:id="@+id/import_first_column"
-                style="@style/TextAppearance.AppCompat.Small"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/import_columns"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/import_first_row"
-                android:text="@string/import_first_column" />
+                android:layout_height="wrap_content" />
         </RelativeLayout>
     </ScrollView>
 

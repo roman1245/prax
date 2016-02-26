@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +39,9 @@ public class ImportFragment extends Fragment {
 
     @Bind(R.id.import_file_name)
     public TextView fileNameText;
+
+    @Bind(R.id.import_columns)
+    public RecyclerView columnsView;
 
     /**
      * Select file via file provider if permission {@link android.Manifest.permission#READ_EXTERNAL_STORAGE}
