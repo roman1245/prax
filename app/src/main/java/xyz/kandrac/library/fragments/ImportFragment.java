@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +37,7 @@ public class ImportFragment extends Fragment {
     private static final int CHOOSE_FILE_PERMISSION = 200;
 
     private Uri mImportFileUri;
+    private ImportAdapter mAdapter;
 
     @Bind(R.id.import_file_name)
     public TextView fileNameText;
@@ -118,6 +120,15 @@ public class ImportFragment extends Fragment {
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mAdapter = new ImportAdapter(getActivity());
+        columnsView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        columnsView.setAdapter(mAdapter);
+        columnsView.setHasFixedSize(false);
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case CHOOSE_FILE_REQUEST:
@@ -125,6 +136,7 @@ public class ImportFragment extends Fragment {
                 if (resultCode == Activity.RESULT_OK && data.getData() != null) {
                     mImportFileUri = data.getData();
                     fileNameText.setText(BackupUtils.getFileName(getActivity(), mImportFileUri));
+                    mAdapter.setContent(BackupUtils.getSampleRow(getActivity(), mImportFileUri));
                 } else {
                     Toast.makeText(getActivity(), "File not choosen", Toast.LENGTH_SHORT).show();
                 }

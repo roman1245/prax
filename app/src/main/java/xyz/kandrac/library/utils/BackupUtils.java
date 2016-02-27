@@ -125,4 +125,32 @@ public final class BackupUtils {
 
         return result;
     }
+
+    public static String[] getSampleRow(Context context, Uri uri) {
+        // uri check
+        if (uri == null) {
+            throw new NullPointerException("File Uri should not be null");
+        }
+
+        try {
+            // open input stream of file based on its uri
+            InputStream inputStream = context.getContentResolver().openInputStream(uri);
+
+            try {
+                if (inputStream == null) {
+                    return null;
+                } else {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                    CSVReader csvReader = new CSVReader(reader);
+                    return csvReader.readNext();
+                }
+            } finally {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+            }
+        } catch (IOException ex) {
+            return null;
+        }
+    }
 }

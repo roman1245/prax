@@ -66,13 +66,7 @@
     <!-- TODO: implement for other languages as well -->
     <!-- Import Screen -->
     <string name="import_activity_name">Import údajov</string>
-    <string name="import_description">Pre importovanie údajov je potrebné vložiť CSV súbor s jedinou tabuľkou, ktorá môže obsahovať stĺpce:
-        Názov Knihy
-        Meno autora / autorov oddelených čiarkami
-        Názov vydavateľa
-        ISBN / čiarový kód
-        Popis knihy
-        Meno, komu bola kniha požičaná</string>
+    <string name="import_description">Pre importovanie údajov je potrebné vložiť CSV súbor s tabuľkou</string>
     <string name="import_select_file">Select file</string>
     <string name="import_how_to">Ako vytvorit CSV subor</string>
     <string name="import_first_row">Zahrn aj prvy riadok</string>
