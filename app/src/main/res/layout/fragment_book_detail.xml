@@ -231,10 +231,10 @@
                 android:layout_height="24dp"
                 android:layout_marginTop="24dp"
                 android:contentDescription="@string/edit_book_info"
-                android:src="@drawable/ic_borrowed_to_me"
                 android:tint="@color/md_grey_700"
                 android:visibility="gone"
                 app:layout_gravity="center"
+                app:srcCompat="@drawable/ic_borrowed_to_me"
                 tools:visibility="visible" />
 
             <Button

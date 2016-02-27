@@ -36,8 +36,8 @@
             <menu>
                 <item
                     android:id="@+id/main_navigation_authors"
-                    android:title="@string/menu_authors"
-                    android:icon="@drawable/ic_author" />
+                    android:icon="@drawable/ic_author"
+                    android:title="@string/menu_authors" />
 
                 <item
                     android:id="@+id/main_navigation_publishers"

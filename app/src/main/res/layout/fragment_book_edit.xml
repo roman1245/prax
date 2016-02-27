@@ -40,12 +40,12 @@
                 android:layout_marginEnd="12dp"
                 android:layout_marginRight="12dp"
                 android:contentDescription="@string/edit_book_info"
-                android:src="@drawable/ic_borrowed_to_me"
                 android:tint="@color/md_grey_700"
                 android:visibility="gone"
                 app:layout_column="0"
                 app:layout_gravity="center"
                 app:layout_row="0"
+                app:srcCompat="@drawable/ic_borrowed_to_me"
                 tools:visibility="visible" />
 
             <AutoCompleteTextView
@@ -210,8 +210,8 @@
                 android:background="#ddd"
                 android:contentDescription="@string/edit_book_cover"
                 android:scaleType="centerInside"
-                android:src="@drawable/ic_book_white"
-                app:layout_column="1" />
+                app:layout_column="1"
+                app:srcCompat="@drawable/ic_book_white" />
 
             <ImageView
                 android:layout_marginTop="8dp"
@@ -240,8 +240,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="8dp"
-        android:src="@drawable/ic_content_save"
         app:elevation="6dp"
         app:fabSize="normal"
-        app:pressedTranslationZ="12dp" />
+        app:pressedTranslationZ="12dp"
+        app:srcCompat="@drawable/ic_content_save" />
 </android.support.design.widget.CoordinatorLayout>
