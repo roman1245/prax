@@ -8,6 +8,7 @@
 
     <!-- General formatting strings -->
     <string name="format_book_title_subtitle">%1$s: %2$s</string>
+    <string name="format_order">%1$s.</string>
 
     <!-- -->
     <string name="title_add_new_book">New Book</string>
@@ -119,4 +120,13 @@
     <string name="preferences_libraries_default_name_title">Default library</string>
     <string name="preferences_libraries_default_name_description">Default library title to which new books will be automatically added</string>
 
+    <string-array name="column_names">
+        <item>Ignore</item>
+        <item>Book title</item>
+        <item>Author name</item>
+        <item>Publisher</item>
+        <item>ISBN</item>
+        <item>Borrowed to (name)</item>
+        <item>Location (library)</item>
+    </string-array>
 </resources>

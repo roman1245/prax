@@ -12,13 +12,14 @@ import xyz.kandrac.library.R;
 
 public class ImportAdapter extends RecyclerView.Adapter<ImportAdapter.ViewHolder> {
 
-    public static final String COLUMN_BOOK_TITLE = "";
-    public static final String COLUMN_AUTHOR_NAME = "";
-    public static final String COLUMN_ISBN = "";
-    public static final String COLUMN_PUBLISHER_NAME = "";
-    public static final String COLUMN_BORROWED_TO = "";
-    public static final String COLUMN_ID = "";
-    public static final String COLUMN_PLACEMENT = "";
+    // Expected values in rows
+    public static final int COLUMN_IGNORE = 0;
+    public static final int COLUMN_BOOK_TITLE = 1;
+    public static final int COLUMN_AUTHOR_NAME = 2;
+    public static final int COLUMN_PUBLISHER_NAME = 3;
+    public static final int COLUMN_ISBN = 4;
+    public static final int COLUMN_BORROWED_TO = 5;
+    public static final int COLUMN_PLACEMENT = 6;
 
     private Context mContext;
     private String[] mContent;
@@ -58,7 +59,7 @@ public class ImportAdapter extends RecyclerView.Adapter<ImportAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.id.setText(position+".");
+        holder.id.setText(mContext.getString(R.string.format_order, position + 1));
         holder.text.setText(mContent[position]);
     }
 
@@ -69,5 +70,9 @@ public class ImportAdapter extends RecyclerView.Adapter<ImportAdapter.ViewHolder
         } else {
             return 0;
         }
+    }
+
+    public String getBookTitle() {
+        return "";
     }
 }

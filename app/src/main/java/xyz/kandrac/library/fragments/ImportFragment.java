@@ -10,11 +10,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,13 +37,12 @@ public class ImportFragment extends Fragment {
     private static final int CHOOSE_FILE_PERMISSION = 200;
 
     private Uri mImportFileUri;
-    private ImportAdapter mAdapter;
 
     @Bind(R.id.import_file_name)
     public TextView fileNameText;
 
     @Bind(R.id.import_columns)
-    public RecyclerView columnsView;
+    public LinearLayout columnsView;
 
     /**
      * Select file via file provider if permission {@link android.Manifest.permission#READ_EXTERNAL_STORAGE}
@@ -122,10 +121,6 @@ public class ImportFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mAdapter = new ImportAdapter(getActivity());
-        columnsView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        columnsView.setAdapter(mAdapter);
-        columnsView.setHasFixedSize(false);
     }
 
     @Override
@@ -136,7 +131,27 @@ public class ImportFragment extends Fragment {
                 if (resultCode == Activity.RESULT_OK && data.getData() != null) {
                     mImportFileUri = data.getData();
                     fileNameText.setText(BackupUtils.getFileName(getActivity(), mImportFileUri));
-                    mAdapter.setContent(BackupUtils.getSampleRow(getActivity(), mImportFileUri));
+
+                    columnsView.removeAllViews();
+
+                    String[] columnValues = BackupUtils.getSampleRow(getActivity(), mImportFileUri);
+
+                    if (columnValues == null) {
+                        return;
+                    }
+
+                    for (int i = 0; i < columnValues.length; i++) {
+                        View row = getActivity().getLayoutInflater().inflate(R.layout.list_item_import_column, columnsView, true);
+                        TextView rowId = (TextView) row.findViewById(R.id.column_id);
+                        TextView rowText = (TextView) row.findViewById(R.id.column_text);
+                        Spinner rowRepresent = (Spinner) row.findViewById(R.id.column_representation);
+                        rowId.setText(getString(R.string.format_order, i + 1));
+                        rowId.setId(i * columnValues.length);
+                        rowText.setText(columnValues[i]);
+                        rowText.setId(i * columnValues.length + 1);
+                        rowRepresent.setId(i * columnValues.length + 2);
+                    }
+
                 } else {
                     Toast.makeText(getActivity(), "File not choosen", Toast.LENGTH_SHORT).show();
                 }

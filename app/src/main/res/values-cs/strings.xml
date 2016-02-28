@@ -7,6 +7,7 @@
     <string name="unexpected_error_occurs">Došlo k neočekávané chybě</string>
     <!-- General formatting strings -->
     <string name="format_book_title_subtitle">%1$s: %2$s</string>
+    <string name="format_order">%1$s.</string>
 
 
     <string name="title_add_new_book">Nová kniha</string>
@@ -111,5 +112,15 @@
     <string name="preferences_libraries_enabled_description">Po zatržení budeš moci přiřadit knížku do samostatných knihoven</string>
     <string name="preferences_libraries_default_name_title">Výchozí knihovna</string>
     <string name="preferences_libraries_default_name_description">Výchozí název knihovny, do které se budou knihy přidávat</string>
+
+    <string-array name="column_names">
+        <item>Ignorovat</item>
+        <item>Název knihy</item>
+        <item>Jméno autora</item>
+        <item>Vydavatel</item>
+        <item>ISBN</item>
+        <item>Vypůjčené (jméno)</item>
+        <item>Umístění (knihovna)</item>
+    </string-array>
 
 </resources>

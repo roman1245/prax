@@ -8,6 +8,7 @@
 
     <!-- General formatting strings -->
     <string name="format_book_title_subtitle">%1$s: %2$s</string>
+    <string name="format_order">%1$s.</string>
 
     <!-- -->
     <string name="title_add_new_book">Nová kniha</string>
@@ -135,9 +136,12 @@
     <string name="preferences_import_description">Klikni sem pre importovanie údajov vo formáte CSV</string>
 
     <string-array name="column_names">
-        <item>Autor</item>
-        <item>Nazov</item>
-        <item>Vydavatel</item>
+        <item>Ignorovať</item>
+        <item>Názov knihy</item>
+        <item>Meno autora</item>
+        <item>Vydavateľ</item>
         <item>ISBN</item>
+        <item>Požičané (meno)</item>
+        <item>Umiestnenie (knižnica)</item>
     </string-array>
 </resources>
