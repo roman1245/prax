@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -78,7 +79,28 @@ public class ImportFragment extends Fragment {
         }
 
         try {
-            BackupUtils.importCSV(getActivity(), mImportFileUri);
+            ArrayList<BackupUtils.CsvColumn> columns = new ArrayList<>();
+
+            for (int i = 0; i < columnsView.getChildCount(); i++) {
+                int selectedPosition = ((Spinner)columnsView.findViewWithTag(i)).getSelectedItemPosition();
+                switch (selectedPosition) {
+                    case 0:
+                        break;
+                    case 1:
+                        columns.add(new BackupUtils.CsvColumn(i, BackupUtils.CsvColumn.COLUMN_TITLE));
+                        break;
+                    case 2:
+                        columns.add(new BackupUtils.CsvColumn(i, BackupUtils.CsvColumn.COLUMN_AUTHOR));
+                        break;
+                    case 3:
+                        columns.add(new BackupUtils.CsvColumn(i, BackupUtils.CsvColumn.COLUMN_PUBLISHER));
+                        break;
+                    case 4:
+                        columns.add(new BackupUtils.CsvColumn(i, BackupUtils.CsvColumn.COLUMN_ISBN));
+                        break;
+                }
+            }
+            BackupUtils.importCSV(getActivity(), mImportFileUri, columns.toArray(new BackupUtils.CsvColumn[columns.size()]));
         } catch (IOException ex) {
             Toast.makeText(getActivity(), "errror : " + mImportFileUri.getPath(), Toast.LENGTH_LONG).show();
         }
@@ -146,10 +168,13 @@ public class ImportFragment extends Fragment {
                         TextView rowText = (TextView) row.findViewById(R.id.column_text);
                         Spinner rowRepresent = (Spinner) row.findViewById(R.id.column_representation);
                         rowId.setText(getString(R.string.format_order, i + 1));
-                        rowId.setId(i * columnValues.length);
                         rowText.setText(columnValues[i]);
-                        rowText.setId(i * columnValues.length + 1);
-                        rowRepresent.setId(i * columnValues.length + 2);
+                        // clear ids so that you can find by id newly added items
+                        rowId.setId(View.NO_ID);
+                        rowText.setId(View.NO_ID);
+                        rowRepresent.setId(View.NO_ID);
+                        // tag set for representation
+                        rowRepresent.setTag(i);
                     }
 
                 } else {

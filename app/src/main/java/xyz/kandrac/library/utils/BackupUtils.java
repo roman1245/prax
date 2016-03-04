@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.OpenableColumns;
+import android.support.annotation.IntDef;
 
 import com.opencsv.CSVReader;
 
@@ -14,6 +15,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 import xyz.kandrac.library.model.DatabaseStoreUtils;
 import xyz.kandrac.library.model.obj.Author;
@@ -46,7 +49,7 @@ public final class BackupUtils {
      * @param uri     of file
      * @throws IOException
      */
-    public static boolean importCSV(Context context, Uri uri) throws IOException {
+    public static boolean importCSV(Context context, Uri uri, CsvColumn[] csvColumns) throws IOException {
 
         // uri check
         if (uri == null) {
@@ -61,7 +64,7 @@ public final class BackupUtils {
                 return false;
             } else {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-                return importCsv(context, reader);
+                return importCsv(context, reader, csvColumns);
             }
         } finally {
             if (inputStream != null) {
@@ -76,7 +79,7 @@ public final class BackupUtils {
      * @param context to get database from
      * @param reader  to import data from
      */
-    public static boolean importCsv(Context context, Reader reader) throws IOException {
+    public static boolean importCsv(Context context, Reader reader, CsvColumn[] csvColumns) throws IOException {
 
         // reader check
         if (reader == null) {
@@ -88,22 +91,62 @@ public final class BackupUtils {
         ContentResolver contentResolver = context.getContentResolver();
         String[] nextLine;
         while ((nextLine = csvReader.readNext()) != null) {
-            importCsvLine(contentResolver, nextLine);
+            importCsvLine(contentResolver, nextLine, csvColumns);
         }
         return true;
     }
 
-    private static void importCsvLine(ContentResolver contentResolver, String[] line) {
+    private static void importCsvLine(ContentResolver contentResolver, String[] line, CsvColumn[] csvColumns) {
 
-        Book book = new Book.Builder()
-                .setTitle(line[0])
-                .setAuthors(new Author[]{new Author.Builder().setName(line[1]).build()})
-                .setPublisher(new Publisher.Builder().setName(line[2]).build())
-                .setIsbn(line[3])
-                .setLibrary(new Library.Builder().setName("").build())
-                .build();
+        Book.Builder bookBuilder = new Book.Builder();
 
-        DatabaseStoreUtils.saveBook(contentResolver, book);
+        bookBuilder.setLibrary(new Library.Builder().setName("").build());
+        for (CsvColumn column: csvColumns) {
+
+            if (line.length <= column.columnId) {
+                return;
+            }
+
+            switch (column.representation) {
+                case CsvColumn.COLUMN_TITLE:
+                    bookBuilder.setTitle(line[column.columnId]);
+                    break;
+                case CsvColumn.COLUMN_AUTHOR:
+                    bookBuilder.setAuthors(new Author[]{new Author.Builder().setName(line[column.columnId]).build()});
+                    break;
+                case CsvColumn.COLUMN_PUBLISHER:
+                    bookBuilder.setPublisher(new Publisher.Builder().setName(line[column.columnId]).build());
+                    break;
+                case CsvColumn.COLUMN_ISBN:
+                    bookBuilder.setIsbn(line[column.columnId]);
+                    break;
+            }
+        }
+
+        DatabaseStoreUtils.saveBook(contentResolver, bookBuilder.build());
+    }
+
+    public static class CsvColumn {
+
+        public static final int COLUMN_TITLE = 0;
+        public static final int COLUMN_AUTHOR = 1;
+        public static final int COLUMN_PUBLISHER = 2;
+        public static final int COLUMN_ISBN = 3;
+
+        @IntDef()
+        @Retention(RetentionPolicy.SOURCE)
+        @interface Column {
+        }
+
+        @Column
+        int representation;
+        int columnId;
+
+        public CsvColumn(int columnId, @Column int columnName) {
+            this.columnId = columnId;
+            this.representation = columnName;
+        }
+
     }
 
     /**

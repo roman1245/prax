@@ -141,7 +141,5 @@
         <item>Meno autora</item>
         <item>Vydavateľ</item>
         <item>ISBN</item>
-        <item>Požičané (meno)</item>
-        <item>Umiestnenie (knižnica)</item>
     </string-array>
 </resources>

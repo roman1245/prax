@@ -126,7 +126,5 @@
         <item>Author name</item>
         <item>Publisher</item>
         <item>ISBN</item>
-        <item>Borrowed to (name)</item>
-        <item>Location (library)</item>
     </string-array>
 </resources>

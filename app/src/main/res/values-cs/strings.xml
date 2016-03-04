@@ -119,8 +119,6 @@
         <item>Jméno autora</item>
         <item>Vydavatel</item>
         <item>ISBN</item>
-        <item>Vypůjčené (jméno)</item>
-        <item>Umístění (knihovna)</item>
     </string-array>
 
 </resources>
