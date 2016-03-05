@@ -130,9 +130,10 @@ public class ImportFragment extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(Integer inserted) {
-            Toast.makeText(getActivity(), "inserted: " + inserted, Toast.LENGTH_SHORT).show();
+        protected void onPostExecute(Integer imported) {
+            Toast.makeText(getActivity(), getString(R.string.import_imported, imported), Toast.LENGTH_SHORT).show();
             mImport.setEnabled(true);
+            getActivity().finish();
         }
     }
 
@@ -149,16 +150,16 @@ public class ImportFragment extends Fragment {
         Intent chooserIntent;
 
         if (getActivity().getPackageManager().resolveActivity(sIntent, 0) != null) {
-            chooserIntent = Intent.createChooser(sIntent, "Open file");
+            chooserIntent = Intent.createChooser(sIntent, getString(R.string.import_chooser));
             chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{intent});
         } else {
-            chooserIntent = Intent.createChooser(intent, "Open file");
+            chooserIntent = Intent.createChooser(intent, getString(R.string.import_chooser));
         }
 
         try {
             startActivityForResult(chooserIntent, CHOOSE_FILE_REQUEST);
         } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(getActivity().getApplicationContext(), "No suitable File Manager was found.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity().getApplicationContext(), R.string.import_no_file_manager, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -207,8 +208,6 @@ public class ImportFragment extends Fragment {
                         rowRepresent.setTag(i);
                     }
 
-                } else {
-                    Toast.makeText(getActivity(), "File not choosen", Toast.LENGTH_SHORT).show();
                 }
 
                 break;
