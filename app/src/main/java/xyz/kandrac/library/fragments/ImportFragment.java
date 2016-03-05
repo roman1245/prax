@@ -104,14 +104,14 @@ public class ImportFragment extends Fragment {
                     break;
             }
         }
-        new ImportAsyncTaks(columns.toArray(new BackupUtils.CsvColumn[columns.size()])).execute();
+        new ImportAsyncTask(columns.toArray(new BackupUtils.CsvColumn[columns.size()])).execute();
     }
 
-    private class ImportAsyncTaks extends AsyncTask<Void, Void, Integer> {
+    private class ImportAsyncTask extends AsyncTask<Void, Void, Integer> {
 
         private BackupUtils.CsvColumn[] mColumns;
 
-        public ImportAsyncTaks(BackupUtils.CsvColumn[] columns) {
+        public ImportAsyncTask(BackupUtils.CsvColumn[] columns) {
             mColumns = columns;
         }
 

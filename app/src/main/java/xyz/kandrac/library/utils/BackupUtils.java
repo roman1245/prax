@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.OpenableColumns;
 import android.support.annotation.IntDef;
+import android.text.TextUtils;
 
 import com.opencsv.CSVReader;
 
@@ -63,7 +64,7 @@ public final class BackupUtils {
             if (inputStream == null) {
                 return 0;
             } else {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-16"));
                 return importCsv(context, reader, csvColumns);
             }
         } finally {
@@ -112,10 +113,10 @@ public final class BackupUtils {
 
             switch (column.representation) {
                 case CsvColumn.COLUMN_TITLE:
-                    bookBuilder.setTitle(line[column.columnId]);
+                    bookBuilder.setTitle(TextUtils.htmlEncode(line[column.columnId]));
                     break;
                 case CsvColumn.COLUMN_AUTHOR:
-                    bookBuilder.setAuthors(new Author[]{new Author.Builder().setName(line[column.columnId]).build()});
+                    bookBuilder.setAuthors(new Author[]{new Author.Builder().setName(TextUtils.htmlEncode(line[column.columnId])).build()});
                     break;
                 case CsvColumn.COLUMN_PUBLISHER:
                     bookBuilder.setPublisher(new Publisher.Builder().setName(line[column.columnId]).build());
@@ -186,7 +187,7 @@ public final class BackupUtils {
                 if (inputStream == null) {
                     return null;
                 } else {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-16"));
                     CSVReader csvReader = new CSVReader(reader);
                     return csvReader.readNext();
                 }
