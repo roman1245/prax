@@ -160,7 +160,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
             mBookId = extras.getLong(EXTRA_BOOK_ID, 0);
             mToWishList = extras.getInt(EXTRA_WISH_LIST) == BookCursorAdapter.TRUE;
         } else {
-            mBookId = 0l;
+            mBookId = 0L;
             mToWishList = false;
         }
 

@@ -6,6 +6,7 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,6 +14,7 @@ import android.support.v4.app.ActivityCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -44,6 +46,9 @@ public class ImportFragment extends Fragment {
 
     @Bind(R.id.import_columns)
     public LinearLayout columnsView;
+
+    @Bind(R.id.import_import)
+    public Button mImport;
 
     /**
      * Select file via file provider if permission {@link android.Manifest.permission#READ_EXTERNAL_STORAGE}
@@ -78,31 +83,56 @@ public class ImportFragment extends Fragment {
             return;
         }
 
-        try {
-            ArrayList<BackupUtils.CsvColumn> columns = new ArrayList<>();
+        ArrayList<BackupUtils.CsvColumn> columns = new ArrayList<>();
 
-            for (int i = 0; i < columnsView.getChildCount(); i++) {
-                int selectedPosition = ((Spinner)columnsView.findViewWithTag(i)).getSelectedItemPosition();
-                switch (selectedPosition) {
-                    case 0:
-                        break;
-                    case 1:
-                        columns.add(new BackupUtils.CsvColumn(i, BackupUtils.CsvColumn.COLUMN_TITLE));
-                        break;
-                    case 2:
-                        columns.add(new BackupUtils.CsvColumn(i, BackupUtils.CsvColumn.COLUMN_AUTHOR));
-                        break;
-                    case 3:
-                        columns.add(new BackupUtils.CsvColumn(i, BackupUtils.CsvColumn.COLUMN_PUBLISHER));
-                        break;
-                    case 4:
-                        columns.add(new BackupUtils.CsvColumn(i, BackupUtils.CsvColumn.COLUMN_ISBN));
-                        break;
-                }
+        for (int i = 0; i < columnsView.getChildCount(); i++) {
+            int selectedPosition = ((Spinner) columnsView.findViewWithTag(i)).getSelectedItemPosition();
+            switch (selectedPosition) {
+                case 0:
+                    break;
+                case 1:
+                    columns.add(new BackupUtils.CsvColumn(i, BackupUtils.CsvColumn.COLUMN_TITLE));
+                    break;
+                case 2:
+                    columns.add(new BackupUtils.CsvColumn(i, BackupUtils.CsvColumn.COLUMN_AUTHOR));
+                    break;
+                case 3:
+                    columns.add(new BackupUtils.CsvColumn(i, BackupUtils.CsvColumn.COLUMN_PUBLISHER));
+                    break;
+                case 4:
+                    columns.add(new BackupUtils.CsvColumn(i, BackupUtils.CsvColumn.COLUMN_ISBN));
+                    break;
             }
-            BackupUtils.importCSV(getActivity(), mImportFileUri, columns.toArray(new BackupUtils.CsvColumn[columns.size()]));
-        } catch (IOException ex) {
-            Toast.makeText(getActivity(), "errror : " + mImportFileUri.getPath(), Toast.LENGTH_LONG).show();
+        }
+        new ImportAsyncTaks(columns.toArray(new BackupUtils.CsvColumn[columns.size()])).execute();
+    }
+
+    private class ImportAsyncTaks extends AsyncTask<Void, Void, Integer> {
+
+        private BackupUtils.CsvColumn[] mColumns;
+
+        public ImportAsyncTaks(BackupUtils.CsvColumn[] columns) {
+            mColumns = columns;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            mImport.setEnabled(false);
+        }
+
+        @Override
+        protected Integer doInBackground(Void... params) {
+            try {
+                return BackupUtils.importCSV(getActivity(), mImportFileUri, mColumns);
+            } catch (IOException exception) {
+                return 0;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Integer inserted) {
+            Toast.makeText(getActivity(), "inserted: " + inserted, Toast.LENGTH_SHORT).show();
+            mImport.setEnabled(true);
         }
     }
 

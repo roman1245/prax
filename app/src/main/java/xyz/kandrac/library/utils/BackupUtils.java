@@ -49,7 +49,7 @@ public final class BackupUtils {
      * @param uri     of file
      * @throws IOException
      */
-    public static boolean importCSV(Context context, Uri uri, CsvColumn[] csvColumns) throws IOException {
+    public static int importCSV(Context context, Uri uri, CsvColumn[] csvColumns) throws IOException {
 
         // uri check
         if (uri == null) {
@@ -61,7 +61,7 @@ public final class BackupUtils {
 
         try {
             if (inputStream == null) {
-                return false;
+                return 0;
             } else {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
                 return importCsv(context, reader, csvColumns);
@@ -79,8 +79,9 @@ public final class BackupUtils {
      * @param context to get database from
      * @param reader  to import data from
      */
-    public static boolean importCsv(Context context, Reader reader, CsvColumn[] csvColumns) throws IOException {
+    public static int importCsv(Context context, Reader reader, CsvColumn[] csvColumns) throws IOException {
 
+        int count = 0;
         // reader check
         if (reader == null) {
             throw new NullPointerException("Reader should not be null");
@@ -91,20 +92,22 @@ public final class BackupUtils {
         ContentResolver contentResolver = context.getContentResolver();
         String[] nextLine;
         while ((nextLine = csvReader.readNext()) != null) {
-            importCsvLine(contentResolver, nextLine, csvColumns);
+            if (importCsvLine(contentResolver, nextLine, csvColumns)) {
+                count++;
+            }
         }
-        return true;
+        return count;
     }
 
-    private static void importCsvLine(ContentResolver contentResolver, String[] line, CsvColumn[] csvColumns) {
+    private static boolean importCsvLine(ContentResolver contentResolver, String[] line, CsvColumn[] csvColumns) {
 
         Book.Builder bookBuilder = new Book.Builder();
 
         bookBuilder.setLibrary(new Library.Builder().setName("").build());
-        for (CsvColumn column: csvColumns) {
+        for (CsvColumn column : csvColumns) {
 
             if (line.length <= column.columnId) {
-                return;
+                return false;
             }
 
             switch (column.representation) {
@@ -123,7 +126,7 @@ public final class BackupUtils {
             }
         }
 
-        DatabaseStoreUtils.saveBook(contentResolver, bookBuilder.build());
+        return (DatabaseStoreUtils.saveBook(contentResolver, bookBuilder.build()) > 0);
     }
 
     public static class CsvColumn {
