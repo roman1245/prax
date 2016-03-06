@@ -40,6 +40,8 @@ public class ImportFragment extends Fragment {
     private static final int CHOOSE_FILE_PERMISSION = 200;
 
     private Uri mImportFileUri;
+    // TODO: replace this charset with something selected
+    private String mCharset = "UTF-8";
 
     @Bind(R.id.import_file_name)
     public TextView fileNameText;
@@ -123,7 +125,7 @@ public class ImportFragment extends Fragment {
         @Override
         protected Integer doInBackground(Void... params) {
             try {
-                return BackupUtils.importCSV(getActivity(), mImportFileUri, mColumns);
+                return BackupUtils.importCSV(getActivity(), mImportFileUri, mColumns, mCharset);
             } catch (IOException exception) {
                 return 0;
             }
@@ -187,7 +189,7 @@ public class ImportFragment extends Fragment {
 
                     columnsView.removeAllViews();
 
-                    String[] columnValues = BackupUtils.getSampleRow(getActivity(), mImportFileUri);
+                    String[] columnValues = BackupUtils.getSampleRow(getActivity(), mImportFileUri, mCharset);
 
                     if (columnValues == null) {
                         return;

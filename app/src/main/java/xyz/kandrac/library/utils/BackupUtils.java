@@ -50,7 +50,7 @@ public final class BackupUtils {
      * @param uri     of file
      * @throws IOException
      */
-    public static int importCSV(Context context, Uri uri, CsvColumn[] csvColumns) throws IOException {
+    public static int importCSV(Context context, Uri uri, CsvColumn[] csvColumns, String charset) throws IOException {
 
         // uri check
         if (uri == null) {
@@ -64,7 +64,7 @@ public final class BackupUtils {
             if (inputStream == null) {
                 return 0;
             } else {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-16"));
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, charset));
                 return importCsv(context, reader, csvColumns);
             }
         } finally {
@@ -173,7 +173,7 @@ public final class BackupUtils {
         return result;
     }
 
-    public static String[] getSampleRow(Context context, Uri uri) {
+    public static String[] getSampleRow(Context context, Uri uri, String charset) {
         // uri check
         if (uri == null) {
             throw new NullPointerException("File Uri should not be null");
@@ -187,7 +187,7 @@ public final class BackupUtils {
                 if (inputStream == null) {
                     return null;
                 } else {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-16"));
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, charset));
                     CSVReader csvReader = new CSVReader(reader);
                     return csvReader.readNext();
                 }

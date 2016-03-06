@@ -19,18 +19,19 @@
 
     <TextView
         android:id="@+id/column_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:ems="10"
-        tools:text="Autor" />
-
-    <Spinner
-        android:id="@+id/column_representation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
+        android:ellipsize="end"
+        android:maxLines="1"
+        tools:text="Autor" />
+
+    <Spinner
+        android:id="@+id/column_representation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:entries="@array/column_names"
         tools:listitem="@android:layout/simple_list_item_1" />
 </LinearLayout>
