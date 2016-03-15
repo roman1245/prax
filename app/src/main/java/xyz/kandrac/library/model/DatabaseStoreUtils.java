@@ -97,6 +97,10 @@ public final class DatabaseStoreUtils {
      */
     public static long savePublisher(ContentResolver contentResolver, Publisher publisher) {
 
+        if (publisher == null) {
+            publisher = new Publisher.Builder().setName("").build();
+        }
+
         ContentValues publisherContentValues = new ContentValues();
         publisherContentValues.put(Contract.Publishers.PUBLISHER_NAME, publisher.name);
 
@@ -114,6 +118,10 @@ public final class DatabaseStoreUtils {
      */
     public static long saveLibrary(ContentResolver contentResolver, Library library) {
 
+        if (library == null) {
+            library = new Library.Builder().setName("").build();
+        }
+
         ContentValues libraryContentValues = new ContentValues();
         libraryContentValues.put(Contract.Libraries.LIBRARY_NAME, library.name);
 
@@ -130,6 +138,10 @@ public final class DatabaseStoreUtils {
      * @return author ID
      */
     public static long saveAuthor(ContentResolver contentResolver, Author author) {
+
+        if (author == null) {
+            author = new Author.Builder().setName("").build();
+        }
 
         ContentValues authorContentValues = new ContentValues();
         authorContentValues.put(Contract.Authors.AUTHOR_NAME, author.name);

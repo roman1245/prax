@@ -1,22 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Exported via lokaligo.com on Tue, 15 Mar 2016 21:36:14 +0000. -->
+
     <!-- Application texts -->
     <string name="app_name">Knižnica</string>
-
     <!-- General errors and messages -->
     <string name="unexpected_error_occurs">Vyskytla sa neočakávaná chyba</string>
-
     <!-- General formatting strings -->
     <string name="format_book_title_subtitle">%1$s: %2$s</string>
-
-    <!-- -->
     <string name="title_add_new_book">Nová kniha</string>
     <string name="title_edit_book">Úprava knihy</string>
-
     <!-- Optimization -->
     <string name="dialog_image_optimization_title">Optimalizujem aplikáciu</string>
     <string name="dialog_image_optimization_message">Optimalizujem veľkosť obrázkov vnútri aplikácie</string>
-
     <!-- Action strings (mostly used in Toolbar) -->
     <string name="action_save">Uložiť</string>
     <string name="action_edit">Upraviť</string>
@@ -25,66 +21,49 @@
     <string name="action_search">Hľadať</string>
     <string name="action_ok">OK</string>
     <string name="action_cancel">Zrušiť</string>
-
     <!-- Placeholders -->
     <string name="author_unknown">Neznámy autor</string>
     <string name="publisher_unknown">Neznámy vydavateľ</string>
     <string name="library_unknown">Neznáma knižnica</string>
-
     <!-- Basic Image Content descriptors -->
     <string name="book_list_item">Kniha</string>
     <string name="author_list_item">Autor</string>
     <string name="parallax_cover">Obrázok</string>
-
     <!-- List Empty Descriptors -->
     <string name="book_list_empty">Zoznam kníh je zatiaľ prázdny.\nPre pridanie nových kníh stlač tlačidlo + v pravom dolnom rohu alebo si pozri ďalšie možnosti v bočnom menu, ktoré otvoríš vľavo hore.</string>
     <string name="book_borrowed_list_empty">Zoznam požičaných kníh je zatiaľ prázdny.\nPre požičanie kníh vyber knihu zo zoznamu kníh a stlač tlačidlo pre požičiavanie.</string>
     <string name="author_list_empty">Zoznam autorov je zatiaľ prázdny.\nPrví autori sa zobrazia s prvým pridaním knihy.</string>
     <string name="publisher_list_empty">Zoznam vydavateľov je zatiaľ prázdny.\nPrví vydavatelia sa zobrazia s prvým pridaním knihy.</string>
     <string name="library_list_empty">Zoznam knižníc je zatiaľ prázdny.\nPrvá knižnica sa zobrazí pri prvom pridaní knihy.</string>
-
     <!-- Edit/Input Book Screen -->
     <string name="edit_book_author">Autori</string>
     <string name="edit_book_publisher">Vydavateľ</string>
-    <string name="edit_book_library">Knižnica (Domov, Internát, &#8230;)</string>
+    <string name="edit_book_library">Knižnica (Domov, Internát, …)</string>
     <string name="edit_book_title">Názov Knihy</string>
     <string name="edit_book_subtitle">Podtitulok knihy</string>
     <string name="edit_book_isbn">ISBN</string>
     <string name="edit_book_scan">Skenovať</string>
-    <string name="edit_book_search">Hľadať</string>
     <string name="edit_book_description">Popis</string>
-    <!-- TODO: translate-->
-    <string name="edit_book_origin">Požičané od</string>
-
     <string name="edit_book_info">Základné informácie o knihe</string>
     <string name="edit_book_cover">Obálka Knihy</string>
     <string name="edit_book_take_photo_permission">Potrebujeme od vás povolenie pre fotenie a ukladanie fotografií do vášho telefónu</string>
     <string name="edit_book_barcode_permission">Ak chcete naskenovať čiarový kód, budeme potrebovať vaše povolenie</string>
-    <!-- TODO: translate-->
-    <string name="edit_book_barcode_contact_permission">Pre vyhľadávanie v kontaktoch, potrebujeme vaše povolenie</string>
-
     <string name="edit_book_no_permission">Bez týchto oprávnení nemôžeme pokračovať. Ak chcete zmeniť oprávenia urobte tak v Nastaveniach telefónu.</string>
     <string name="edit_book_no_permission_title">Chýbajúce oprávnenia</string>
-    <string name="edit_book_save_image_error">Chyba pri ukladaní fotografie, skúste to znova</string>
-
     <!-- Book Details Screen -->
     <string name="book_detail_full_title">Názov knihy:</string>
     <string name="book_detail_authors">Autori:</string>
     <string name="book_detail_publisher">Vydavateľ:</string>
     <string name="book_detail_library">Knižnica:</string>
     <string name="book_detail_isbn">ISBN/čiarový kód:</string>
-
     <!-- Book Borrow Texts -->
     <string name="borrow_wrong_input">Prosím zadaj kedy ťa máme upozorniť</string>
     <string name="borrow_title">Požičanie knihy</string>
     <string name="borrow_message">Zadaj o koľko dní chceš dostať upozornenie o požičaní tejto knihy. Ak sa ti kniha stihne vrátiť skôr, upozornenie bude zrušené.</string>
-
     <!-- Navigation menu items -->
     <string name="menu_books">Knihy</string>
     <string name="menu_books_mine">Moje knihy</string>
     <string name="menu_books_borrowed">Požičané knihy</string>
-    <!-- TODO: translate-->
-    <string name="menu_books_borrowed_to_me">Požičané od priateľov</string>
     <string name="menu_authors">Autori</string>
     <string name="menu_publishers">Vydavatelia</string>
     <string name="menu_libraries">Knižnice</string>
@@ -92,43 +71,57 @@
     <string name="menu_books_wish_list">Wishlist</string>
     <string name="soon">Čoskoro…</string>
     <string name="navigation_head">Hlavná navigácia</string>
-
     <!-- About -->
     <string name="about_title">O aplikácii</string>
     <string name="about_producer">Ján Kandráč</string>
-
     <!-- Dialog Actions -->
     <string name="dialog_book_delete_title">Vymazať knihu</string>
     <string name="dialog_book_delete_message">Naozaj chceš vymazať túto knihu?</string>
-
     <string name="dialog_author_delete_title">Vymazať autora</string>
     <string name="dialog_author_delete_message">Naozaj chceš vymazať tohto autora aj všetky knihy ktoré napísal?</string>
-
     <string name="dialog_publisher_delete_title">Vymazať vydavateľa</string>
     <string name="dialog_publisher_delete_message">Naozaj chceš vymazať tohto vydavateľa aj všetky knihy ktoré vydal?</string>
-
     <string name="dialog_library_delete_title">Vymazať knižnicu</string>
     <string name="dialog_library_delete_message">Naozaj chceš vymazať túto knižnicu aj všetky knihy v nej?</string>
-
     <string name="dialog_return_book_title">Vrátenie knihy</string>
     <string name="dialog_return_book_message">%1$s si od teba požičal/a knihu dňa %2$s. Čo chcete s knihou urobiť?</string>
-    <!-- TODO: translate-->
-    <string name="dialog_return_borrowed_book_message">Dňa %2$s si si požičal knihu od %1$s. Chceš knihu vrátiť?</string>
     <string name="dialog_return_book_positive">Vrátiť knihu</string>
-
     <!-- Notification strings -->
     <string name="notification_book_borrowed_reminder_title">Pripomenutie požičania knihy</string>
     <string name="notification_book_borrowed_reminder_message">Skontroluj si svoje požičané knihy</string>
-
     <!-- Preferences -->
     <string name="preferences_libraries_category">Knižnice</string>
     <string name="preferences_libraries_enabled_title">Povoliť viacero knižníc</string>
     <string name="preferences_libraries_enabled_description">Po zaškrtnutí budeš môcť priradiť knižku do samostatných knižníc</string>
     <string name="preferences_libraries_default_name_title">Predvolená knižnica</string>
     <string name="preferences_libraries_default_name_description">Predvolený názov knižnice, do ktorej sa budú knihy pridávať</string>
-
-    <!-- TODO: translate-->
+    <string name="format_order">%1$s.</string>
+    <string name="edit_book_search">Hľadať</string>
+    <string name="edit_book_origin">Požičané od</string>
+    <string name="edit_book_barcode_contact_permission">Pre vyhľadávanie v kontaktoch, potrebujeme vaše povolenie</string>
+    <string name="edit_book_save_image_error">Chyba pri ukladaní fotografie, skúste to znova</string>
+    <!-- Import Screen -->
+    <string name="import_activity_name">Import údajov</string>
+    <string name="import_chooser">Vyberte súbor</string>
+    <string name="import_description">Pre importovanie údajov je potrebné vložiť CSV súbor s tabuľkou</string>
+    <string name="import_select_file">Vybrať súbor</string>
+    <string name="import_first_row">Importovať aj prvý riadok?</string>
+    <string name="import_import">Import</string>
+    <string name="import_no_file_manager">Nebola nájdená žiadna aplikácia pre prehliadanie súborov</string>
+    <string name="import_imported">Bolo imporovaných %1$s kníh</string>
+    <string name="menu_books_borrowed_to_me">Požičané od priateľov</string>
+    <string name="dialog_return_borrowed_book_message">Dňa %2$s si si požičal knihu od %1$s. Chceš knihu vrátiť?</string>
     <string name="preferences_visual_category">Vzhľad aplikácie</string>
     <string name="preferences_visual_conservative_title">Konzervatívne farby</string>
     <string name="preferences_visual_conservative_description">Povoľ toto nastavenie pre zobrazenie jednoduchých farieb v zoznamoch kníh, autorov, vydavateľov a knižníc</string>
+    <string name="preferences_import_export_category">Import, Export a Zálohovanie</string>
+    <string name="preferences_import_title">Import údajov z Excelu</string>
+    <string name="preferences_import_description">Klikni sem pre importovanie údajov vo formáte CSV</string>
+    <string-array name="column_names">
+        <item>Ignorovať</item>
+        <item>Názov knihy</item>
+        <item>Meno autora</item>
+        <item>Vydavateľ</item>
+        <item>ISBN</item>
+    </string-array>
 </resources>
