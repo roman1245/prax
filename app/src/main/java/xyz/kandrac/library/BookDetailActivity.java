@@ -604,8 +604,10 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem borrowItem = menu.findItem(R.id.action_borow);
+        MenuItem moveItem = menu.findItem(R.id.action_move);
 
         borrowItem.setVisible(!mInWishList && !mBorrowed && !mBorrowedToMe);
+        moveItem.setVisible(mInWishList);
 
         return super.onPrepareOptionsMenu(menu);
     }
@@ -627,6 +629,13 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                 Intent intent = new Intent(this, EditBookActivity.class);
                 intent.putExtra(EditBookActivity.EXTRA_BOOK_ID, mBookId);
                 startActivity(intent);
+                return true;
+            }
+            case R.id.action_move: {
+                ContentValues cv = new ContentValues();
+                cv.put(Contract.Books.BOOK_WISH_LIST, false);
+                getContentResolver().update(Contract.Books.buildBookUri(mBookId), cv, null, null);
+                finish();
                 return true;
             }
             case R.id.action_delete: {
