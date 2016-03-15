@@ -23,3 +23,6 @@
 
 # searchview
 -keep class android.support.v7.widget.SearchView { *; }
+
+# open CSV
+-dontwarn com.opencsv.**
