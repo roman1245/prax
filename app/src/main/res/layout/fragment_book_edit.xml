@@ -40,12 +40,12 @@
                 android:layout_marginEnd="12dp"
                 android:layout_marginRight="12dp"
                 android:contentDescription="@string/edit_book_info"
-                android:src="@drawable/ic_borrowed_to_me"
                 android:tint="@color/md_grey_700"
                 android:visibility="gone"
                 app:layout_column="0"
                 app:layout_gravity="center"
                 app:layout_row="0"
+                app:srcCompat="@drawable/ic_borrowed_to_me"
                 tools:visibility="visible" />
 
             <AutoCompleteTextView
@@ -66,11 +66,11 @@
                 android:layout_marginEnd="12dp"
                 android:layout_marginRight="12dp"
                 android:contentDescription="@string/edit_book_info"
-                android:src="@drawable/ic_book"
                 android:tint="@color/md_grey_700"
                 app:layout_column="0"
                 app:layout_gravity="center"
-                app:layout_row="1" />
+                app:layout_row="1"
+                app:srcCompat="@drawable/ic_book" />
 
             <EditText
                 android:id="@+id/book_input_title"
@@ -98,11 +98,11 @@
 
             <ImageView
                 android:contentDescription="@string/edit_book_info"
-                android:src="@drawable/ic_author"
                 android:tint="@color/md_grey_700"
                 app:layout_column="0"
                 app:layout_gravity="center_vertical"
-                app:layout_row="3" />
+                app:layout_row="3"
+                app:srcCompat="@drawable/ic_author" />
 
             <AutoCompleteTextView
                 android:id="@+id/book_input_author"
@@ -118,11 +118,11 @@
 
             <ImageView
                 android:contentDescription="@string/edit_book_info"
-                android:src="@drawable/ic_tie"
                 android:tint="@color/md_grey_700"
                 app:layout_column="0"
                 app:layout_gravity="center_vertical"
-                app:layout_row="4" />
+                app:layout_row="4"
+                app:srcCompat="@drawable/ic_tie" />
 
             <AutoCompleteTextView
                 android:id="@+id/book_input_publisher"
@@ -139,11 +139,11 @@
             <ImageView
                 android:id="@+id/book_input_library_icon"
                 android:contentDescription="@string/edit_book_info"
-                android:src="@drawable/ic_library"
                 android:tint="@color/md_grey_700"
                 app:layout_column="0"
                 app:layout_gravity="center_vertical"
-                app:layout_row="5" />
+                app:layout_row="5"
+                app:srcCompat="@drawable/ic_library" />
 
             <AutoCompleteTextView
                 android:id="@+id/book_input_library"
@@ -159,11 +159,11 @@
 
             <ImageView
                 android:contentDescription="@string/edit_book_info"
-                android:src="@drawable/ic_barcode"
                 android:tint="@color/md_grey_700"
                 app:layout_column="0"
                 app:layout_gravity="center_vertical"
-                app:layout_row="6" />
+                app:layout_row="6"
+                app:srcCompat="@drawable/ic_barcode" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -197,11 +197,11 @@
             <ImageView
                 android:layout_marginTop="8dp"
                 android:contentDescription="@string/edit_book_cover"
-                android:src="@drawable/ic_camera"
                 android:tint="@color/md_grey_700"
                 app:layout_column="0"
                 app:layout_gravity="center_vertical"
-                app:layout_row="7" />
+                app:layout_row="7"
+                app:srcCompat="@drawable/ic_camera" />
 
             <ImageView
                 android:id="@+id/parallax_cover_image"
@@ -210,17 +210,17 @@
                 android:background="#ddd"
                 android:contentDescription="@string/edit_book_cover"
                 android:scaleType="centerInside"
-                android:src="@drawable/ic_book_white"
-                app:layout_column="1" />
+                app:layout_column="1"
+                app:srcCompat="@drawable/ic_book_white" />
 
             <ImageView
                 android:layout_marginTop="8dp"
                 android:contentDescription="@string/edit_book_info"
-                android:src="@drawable/ic_pencil"
                 android:tint="@color/md_grey_700"
                 app:layout_column="0"
                 app:layout_gravity="center_vertical"
-                app:layout_row="8" />
+                app:layout_row="8"
+                app:srcCompat="@drawable/ic_pencil" />
 
             <EditText
                 android:id="@+id/book_input_description_edit"
@@ -240,8 +240,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="8dp"
-        android:src="@drawable/ic_content_save"
         app:elevation="6dp"
         app:fabSize="normal"
-        app:pressedTranslationZ="12dp" />
+        app:pressedTranslationZ="12dp"
+        app:srcCompat="@drawable/ic_content_save" />
 </android.support.design.widget.CoordinatorLayout>
