@@ -1,7 +1,10 @@
 package xyz.kandrac.library;
 
 import android.app.Fragment;
+import android.app.LoaderManager;
 import android.app.ProgressDialog;
+import android.content.CursorLoader;
+import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -19,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import java.io.File;
 
@@ -40,7 +44,7 @@ import xyz.kandrac.library.views.DummyDrawerCallback;
  *
  * @see NavigationView
  */
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     // Loader constants. Ensure that fragments are using this constants and not the
     public static final int BOOK_LIST_LOADER = 1;
@@ -50,6 +54,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static final int BORROWED_BOOK_LIST_LOADER = 5;
     public static final int BORROWED_TO_ME_LIST_LOADER = 6;
     public static final int WISH_LIST_BOOK_LIST_LOADER = 7;
+
+    public static final int WISH_COUNT = 8;
+    public static final int MY_COUNT = 9;
+    public static final int BORROWED_COUNT = 10;
+    public static final int FROM_FRIENDS_COUNT = 11;
 
     public static final String PREFERENCE_PHOTOS_RESIZED = "photos_resized_preference_2";
     public static final String PREFERENCE_PHOTOS_REMOVED = "photos_removed_preference";
@@ -117,6 +126,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         removeUnusedPhotosIfNeeded();
         resizePhotosIfNeeded();
+
+        getLoaderManager().initLoader(WISH_COUNT, null, this);
+        getLoaderManager().initLoader(MY_COUNT, null, this);
+        getLoaderManager().initLoader(BORROWED_COUNT, null, this);
+        getLoaderManager().initLoader(FROM_FRIENDS_COUNT, null, this);
     }
 
     public void checkLibrariesPreferences() {
@@ -373,5 +387,66 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean(PREFERENCE_PHOTOS_RESIZED, true).apply();
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        switch (id) {
+            case WISH_COUNT:
+                return new CursorLoader(this, Contract.Books.CONTENT_URI, new String[]{"count(*) as c"}, Contract.Books.BOOK_WISH_LIST + " = 1", null, null);
+            case MY_COUNT:
+                return new CursorLoader(this, Contract.Books.CONTENT_URI, new String[]{"count(*) as c"},
+                        Contract.Books.BOOK_WISH_LIST + " = 0 AND " +
+                                Contract.Books.BOOK_BORROWED + " = 0 AND " +
+                                Contract.Books.BOOK_BORROWED_TO_ME + " = 0", null, null);
+            case BORROWED_COUNT:
+                return new CursorLoader(this, Contract.Books.CONTENT_URI, new String[]{"count(*) as c"}, Contract.Books.BOOK_BORROWED + " = 1", null, null);
+            case FROM_FRIENDS_COUNT:
+                return new CursorLoader(this, Contract.Books.CONTENT_URI, new String[]{"count(*) as c"}, Contract.Books.BOOK_BORROWED_TO_ME + " = 1", null, null);
+        }
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        switch (loader.getId()) {
+            case WISH_COUNT: {
+                if (data.moveToFirst()) {
+                    String count = data.getString(data.getColumnIndex("c"));
+                    View actionView = navigation.getMenu().findItem(R.id.main_navigation_wish_list).getActionView();
+                    ((TextView) actionView).setText(count);
+                }
+                break;
+            }
+            case MY_COUNT: {
+                if (data.moveToFirst()) {
+                    String count = data.getString(data.getColumnIndex("c"));
+                    View actionView = navigation.getMenu().findItem(R.id.main_navigation_books).getActionView();
+                    ((TextView) actionView).setText(count);
+                }
+                break;
+            }
+            case BORROWED_COUNT: {
+                if (data.moveToFirst()) {
+                    String count = data.getString(data.getColumnIndex("c"));
+                    View actionView = navigation.getMenu().findItem(R.id.main_navigation_borrowed).getActionView();
+                    ((TextView) actionView).setText(count);
+                }
+                break;
+            }
+            case FROM_FRIENDS_COUNT: {
+                if (data.moveToFirst()) {
+                    String count = data.getString(data.getColumnIndex("c"));
+                    View actionView = navigation.getMenu().findItem(R.id.main_navigation_borrowed_to_me).getActionView();
+                    ((TextView) actionView).setText(count);
+                }
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 }

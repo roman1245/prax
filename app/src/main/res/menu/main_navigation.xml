@@ -8,22 +8,30 @@
             android:title="@string/menu_books">
             <menu>
                 <item
+                    app:actionLayout="@layout/navigation_action_layout_text"
                     android:id="@+id/main_navigation_books"
                     android:checked="true"
+                    app:showAsAction="ifRoom"
                     android:icon="@drawable/ic_book"
                     android:title="@string/menu_books_mine" />
 
                 <item
+                    app:showAsAction="ifRoom"
+                    app:actionLayout="@layout/navigation_action_layout_text"
                     android:id="@+id/main_navigation_borrowed"
                     android:icon="@drawable/ic_share"
                     android:title="@string/menu_books_borrowed" />
 
                 <item
+                    app:showAsAction="ifRoom"
+                    app:actionLayout="@layout/navigation_action_layout_text"
                     android:id="@+id/main_navigation_borrowed_to_me"
                     android:icon="@drawable/ic_borrowed_to_me"
                     android:title="@string/menu_books_borrowed_to_me" />
 
                 <item
+                    app:showAsAction="ifRoom"
+                    app:actionLayout="@layout/navigation_action_layout_text"
                     android:id="@+id/main_navigation_wish_list"
                     android:icon="@drawable/ic_heart_outline"
                     android:title="@string/menu_books_wish_list" />
