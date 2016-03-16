@@ -103,7 +103,7 @@
     <!-- Import Screen -->
     <string name="import_activity_name">Import dat.</string>
     <string name="import_chooser">Vyberte soubor</string>
-    <string name="import_description">Pro import dat je potřeba vložit CSV soubor s tabulkou</string>
+    <string name="import_description">Pro import dat je potřeba vložit CSV soubor s UTF-8 kódováním s tabulkou knih</string>
     <string name="import_select_file">Vybrat soubor</string>
     <string name="import_first_row">Importovat i první řádek?</string>
     <string name="import_import">Import</string>
@@ -115,7 +115,7 @@
     <string name="preferences_visual_conservative_title">Konzervativní barvy</string>
     <string name="preferences_visual_conservative_description">Povol tohle nastavení pro zobrazení jednoduchých barev v seznamech knih, autorů, vydavatelů a knihoven</string>
     <string name="preferences_import_export_category">Import, Export a Zálohování</string>
-    <string name="preferences_import_title">Import dat z Excelu</string>
+    <string name="preferences_import_title">Import dat z Excelu (Beta)</string>
     <string name="preferences_import_description">Klikni zde pro import dat ve formatu CSV</string>
     <string-array name="column_names">
 		<item>Ignorovat</item>

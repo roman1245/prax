@@ -103,7 +103,7 @@
     <!-- Import Screen -->
     <string name="import_activity_name">Import book data</string>
     <string name="import_chooser">Select file</string>
-    <string name="import_description">To import data you have to insert CSV file with table of books</string>
+    <string name="import_description">To import data you have to insert UTF-8 encoded CSV file with table of books</string>
     <string name="import_select_file">Select file</string>
     <string name="import_first_row">Import first row as well?</string>
     <string name="import_import">Import</string>
@@ -115,8 +115,8 @@
     <string name="preferences_visual_conservative_title">Conservative colors</string>
     <string name="preferences_visual_conservative_description">Enable this setting to display simple colors in lists of books, authors, publishers and libraries</string>
     <string name="preferences_import_export_category">Import, Export and Backup</string>
-    <string name="preferences_import_title">Import data from Excel</string>
-    <string name="preferences_import_description">Click here to import the data in CSV format</string>
+    <string name="preferences_import_title">Import data from Excel (Beta)</string>
+    <string name="preferences_import_description">Click here to import the data in CSV format (further improvements expected later)</string>
     <string-array name="column_names">
         <item>Ignore</item>
         <item>Book title</item>
