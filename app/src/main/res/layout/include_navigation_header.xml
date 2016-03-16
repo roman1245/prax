@@ -5,7 +5,7 @@
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="156dp"
         android:contentDescription="@string/navigation_head"
         android:scaleType="centerCrop"
         android:src="@drawable/navigation_back" />
