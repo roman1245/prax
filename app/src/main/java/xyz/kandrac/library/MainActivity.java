@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.annotation.IdRes;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -411,37 +412,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         switch (loader.getId()) {
             case WISH_COUNT: {
-                if (data.moveToFirst()) {
-                    String count = data.getString(data.getColumnIndex("c"));
-                    View actionView = navigation.getMenu().findItem(R.id.main_navigation_wish_list).getActionView();
-                    ((TextView) actionView).setText(count);
-                }
+                setActionViewTextFromCursor(R.id.main_navigation_wish_list, data);
                 break;
             }
             case MY_COUNT: {
-                if (data.moveToFirst()) {
-                    String count = data.getString(data.getColumnIndex("c"));
-                    View actionView = navigation.getMenu().findItem(R.id.main_navigation_books).getActionView();
-                    ((TextView) actionView).setText(count);
-                }
+                setActionViewTextFromCursor(R.id.main_navigation_books, data);
                 break;
             }
             case BORROWED_COUNT: {
-                if (data.moveToFirst()) {
-                    String count = data.getString(data.getColumnIndex("c"));
-                    View actionView = navigation.getMenu().findItem(R.id.main_navigation_borrowed).getActionView();
-                    ((TextView) actionView).setText(count);
-                }
+                setActionViewTextFromCursor(R.id.main_navigation_borrowed, data);
                 break;
             }
             case FROM_FRIENDS_COUNT: {
-                if (data.moveToFirst()) {
-                    String count = data.getString(data.getColumnIndex("c"));
-                    View actionView = navigation.getMenu().findItem(R.id.main_navigation_borrowed_to_me).getActionView();
-                    ((TextView) actionView).setText(count);
-                }
+                setActionViewTextFromCursor(R.id.main_navigation_borrowed_to_me, data);
                 break;
             }
+        }
+    }
+
+    private void setActionViewTextFromCursor(@IdRes int viewId, Cursor data) {
+        if (data.moveToFirst()) {
+            String count = data.getString(0);
+            View actionView = navigation.getMenu().findItem(viewId).getActionView();
+            TextView text = (TextView) actionView.findViewById(R.id.action_view);
+            text.setText(count);
+            text.setVisibility(View.VISIBLE);
         }
     }
 
