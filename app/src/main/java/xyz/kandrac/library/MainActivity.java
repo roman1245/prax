@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .commit();
 
         // hide keyboard if drawer opened
-        drawerLayout.setDrawerListener(new DummyDrawerCallback() {
+        drawerLayout.addDrawerListener(new DummyDrawerCallback() {
             @Override
             public void onDrawerOpened(View drawerView) {
                 if (searchView != null) {
