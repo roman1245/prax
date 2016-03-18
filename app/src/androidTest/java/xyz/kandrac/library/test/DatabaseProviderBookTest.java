@@ -11,6 +11,7 @@ import xyz.kandrac.library.model.obj.Book;
 
 
 /**
+ * TODO: Will not work properly because of getBook(Cursor) method
  * Created by kandrac on 21/11/15.
  */
 public class DatabaseProviderBookTest extends ProviderTestCase2<DatabaseProvider> {
@@ -33,7 +34,7 @@ public class DatabaseProviderBookTest extends ProviderTestCase2<DatabaseProvider
     }
 
     private Book getBook(Cursor cursor) {
-        return new Book(cursor);
+        return new Book.Builder().build();
     }
 
     public Cursor selectAllBooks() {
