@@ -36,7 +36,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         LogUtils.d(TAG, "Show notification request received for book " + bookId);
 
         Notification notification = new Notification.Builder(context)
-                .setSmallIcon(R.drawable.ic_book_white)
+                .setSmallIcon(R.drawable.ic_book)
                 .setContentText(context.getString(R.string.notification_book_borrowed_reminder_message))
                 .setContentTitle(context.getString(R.string.notification_book_borrowed_reminder_title))
                 .setPriority(Notification.PRIORITY_DEFAULT)
