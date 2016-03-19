@@ -56,6 +56,9 @@
     <string name="book_detail_publisher">Publisher:</string>
     <string name="book_detail_library">Library:</string>
     <string name="book_detail_isbn">ISBN/barcode:</string>
+
+    <string name="book_detail_tab_basic">Basic</string>
+    <string name="book_detail_tab_others">Others</string>
     <!-- Book Borrow Texts -->
     <string name="borrow_wrong_input">Please, insert the time of expected notification</string>
     <string name="borrow_title">Borrow book</string>

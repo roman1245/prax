@@ -16,6 +16,7 @@ import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.Data;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -131,6 +132,9 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     @Bind(R.id.book_detail_borrow_me)
     Button borrowMeButton;
 
+    @Bind(R.id.tabs)
+    TabLayout tabs;
+
     private boolean mInWishList;
     private boolean mBorrowed;
     private boolean mBorrowedToMe;
@@ -155,6 +159,9 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
         mBookId = getIntent().getExtras().getLong(EXTRA_BOOK_ID);
 
         LogUtils.d(LOG_TAG, "Showing book : " + mBookId);
+
+        tabs.addTab(tabs.newTab().setText(R.string.book_detail_tab_basic));
+        tabs.addTab(tabs.newTab().setText(R.string.book_detail_tab_others));
 
         getSupportLoaderManager().initLoader(LOADER_BOOK, null, this);
         getSupportLoaderManager().initLoader(LOADER_AUTHOR, null, this);

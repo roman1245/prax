@@ -57,6 +57,9 @@
     <string name="book_detail_publisher">Vydavateľ:</string>
     <string name="book_detail_library">Knižnica:</string>
     <string name="book_detail_isbn">ISBN/čiarový kód:</string>
+
+    <string name="book_detail_tab_basic">Základné</string>
+    <string name="book_detail_tab_others">Ďalšie</string>
     <!-- Book Borrow Texts -->
     <string name="borrow_wrong_input">Prosím zadaj kedy ťa máme upozorniť</string>
     <string name="borrow_title">Požičanie knihy</string>
