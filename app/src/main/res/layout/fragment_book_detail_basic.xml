@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <!-- Main content -->
+    <android.support.v7.widget.GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        app:columnCount="2"
+        app:orientation="horizontal"
+        app:useDefaultMargins="false">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:contentDescription="@string/edit_book_info"
+            android:tint="@color/md_grey_700"
+            app:layout_gravity="center"
+            app:layout_rowSpan="2"
+            app:srcCompat="@drawable/ic_book"
+            tools:src="@drawable/ic_book" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:text="@string/book_detail_full_title"
+            android:textIsSelectable="true"
+            app:layout_gravity="fill" />
+
+        <TextView
+            android:id="@+id/book_detail_full_book_name"
+            style="@style/TextAppearance.AppCompat.Small.Title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:textIsSelectable="true"
+            app:layout_gravity="fill"
+            tools:text="Do vysok zdvihajte krov tesari a Seymour: Uvod pokus cislo 1" />
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="24dp"
+            android:contentDescription="@string/edit_book_info"
+            android:tint="@color/md_grey_700"
+            app:layout_gravity="center"
+            app:layout_rowSpan="2"
+            app:srcCompat="@drawable/ic_author"
+            tools:src="@drawable/ic_author" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:gravity="center_vertical"
+            android:text="@string/book_detail_authors"
+            android:textIsSelectable="true"
+            app:layout_gravity="fill" />
+
+        <TextView
+            android:id="@+id/book_detail_author"
+            style="@style/TextAppearance.AppCompat.Small.Title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:textIsSelectable="true"
+            app:layout_gravity="fill"
+            tools:text="John Ronald Reuel Tolkien" />
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="24dp"
+            android:contentDescription="@string/edit_book_info"
+            android:tint="@color/md_grey_700"
+            app:layout_gravity="center"
+            app:layout_rowSpan="2"
+            app:srcCompat="@drawable/ic_tie"
+            tools:src="@drawable/ic_tie" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:gravity="center_vertical"
+            android:text="@string/book_detail_publisher"
+            android:textIsSelectable="true"
+            app:layout_gravity="fill" />
+
+        <TextView
+            android:id="@+id/book_detail_publisher"
+            style="@style/TextAppearance.AppCompat.Small.Title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:textIsSelectable="true"
+            app:layout_gravity="fill"
+            tools:text="Slovart" />
+
+        <ImageView
+            android:id="@+id/book_detail_library_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="24dp"
+            android:contentDescription="@string/edit_book_info"
+            android:tint="@color/md_grey_700"
+            app:layout_gravity="center"
+            app:layout_rowSpan="2"
+            app:srcCompat="@drawable/ic_library"
+            tools:src="@drawable/ic_library" />
+
+        <TextView
+            android:id="@+id/book_detail_library_heading"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:gravity="center_vertical"
+            android:text="@string/book_detail_library"
+            android:textIsSelectable="true"
+            app:layout_gravity="fill" />
+
+        <TextView
+            android:id="@+id/book_detail_library"
+            style="@style/TextAppearance.AppCompat.Small.Title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:textIsSelectable="true"
+            app:layout_gravity="fill"
+            tools:text="Domaca" />
+
+        <ImageView
+            android:id="@+id/book_detail_isbn_image"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="24dp"
+            android:contentDescription="@string/edit_book_info"
+            android:tint="@color/md_grey_700"
+            app:layout_gravity="center"
+            app:layout_rowSpan="2"
+            app:srcCompat="@drawable/ic_barcode"
+            tools:src="@drawable/ic_barcode" />
+
+        <TextView
+            android:id="@+id/book_detail_isbn_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:gravity="center_vertical"
+            android:text="@string/book_detail_isbn"
+            android:textIsSelectable="true"
+            app:layout_gravity="fill" />
+
+        <TextView
+            android:id="@+id/book_detail_isbn"
+            style="@style/TextAppearance.AppCompat.Small.Title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:textIsSelectable="true"
+            app:layout_gravity="fill"
+            tools:text="0802356555" />
+
+        <ImageView
+            android:id="@+id/book_detail_description_image"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="24dp"
+            android:contentDescription="@string/edit_book_info"
+            android:tint="@color/md_grey_700"
+            app:layout_column="0"
+            app:layout_gravity="center"
+            app:srcCompat="@drawable/ic_pencil"
+            tools:src="@drawable/ic_pencil" />
+
+        <TextView
+            android:id="@+id/book_detail_description"
+            android:layout_width="0dp"
+            android:layout_marginTop="24dp"
+            android:gravity="center_vertical"
+            android:textIsSelectable="true"
+            app:layout_gravity="fill"
+            tools:text="This book was completely awesome! It was about some small Hobbit." />
+
+        <ImageView
+            android:id="@+id/book_detail_borrow_image"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="24dp"
+            android:contentDescription="@string/edit_book_info"
+            android:tint="@color/md_grey_700"
+            android:visibility="gone"
+            app:layout_column="0"
+            app:layout_gravity="center"
+            app:layout_row="11"
+            app:srcCompat="@drawable/ic_share"
+            tools:src="@drawable/ic_share"
+            tools:visibility="visible" />
+
+        <Button
+            android:id="@+id/book_detail_borrow"
+            style="@style/Base.Widget.AppCompat.Button.Borderless.Theme"
+            android:layout_marginTop="24dp"
+            android:gravity="center_vertical"
+            android:visibility="gone"
+            app:layout_gravity="start"
+            tools:text="Agatha Smith"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/book_detail_borrow_me_image"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="24dp"
+            android:contentDescription="@string/edit_book_info"
+            android:tint="@color/md_grey_700"
+            android:visibility="gone"
+            app:layout_gravity="center"
+            app:srcCompat="@drawable/ic_borrowed_to_me"
+            tools:src="@drawable/ic_borrowed_to_me"
+            tools:visibility="visible" />
+
+        <Button
+            android:id="@+id/book_detail_borrow_me"
+            style="@style/Base.Widget.AppCompat.Button.Borderless.Theme"
+            android:layout_marginTop="24dp"
+            android:gravity="center_vertical"
+            android:visibility="gone"
+            app:layout_gravity="start"
+            tools:text="Amanda Rae"
+            tools:visibility="visible" />
+    </android.support.v7.widget.GridLayout>
+</android.support.v4.widget.NestedScrollView>
