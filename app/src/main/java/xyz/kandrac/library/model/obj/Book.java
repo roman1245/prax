@@ -20,6 +20,7 @@ public class Book {
     public final String imageUrlPath;
     public final boolean wish;
     public final boolean borrowedToMe;
+    public final boolean borrowed;
 
     public Author[] authors;
     public Publisher publisher;
@@ -38,6 +39,7 @@ public class Book {
         authors = builder.authors;
         wish = builder.wish;
         borrowedToMe = builder.borrowedToMe;
+        borrowed = builder.borrowed;
     }
 
     public ContentValues getContentValues() {
@@ -62,6 +64,7 @@ public class Book {
         private String subtitle;
         private boolean wish;
         private boolean borrowedToMe;
+        private boolean borrowed;
         private Publisher publisher;
         private Author[] authors;
         private Library library;
@@ -123,6 +126,11 @@ public class Book {
 
         public Builder setBorrowedToMe(boolean borrowedToMe) {
             this.borrowedToMe = borrowedToMe;
+            return this;
+        }
+
+        public Builder setBorrowed(boolean borrowed) {
+            this.borrowed = borrowed;
             return this;
         }
 
