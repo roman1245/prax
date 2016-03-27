@@ -52,7 +52,7 @@ import xyz.kandrac.library.utils.LogUtils;
  * <p/>
  * Created by VizGhar on 18.10.2015.
  */
-public class BookDetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class BookDetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, TabLayout.OnTabSelectedListener {
 
     public static final String LOG_TAG = BookDetailActivity.class.getName();
     public static final String EXTRA_BOOK_ID = "book_id_extra";
@@ -77,7 +77,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     private Long mBookId;
     private Book mBook;
 
-    private Fragment mCurrentFragment;
+    private Fragment[] mContents;
 
     // Layout binding
     @Bind(R.id.toolbar)
@@ -111,14 +111,20 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
 
         mBookId = getIntent().getExtras().getLong(EXTRA_BOOK_ID);
 
+        mContents = new Fragment[]{
+                BookDetailBasicFragment.newInstance(mBookId),
+                BookDetailOthersFragment.newInstance(mBookId)
+        };
+
         LogUtils.d(LOG_TAG, "Showing book : " + mBookId);
 
         tabs.addTab(tabs.newTab().setText(R.string.book_detail_tab_basic));
         tabs.addTab(tabs.newTab().setText(R.string.book_detail_tab_others));
 
+        tabs.setOnTabSelectedListener(this);
+
         if (savedInstanceState == null) {
-            mCurrentFragment = BookDetailBasicFragment.newInstance(mBookId);
-            getSupportFragmentManager().beginTransaction().add(R.id.content, mCurrentFragment).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.content, mContents[0]).commit();
         }
 
         getSupportLoaderManager().initLoader(BookDetailActivity.LOADER_BOOK, null, this);
@@ -465,8 +471,10 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                     .into(cover);
         }
 
-        if (mCurrentFragment instanceof BookDatabaseCallbacks) {
-            ((BookDatabaseCallbacks) mCurrentFragment).onBookGet(mBook);
+        for (Fragment fragment : mContents) {
+            if (fragment instanceof BookDatabaseCallbacks) {
+                ((BookDatabaseCallbacks) fragment).onBookGet(mBook);
+            }
         }
 
         invalidateOptionsMenu();
@@ -484,8 +492,10 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
             }
         }
 
-        if (mCurrentFragment instanceof BookDatabaseCallbacks) {
-            ((BookDatabaseCallbacks) mCurrentFragment).onAuthorsGet(authors);
+        for (Fragment fragment : mContents) {
+            if (fragment instanceof BookDatabaseCallbacks) {
+                ((BookDatabaseCallbacks) fragment).onAuthorsGet(authors);
+            }
         }
     }
 
@@ -502,8 +512,10 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                     .build();
         }
 
-        if (mCurrentFragment instanceof BookDatabaseCallbacks) {
-            ((BookDatabaseCallbacks) mCurrentFragment).onBorrowedGet(borrowed);
+        for (Fragment fragment : mContents) {
+            if (fragment instanceof BookDatabaseCallbacks) {
+                ((BookDatabaseCallbacks) fragment).onBorrowedGet(borrowed);
+            }
         }
     }
 
@@ -519,8 +531,10 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                     .build();
         }
 
-        if (mCurrentFragment instanceof BookDatabaseCallbacks) {
-            ((BookDatabaseCallbacks) mCurrentFragment).onBorrowedToMeGet(borrowedToMe);
+        for (Fragment fragment : mContents) {
+            if (fragment instanceof BookDatabaseCallbacks) {
+                ((BookDatabaseCallbacks) fragment).onBorrowedToMeGet(borrowedToMe);
+            }
         }
     }
 
@@ -534,9 +548,26 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                     .build();
         }
 
-        if (mCurrentFragment instanceof BookDatabaseCallbacks) {
-            ((BookDatabaseCallbacks) mCurrentFragment).onPublisherGet(publisher);
+        for (Fragment fragment : mContents) {
+            if (fragment instanceof BookDatabaseCallbacks) {
+                ((BookDatabaseCallbacks) fragment).onPublisherGet(publisher);
+            }
         }
+    }
+
+    @Override
+    public void onTabSelected(TabLayout.Tab tab) {
+        getSupportFragmentManager().beginTransaction().replace(R.id.content, mContents[tab.getPosition()]).commit();
+    }
+
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab) {
+
+    }
+
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) {
+
     }
 
     public interface BookDatabaseCallbacks {

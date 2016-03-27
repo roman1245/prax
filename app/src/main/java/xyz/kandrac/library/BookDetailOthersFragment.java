@@ -12,6 +12,11 @@ import android.view.ViewGroup;
  */
 public class BookDetailOthersFragment extends Fragment {
 
+
+    public static BookDetailOthersFragment newInstance(long bookId) {
+        return new BookDetailOthersFragment();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
