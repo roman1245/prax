@@ -49,7 +49,6 @@ import java.util.Locale;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import xyz.kandrac.barcode.BarcodeActivity;
@@ -368,9 +367,8 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
             RetrofitConfig.getInstance().getBooksApi().getBookByIsbn("isbn:" + barcode).enqueue(new Callback<BooksResponse>() {
                 @Override
-                public void onResponse(Call<BooksResponse> call, Response<BooksResponse> response) {
-
-                    if (response.isSuccessful()) {
+                public void onResponse(Response<BooksResponse> response) {
+                    if (response.isSuccess()) {
                         BooksResponse books = response.body();
                         if (books.books != null && books.books.length > 0) {
                             BooksResponse.Book.VolumeInfo info = books.books[0].volumeInfo;
@@ -388,7 +386,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 }
 
                 @Override
-                public void onFailure(Call<BooksResponse> call, Throwable t) {
+                public void onFailure(Throwable t) {
                     t.printStackTrace();
                     Log.e("jano", "chyba", t);
                 }
