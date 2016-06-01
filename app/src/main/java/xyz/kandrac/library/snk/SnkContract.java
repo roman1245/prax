@@ -6,6 +6,10 @@ import android.provider.BaseColumns;
 import xyz.kandrac.library.BuildConfig;
 
 /**
+ *   SQL (0.4ms)  INSERT INTO "books" ("", "", "", "", "", "", "published", "", "", "") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)  [["title", "AllatRa"], ["isbn", "9788090479661"], ["subtitle", ""], ["authors", "Anastasia Novych"], ["publisher", "Ibis"], ["pages", 835], ["published", 2014], ["martinus_id", 166837], ["created_at", "2016-05-25 15:37:26.004802"], ["updated_at", "2016-05-25 15:37:26.004802"]]
+ (5.0ms)  commit transaction
+ parsing http://www.martinus.sk/?uItem=166838
+
  * Created by kandrac on 20/01/16.
  */
 public final class SnkContract {
@@ -18,8 +22,11 @@ public final class SnkContract {
     interface BooksColumns {
         String BOOK_ID = BaseColumns._ID;
         String BOOK_TITLE = "title";
+        String BOOK_SUBTITLE = "subtitle";
         String BOOK_AUTHORS = "authors";
         String BOOK_ISBN = "isbn";
+        String BOOK_PAGES = "pages";
+        String BOOK_PUBLISHED = "published";
         String BOOK_PUBLISHER = "publisher";
     }
 
