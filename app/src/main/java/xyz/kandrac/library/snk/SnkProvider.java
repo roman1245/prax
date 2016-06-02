@@ -46,7 +46,7 @@ public class SnkProvider extends ContentProvider {
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
-        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        SQLiteDatabase db = databaseHelper.getReadableDatabase();
 
         switch (uriMatcher.match(uri)) {
             case BOOKS:
