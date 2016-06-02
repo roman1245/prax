@@ -275,6 +275,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                                 Contract.Books.BOOK_WISH_LIST,
                                 Contract.Books.BOOK_BORROWED_TO_ME,
                                 Contract.Books.BOOK_BORROWED,
+                                Contract.Books.BOOK_PUBLISHED,
                                 Contract.Books.BOOK_IMAGE_FILE
                         },
                         null,

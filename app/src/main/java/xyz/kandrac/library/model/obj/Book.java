@@ -21,6 +21,7 @@ public class Book {
     public final boolean wish;
     public final boolean borrowedToMe;
     public final boolean borrowed;
+    public final int published;
 
     public Author[] authors;
     public Publisher publisher;
@@ -40,6 +41,7 @@ public class Book {
         wish = builder.wish;
         borrowedToMe = builder.borrowedToMe;
         borrowed = builder.borrowed;
+        published = builder.published;
     }
 
     public ContentValues getContentValues() {
@@ -50,6 +52,7 @@ public class Book {
         contentValues.put(Contract.Books.BOOK_ISBN, isbn);
         contentValues.put(Contract.Books.BOOK_IMAGE_FILE, imageFilePath);
         contentValues.put(Contract.Books.BOOK_IMAGE_URL, imageUrlPath);
+        contentValues.put(Contract.Books.BOOK_PUBLISHED, published);
         return contentValues;
     }
 
@@ -68,6 +71,7 @@ public class Book {
         private Publisher publisher;
         private Author[] authors;
         private Library library;
+        private int published;
 
         public Builder setId(long id) {
             this.id = id;
@@ -131,6 +135,20 @@ public class Book {
 
         public Builder setBorrowed(boolean borrowed) {
             this.borrowed = borrowed;
+            return this;
+        }
+
+        public Builder setPublished(int published) {
+            this.published = published;
+            return this;
+        }
+
+        public Builder setPublished(String published) {
+            try {
+                this.published = Integer.parseInt(published);
+            } catch (NumberFormatException ex) {
+                return this;
+            }
             return this;
         }
 

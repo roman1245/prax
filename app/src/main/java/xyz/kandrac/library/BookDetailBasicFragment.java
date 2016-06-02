@@ -88,6 +88,12 @@ public class BookDetailBasicFragment extends Fragment implements LoaderManager.L
     @Bind(R.id.book_detail_borrow_me)
     Button borrowMeButton;
 
+    @Bind(R.id.book_detail_published)
+    TextView publishedText;
+
+    @Bind(R.id.book_detail_published_title)
+    TextView publishedTitle;
+
     public static BookDetailBasicFragment newInstance(long bookId) {
         BookDetailBasicFragment result = new BookDetailBasicFragment();
         Bundle bundle = new Bundle();
@@ -176,6 +182,7 @@ public class BookDetailBasicFragment extends Fragment implements LoaderManager.L
 
     @Override
     public void onBookGet(Book book) {
+
         if (TextUtils.isEmpty(book.subtitle)) {
             fullTitle.setText(book.title);
         } else {
@@ -191,6 +198,15 @@ public class BookDetailBasicFragment extends Fragment implements LoaderManager.L
             isbnText.setVisibility(View.VISIBLE);
             isbnTitle.setVisibility(View.VISIBLE);
             isbnImage.setVisibility(View.VISIBLE);
+        }
+
+        if (book.published <= 0) {
+            publishedText.setVisibility(View.GONE);
+            publishedTitle.setVisibility(View.GONE);
+        } else {
+            publishedText.setVisibility(View.VISIBLE);
+            publishedTitle.setVisibility(View.VISIBLE);
+            publishedText.setText("" + book.published);
         }
 
         if (TextUtils.isEmpty(book.description)) {
@@ -229,6 +245,7 @@ public class BookDetailBasicFragment extends Fragment implements LoaderManager.L
     public void onLibraryGet(Library library) {
 
     }
+
 
     @Override
     public void onBorrowedGet(final Borrowed borrowed) {
@@ -278,7 +295,6 @@ public class BookDetailBasicFragment extends Fragment implements LoaderManager.L
 
     @Override
     public void onBorrowedToMeGet(final BorrowedToMe borrowedToMe) {
-
         if (borrowedToMe != null) {
             borrowMeImage.setVisibility(View.VISIBLE);
             borrowMeButton.setVisibility(View.VISIBLE);

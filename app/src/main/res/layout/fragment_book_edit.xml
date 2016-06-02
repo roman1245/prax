@@ -157,12 +157,21 @@
                 app:layout_gravity="fill"
                 tools:text="Domáca" />
 
+            <EditText
+                android:id="@+id/book_input_published"
+                android:layout_width="0dp"
+                android:hint="@string/edit_book_published"
+                app:layout_column="1"
+                app:layout_columnSpan="2"
+                app:layout_gravity="fill"
+                tools:text="2015" />
+
             <ImageView
                 android:contentDescription="@string/edit_book_info"
                 android:tint="@color/md_grey_700"
                 app:layout_column="0"
                 app:layout_gravity="center_vertical"
-                app:layout_row="6"
+                app:layout_row="7"
                 app:srcCompat="@drawable/ic_barcode" />
 
             <LinearLayout
@@ -200,7 +209,7 @@
                 android:tint="@color/md_grey_700"
                 app:layout_column="0"
                 app:layout_gravity="center_vertical"
-                app:layout_row="7"
+                app:layout_row="8"
                 app:srcCompat="@drawable/ic_camera" />
 
             <ImageView
@@ -219,7 +228,7 @@
                 android:tint="@color/md_grey_700"
                 app:layout_column="0"
                 app:layout_gravity="center_vertical"
-                app:layout_row="8"
+                app:layout_row="9"
                 app:srcCompat="@drawable/ic_pencil" />
 
             <EditText

@@ -8,6 +8,7 @@
 
     <!-- Main content -->
     <android.support.v7.widget.GridLayout
+        android:id="@+id/grid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
@@ -26,8 +27,7 @@
             android:tint="@color/md_grey_700"
             app:layout_gravity="center"
             app:layout_rowSpan="2"
-            app:srcCompat="@drawable/ic_book"
-            tools:src="@drawable/ic_book" />
+            app:srcCompat="@drawable/ic_book" />
 
         <TextView
             android:layout_width="0dp"
@@ -35,7 +35,9 @@
             android:gravity="center_vertical"
             android:text="@string/book_detail_full_title"
             android:textIsSelectable="true"
-            app:layout_gravity="fill" />
+            app:layout_column="1"
+            app:layout_gravity="fill"
+            app:layout_row="0" />
 
         <TextView
             android:id="@+id/book_detail_full_book_name"
@@ -44,7 +46,9 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:textIsSelectable="true"
+            app:layout_column="1"
             app:layout_gravity="fill"
+            app:layout_row="1"
             tools:text="Do vysok zdvihajte krov tesari a Seymour: Uvod pokus cislo 1" />
 
         <ImageView
@@ -55,8 +59,7 @@
             android:tint="@color/md_grey_700"
             app:layout_gravity="center"
             app:layout_rowSpan="2"
-            app:srcCompat="@drawable/ic_author"
-            tools:src="@drawable/ic_author" />
+            app:srcCompat="@drawable/ic_author" />
 
         <TextView
             android:layout_width="0dp"
@@ -65,7 +68,9 @@
             android:gravity="center_vertical"
             android:text="@string/book_detail_authors"
             android:textIsSelectable="true"
-            app:layout_gravity="fill" />
+            app:layout_column="1"
+            app:layout_gravity="fill"
+            app:layout_row="2" />
 
         <TextView
             android:id="@+id/book_detail_author"
@@ -75,7 +80,9 @@
             android:gravity="center_vertical"
             android:singleLine="true"
             android:textIsSelectable="true"
+            app:layout_column="1"
             app:layout_gravity="fill"
+            app:layout_row="3"
             tools:text="John Ronald Reuel Tolkien" />
 
         <ImageView
@@ -86,8 +93,7 @@
             android:tint="@color/md_grey_700"
             app:layout_gravity="center"
             app:layout_rowSpan="2"
-            app:srcCompat="@drawable/ic_tie"
-            tools:src="@drawable/ic_tie" />
+            app:srcCompat="@drawable/ic_tie" />
 
         <TextView
             android:layout_width="0dp"
@@ -96,7 +102,9 @@
             android:gravity="center_vertical"
             android:text="@string/book_detail_publisher"
             android:textIsSelectable="true"
-            app:layout_gravity="fill" />
+            app:layout_column="1"
+            app:layout_gravity="fill"
+            app:layout_row="4" />
 
         <TextView
             android:id="@+id/book_detail_publisher"
@@ -106,7 +114,9 @@
             android:gravity="center_vertical"
             android:singleLine="true"
             android:textIsSelectable="true"
+            app:layout_column="1"
             app:layout_gravity="fill"
+            app:layout_row="5"
             tools:text="Slovart" />
 
         <ImageView
@@ -118,8 +128,7 @@
             android:tint="@color/md_grey_700"
             app:layout_gravity="center"
             app:layout_rowSpan="2"
-            app:srcCompat="@drawable/ic_library"
-            tools:src="@drawable/ic_library" />
+            app:srcCompat="@drawable/ic_library" />
 
         <TextView
             android:id="@+id/book_detail_library_heading"
@@ -151,8 +160,7 @@
             android:tint="@color/md_grey_700"
             app:layout_gravity="center"
             app:layout_rowSpan="2"
-            app:srcCompat="@drawable/ic_barcode"
-            tools:src="@drawable/ic_barcode" />
+            app:srcCompat="@drawable/ic_barcode" />
 
         <TextView
             android:id="@+id/book_detail_isbn_title"
@@ -169,11 +177,33 @@
             style="@style/TextAppearance.AppCompat.Small.Title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
             android:singleLine="true"
             android:textIsSelectable="true"
             app:layout_gravity="fill"
             tools:text="0802356555" />
+
+
+        <TextView
+            android:id="@+id/book_detail_published_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:gravity="center_vertical"
+            android:text="@string/book_detail_published"
+            android:textIsSelectable="true"
+            app:layout_column="1"
+            app:layout_gravity="fill" />
+
+        <TextView
+            android:id="@+id/book_detail_published"
+            style="@style/TextAppearance.AppCompat.Small.Title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:textIsSelectable="true"
+            app:layout_column="1"
+            app:layout_gravity="fill"
+            tools:text="2015" />
 
         <ImageView
             android:id="@+id/book_detail_description_image"
@@ -182,10 +212,8 @@
             android:layout_marginTop="24dp"
             android:contentDescription="@string/edit_book_info"
             android:tint="@color/md_grey_700"
-            app:layout_column="0"
             app:layout_gravity="center"
-            app:srcCompat="@drawable/ic_pencil"
-            tools:src="@drawable/ic_pencil" />
+            app:srcCompat="@drawable/ic_pencil" />
 
         <TextView
             android:id="@+id/book_detail_description"
@@ -193,6 +221,7 @@
             android:layout_marginTop="24dp"
             android:gravity="center_vertical"
             android:textIsSelectable="true"
+            app:layout_column="1"
             app:layout_gravity="fill"
             tools:text="This book was completely awesome! It was about some small Hobbit." />
 
@@ -204,11 +233,9 @@
             android:contentDescription="@string/edit_book_info"
             android:tint="@color/md_grey_700"
             android:visibility="gone"
-            app:layout_column="0"
             app:layout_gravity="center"
-            app:layout_row="11"
+            app:layout_row="12"
             app:srcCompat="@drawable/ic_share"
-            tools:src="@drawable/ic_share"
             tools:visibility="visible" />
 
         <Button
@@ -230,8 +257,8 @@
             android:tint="@color/md_grey_700"
             android:visibility="gone"
             app:layout_gravity="center"
+            app:layout_row="13"
             app:srcCompat="@drawable/ic_borrowed_to_me"
-            tools:src="@drawable/ic_borrowed_to_me"
             tools:visibility="visible" />
 
         <Button

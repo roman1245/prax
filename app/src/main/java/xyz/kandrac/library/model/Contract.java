@@ -37,6 +37,7 @@ public final class Contract {
         String BOOK_BORROWED = "book_borrowed";
         String BOOK_BORROWED_TO_ME = "book_borrowed_to_me";
         String BOOK_WISH_LIST = "book_wish";
+        String BOOK_PUBLISHED = "book_published";
     }
 
     interface AuthorsColumns {

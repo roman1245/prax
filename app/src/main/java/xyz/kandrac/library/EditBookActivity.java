@@ -148,6 +148,9 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     @Bind(R.id.book_input_description_edit)
     EditText mDescription;
 
+    @Bind(R.id.book_input_published)
+    EditText mPublished;
+
     // Basic Activity Tasks
     @SuppressWarnings("SimplifiableConditionalExpression")
     @Override
@@ -359,16 +362,17 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
             String title = result.getString(result.getColumnIndex(SnkContract.Books.BOOK_TITLE));
             String authors = result.getString(result.getColumnIndex(SnkContract.Books.BOOK_AUTHORS));
             String publisher = result.getString(result.getColumnIndex(SnkContract.Books.BOOK_PUBLISHER));
+            String published = result.getString(result.getColumnIndex(SnkContract.Books.BOOK_PUBLISHED));
 
             mTitleEdit.setText(title);
             mAuthorEdit.setText(authors);
             mPublisherEdit.setText(publisher);
+            mPublished.setText(published);
         } else {
 
             RetrofitConfig.getInstance().getBooksApi().getBookByIsbn("isbn:" + barcode).enqueue(new Callback<BooksResponse>() {
                 @Override
                 public void onResponse(Response<BooksResponse> response) {
-
                     if (response.isSuccess()) {
                         BooksResponse books = response.body();
                         if (books.books != null && books.books.length > 0) {
@@ -383,6 +387,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                             mPublisherEdit.setText(info.publisher);
                         }
                     }
+
                 }
 
                 @Override
@@ -510,6 +515,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 .setDescription(mDescription.getText().toString())
                 .setWish(mToWishList)
                 .setBorrowedToMe(mBorrowedToMe)
+                .setPublished(mPublished.getText().toString())
                 .build();
 
         long bookId = DatabaseStoreUtils.saveBook(getContentResolver(), book);
@@ -750,6 +756,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         String isbn = data.getString(data.getColumnIndex(Contract.Books.BOOK_ISBN));
         String description = data.getString(data.getColumnIndex(Contract.Books.BOOK_DESCRIPTION));
         String path = data.getString(data.getColumnIndex(Contract.Books.BOOK_IMAGE_FILE));
+        String published = data.getString(data.getColumnIndex(Contract.Books.BOOK_PUBLISHED));
         boolean wish = data.getInt(data.getColumnIndex(Contract.Books.BOOK_WISH_LIST)) == 1;
         boolean borrowedToMe = data.getInt(data.getColumnIndex(Contract.Books.BOOK_BORROWED_TO_ME)) == 1;
 
@@ -757,6 +764,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         mSubtitleEdit.setText(subtitle);
         mIsbnEdit.setText(isbn);
         mDescription.setText(description);
+        mPublished.setText(published);
         mToWishList = wish;
         mBorrowedToMe = borrowedToMe;
         mImageEdit.setTag(path);

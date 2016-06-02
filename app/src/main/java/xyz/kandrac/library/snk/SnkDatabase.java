@@ -10,10 +10,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import xyz.kandrac.library.utils.LogUtils;
+
 /**
  * Created by kandrac on 20/01/16.
  */
 public class SnkDatabase extends SQLiteOpenHelper {
+
+    public static final String LOG_TAG = SnkDatabase.class.getName();
+
+    public static final int VERSION_SNK = 1;
+    public static final int VERSION_MARTINUS = 2;
 
     /**
      * In assets and real database name
@@ -21,7 +28,7 @@ public class SnkDatabase extends SQLiteOpenHelper {
     public static final String DB_NAME = "snk.db";
 
     public SnkDatabase(Context context) {
-        super(context, DB_NAME, null, 1);
+        super(context, DB_NAME, null, VERSION_MARTINUS);
         openDatabase(context);
     }
 
@@ -74,5 +81,11 @@ public class SnkDatabase extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        File dbFile = new File(db.getPath());
+        if (dbFile.exists() && dbFile.delete()) {
+            LogUtils.d(LOG_TAG, "old database removed");
+        } else {
+            LogUtils.d(LOG_TAG, "old database cannot be removed");
+        }
     }
 }
