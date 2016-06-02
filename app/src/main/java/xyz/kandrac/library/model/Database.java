@@ -12,7 +12,7 @@ public class Database extends SQLiteOpenHelper {
 
 
     public static final String DATABASE_NAME = "library.db";
-    public static final int DATABASE_VERSION = 4;
+    public static final int DATABASE_VERSION = 5;
 
     public Database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -53,6 +53,7 @@ public class Database extends SQLiteOpenHelper {
                     Contract.Books.BOOK_IMAGE_FILE + " TEXT," +
                     Contract.Books.BOOK_IMAGE_URL + " TEXT," +
                     Contract.Books.BOOK_BORROWED + " BOOLEAN DEFAULT 0," +
+                    Contract.Books.BOOK_PUBLISHED + " INTEGER," +
                     Contract.Books.BOOK_BORROWED_TO_ME + " BOOLEAN DEFAULT 0," +
                     Contract.Books.BOOK_WISH_LIST + " BOOLEAN DEFAULT 0," +
                     Contract.Books.BOOK_LIBRARY_ID + " INTEGER " + References.LIBRARY_ID + " ON DELETE CASCADE, " +
@@ -131,6 +132,8 @@ public class Database extends SQLiteOpenHelper {
             case 3:
                 db.execSQL(BORROW_ME_CREATE_TABLE);
                 db.execSQL("ALTER TABLE " + Tables.BOOKS + " ADD " + Contract.Books.BOOK_BORROWED_TO_ME + " BOOLEAN DEFAULT 0");
+            case 4:
+                db.execSQL("ALTER TABLE " + Tables.BOOKS + " ADD " + Contract.Books.BOOK_PUBLISHED + " INTEGER");
         }
     }
 }

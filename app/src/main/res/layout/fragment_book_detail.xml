@@ -175,7 +175,6 @@
                 style="@style/TextAppearance.AppCompat.Small.Title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
                 android:singleLine="true"
                 android:textIsSelectable="true"
                 app:layout_gravity="fill"

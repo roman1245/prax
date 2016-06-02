@@ -45,6 +45,7 @@
     <string name="edit_book_isbn">ISBN</string>
     <string name="edit_book_scan">Skenovať</string>
     <string name="edit_book_description">Popis</string>
+    <string name="edit_book_published">Rok vydania</string>
     <string name="edit_book_info">Základné informácie o knihe</string>
     <string name="edit_book_cover">Obálka Knihy</string>
     <string name="edit_book_take_photo_permission">Potrebujeme od vás povolenie pre fotenie a ukladanie fotografií do vášho telefónu</string>
