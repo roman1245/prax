@@ -515,7 +515,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 .setDescription(mDescription.getText().toString())
                 .setWish(mToWishList)
                 .setBorrowedToMe(mBorrowedToMe)
-                .setPublished(Integer.parseInt(mPublished.getText().toString()))
+                .setPublished(mPublished.getText().toString())
                 .build();
 
         long bookId = DatabaseStoreUtils.saveBook(getContentResolver(), book);

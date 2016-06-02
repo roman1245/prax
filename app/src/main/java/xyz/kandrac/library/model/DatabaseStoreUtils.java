@@ -77,7 +77,9 @@ public final class DatabaseStoreUtils {
         bookContentValues.put(Contract.Books.BOOK_LIBRARY_ID, libraryId);
         bookContentValues.put(Contract.Books.BOOK_WISH_LIST, book.wish);
         bookContentValues.put(Contract.Books.BOOK_BORROWED_TO_ME, book.borrowedToMe);
-        bookContentValues.put(Contract.Books.BOOK_PUBLISHED, book.published);
+        if (book.published > 0) {
+            bookContentValues.put(Contract.Books.BOOK_PUBLISHED, book.published);
+        }
 
         if (book.id > 0) {
             contentResolver.update(Contract.Books.buildBookUri(book.id), bookContentValues, null, null);
@@ -114,7 +116,7 @@ public final class DatabaseStoreUtils {
      * Save {@link Library} into database via provided {@link ContentResolver}.
      *
      * @param contentResolver for database
-     * @param library       to store
+     * @param library         to store
      * @return publisher ID
      */
     public static long saveLibrary(ContentResolver contentResolver, Library library) {

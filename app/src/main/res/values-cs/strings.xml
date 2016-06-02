@@ -57,6 +57,7 @@
     <string name="book_detail_publisher">Vydavatel:</string>
     <string name="book_detail_library">Knihovna:</string>
     <string name="book_detail_isbn">ISBN:</string>
+    <string name="book_detail_published">Rok vydání:</string>
     <!-- Book Borrow Texts -->
     <string name="borrow_wrong_input">Prosím zadej kdy tě máme upozornit</string>
     <string name="borrow_title">Půjčení knihy</string>

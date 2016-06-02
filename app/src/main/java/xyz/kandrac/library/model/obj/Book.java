@@ -135,6 +135,15 @@ public class Book {
             return this;
         }
 
+        public Builder setPublished(String published) {
+            try {
+                this.published = Integer.parseInt(published);
+            } catch (NumberFormatException ex) {
+                return this;
+            }
+            return this;
+        }
+
         public Book build() {
             return new Book(this);
         }

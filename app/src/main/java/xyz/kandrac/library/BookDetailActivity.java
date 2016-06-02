@@ -131,6 +131,12 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     @Bind(R.id.book_detail_borrow_me)
     Button borrowMeButton;
 
+    @Bind(R.id.book_detail_published)
+    TextView publishedText;
+
+    @Bind(R.id.book_detail_published_title)
+    TextView publishedTitle;
+
     private boolean mInWishList;
     private boolean mBorrowed;
     private boolean mBorrowedToMe;
@@ -211,6 +217,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
         mInWishList = bookCursor.getInt(bookCursor.getColumnIndex(Contract.Books.BOOK_WISH_LIST)) == 1;
         mBorrowedToMe = bookCursor.getInt(bookCursor.getColumnIndex(Contract.Books.BOOK_BORROWED_TO_ME)) == 1;
         String filePath = bookCursor.getString(bookCursor.getColumnIndex(Contract.Books.BOOK_IMAGE_FILE));
+        String published = bookCursor.getString(bookCursor.getColumnIndex(Contract.Books.BOOK_PUBLISHED));
 
         LogUtils.v(LOG_TAG, "binding book title = " + title);
         collapsingToolbarLayout.setTitle(title);
@@ -232,6 +239,15 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
             isbnText.setVisibility(View.VISIBLE);
             isbnTitle.setVisibility(View.VISIBLE);
             isbnImage.setVisibility(View.VISIBLE);
+        }
+
+        if (TextUtils.isEmpty(published)) {
+            publishedText.setVisibility(View.GONE);
+            publishedTitle.setVisibility(View.GONE);
+        } else {
+            publishedText.setVisibility(View.VISIBLE);
+            publishedTitle.setVisibility(View.VISIBLE);
+            publishedText.setText(published);
         }
 
         LogUtils.v(LOG_TAG, "binding book description = " + description);
