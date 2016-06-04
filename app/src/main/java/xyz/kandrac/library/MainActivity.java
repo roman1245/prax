@@ -85,6 +85,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        deleteDatabase("snk.db");
+
         // Action Bar settings
         setSupportActionBar(toolbar);
         mActionBar = getSupportActionBar();

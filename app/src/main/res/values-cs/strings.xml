@@ -5,6 +5,8 @@
     <string name="app_name">Knihovna</string>
     <!-- General errors and messages -->
     <string name="unexpected_error_occurs">Došlo k neočekávané chybě</string>
+    <string name="not_connected_book_info">Chybí připojení k internetu. Nemůžu zjistit podrobnosti o knize</string>
+    <string name="communication_error">Chyba komunikace. Nemůžu zjistit podrobnosti o knize</string>
     <!-- General formatting strings -->
     <string name="format_book_title_subtitle">%1$s: %2$s</string>
     <string name="title_add_new_book">Nová kniha</string>
@@ -51,6 +53,9 @@
     <string name="edit_book_barcode_permission">Chcete-li skenovat čárový kód budeme potřebovat vaše povolení</string>
     <string name="edit_book_no_permission">Bez těchto oprávnění nemůžeme pokračovat. Chcete-li změnit oprávnění učiňte tak v Nastavení telefonu.</string>
     <string name="edit_book_no_permission_title">Chybějící oprávnění</string>
+
+    <string name="parsing_book_details">Získávám podrobnosti</string>
+    <string name="parsing_book_details_message">Získávám podrobnosti o této knize z internetu</string>
     <!-- Book Details Screen -->
     <string name="book_detail_full_title">Název Knihy:</string>
     <string name="book_detail_authors">Autoři:</string>

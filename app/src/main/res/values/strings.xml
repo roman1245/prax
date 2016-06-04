@@ -5,6 +5,8 @@
     <string name="app_name">Library</string>
     <!-- General errors and messages -->
     <string name="unexpected_error_occurs">Unexpected error occurred</string>
+    <string name="not_connected_book_info">Not connected to internet. Cannot get info about book</string>
+    <string name="communication_error">Communication error. Cannot get info about book</string>
     <!-- General formatting strings -->
     <string name="format_book_title_subtitle">%1$s: %2$s</string>
     <string name="title_add_new_book">New Book</string>
@@ -51,6 +53,9 @@
     <string name="edit_book_barcode_permission">We need your permission to scan barcodes</string>
     <string name="edit_book_no_permission">We cannot continue without these permissions. If you wish to change the restrictions, access the phone settings to do so</string>
     <string name="edit_book_no_permission_title">Permissions are missing</string>
+
+    <string name="parsing_book_details">Getting details</string>
+    <string name="parsing_book_details_message">Getting details about this book from internet</string>
     <!-- Book Details Screen -->
     <string name="book_detail_full_title">Book Title:</string>
     <string name="book_detail_authors">Authors:</string>
