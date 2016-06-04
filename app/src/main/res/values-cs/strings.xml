@@ -57,6 +57,8 @@
 
     <string name="parsing_book_details">Získávám podrobnosti</string>
     <string name="parsing_book_details_message">Získávám podrobnosti o této knize z internetu</string>
+    <string name="edit_book_already_exists">Kniha již existuje</string>
+    <string name="edit_book_already_exists_message">Kniha se stejným ISBN již existuje. Jsi si jistý, že chceš uložit tuto knihu podruhé?</string>
     <!-- Book Details Screen -->
     <string name="book_detail_full_title">Název Knihy:</string>
     <string name="book_detail_authors">Autoři:</string>

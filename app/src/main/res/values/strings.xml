@@ -57,6 +57,8 @@
 
     <string name="parsing_book_details">Getting details</string>
     <string name="parsing_book_details_message">Getting details about this book from internet</string>
+    <string name="edit_book_already_exists">Book already exists</string>
+    <string name="edit_book_already_exists_message">Book with same ISBN already exists in your database. Are you sure you want to save this book as new one?</string>
     <!-- Book Details Screen -->
     <string name="book_detail_full_title">Book Title:</string>
     <string name="book_detail_authors">Authors:</string>

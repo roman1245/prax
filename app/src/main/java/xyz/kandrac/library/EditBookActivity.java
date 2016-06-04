@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -470,7 +471,41 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     // Open Barcode scanner
     @OnClick(R.id.fab)
     public void save(View view) {
+        String isbn = mIsbnEdit.getText().toString();
 
+        if (TextUtils.isEmpty(isbn)) {
+            saveConfirmed();
+            return;
+        }
+
+        Cursor c = getContentResolver().query(Contract.Books.buildBookIsbnUri(mIsbnEdit.getText().toString()), null, null, null, null);
+
+        if (c != null && c.getCount() > 0) {
+            c.close();
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.edit_book_already_exists)
+                    .setMessage(R.string.edit_book_already_exists_message)
+                    .setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .setPositiveButton(R.string.action_save, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            saveConfirmed();
+                            dialog.dismiss();
+                        }
+                    })
+                    .setCancelable(true)
+                    .show();
+        } else {
+            saveConfirmed();
+        }
+    }
+
+    public void saveConfirmed() {
         String authorsReadable = mAuthorEdit.getText().toString();
 
         Publisher publisher = new Publisher.Builder()
