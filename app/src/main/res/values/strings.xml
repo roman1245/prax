@@ -3,6 +3,7 @@
 
     <!-- Application texts -->
     <string name="app_name">Library</string>
+    <string name="press_again_to_leave">Press back button again to leave Library</string>
     <!-- General errors and messages -->
     <string name="unexpected_error_occurs">Unexpected error occurred</string>
     <string name="not_connected_book_info">Not connected to internet. Cannot get info about book</string>
@@ -78,9 +79,6 @@
     <string name="menu_books_wish_list">Wishlist</string>
     <string name="soon">Coming soon…</string>
     <string name="navigation_head">Main navigation</string>
-    <!-- About -->
-    <string name="about_title">About</string>
-    <string name="about_producer">Ján Kandráč</string>
     <!-- Dialog Actions -->
     <string name="dialog_book_delete_title">Delete book</string>
     <string name="dialog_book_delete_message">Are you sure you want to delete this book?</string>

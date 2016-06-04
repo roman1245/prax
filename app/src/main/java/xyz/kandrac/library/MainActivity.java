@@ -24,6 +24,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 
@@ -46,6 +47,8 @@ import xyz.kandrac.library.views.DummyDrawerCallback;
  * @see NavigationView
  */
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<Cursor> {
+
+    public static final long WAIT_FOR_DOUBLE_CLICK_BACK = 3000;
 
     // Loader constants. Ensure that fragments are using this constants and not the
     public static final int BOOK_LIST_LOADER = 1;
@@ -77,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Fragment mShownFragment;
     private SearchView searchView;
     private ActionBar mActionBar;
+    private long mLastFinishingBackClicked;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -197,8 +201,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 searchView.setIconified(true);
             }
         } else {
-            // take standard action otherwise
-            super.onBackPressed();
+            // don't close immediately
+            long currentTime = System.currentTimeMillis();
+            if (currentTime > mLastFinishingBackClicked + WAIT_FOR_DOUBLE_CLICK_BACK) {
+                mLastFinishingBackClicked = currentTime;
+                Toast.makeText(this, R.string.press_again_to_leave, Toast.LENGTH_SHORT).show();
+            } else {
+                // take standard action otherwise
+                super.onBackPressed();
+            }
         }
     }
 

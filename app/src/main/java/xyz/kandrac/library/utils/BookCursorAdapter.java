@@ -197,7 +197,8 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
+        mCursor = null;
+        notifyDataSetChanged();
     }
 
     @Override

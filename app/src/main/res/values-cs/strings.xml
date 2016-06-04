@@ -3,6 +3,7 @@
 
     <!-- Application texts -->
     <string name="app_name">Knihovna</string>
+    <string name="press_again_to_leave">Stiskni tlačítko zpět ještě jednou pro zavření Knihovny</string>
     <!-- General errors and messages -->
     <string name="unexpected_error_occurs">Došlo k neočekávané chybě</string>
     <string name="not_connected_book_info">Chybí připojení k internetu. Nemůžu zjistit podrobnosti o knize</string>
@@ -78,9 +79,6 @@
     <string name="menu_books_wish_list">Seznam přání</string>
     <string name="soon">Již brzy…</string>
     <string name="navigation_head">Hlavní navigace</string>
-    <!-- About -->
-    <string name="about_title">O aplikaci</string>
-    <string name="about_producer">Ján Kandráč</string>
     <!-- Dialog Actions -->
     <string name="dialog_book_delete_title">Smazat knihu</string>
     <string name="dialog_book_delete_message">Opravdu chcete smazat tuto knihu?</string>
