@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.LoaderManager;
 import android.app.ProgressDialog;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -85,11 +86,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+        startService(new Intent(this, InitService.class));
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
-        deleteDatabase("snk.db");
 
         // Action Bar settings
         setSupportActionBar(toolbar);
