@@ -8,6 +8,9 @@
     <string name="unexpected_error_occurs">Unexpected error occurred</string>
     <string name="not_connected_book_info">Not connected to internet. Cannot get info about book</string>
     <string name="communication_error">Communication error. Cannot get info about book</string>
+    <string name="incorrect_date_format">Incorrect date format. Please use calendar button</string>
+    <string name="empty_name">Name should not be empty</string>
+    <string name="incorrect_borrow_date">Borrow date should not be set to past date</string>
     <!-- General formatting strings -->
     <string name="format_book_title_subtitle">%1$s: %2$s</string>
     <string name="title_add_new_book">New Book</string>
@@ -67,9 +70,11 @@
     <string name="book_detail_isbn">ISBN/barcode:</string>
     <string name="book_detail_published">Publish Year:</string>
     <!-- Book Borrow Texts -->
+    <string name="borrow_to">Borrow book to</string>
+    <string name="borrow_until">Book return date</string>
     <string name="borrow_wrong_input">Please, insert the time of expected notification</string>
     <string name="borrow_title">Borrow book</string>
-    <string name="borrow_message">Select the number of days after which you wish to be notified about the borrowed book. If the book is returned earlier, the notification will be cancelled.</string>
+    <string name="borrow_message">Who do you want do borrow the book and for how long?</string>
     <!-- Navigation menu items -->
     <string name="menu_books">Books</string>
     <string name="menu_books_mine">My books</string>

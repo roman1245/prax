@@ -8,6 +8,9 @@
     <string name="unexpected_error_occurs">Došlo k neočekávané chybě</string>
     <string name="not_connected_book_info">Chybí připojení k internetu. Nemůžu zjistit podrobnosti o knize</string>
     <string name="communication_error">Chyba komunikace. Nemůžu zjistit podrobnosti o knize</string>
+    <string name="incorrect_date_format">Nesprávný formát data. Zkus použít tlačítko s kalendářem</string>
+    <string name="empty_name">Jméno nesmí být prázdné</string>
+    <string name="incorrect_borrow_date">Datum vrácení knihy nemůže být nastaven do minulosti</string>
     <!-- General formatting strings -->
     <string name="format_book_title_subtitle">%1$s: %2$s</string>
     <string name="title_add_new_book">Nová kniha</string>
@@ -67,9 +70,11 @@
     <string name="book_detail_isbn">ISBN:</string>
     <string name="book_detail_published">Rok vydání:</string>
     <!-- Book Borrow Texts -->
+    <string name="borrow_to">Půjčit knihu</string>
+    <string name="borrow_until">Dohodnuté vrácení knihy</string>
     <string name="borrow_wrong_input">Prosím zadej kdy tě máme upozornit</string>
     <string name="borrow_title">Půjčení knihy</string>
-    <string name="borrow_message">Zadej do kolik dnů chceš dostat upozornění o půjčení této knihy. Pokud se ti kniha vrátí dříve, upozornění bude zrušeno.</string>
+    <string name="borrow_message">Komu a na jak dlouho chcete půjčit tuto knihu</string>
     <!-- Navigation menu items -->
     <string name="menu_books">Knihy</string>
     <string name="menu_books_mine">Moje knihy</string>
