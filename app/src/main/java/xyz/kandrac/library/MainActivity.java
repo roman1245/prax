@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.app.LoaderManager;
 import android.app.ProgressDialog;
 import android.content.CursorLoader;
-import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -86,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        startService(new Intent(this, InitService.class));
+        InitService.start(this);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
@@ -137,6 +136,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getLoaderManager().initLoader(MY_COUNT, null, this);
         getLoaderManager().initLoader(BORROWED_COUNT, null, this);
         getLoaderManager().initLoader(FROM_FRIENDS_COUNT, null, this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        InitService.start(this, InitService.ACTION_CLEAR_DATABASE);
     }
 
     public void checkLibrariesPreferences() {
