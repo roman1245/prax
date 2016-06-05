@@ -93,7 +93,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
     public static final int LOADER_LIBRARY = 4;
     // Globals
-    private Long mBookId;
+    private long mBookId;
     private boolean mToWishList;
     private boolean mBorrowedToMe;
 
@@ -473,7 +473,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     public void save(View view) {
         String isbn = mIsbnEdit.getText().toString();
 
-        if (TextUtils.isEmpty(isbn)) {
+        if (mBookId != 0 || TextUtils.isEmpty(isbn)) {
             saveConfirmed();
             return;
         }
