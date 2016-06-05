@@ -169,6 +169,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Associate searchable configuration with the SearchView
         MenuItem searchMenuItem = menu.findItem(R.id.search);
         searchView = (SearchView) searchMenuItem.getActionView();
+        searchView.setMaxWidth(Integer.MAX_VALUE);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
