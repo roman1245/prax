@@ -9,13 +9,13 @@ android {
         testApplicationId "kandrac.xyz.library.test"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 16
-        versionName "1.1.11"
+        versionCode 18
+        versionName "1.2.1"
 
         // Database authorities definitions
         buildConfigField 'String', 'DATABASE_AUTHORITY', '"xyz.kandrac.library"'
-        buildConfigField 'String', 'SNK_DATABASE_AUTHORITY', '"xyz.kandrac.library.snk"'
         buildConfigField 'String', 'GOOGLE_BOOKS_API_URL', '"https://www.googleapis.com"'
+        buildConfigField 'String', 'LIBRARY_API_URL', '"http://kandrac.xyz"'
 
         vectorDrawables.useSupportLibrary = true
 
@@ -51,12 +51,9 @@ android {
 
             // Database authorities definitions
             buildConfigField 'String', 'DATABASE_AUTHORITY', '"xyz.kandrac.library.debug"'
-            buildConfigField 'String', 'SNK_DATABASE_AUTHORITY', '"xyz.kandrac.library.snk.debug"'
-
             buildConfigField 'String', 'GOOGLE_API_KEY', '"AIzaSyBhGenifD9XgRW8q-rzEKyo3KlplHAf8J8"'
 
-            manifestPlaceholders = [databaseAuthority   : "xyz.kandrac.library.debug",
-                                    snkDatabaseAuthority: "xyz.kandrac.library.snk.debug"]
+            manifestPlaceholders = [databaseAuthority   : "xyz.kandrac.library.debug"]
         }
     }
 

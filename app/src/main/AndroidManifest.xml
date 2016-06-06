@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <supports-screens
         android:anyDensity="true"
@@ -76,11 +77,6 @@
             android:authorities="${databaseAuthority}"
             android:exported="false" />
 
-        <provider
-            android:name=".snk.SnkProvider"
-            android:authorities="${snkDatabaseAuthority}"
-            android:exported="false" />
-
         <receiver
             android:name=".NotificationReceiver"
             android:exported="false" />
@@ -92,6 +88,7 @@
         </receiver>
 
         <service android:name=".StartupService" />
+        <service android:name=".InitService" />
     </application>
 
 </manifest>

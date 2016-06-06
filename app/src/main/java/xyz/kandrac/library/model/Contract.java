@@ -94,6 +94,7 @@ public final class Contract {
 
     public static final String PATH_BORROW_INFO = "borrowinfo";
     public static final String PATH_BORROW_ME_INFO = "borrowmeinfo";
+    public static final String PATH_ISBN = "isbn";
 
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
@@ -133,6 +134,10 @@ public final class Contract {
             return CONTENT_URI.buildUpon().appendPath(Long.toString(bookId)).build();
         }
 
+        public static Uri buildBookIsbnUri(String isbn) {
+            return CONTENT_URI.buildUpon().appendPath(PATH_ISBN).appendPath(isbn).build();
+        }
+
         public static Uri buildBookPublisherUri(long bookId) {
             return CONTENT_URI.buildUpon().appendPath(Long.toString(bookId)).appendPath(PATH_PUBLISHERS).build();
         }
@@ -153,6 +158,12 @@ public final class Contract {
          */
         public static long getBookId(Uri uri) {
             return Long.parseLong(uri.getPathSegments().get(1));
+        }
+        /**
+         * Read {@link #BOOK_ID} from {@link Books} {@link Uri}.
+         */
+        public static long getBookIsbn(Uri uri) {
+            return Long.parseLong(uri.getPathSegments().get(2));
         }
 
         public static Uri buildBorrowInfoUri(long bookId) {

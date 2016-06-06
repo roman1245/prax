@@ -5,7 +5,8 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.GsonConverterFactory;
 import retrofit2.Retrofit;
 import xyz.kandrac.library.BuildConfig;
-import xyz.kandrac.library.api.google.BooksApi;
+import xyz.kandrac.library.api.google.GoogleApi;
+import xyz.kandrac.library.api.library.LibraryApi;
 
 /**
  * Created by kandrac on 04/02/16.
@@ -13,7 +14,8 @@ import xyz.kandrac.library.api.google.BooksApi;
 public final class RetrofitConfig {
 
     private static RetrofitConfig instance;
-    private BooksApi booksApi;
+    private GoogleApi googleApi;
+    private LibraryApi libraryApi;
 
     public static RetrofitConfig getInstance() {
         return (instance == null) ? instance = new RetrofitConfig() : instance;
@@ -30,17 +32,29 @@ public final class RetrofitConfig {
             ).build();
         }
 
-        Retrofit retrofit = new Retrofit.Builder()
+        Retrofit google = new Retrofit.Builder()
                 .baseUrl(BuildConfig.GOOGLE_BOOKS_API_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(builder.build())
                 .build();
 
-        booksApi = retrofit.create(BooksApi.class);
+        googleApi = google.create(GoogleApi.class);
+
+        Retrofit library = new Retrofit.Builder()
+                .baseUrl(BuildConfig.LIBRARY_API_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(builder.build())
+                .build();
+
+        libraryApi = library.create(LibraryApi.class);
     }
 
-    public BooksApi getBooksApi() {
-        return booksApi;
+    public GoogleApi getGoogleApi() {
+        return googleApi;
+    }
+
+    public LibraryApi getLibraryApi() {
+        return libraryApi;
     }
 
 }

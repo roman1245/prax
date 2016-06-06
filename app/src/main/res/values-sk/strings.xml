@@ -4,8 +4,14 @@
 
     <!-- Application texts -->
     <string name="app_name">Knižnica</string>
+    <string name="press_again_to_leave">Stlač tlačidlo späť ešte raz pre zavretie Knižnice</string>
     <!-- General errors and messages -->
     <string name="unexpected_error_occurs">Vyskytla sa neočakávaná chyba</string>
+    <string name="not_connected_book_info">Chýba pripojenie k internetu. Nemôžem zistiť podrobnosti o knihe</string>
+    <string name="communication_error">Chyba komunikácie. Nemôžem zistiť podrobnosti o knihe</string>
+    <string name="incorrect_date_format">Nesprávny formát dátumu. Skús použiť tlačidlo s kalendárom</string>
+    <string name="empty_name">Meno nesmie byť prázdne</string>
+    <string name="incorrect_borrow_date">Dátum vrátenia knihy nemôže byť nastavený do minulosti</string>
     <!-- General formatting strings -->
     <string name="format_book_title_subtitle">%1$s: %2$s</string>
     <string name="title_add_new_book">Nová kniha</string>
@@ -52,6 +58,11 @@
     <string name="edit_book_barcode_permission">Ak chcete naskenovať čiarový kód, budeme potrebovať vaše povolenie</string>
     <string name="edit_book_no_permission">Bez týchto oprávnení nemôžeme pokračovať. Ak chcete zmeniť oprávenia urobte tak v Nastaveniach telefónu.</string>
     <string name="edit_book_no_permission_title">Chýbajúce oprávnenia</string>
+
+    <string name="parsing_book_details">Získavam podrobnosti</string>
+    <string name="parsing_book_details_message">Získavam podrobnosti o tejto knihe z internetu</string>
+    <string name="edit_book_already_exists">Kniha už existuje</string>
+    <string name="edit_book_already_exists_message">Kniha s rovnakým ISBN už existuje. Si si istý, že chceš uložiť túto knihu druhý krát?</string>
     <!-- Book Details Screen -->
     <string name="book_detail_full_title">Názov knihy:</string>
     <string name="book_detail_authors">Autori:</string>
@@ -63,9 +74,11 @@
     <string name="book_detail_tab_basic">Základné</string>
     <string name="book_detail_tab_others">Ďalšie</string>
     <!-- Book Borrow Texts -->
+    <string name="borrow_to">Požičať knihu</string>
+    <string name="borrow_until">Dohodnuté vrátenie knihy</string>
     <string name="borrow_wrong_input">Prosím zadaj kedy ťa máme upozorniť</string>
     <string name="borrow_title">Požičanie knihy</string>
-    <string name="borrow_message">Zadaj o koľko dní chceš dostať upozornenie o požičaní tejto knihy. Ak sa ti kniha stihne vrátiť skôr, upozornenie bude zrušené.</string>
+    <string name="borrow_message">Komu a na ako dlho chceš požičať túto knihu?</string>
     <!-- Navigation menu items -->
     <string name="menu_books">Knihy</string>
     <string name="menu_books_mine">Moje knihy</string>
@@ -77,9 +90,6 @@
     <string name="menu_books_wish_list">Wishlist</string>
     <string name="soon">Čoskoro…</string>
     <string name="navigation_head">Hlavná navigácia</string>
-    <!-- About -->
-    <string name="about_title">O aplikácii</string>
-    <string name="about_producer">Ján Kandráč</string>
     <!-- Dialog Actions -->
     <string name="dialog_book_delete_title">Vymazať knihu</string>
     <string name="dialog_book_delete_message">Naozaj chceš vymazať túto knihu?</string>

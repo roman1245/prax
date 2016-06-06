@@ -1,7 +1,6 @@
 package xyz.kandrac.library;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,22 +20,17 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import xyz.kandrac.library.dialogs.BorrowBookDialog;
 import xyz.kandrac.library.model.Contract;
 import xyz.kandrac.library.model.obj.Author;
 import xyz.kandrac.library.model.obj.Book;
@@ -44,7 +38,6 @@ import xyz.kandrac.library.model.obj.Borrowed;
 import xyz.kandrac.library.model.obj.BorrowedToMe;
 import xyz.kandrac.library.model.obj.Library;
 import xyz.kandrac.library.model.obj.Publisher;
-import xyz.kandrac.library.utils.DateUtils;
 import xyz.kandrac.library.utils.LogUtils;
 
 /**
@@ -57,22 +50,16 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     public static final String LOG_TAG = BookDetailActivity.class.getName();
     public static final String EXTRA_BOOK_ID = "book_id_extra";
 
-    public static final String CONTACT_URI = "contact_uri";
-
     // LOADERS
-    public static final int LOADER_BOOK = 1;
-    public static final int LOADER_CONTACT = 2;
-    public static final int LOADER_BORROW_DETAIL = 3;
-    public static final int LOADER_BORROW_ME_DETAIL = 4;
-    public static final int LOADER_AUTHOR = 5;
-    public static final int LOADER_PUBLISHER = 6;
-    public static final int LOADER_LIBRARY = 7;
+    static final int LOADER_BOOK = 1;
+    static final int LOADER_BORROW_DETAIL = 3;
+    static final int LOADER_BORROW_ME_DETAIL = 4;
+    static final int LOADER_AUTHOR = 5;
+    static final int LOADER_PUBLISHER = 6;
+    static final int LOADER_LIBRARY = 7;
 
     // PERMISSIONS
     static final int PICK_CONTACT_PERMISSION = 1;
-
-    // INTENT ACTIONS
-    static final int PICK_CONTACT_ACTION = 1;
 
     private Long mBookId;
     private Book mBook;
@@ -91,6 +78,8 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
 
     @Bind(R.id.tabs)
     TabLayout tabs;
+
+    private boolean mShowBorrowDialog = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -218,33 +207,12 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
             case PICK_CONTACT_PERMISSION: {
 
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    searchContact();
+                    mShowBorrowDialog = true;
                 }
                 break;
             }
             default:
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-    }
-
-    private void searchContact() {
-        Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-        startActivityForResult(intent, PICK_CONTACT_ACTION);
-    }
-
-    @Override
-    public void onActivityResult(int reqCode, int resultCode, Intent data) {
-        switch (reqCode) {
-            case (BookDetailActivity.PICK_CONTACT_ACTION): {
-                if (resultCode == Activity.RESULT_OK) {
-                    Bundle arguments = new Bundle();
-                    arguments.putString(CONTACT_URI, data.getData().getLastPathSegment());
-                    getSupportLoaderManager().restartLoader(BookDetailActivity.LOADER_CONTACT, arguments, this);
-                }
-                break;
-            }
-            default:
-                super.onActivityResult(reqCode, resultCode, data);
         }
     }
 
@@ -327,17 +295,6 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                         null,
                         null);
 
-            case LOADER_CONTACT:
-
-                String contactId = args.getString(CONTACT_URI);
-                return new CursorLoader(
-                        this,
-                        ContactsContract.Data.CONTENT_URI,
-                        ContactRequest.GENERAL_COLUMNS,
-                        ContactRequest.GENERAL_SELECTION,
-                        new String[]{contactId},
-                        null);
-
             default:
                 return null;
         }
@@ -365,67 +322,8 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                 break;
             }
 
-            case BookDetailActivity.LOADER_PUBLISHER:
+            case BookDetailActivity.LOADER_PUBLISHER: {
                 bindPublisher(data);
-                break;
-
-            case BookDetailActivity.LOADER_CONTACT: {
-                if (!data.moveToFirst()) {
-                    Toast.makeText(this, R.string.unexpected_error_occurs, Toast.LENGTH_SHORT).show();
-                    break;
-                }
-
-                final View content = getLayoutInflater().inflate(R.layout.dialog_fragment_borrow, null);
-
-                new AlertDialog.Builder(this)
-                        .setView(content)
-                        .setMessage(R.string.borrow_message)
-                        .setTitle(R.string.borrow_title)
-                        .setPositiveButton(R.string.action_ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                EditText input = (EditText) content.findViewById(R.id.borrow_input);
-                                if (TextUtils.isEmpty(input.getText())) {
-                                    Toast.makeText(BookDetailActivity.this, R.string.borrow_wrong_input, Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-
-                                final long dateFrom = new Date(System.currentTimeMillis()).getTime();
-
-                                final String name = data.getString(ContactRequest.NAME_COLUMN);
-
-                                int notifyInDays = Integer.parseInt(input.getText().toString());
-
-                                Long timeToNotify =
-                                        BuildConfig.DEBUG
-                                                ? System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(notifyInDays)
-                                                : DateUtils.getTodayHourTime(18) + TimeUnit.DAYS.toMillis(notifyInDays);
-
-                                ContentValues borrowContentValues = new ContentValues();
-                                borrowContentValues.put(Contract.BorrowInfo.BORROW_DATE_BORROWED, dateFrom);
-                                borrowContentValues.put(Contract.BorrowInfo.BORROW_DATE_RETURNED, 0);
-                                borrowContentValues.put(Contract.BorrowInfo.BORROW_NAME, name);
-                                borrowContentValues.put(Contract.BorrowInfo.BORROW_NEXT_NOTIFICATION, timeToNotify);
-
-                                getContentResolver().insert(Contract.Books.buildBorrowInfoUri(mBookId), borrowContentValues);
-
-                                ContentValues bookContentValues = new ContentValues();
-                                bookContentValues.put(Contract.Books.BOOK_BORROWED, true);
-                                getContentResolver().update(Contract.Books.buildBookUri(mBookId), bookContentValues, null, null);
-
-                                NotificationReceiver.prepareNotification(BookDetailActivity.this, timeToNotify, mBookId);
-
-                                dialog.dismiss();
-                            }
-                        })
-                        .setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .show();
-
                 break;
             }
         }
@@ -567,8 +465,22 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     }
 
     @Override
+    protected void onResumeFragments() {
+        super.onResumeFragments();
+        // play with fragments here
+        if (mShowBorrowDialog) {
+            mShowBorrowDialog = false;
+            searchContact();
+        }
+    }
+
+    @Override
     public void onTabReselected(TabLayout.Tab tab) {
 
+    }
+
+    private void searchContact() {
+        BorrowBookDialog.getInstance(mBookId).show(getSupportFragmentManager(), null);
     }
 
     public interface BookDatabaseCallbacks {

@@ -1,8 +1,10 @@
 package xyz.kandrac.library.fragments;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -52,8 +54,21 @@ public class AuthorDetailFragment extends Fragment {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            onAttachToContext(activity);
+        }
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        onAttachToContext(context);
+    }
+
+    private void onAttachToContext(Context context) {
         if (context instanceof AuthorFragmentCallbacks) {
             mAuthorDelete = (AuthorFragmentCallbacks) context;
         } else {

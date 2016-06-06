@@ -2,7 +2,10 @@ package xyz.kandrac.library;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -23,13 +26,11 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
@@ -53,7 +54,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import xyz.kandrac.barcode.BarcodeActivity;
 import xyz.kandrac.library.api.RetrofitConfig;
-import xyz.kandrac.library.api.google.BooksResponse;
+import xyz.kandrac.library.api.library.LibraryResponse;
 import xyz.kandrac.library.fragments.SettingsFragment;
 import xyz.kandrac.library.model.Contract;
 import xyz.kandrac.library.model.DatabaseStoreUtils;
@@ -61,11 +62,10 @@ import xyz.kandrac.library.model.obj.Author;
 import xyz.kandrac.library.model.obj.Book;
 import xyz.kandrac.library.model.obj.Library;
 import xyz.kandrac.library.model.obj.Publisher;
-import xyz.kandrac.library.snk.SnkContract;
 import xyz.kandrac.library.utils.BookCursorAdapter;
+import xyz.kandrac.library.utils.ConnectivityUtils;
 import xyz.kandrac.library.utils.DisplayUtils;
 import xyz.kandrac.library.utils.LogUtils;
-import xyz.kandrac.library.utils.StringUtils;
 
 /**
  * Created by VizGhar on 11.10.2015.
@@ -93,9 +93,10 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     public static final int LOADER_LIBRARY = 4;
 
     // Globals
-    private Long mBookId;
+    private long mBookId;
     private boolean mToWishList;
     private boolean mBorrowedToMe;
+
     private String imageFileName;
 
     // Requests to other activities
@@ -105,6 +106,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     // Permission requests
     private static final int PERMISSION_TAKE_PHOTO = 2;
     private static final int PERMISSION_BARCODE = 3;
+
     private static final int PERMISSION_PICK_CONTACT = 4;
 
     private boolean startingActivity = false;
@@ -147,7 +149,6 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
     @Bind(R.id.book_input_description_edit)
     EditText mDescription;
-
     @Bind(R.id.book_input_published)
     EditText mPublished;
 
@@ -357,50 +358,37 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     }
 
     private void searchIsbn(String barcode) {
-        Cursor result = getContentResolver().query(SnkContract.Books.getBookIsbnUri(barcode), null, null, null, null);
-        if (result != null && result.getCount() > 0 && result.moveToFirst()) {
-            String title = result.getString(result.getColumnIndex(SnkContract.Books.BOOK_TITLE));
-            String authors = result.getString(result.getColumnIndex(SnkContract.Books.BOOK_AUTHORS));
-            String publisher = result.getString(result.getColumnIndex(SnkContract.Books.BOOK_PUBLISHER));
-            String published = result.getString(result.getColumnIndex(SnkContract.Books.BOOK_PUBLISHED));
 
-            mTitleEdit.setText(title);
-            mAuthorEdit.setText(authors);
-            mPublisherEdit.setText(publisher);
-            mPublished.setText(published);
-        } else {
-
-            RetrofitConfig.getInstance().getBooksApi().getBookByIsbn("isbn:" + barcode).enqueue(new Callback<BooksResponse>() {
-                @Override
-                public void onResponse(Response<BooksResponse> response) {
-                    if (response.isSuccess()) {
-                        BooksResponse books = response.body();
-                        if (books.books != null && books.books.length > 0) {
-                            BooksResponse.Book.VolumeInfo info = books.books[0].volumeInfo;
-                            if (info == null) {
-                                return;
-                            }
-
-                            mTitleEdit.setText(info.title);
-                            mSubtitleEdit.setText(info.subtitle);
-                            mAuthorEdit.setText(StringUtils.arrayToString(info.authors));
-                            mPublisherEdit.setText(info.publisher);
-                        }
-                    }
-
-                }
-
-                @Override
-                public void onFailure(Throwable t) {
-                    t.printStackTrace();
-                    Log.e("jano", "chyba", t);
-                }
-            });
+        if (!ConnectivityUtils.isConnected(this)) {
+            Toast.makeText(this, R.string.not_connected_book_info, Toast.LENGTH_LONG).show();
+            return;
         }
 
-        if (result != null) {
-            result.close();
-        }
+        final ProgressDialog dialog = ProgressDialog.show(this, getString(R.string.parsing_book_details), getString(R.string.parsing_book_details_message));
+
+        RetrofitConfig.getInstance().getLibraryApi().getBookByIsbn(barcode).enqueue(new Callback<LibraryResponse>() {
+            @Override
+            public void onResponse(Response<LibraryResponse> response) {
+                if (response.isSuccess()) {
+                    LibraryResponse book = response.body();
+                    mTitleEdit.setText(book.title);
+                    mSubtitleEdit.setText(book.subtitle);
+                    mAuthorEdit.setText(book.authors);
+                    mPublisherEdit.setText(book.publisher);
+                    mPublished.setText(book.published);
+                } else {
+                    Toast.makeText(EditBookActivity.this, R.string.communication_error, Toast.LENGTH_LONG).show();
+                }
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                dialog.dismiss();
+                Toast.makeText(EditBookActivity.this, R.string.communication_error, Toast.LENGTH_LONG).show();
+                LogUtils.e(TAG, "retrofit error", t);
+            }
+        });
     }
 
     @Override
@@ -484,7 +472,41 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     // Open Barcode scanner
     @OnClick(R.id.fab)
     public void save(View view) {
+        String isbn = mIsbnEdit.getText().toString();
 
+        if (mBookId != 0 || TextUtils.isEmpty(isbn)) {
+            saveConfirmed();
+            return;
+        }
+
+        Cursor c = getContentResolver().query(Contract.Books.buildBookIsbnUri(mIsbnEdit.getText().toString()), null, null, null, null);
+
+        if (c != null && c.getCount() > 0) {
+            c.close();
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.edit_book_already_exists)
+                    .setMessage(R.string.edit_book_already_exists_message)
+                    .setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .setPositiveButton(R.string.action_save, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            saveConfirmed();
+                            dialog.dismiss();
+                        }
+                    })
+                    .setCancelable(true)
+                    .show();
+        } else {
+            saveConfirmed();
+        }
+    }
+
+    public void saveConfirmed() {
         String authorsReadable = mAuthorEdit.getText().toString();
 
         Publisher publisher = new Publisher.Builder()
