@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/selectableItemBackground"
+    android:foreground="?android:selectableItemBackground"
+    android:background="@color/md_grey_200"
+    android:stateListAnimator="@animator/raise"
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -14,7 +16,6 @@
         android:layout_height="48dp"
         android:layout_centerVertical="true"
         android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
         android:background="@color/md_grey_400"
         android:contentDescription="@string/book_list_item"
         android:scaleType="center"
@@ -25,7 +26,6 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toEndOf="@id/list_item_book_image"
-        android:layout_toRightOf="@id/list_item_book_image"
         android:orientation="vertical">
 
         <TextView

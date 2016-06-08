@@ -4,9 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/selectableItemBackground"
+    android:background="@color/md_grey_200"
+    android:foreground="?android:selectableItemBackground"
     android:orientation="horizontal"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:stateListAnimator="@animator/raise">
 
     <ImageView
         android:id="@+id/list_item_author_image"
