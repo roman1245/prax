@@ -1,25 +1,22 @@
-package xyz.kandrac.library;
+package xyz.kandrac.library.flow.importwizard;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import butterknife.Bind;
 import butterknife.ButterKnife;
-import xyz.kandrac.library.fragments.ImportFragment;
+import xyz.kandrac.library.R;
 
 /**
  * Activity that helps users import data to application properly
- *
+ * <p/>
  * Created by kandrac on 22/02/16.
  */
-public class ImportWizardActivity extends AppCompatActivity {
+public class ImportWizardActivity extends AppCompatActivity implements ImportFlowHandler {
 
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
+    private Uri mFileUri;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -28,18 +25,10 @@ public class ImportWizardActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        // Action Bar settings
-        setSupportActionBar(toolbar);
-
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-
         // setup first fragment
         getFragmentManager()
                 .beginTransaction()
-                .add(R.id.fragment_container, new ImportFragment())
+                .add(R.id.fragment_container, new ImportAboutFragment())
                 .commit();
     }
 
@@ -51,5 +40,25 @@ public class ImportWizardActivity extends AppCompatActivity {
                 finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void aboutContinue() {
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, new ImportFileFragment())
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void fileSelected(Uri data) {
+        mFileUri = data;
+
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, ImportFormatting.getInstance(data))
+                .addToBackStack(null)
+                .commit();
     }
 }

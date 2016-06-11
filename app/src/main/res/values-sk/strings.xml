@@ -145,4 +145,12 @@
         <item>Vydavateľ</item>
         <item>ISBN</item>
     </string-array>
+
+    <string-array name="file_formats">
+        <item>UTF-8</item>
+        <item>UTF-16</item>
+        <item>ISO–8859–1</item>
+        <item>Windows-1251</item>
+        <item>Windows-1252</item>
+    </string-array>
 </resources>

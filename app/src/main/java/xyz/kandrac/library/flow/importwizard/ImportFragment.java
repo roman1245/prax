@@ -1,19 +1,11 @@
-package xyz.kandrac.library.fragments;
+package xyz.kandrac.library.flow.importwizard;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -24,7 +16,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import xyz.kandrac.library.R;
 import xyz.kandrac.library.utils.BackupUtils;
@@ -51,27 +42,6 @@ public class ImportFragment extends Fragment {
 
     @Bind(R.id.import_import)
     public Button mImport;
-
-    /**
-     * Select file via file provider if permission {@link android.Manifest.permission#READ_EXTERNAL_STORAGE}
-     * is granted. If permission is not already granted, run {@link ActivityCompat#requestPermissions(Activity, String[], int)}
-     * with {@link #CHOOSE_FILE_PERMISSION} request code.
-     *
-     * @param view clicked
-     * @see #onRequestPermissionsResult(int, String[], int[])
-     */
-    @OnClick(R.id.import_select_file)
-    public void selectFile(View view) {
-
-        int permission = ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
-
-        if (permission == PackageManager.PERMISSION_GRANTED) {
-            invokeChooser();
-        } else {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, CHOOSE_FILE_PERMISSION);
-        }
-
-    }
 
     /**
      * Based on {@link #mImportFileUri} obtained via file provider try to run importing from that
@@ -139,45 +109,6 @@ public class ImportFragment extends Fragment {
         }
     }
 
-    private void invokeChooser() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("text/*");
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-
-        // special intent for Samsung file manager
-        Intent sIntent = new Intent("com.sec.android.app.myfiles.PICK_DATA");
-        sIntent.putExtra("CONTENT_TYPE", "text/*");
-        sIntent.addCategory(Intent.CATEGORY_DEFAULT);
-
-        Intent chooserIntent;
-
-        if (getActivity().getPackageManager().resolveActivity(sIntent, 0) != null) {
-            chooserIntent = Intent.createChooser(sIntent, getString(R.string.import_chooser));
-            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{intent});
-        } else {
-            chooserIntent = Intent.createChooser(intent, getString(R.string.import_chooser));
-        }
-
-        try {
-            startActivityForResult(chooserIntent, CHOOSE_FILE_REQUEST);
-        } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(getActivity().getApplicationContext(), R.string.import_no_file_manager, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View result = inflater.inflate(R.layout.fragment_import, container, false);
-        ButterKnife.bind(this, result);
-        return result;
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
@@ -215,20 +146,6 @@ public class ImportFragment extends Fragment {
                 break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case CHOOSE_FILE_PERMISSION: {
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    invokeChooser();
-                }
-                break;
-            }
-            default:
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 }
