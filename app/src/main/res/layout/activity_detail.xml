@@ -4,10 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     tools:context=".EditBookActivity">
 
-    <include layout="@layout/include_parallax_toolbar" />
+    <include
+        android:id="@+id/appbar"
+        layout="@layout/include_parallax_toolbar_tabs" />
 
     <FrameLayout
         android:id="@+id/content"

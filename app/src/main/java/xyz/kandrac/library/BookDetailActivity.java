@@ -22,6 +22,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
@@ -85,7 +86,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.fragment_book_detail);
+        setContentView(R.layout.activity_detail);
 
         ButterKnife.bind(this);
 
@@ -369,6 +370,10 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                     .centerInside()
                     .into(cover);
         }
+//        TODO: uncomment this in order to display other details
+//        if (mBook.wish) {
+        tabs.setVisibility(View.GONE);
+//        }
 
         for (Fragment fragment : mContents) {
             if (fragment instanceof BookDatabaseCallbacks) {
