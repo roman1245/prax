@@ -55,8 +55,13 @@
     <string name="edit_book_cover">Obálka Knihy</string>
     <string name="edit_book_take_photo_permission">Potřebujeme od vás povolení pro focení a ukládání fotografií do vašeho telefonu</string>
     <string name="edit_book_barcode_permission">Chcete-li skenovat čárový kód budeme potřebovat vaše povolení</string>
+    <string name="edit_book_gallery_permission">Chcete-li vybrat obrázek z galerie budeme potřebovat vaše povolenív</string>
     <string name="edit_book_no_permission">Bez těchto oprávnění nemůžeme pokračovat. Chcete-li změnit oprávnění učiňte tak v Nastavení telefonu.</string>
     <string name="edit_book_no_permission_title">Chybějící oprávnění</string>
+
+    <string name="pick_image_select">Select image from…</string>
+    <string name="pick_image_photo">Take photo</string>
+    <string name="pick_image_gallery">From gallery</string>
 
     <string name="parsing_book_details">Získávám podrobnosti</string>
     <string name="parsing_book_details_message">Získávám podrobnosti o této knize z internetu</string>

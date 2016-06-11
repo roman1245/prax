@@ -28,9 +28,8 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
+import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
@@ -66,8 +65,12 @@ import xyz.kandrac.library.utils.BookCursorAdapter;
 import xyz.kandrac.library.utils.ConnectivityUtils;
 import xyz.kandrac.library.utils.DisplayUtils;
 import xyz.kandrac.library.utils.LogUtils;
+import xyz.kandrac.library.utils.MediaUtils;
+import xyz.kandrac.library.views.DummyTextWatcher;
 
 /**
+ * Book Adding/Editing
+ * <p/>
  * Created by VizGhar on 11.10.2015.
  */
 public class EditBookActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -92,24 +95,27 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     public static final int LOADER_PUBLISHER = 3;
     public static final int LOADER_LIBRARY = 4;
 
+    // Content menus
+    public static final int CONTENT_MENU_PHOTO = 123;
+    public static final int CONTENT_MENU_GALLERY = 124;
+
+    // Requests to other activities
+    private static final int REQUEST_IMAGE_CAPTURE = 201;
+    private static final int REQUEST_BARCODE = 202;
+    private static final int REQUEST_PICK_IMAGE = 203;
+
+    // Permission requests
+    private static final int PERMISSION_TAKE_PHOTO = 301;
+    private static final int PERMISSION_BARCODE = 302;
+    private static final int PERMISSION_PICK_CONTACT = 303;
+    private static final int PERMISSION_GALLERY = 304;
+
     // Globals
     private long mBookId;
     private boolean mToWishList;
     private boolean mBorrowedToMe;
-
     private String imageFileName;
-
-    // Requests to other activities
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
-    private static final int REQUEST_BARCODE = 2;
-
-    // Permission requests
-    private static final int PERMISSION_TAKE_PHOTO = 2;
-    private static final int PERMISSION_BARCODE = 3;
-
-    private static final int PERMISSION_PICK_CONTACT = 4;
-
-    private boolean startingActivity = false;
+    private boolean mStartingActivityForResult = false;
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -149,6 +155,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
     @Bind(R.id.book_input_description_edit)
     EditText mDescription;
+
     @Bind(R.id.book_input_published)
     EditText mPublished;
 
@@ -199,12 +206,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
             setTitle(R.string.title_add_new_book);
         }
 
-        mIsbnEdit.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
+        mIsbnEdit.addTextChangedListener(new DummyTextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (mIsbnEdit.getText().length() == 0) {
@@ -213,20 +215,17 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                     mScanButton.setText(R.string.edit_book_search);
                 }
             }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
         });
+
+        registerForContextMenu(mImageEdit);
 
         checkLibrariesPreferences();
 
         // set adapters for autocomplete fields
-        setAuthorAdapter();
-        setPublisherAdapter();
-        setLibraryAdapter();
-        setBorrowedFromAdapter();
+        setAdapter(Contract.Authors.CONTENT_URI, Contract.Authors.AUTHOR_NAME, mAuthorEdit);
+        setAdapter(Contract.Publishers.CONTENT_URI, Contract.Publishers.PUBLISHER_NAME, mPublisherEdit);
+        setAdapter(Contract.Libraries.CONTENT_URI, Contract.Libraries.LIBRARY_NAME, mLibraryEdit);
+        setAdapter(ContactsContract.Contacts.CONTENT_URI, ContactsContract.Contacts.DISPLAY_NAME, mOriginEdit);
     }
 
     private void requestPickContactPermission() {
@@ -253,105 +252,36 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     }
 
     /**
-     * Set Adapter for author autocomplete field
+     * Sets adapter for given autocomplete text view
+     *
+     * @param uri           to get data from
+     * @param displayColumn identifier
+     * @param target        AutoCompleteTextView
      */
-    private void setAuthorAdapter() {
+    private void setAdapter(final Uri uri, final String displayColumn, final AutoCompleteTextView target) {
+
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(
                 this,
                 android.R.layout.simple_list_item_1,
                 null,
-                new String[]{Contract.Authors.AUTHOR_NAME},
+                new String[]{displayColumn},
                 new int[]{android.R.id.text1},
                 0);
-        mAuthorEdit.setAdapter(adapter);
+
+        target.setAdapter(adapter);
 
         adapter.setFilterQueryProvider(new FilterQueryProvider() {
             public Cursor runQuery(CharSequence str) {
-                return getAuthorCursor(str);
+                String select = displayColumn + " LIKE ? ";
+                String[] selectArgs = {"%" + str + "%"};
+                String[] projection = new String[]{BaseColumns._ID, displayColumn};
+                return getContentResolver().query(uri, projection, select, selectArgs, null);
             }
         });
 
         adapter.setCursorToStringConverter(new SimpleCursorAdapter.CursorToStringConverter() {
             public CharSequence convertToString(Cursor cur) {
-                int index = cur.getColumnIndex(Contract.Authors.AUTHOR_NAME);
-                return cur.getString(index);
-            }
-        });
-    }
-
-    /**
-     * Set Adapter for publisher autocomplete field
-     */
-    private void setPublisherAdapter() {
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(
-                this,
-                android.R.layout.simple_list_item_1,
-                null,
-                new String[]{Contract.Publishers.PUBLISHER_NAME},
-                new int[]{android.R.id.text1},
-                0);
-        mPublisherEdit.setAdapter(adapter);
-
-        adapter.setFilterQueryProvider(new FilterQueryProvider() {
-            public Cursor runQuery(CharSequence str) {
-                return getPublisherCursor(str);
-            }
-        });
-
-        adapter.setCursorToStringConverter(new SimpleCursorAdapter.CursorToStringConverter() {
-            public CharSequence convertToString(Cursor cur) {
-                int index = cur.getColumnIndex(Contract.Publishers.PUBLISHER_NAME);
-                return cur.getString(index);
-            }
-        });
-    }
-
-    /**
-     * Set Adapter for library autocomplete field
-     */
-    private void setLibraryAdapter() {
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(
-                this,
-                android.R.layout.simple_list_item_1,
-                null,
-                new String[]{Contract.Libraries.LIBRARY_NAME},
-                new int[]{android.R.id.text1},
-                0);
-        mLibraryEdit.setAdapter(adapter);
-
-        adapter.setFilterQueryProvider(new FilterQueryProvider() {
-            public Cursor runQuery(CharSequence str) {
-                return getLibraryCursor(str);
-            }
-        });
-
-        adapter.setCursorToStringConverter(new SimpleCursorAdapter.CursorToStringConverter() {
-            public CharSequence convertToString(Cursor cur) {
-                int index = cur.getColumnIndex(Contract.Libraries.LIBRARY_NAME);
-                return cur.getString(index);
-            }
-        });
-    }
-
-    private void setBorrowedFromAdapter() {
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(
-                this,
-                android.R.layout.simple_list_item_1,
-                null,
-                new String[]{ContactsContract.Contacts.DISPLAY_NAME},
-                new int[]{android.R.id.text1},
-                0);
-        mOriginEdit.setAdapter(adapter);
-
-        adapter.setFilterQueryProvider(new FilterQueryProvider() {
-            public Cursor runQuery(CharSequence str) {
-                return getContactCursor(str);
-            }
-        });
-
-        adapter.setCursorToStringConverter(new SimpleCursorAdapter.CursorToStringConverter() {
-            public CharSequence convertToString(Cursor cur) {
-                int index = cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
+                int index = cur.getColumnIndex(displayColumn);
                 return cur.getString(index);
             }
         });
@@ -393,6 +323,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mStartingActivityForResult = false;
         switch (requestCode) {
             case REQUEST_BARCODE:
                 // Handle Barcode
@@ -407,19 +338,19 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
             case REQUEST_IMAGE_CAPTURE:
                 // Handle Image Capture
                 if (resultCode == RESULT_OK) {
-                    try {
-                        DisplayUtils.resizeImageFile(new File(imageFileName), 1024, 60);
-                        DisplayUtils.displayScaledImage(this, imageFileName, mImageEdit);
-                        mImageEdit.setTag(imageFileName);
-                    } catch (OutOfMemoryError ex) {
-                        Toast.makeText(this, R.string.edit_book_save_image_error, Toast.LENGTH_LONG).show();
-                    }
+                    refreshImage();
+                }
+                break;
+            case REQUEST_PICK_IMAGE:
+                // Handle image pick from gallery
+                if (resultCode == Activity.RESULT_OK) {
+                    imageFileName = MediaUtils.x(data, this);
+                    refreshImage();
                 }
                 break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);
         }
-        startingActivity = false;
     }
 
     @Override
@@ -434,7 +365,11 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
     // Open Camera for taking image of Book Cover
     @OnClick(R.id.parallax_cover_image)
-    public void takePhoto(View view) {
+    public void takeImage(View view) {
+        openContextMenu(view);
+    }
+
+    public void takePhoto() {
         int cameraPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
         int writePermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
@@ -445,27 +380,42 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         switch (permissions) {
             case 1:
                 requestPermissions(
-                        view,
+                        mImageEdit,
                         R.string.edit_book_take_photo_permission,
                         PERMISSION_TAKE_PHOTO,
                         Manifest.permission.CAMERA);
                 break;
             case 2:
                 requestPermissions(
-                        view,
+                        mImageEdit,
                         R.string.edit_book_take_photo_permission,
                         PERMISSION_TAKE_PHOTO,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE);
                 break;
             case 3:
                 requestPermissions(
-                        view,
+                        mImageEdit,
                         R.string.edit_book_take_photo_permission,
                         PERMISSION_TAKE_PHOTO,
                         Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE);
                 break;
             default:
                 dispatchTakePictureIntent();
+        }
+    }
+
+    public void takeFromGallery() {
+
+        int externalPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+
+        if (externalPermission == PackageManager.PERMISSION_GRANTED) {
+            dispatchGalleryIntent();
+        } else {
+            requestPermissions(
+                    mImageEdit,
+                    R.string.edit_book_gallery_permission,
+                    PERMISSION_GALLERY,
+                    Manifest.permission.READ_EXTERNAL_STORAGE);
         }
     }
 
@@ -565,8 +515,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                         R.string.edit_book_barcode_permission,
                         PERMISSION_BARCODE,
                         Manifest.permission.CAMERA);
-            } else if (!startingActivity) {
-                startingActivity = true;
+            } else {
                 startActivityForResult(new Intent(this, BarcodeActivity.class), REQUEST_BARCODE);
             }
         } else {
@@ -574,12 +523,33 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         }
     }
 
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        menu.setHeaderTitle(R.string.pick_image_select);
+        menu.add(0, CONTENT_MENU_PHOTO, 0, R.string.pick_image_photo);
+        menu.add(0, CONTENT_MENU_GALLERY, 0, R.string.pick_image_gallery);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case CONTENT_MENU_PHOTO: {
+                takePhoto();
+                break;
+            }
+            case CONTENT_MENU_GALLERY: {
+                takeFromGallery();
+                break;
+            }
+            default:
+                return false;
+        }
+        return true;
+    }
+
     private void dispatchTakePictureIntent() {
         // do not start image capture if another activity is about to run
-        if (startingActivity) {
-            return;
-        }
-
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             File photoFile = createImageFile();
@@ -587,12 +557,25 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 Uri uri = Uri.fromFile(photoFile);
                 LogUtils.d(TAG, "taking picture to store into " + uri.toString());
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-
-                startingActivity = true;
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
         } else {
             LogUtils.d(TAG, "No application for taking photo available");
+        }
+    }
+
+    private void dispatchGalleryIntent() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            File photoFile = createImageFile();
+            if (photoFile != null) {
+                LogUtils.d(TAG, "Taking photo from gallery");
+                startActivityForResult(intent, REQUEST_PICK_IMAGE);
+            }
+        } else {
+            LogUtils.d(TAG, "No gallery application");
         }
     }
 
@@ -661,14 +644,24 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
             }
             case PERMISSION_BARCODE: {
                 if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (!startingActivity) {
-                        startingActivity = true;
-                        startActivityForResult(new Intent(this, BarcodeActivity.class), REQUEST_BARCODE);
-                    }
+                    startActivityForResult(new Intent(this, BarcodeActivity.class), REQUEST_BARCODE);
                     return;
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
+                    builder.setTitle(R.string.edit_book_no_permission_title)
+                            .setMessage(R.string.edit_book_no_permission)
+                            .setPositiveButton(R.string.action_ok, null)
+                            .show();
+                }
+                break;
+            }
+            case PERMISSION_GALLERY: {
+                if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    dispatchGalleryIntent();
+                    return;
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setTitle(R.string.edit_book_no_permission_title)
                             .setMessage(R.string.edit_book_no_permission)
                             .setPositiveButton(R.string.action_ok, null)
@@ -694,6 +687,23 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         File result = new File(storageDir, fileName + ".jpg");
         imageFileName = result.getAbsolutePath();
         return result;
+    }
+
+    /**
+     * Try to set and display image that should be visible
+     */
+    private void refreshImage() {
+        if (imageFileName == null) {
+            return;
+        }
+
+        try {
+            DisplayUtils.resizeImageFile(new File(imageFileName), 1024, 60);
+            DisplayUtils.displayScaledImage(this, imageFileName, mImageEdit);
+            mImageEdit.setTag(imageFileName);
+        } catch (OutOfMemoryError ex) {
+            Toast.makeText(this, R.string.edit_book_save_image_error, Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -838,63 +848,6 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
     }
 
-    /**
-     * Get Author names filtered by input
-     *
-     * @param filter for author names
-     * @return authors
-     */
-    public Cursor getAuthorCursor(CharSequence filter) {
-        String select = Contract.Authors.AUTHOR_NAME + " LIKE ? ";
-        String[] selectArgs = {"%" + filter + "%"};
-        String[] contactsProjection = new String[]{BaseColumns._ID, Contract.Authors.AUTHOR_NAME};
-
-        return getContentResolver().query(Contract.Authors.CONTENT_URI, contactsProjection, select, selectArgs, null);
-    }
-
-    /**
-     * Get Publisher names filtered by input
-     *
-     * @param filter for publisher names
-     * @return publishers
-     */
-    public Cursor getPublisherCursor(CharSequence filter) {
-        String select = Contract.Publishers.PUBLISHER_NAME + " LIKE ? ";
-        String[] selectArgs = {"%" + filter + "%"};
-        String[] contactsProjection = new String[]{BaseColumns._ID, Contract.Publishers.PUBLISHER_NAME};
-
-        return getContentResolver().query(Contract.Publishers.CONTENT_URI, contactsProjection, select, selectArgs, null);
-    }
-
-    /**
-     * Get Library names filtered by input
-     *
-     * @param filter for publisher names
-     * @return libraries
-     */
-    public Cursor getLibraryCursor(CharSequence filter) {
-        String select = Contract.Libraries.LIBRARY_NAME + " LIKE ? ";
-        String[] selectArgs = {"%" + filter + "%"};
-        String[] contactsProjection = new String[]{BaseColumns._ID, Contract.Libraries.LIBRARY_NAME};
-
-        return getContentResolver().query(Contract.Libraries.CONTENT_URI, contactsProjection, select, selectArgs, null);
-    }
-
-    public Cursor getContactCursor(CharSequence filter) {
-        if (filter != null) {
-            return getContentResolver().query(
-                    ContactsContract.Contacts.CONTENT_URI,
-                    new String[]{
-                            ContactsContract.Contacts.DISPLAY_NAME,
-                            ContactsContract.Contacts._ID,
-                    },
-                    ContactsContract.Contacts.DISPLAY_NAME + " LIKE ?",
-                    new String[]{"%" + filter.toString() + "%"},
-                    ContactsContract.Contacts.DISPLAY_NAME);
-        }
-        return null;
-    }
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -914,5 +867,13 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         mBorrowedToMe = savedInstanceState.getBoolean(SAVE_STATE_BORROWED_TO_ME);
         String original = savedInstanceState.getString(SAVE_STATE_ORIGINAL_FILE);
         mImageEdit.setTag(original);
+    }
+
+    @Override
+    public void startActivityForResult(Intent intent, int requestCode, Bundle options) {
+        if (!mStartingActivityForResult) {
+            mStartingActivityForResult = true;
+            super.startActivityForResult(intent, requestCode, options);
+        }
     }
 }

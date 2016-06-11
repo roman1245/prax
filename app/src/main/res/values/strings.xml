@@ -55,8 +55,13 @@
     <string name="edit_book_cover">Cover</string>
     <string name="edit_book_take_photo_permission">We need your permission to use your camera device to take and store pictures into your phone</string>
     <string name="edit_book_barcode_permission">We need your permission to scan barcodes</string>
+    <string name="edit_book_gallery_permission">We need your permission to pick images from gallery</string>
     <string name="edit_book_no_permission">We cannot continue without these permissions. If you wish to change the restrictions, access the phone settings to do so</string>
     <string name="edit_book_no_permission_title">Permissions are missing</string>
+
+    <string name="pick_image_select">Select image</string>
+    <string name="pick_image_photo">Take photo</string>
+    <string name="pick_image_gallery">Gallery</string>
 
     <string name="parsing_book_details">Getting details</string>
     <string name="parsing_book_details_message">Getting details about this book from internet</string>
