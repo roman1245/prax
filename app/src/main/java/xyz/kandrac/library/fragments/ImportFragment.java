@@ -106,6 +106,12 @@ public class ImportFragment extends Fragment {
                     break;
             }
         }
+
+        if (columns.size() == 0) {
+            Toast.makeText(getActivity(), R.string.import_no_columns, Toast.LENGTH_LONG).show();
+            return;
+        }
+
         new ImportAsyncTask(columns.toArray(new BackupUtils.CsvColumn[columns.size()])).execute();
     }
 

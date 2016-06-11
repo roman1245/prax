@@ -130,6 +130,7 @@
     <string name="import_import">Import</string>
     <string name="import_no_file_manager">Nebola nájdená žiadna aplikácia pre prehliadanie súborov</string>
     <string name="import_imported">Bolo imporovaných %1$s kníh</string>
+    <string name="import_no_columns">Neboli vybrané stĺpce pre importovanie kníh</string>
     <string name="menu_books_borrowed_to_me">Požičané od priateľov</string>
     <string name="dialog_return_borrowed_book_message">Dňa %2$s si si požičal knihu od %1$s. Chceš knihu vrátiť?</string>
     <string name="preferences_visual_category">Vzhľad aplikácie</string>

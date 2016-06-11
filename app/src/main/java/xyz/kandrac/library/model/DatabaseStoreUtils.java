@@ -67,7 +67,7 @@ public final class DatabaseStoreUtils {
 
         ContentValues bookContentValues = new ContentValues();
 
-        bookContentValues.put(Contract.Books.BOOK_TITLE, book.title);
+        bookContentValues.put(Contract.Books.BOOK_TITLE, book.title == null ? "" : book.title);
         bookContentValues.put(Contract.Books.BOOK_SUBTITLE, book.subtitle);
         bookContentValues.put(Contract.Books.BOOK_IMAGE_FILE, book.imageFilePath);
         bookContentValues.put(Contract.Books.BOOK_DESCRIPTION, book.description);
@@ -77,6 +77,7 @@ public final class DatabaseStoreUtils {
         bookContentValues.put(Contract.Books.BOOK_LIBRARY_ID, libraryId);
         bookContentValues.put(Contract.Books.BOOK_WISH_LIST, book.wish);
         bookContentValues.put(Contract.Books.BOOK_BORROWED_TO_ME, book.borrowedToMe);
+
         if (book.published > 0) {
             bookContentValues.put(Contract.Books.BOOK_PUBLISHED, book.published);
         }

@@ -129,6 +129,7 @@
     <string name="import_import">Import</string>
     <string name="import_no_file_manager">No file manager application found</string>
     <string name="import_imported">%1$s books have been imported</string>
+    <string name="import_no_columns">No columns selected for import</string>
     <string name="menu_books_borrowed_to_me">Borrowed from friends</string>
     <string name="dialog_return_borrowed_book_message">You borrowed a book on %2$s from %1$s. Do you want to return it?</string>
     <string name="preferences_visual_category">Application appearance</string>

@@ -129,6 +129,7 @@
     <string name="import_import">Import</string>
     <string name="import_no_file_manager">Nebyla nalezena žádná aplikace pro prohlížení souborů</string>
     <string name="import_imported">Bylo importováno %1$s knih</string>
+    <string name="import_no_columns">Nebyly vybrány sloupce pro import knih</string>
     <string name="menu_books_borrowed_to_me">Půjčené od přátel</string>
     <string name="dialog_return_borrowed_book_message">Dne %2$s sis půjčil knihu od %1$s. Chceš ji vrátit?</string>
     <string name="preferences_visual_category">Vzhled aplikace</string>
@@ -138,7 +139,7 @@
     <string name="preferences_import_title">Import dat z Excelu (Beta)</string>
     <string name="preferences_import_description">Klikni zde pro import dat ve formatu CSV</string>
     <string-array name="column_names">
-		<item>Ignorovat</item>
+        <item>Ignorovat</item>
         <item>Název knihy</item>
         <item>Jméno autora</item>
         <item>Vydavatel</item>
