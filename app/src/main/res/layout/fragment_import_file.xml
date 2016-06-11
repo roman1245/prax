@@ -19,7 +19,7 @@
                 style="@style/TextAppearance.AppCompat.Large.Inverse"
                 android:layout_width="match_parent"
                 android:layout_height="156dp"
-                android:background="@color/secondary"
+                android:background="@color/primary_variant"
                 android:gravity="bottom"
                 android:paddingBottom="24dp"
                 android:paddingLeft="16dp"
@@ -41,7 +41,7 @@
             <!-- https://support.office.com/en-us/article/Import-or-export-text-txt-or-csv-files-5250ac4c-663c-47ce-937b-339e391393ba#bmexport -->
             <Button
                 android:id="@+id/import_excel"
-                style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+                style="@style/Base.Widget.AppCompat.Button.Borderless.Theme.Variant"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
@@ -50,7 +50,7 @@
             <!-- https://help.libreoffice.org/Calc/Importing_and_Exporting_CSV_Files#To_Save_a_Sheet_as_a_Text_CSV_File -->
             <Button
                 android:id="@+id/import_open_office"
-                style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+                style="@style/Base.Widget.AppCompat.Button.Borderless.Theme.Variant"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="16dp"

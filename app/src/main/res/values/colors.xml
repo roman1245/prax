@@ -4,7 +4,11 @@
     <color name="primary_light">@color/md_brown_300</color>
     <color name="primary_dark">@color/md_brown_900</color>
     <color name="accent">@color/md_amber_700</color>
-    <color name="secondary">@color/md_cyan_800</color>
+
+    <color name="primary_variant">@color/md_cyan_500</color>
+    <color name="primary_light_variant">@color/md_cyan_300</color>
+    <color name="primary_dark_variant">@color/md_cyan_900</color>
+    <color name="accent_variant">@color/md_red_300</color>
 
     <color name="title">#515151</color>
 </resources>

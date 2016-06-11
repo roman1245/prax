@@ -21,7 +21,7 @@ public class ImportWizardActivity extends AppCompatActivity implements ImportFlo
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_simple);
+        setContentView(R.layout.activity_import);
 
         ButterKnife.bind(this);
 

@@ -8,6 +8,12 @@
         <item name="android:borderlessButtonStyle">@style/Base.Widget.AppCompat.Button.Borderless.Theme</item>
     </style>
 
+    <style name="AppTheme.Variant.Base" parent="@style/AppTheme.Variant">
+        <item name="android:navigationBarColor">@color/primary_dark_variant</item>
+        <item name="android:buttonStyle">@style/Base.Widget.AppCompat.Button.Theme.Variant</item>
+        <item name="android:borderlessButtonStyle">@style/Base.Widget.AppCompat.Button.Borderless.Theme.Variant</item>
+    </style>
+
     <!-- More specified for this APIs -->
     <style name="AppTheme.Base.NoStatusBar" parent="@style/AppTheme.Base">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
@@ -23,7 +29,16 @@
         <item name="android:backgroundTint">@color/primary</item>
     </style>
 
+    <style name="Base.Widget.AppCompat.Button.Theme.Variant" parent="Base.Widget.AppCompat.Button">
+        <item name="android:textColor">@color/md_grey_200</item>
+        <item name="android:backgroundTint">@color/primary_variant</item>
+    </style>
+
     <style name="Base.Widget.AppCompat.Button.Borderless.Theme" parent="Base.Widget.AppCompat.Button.Borderless">
         <item name="android:textColor">@color/primary_dark</item>
+    </style>
+
+    <style name="Base.Widget.AppCompat.Button.Borderless.Theme.Variant" parent="Base.Widget.AppCompat.Button.Borderless">
+        <item name="android:textColor">@color/accent_variant</item>
     </style>
 </resources>
