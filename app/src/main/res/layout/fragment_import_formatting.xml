@@ -31,7 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:text="Súbor môže byť formátovaný rôznym spôsobom. Japonsko potrebuje inú sadu znakov ako Nemecko. Postupne vyberajte rôzne druhy formátovania a skontrolujte, či náhodne zobrazené slová sú formátované správne." />
+                android:text="Súbor môže byť formátovaný rôznym spôsobom. Japonsko potrebuje inú sadu znakov ako Nemecko. Postupne vyberajte rôzne druhy formátovania a skontrolujte, či náhodne zobrazené slová sú formátované správne. Hlavne bez zvlášthnych znakov na začiatku riadku." />
 
             <Spinner
                 android:id="@+id/import_formatting"
@@ -48,12 +48,15 @@
                 android:text="Ukážka textu s vybraným formátovaním:" />
 
             <TextView
+                android:padding="16dp"
+                android:id="@+id/import_samples"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
     </ScrollView>
 
     <Button
+        android:id="@+id/import_continue"
         android:layout_width="156dp"
         android:layout_height="wrap_content"
         android:layout_gravity="end"

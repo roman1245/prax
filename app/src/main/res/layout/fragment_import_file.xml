@@ -42,7 +42,7 @@
             <Button
                 android:id="@+id/import_excel"
                 style="@style/Base.Widget.AppCompat.Button.Borderless.Theme.Variant"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:text="CSV súbor v Exceli?" />
@@ -51,7 +51,7 @@
             <Button
                 android:id="@+id/import_open_office"
                 style="@style/Base.Widget.AppCompat.Button.Borderless.Theme.Variant"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:text="CSV súbor v Libre / Open Office?" />

@@ -8,4 +8,5 @@ import android.net.Uri;
 public interface ImportFlowHandler {
     void aboutContinue();
     void fileSelected(Uri data);
+    void formattingSelected(String formatting);
 }

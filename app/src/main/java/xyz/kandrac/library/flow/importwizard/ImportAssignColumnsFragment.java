@@ -15,21 +15,25 @@ import butterknife.ButterKnife;
 import xyz.kandrac.library.R;
 
 /**
- * Created by Jan Kandrac on 11.6.2016.
+ * Created by Jan Kandrac on 12.6.2016.
  */
-public class ImportFormatting extends Fragment {
+public class ImportAssignColumnsFragment extends Fragment {
 
-    public static final String FILE_URI_ARGUMENT = "file_uri";
+    public static final String ARGUMENT_FILE_URI = "file_uri_arg";
+    public static final String ARGUMENT_FORMATTING = "format_arg";
 
-    public static ImportFormatting getInstance(Uri fileUri) {
+    private ImportFlowHandler handler;
+    private Uri mFileUri;
+    private String mFormatting;
+
+    public static Fragment getInstance(Uri fileUri, String formatting) {
         Bundle arguments = new Bundle();
-        arguments.putString(FILE_URI_ARGUMENT, fileUri.toString());
-        ImportFormatting result = new ImportFormatting();
+        arguments.putString(ARGUMENT_FILE_URI, fileUri.toString());
+        arguments.putString(ARGUMENT_FORMATTING, formatting);
+        ImportAssignColumnsFragment result = new ImportAssignColumnsFragment();
         result.setArguments(arguments);
         return result;
     }
-
-    private ImportFlowHandler handler;
 
     @SuppressWarnings("deprecation")
     @Override
@@ -46,12 +50,18 @@ public class ImportFormatting extends Fragment {
         }
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mFileUri = Uri.parse(getArguments().getString(ARGUMENT_FILE_URI));
+        mFormatting = getArguments().getString(ARGUMENT_FORMATTING);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View result = inflater.inflate(R.layout.fragment_import_formatting, container, false);
-        ButterKnife.bind(result);
+        ButterKnife.bind(this, result);
         return result;
     }
-
 }

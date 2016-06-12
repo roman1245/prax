@@ -57,7 +57,16 @@ public class ImportWizardActivity extends AppCompatActivity implements ImportFlo
 
         getFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_container, ImportFormatting.getInstance(data))
+                .replace(R.id.fragment_container, ImportFormattingFragment.getInstance(data))
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void formattingSelected(String formatting) {
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, ImportAssignColumnsFragment.getInstance(mFileUri, formatting))
                 .addToBackStack(null)
                 .commit();
     }
