@@ -9,17 +9,17 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import xyz.kandrac.library.R;
 
 /**
  * Created by Jan Kandrac on 11.6.2016.
  */
-public class ImportAboutFragment extends Fragment {
+public class ImportAboutFragment extends Fragment implements View.OnClickListener {
 
     private ImportFlowHandler handler;
+    private Button mContinue;
 
     @SuppressWarnings("deprecation")
     @Override
@@ -40,12 +40,22 @@ public class ImportAboutFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View result = inflater.inflate(R.layout.fragment_import_about, container, false);
-        ButterKnife.bind(this, result);
+        mContinue = (Button) result.findViewById(R.id.import_continue);
         return result;
     }
 
-    @OnClick(R.id.import_continue)
-    public void continueClick(View view) {
-        handler.aboutContinue();
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mContinue.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        int id = view.getId();
+        switch (id) {
+            case R.id.import_continue:
+                handler.aboutContinue();
+        }
     }
 }

@@ -10,14 +10,12 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.OnItemSelected;
 import xyz.kandrac.library.R;
 import xyz.kandrac.library.utils.BackupUtils;
 
@@ -39,11 +37,9 @@ public class ImportFormattingFragment extends Fragment {
     private ImportFlowHandler handler;
     private Uri mFileUri;
 
-    @Bind(R.id.import_formatting)
-    public Spinner mSpinner;
-
-    @Bind(R.id.import_samples)
-    public TextView mSample;
+    private Spinner mSpinner;
+    private TextView mSample;
+    private Button mContinue;
 
     @SuppressWarnings("deprecation")
     @Override
@@ -70,18 +66,31 @@ public class ImportFormattingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View result = inflater.inflate(R.layout.fragment_import_formatting, container, false);
-        ButterKnife.bind(this, result);
+        mSpinner = (Spinner) result.findViewById(R.id.import_formatting);
+        mSample = (TextView) result.findViewById(R.id.import_samples);
+        mContinue = (Button) result.findViewById(R.id.import_continue);
         return result;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        show();
-    }
+        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                show();
+            }
 
-    @OnItemSelected(R.id.import_formatting)
-    public void spinnerSelected(Spinner spinner, int position) {
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
+        mContinue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                handler.formattingSelected(mSpinner.getSelectedItem().toString());
+            }
+        });
         show();
     }
 
@@ -100,10 +109,5 @@ public class ImportFormattingFragment extends Fragment {
         builder.append(values[values.length - 1]);
 
         mSample.setText(builder.toString());
-    }
-
-    @OnClick(R.id.import_continue)
-    public void onContinue(View view) {
-        handler.formattingSelected(mSpinner.getSelectedItem().toString());
     }
 }

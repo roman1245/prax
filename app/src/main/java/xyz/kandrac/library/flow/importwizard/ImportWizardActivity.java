@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import butterknife.ButterKnife;
 import xyz.kandrac.library.R;
 import xyz.kandrac.library.utils.BackupUtils;
 import xyz.kandrac.library.utils.LogUtils;
@@ -42,8 +41,6 @@ public class ImportWizardActivity extends AppCompatActivity implements ImportFlo
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_import);
-
-        ButterKnife.bind(this);
 
         // setup first fragment
         if (savedInstanceState == null) {

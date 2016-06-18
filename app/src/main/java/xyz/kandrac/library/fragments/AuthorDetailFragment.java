@@ -17,8 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import xyz.kandrac.library.AuthorDetailActivity;
 import xyz.kandrac.library.R;
 import xyz.kandrac.library.utils.BookCursorAdapter;
@@ -35,8 +33,7 @@ public class AuthorDetailFragment extends Fragment {
     private AuthorFragmentCallbacks mAuthorDelete;
     private long mAuthorId;
 
-    @Bind(R.id.list)
-    RecyclerView recyclerView;
+    private RecyclerView recyclerView;
 
     public static AuthorDetailFragment getInstance(long authorId) {
         AuthorDetailFragment result = new AuthorDetailFragment();
@@ -81,7 +78,7 @@ public class AuthorDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View result = inflater.inflate(R.layout.fragment_author_detail, container, false);
 
-        ButterKnife.bind(this, result);
+        recyclerView = (RecyclerView) result.findViewById(R.id.list);
 
         BookCursorAdapter adapter = new BookCursorAdapter.Builder().setActivity(getActivity()).setLoaderId(AuthorDetailActivity.LOADER_AUTHOR_DETAILS).setAuthor(mAuthorId).build();
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

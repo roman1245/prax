@@ -14,21 +14,23 @@ import android.support.v4.app.ActivityCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import xyz.kandrac.library.R;
 
 /**
  * Created by Jan Kandrac on 11.6.2016.
  */
-public class ImportFileFragment extends Fragment {
+public class ImportFileFragment extends Fragment implements View.OnClickListener {
 
     private static final int CHOOSE_FILE_REQUEST = 100;
     private static final int CHOOSE_FILE_PERMISSION = 200;
 
     private ImportFlowHandler handler;
+    private Button mContinue;
+    private Button mExcel;
+    private Button mOpenOffice;
 
     @SuppressWarnings("deprecation")
     @Override
@@ -49,23 +51,18 @@ public class ImportFileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View result = inflater.inflate(R.layout.fragment_import_file, container, false);
-        ButterKnife.bind(this, result);
+        mContinue = (Button) result.findViewById(R.id.import_continue);
+        mExcel = (Button) result.findViewById(R.id.import_excel);
+        mOpenOffice = (Button) result.findViewById(R.id.import_open_office);
         return result;
     }
 
-    @OnClick({R.id.import_continue, R.id.import_excel, R.id.import_open_office})
-    public void continueClick(View view) {
-        int id = view.getId();
-
-        switch (id) {
-            case R.id.import_continue:
-                importClick();
-                break;
-            case R.id.import_excel:
-                break;
-            case R.id.import_open_office:
-                break;
-        }
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mContinue.setOnClickListener(this);
+        mExcel.setOnClickListener(this);
+        mOpenOffice.setOnClickListener(this);
     }
 
     /**
@@ -137,6 +134,21 @@ public class ImportFileFragment extends Fragment {
                 break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        int id = view.getId();
+
+        switch (id) {
+            case R.id.import_continue:
+                importClick();
+                break;
+            case R.id.import_excel:
+                break;
+            case R.id.import_open_office:
+                break;
         }
     }
 }

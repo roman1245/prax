@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion '23.0.2'
+    buildToolsVersion '24.0.0'
 
     defaultConfig {
         applicationId "xyz.kandrac.library"
@@ -19,8 +19,16 @@ android {
 
         vectorDrawables.useSupportLibrary = true
 
+        jackOptions {
+            enabled true
+        }
         manifestPlaceholders = [databaseAuthority   : "xyz.kandrac.library",
                                 snkDatabaseAuthority: "xyz.kandrac.library.snk"]
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     signingConfigs {
@@ -87,9 +95,8 @@ dependencies {
     compile "com.android.support:cardview-v7:${supportLibVersion}"
     compile "com.android.support:design:${supportLibVersion}"
     compile "com.android.support:gridlayout-v7:${supportLibVersion}"
-    compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.squareup.okhttp3:logging-interceptor:3.0.0-RC1'
-    compile 'com.squareup.retrofit2:retrofit:2.0.0-beta3'
-    compile 'com.squareup.retrofit2:converter-gson:2.0.0-beta3'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.3.1'
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
 }

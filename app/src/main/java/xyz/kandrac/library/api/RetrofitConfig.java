@@ -2,8 +2,8 @@ package xyz.kandrac.library.api;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.GsonConverterFactory;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import xyz.kandrac.library.BuildConfig;
 import xyz.kandrac.library.api.google.GoogleApi;
 import xyz.kandrac.library.api.library.LibraryApi;

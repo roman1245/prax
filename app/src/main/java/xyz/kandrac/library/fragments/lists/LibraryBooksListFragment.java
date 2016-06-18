@@ -21,8 +21,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import xyz.kandrac.library.LibraryDetailActivity;
 import xyz.kandrac.library.MainActivity;
 import xyz.kandrac.library.R;
@@ -40,20 +38,17 @@ public class LibraryBooksListFragment extends Fragment implements LoaderManager.
 
     String searchQuery;
 
-    @Bind(R.id.list)
-    RecyclerView list;
-
-    @Bind(R.id.fab)
-    FloatingActionButton mFab;
-
-    @Bind(R.id.list_empty)
-    public TextView mEmpty;
+    private RecyclerView list;
+    private FloatingActionButton mFab;
+    private TextView mEmpty;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View result = inflater.inflate(R.layout.book_list_fragment, container, false);
-        ButterKnife.bind(this, result);
+        list = (RecyclerView) result.findViewById(R.id.list);
+        mFab = (FloatingActionButton) result.findViewById(R.id.fab);
+        mEmpty = (TextView) result.findViewById(R.id.list_empty);
 
         mFab.setVisibility(View.GONE);
         mEmpty.setText(R.string.library_list_empty);

@@ -13,8 +13,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import xyz.kandrac.library.fragments.AuthorDetailFragment;
 import xyz.kandrac.library.model.Contract;
 
@@ -40,11 +38,8 @@ public class AuthorDetailActivity extends AppCompatActivity implements AuthorDet
 
     private long mAuthorId;
 
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
-
-    @Bind(R.id.collapsing_toolbar)
-    CollapsingToolbarLayout collapsingToolbarLayout;
+    private Toolbar toolbar;
+    private CollapsingToolbarLayout collapsingToolbarLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +47,8 @@ public class AuthorDetailActivity extends AppCompatActivity implements AuthorDet
 
         setContentView(R.layout.activity_detail);
 
-        ButterKnife.bind(this);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
 
         setSupportActionBar(toolbar);
 

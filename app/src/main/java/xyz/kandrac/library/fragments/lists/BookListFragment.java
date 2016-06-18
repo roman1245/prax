@@ -12,9 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import xyz.kandrac.library.EditBookActivity;
 import xyz.kandrac.library.MainActivity;
 import xyz.kandrac.library.R;
@@ -24,7 +21,7 @@ import xyz.kandrac.library.utils.BookCursorAdapter;
 /**
  * Fragment with list of all books without any pre scripted selection. This fragment also contains
  * {@link FloatingActionButton} for basic actions.
- * <p/>
+ * <p>
  * Created by kandrac on 20/10/15.
  */
 public class BookListFragment extends Fragment implements Searchable, BookCursorAdapter.CursorSizeChangedListener {
@@ -39,21 +36,16 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
     private int mLoaderId;
     private boolean mAddButton;
 
-    @BookCursorAdapter.FieldState private int mWishList;
-    @BookCursorAdapter.FieldState private int mBorrowed;
-    @BookCursorAdapter.FieldState private int mBorrowedToMe;
+    @BookCursorAdapter.FieldState
+    private int mWishList;
+    @BookCursorAdapter.FieldState
+    private int mBorrowed;
+    @BookCursorAdapter.FieldState
+    private int mBorrowedToMe;
 
-    @Bind(R.id.list) public RecyclerView list;
-    @Bind(R.id.fab) public FloatingActionButton mFab;
-    @Bind(R.id.list_empty) public TextView mEmpty;
-
-    @OnClick(R.id.fab)
-    public void addItem(View view) {
-        Intent intent = new Intent(getActivity(), EditBookActivity.class);
-        intent.putExtra(EditBookActivity.EXTRA_WISH_LIST, mWishList);
-        intent.putExtra(EditBookActivity.EXTRA_BORROWED_TO_ME, mBorrowedToMe);
-        startActivity(intent);
-    }
+    private RecyclerView list;
+    private FloatingActionButton mFab;
+    private TextView mEmpty;
 
     private BookCursorAdapter adapter;
 
@@ -97,14 +89,14 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
      * Get instance of {@link BookListFragment} for setting all custom fields. {@code title} hold
      * the title representing this fragments content (for example: old books, borrowed books, all
      * books etc.)
-     * <p/>
+     * <p>
      * {@code filter} should be closely related to {@code title} because it contains
      * string that will be added to search selection String and specifies which books exactly will
      * be shown. Always use column names from {@link xyz.kandrac.library.model.Contract.BorrowInfo}
      * or {@link xyz.kandrac.library.model.Contract.Books}
-     * <p/>
+     * <p>
      * {@code addButtonVisible} determines whether button for adding new books is visible or not
-     * <p/>
+     * <p>
      * {@code loaderId} is unique id that will be used with this instance only. It should not be
      * same for 2 or more fragments inside one activity.
      *
@@ -151,7 +143,10 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View result = inflater.inflate(R.layout.book_list_fragment, container, false);
-        ButterKnife.bind(this, result);
+
+        list = (RecyclerView) result.findViewById(R.id.list);
+        mFab = (FloatingActionButton) result.findViewById(R.id.fab);
+        mEmpty = (TextView) result.findViewById(R.id.list_empty);
 
         list.setLayoutManager(new LinearLayoutManager(getActivity()));
         mFab.setVisibility(mAddButton ? View.VISIBLE : View.GONE);
@@ -174,6 +169,12 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mFab.setOnClickListener(listener -> {
+            Intent intent = new Intent(getActivity(), EditBookActivity.class);
+            intent.putExtra(EditBookActivity.EXTRA_WISH_LIST, mWishList);
+            intent.putExtra(EditBookActivity.EXTRA_BORROWED_TO_ME, mBorrowedToMe);
+            startActivity(intent);
+        });
     }
 
     @Override

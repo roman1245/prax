@@ -6,10 +6,10 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -17,16 +17,13 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import xyz.kandrac.library.R;
 import xyz.kandrac.library.utils.BackupUtils;
 
 /**
  * Created by Jan Kandrac on 12.6.2016.
  */
-public class ImportAssignColumnsFragment extends Fragment {
+public class ImportAssignColumnsFragment extends Fragment implements View.OnClickListener {
 
     public static final String ARGUMENT_FILE_URI = "file_uri_arg";
     public static final String ARGUMENT_FORMATTING = "format_arg";
@@ -35,11 +32,9 @@ public class ImportAssignColumnsFragment extends Fragment {
     private Uri mFileUri;
     private String mFormatting;
 
-    @Bind(R.id.import_columns)
-    public LinearLayout mColumns;
-
-    @Bind(R.id.import_first_row)
-    public Switch mImportFirst;
+    private LinearLayout mColumns;
+    private Switch mImportFirst;
+    private Button mContinue;
 
     public static Fragment getInstance(Uri fileUri, String formatting) {
         Bundle arguments = new Bundle();
@@ -72,11 +67,12 @@ public class ImportAssignColumnsFragment extends Fragment {
         mFormatting = getArguments().getString(ARGUMENT_FORMATTING);
     }
 
-    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View result = inflater.inflate(R.layout.fragment_import_assign_columns, container, false);
-        ButterKnife.bind(this, result);
+        mColumns = (LinearLayout) result.findViewById(R.id.import_columns);
+        mImportFirst = (Switch) result.findViewById(R.id.import_first_row);
+        mContinue = (Button) result.findViewById(R.id.import_continue);
         return result;
     }
 
@@ -84,6 +80,7 @@ public class ImportAssignColumnsFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mColumns.removeAllViews();
+        mContinue.setOnClickListener(this);
 
         String[] columnValues = BackupUtils.getSampleRow(getActivity(), mFileUri, mFormatting);
 
@@ -107,8 +104,7 @@ public class ImportAssignColumnsFragment extends Fragment {
         }
     }
 
-    @OnClick(R.id.import_continue)
-    public void continueClick(View view) {
+    public void continueClick() {
 
         ArrayList<BackupUtils.CsvColumn> columns = new ArrayList<>();
 
@@ -133,5 +129,14 @@ public class ImportAssignColumnsFragment extends Fragment {
         }
 
         handler.importCsv(columns, mImportFirst.isChecked());
+    }
+
+    @Override
+    public void onClick(View view) {
+        int id = view.getId();
+        switch (id) {
+            case R.id.import_continue:
+                continueClick();
+        }
     }
 }
