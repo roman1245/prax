@@ -127,6 +127,39 @@
     <string name="import_title_assign_columns">Přiřazení sloupců</string>
     <string name="import_title_select_file">Výběr souboru</string>
     <string name="import_title_file_format">Format souboru</string>
+
+    <string name="import_welcome_content">Vítejte v pomocníkovi pro import knih.
+        Pokud máte vytvořenou jakoukoliv tabulku (například v aplikaci Excel nebo LibreOffice) s údaji o knihách,
+        tak je tento pomocník určen právě vám. Vyberete si soubor, přiložíte pár doplňujících informací
+        a knihy do aplikace vložíme my.</string>
+
+    <string name="import_select_file_content">V tomto kroku budeme potřebovat vybrat soubor,
+        ze kterého se mají údaje o knihách kopírovat. Soubor musí mít formát CSV.
+        Pokud nevíte jak takový soubor vytvořit, prostudujte si nápovědu.</string>
+
+    <string name="import_select_file_description">Tyto soubory mohou být běžně vytvořeny výběrem
+        Soubor> Uložit jako> CSV typ souboru.
+        Pokročilé nastavení umožňuje výchozí</string>
+
+    <string name="import_select_file_excel">CSV soubor v Exceli</string>
+    <string name="import_select_file_libre">CSV soubor v Libre / Open Office</string>
+
+    <string name="import_file_format_content">Soubor může být formátován různým způsobem.
+        Japonsko potřebuje jinou sadu znaků jako Německo. Postupně vybírejte různé druhy formátování
+        a zkontrolujte, zda náhodně zobrazeny slova jsou formátovány správně. Hlavně bez zvláštních
+        znaků na začátku řádku.</string>
+
+    <string name="import_file_format_sample">Ukázka textu s vybraným formátováním:</string>
+
+    <string name="import_assign_columns_content">Nyní zůstává přiřadit sloupce z vaší tabulky
+        k sloupcem z tabulky, která je skryta v aplikaci. Abychom si například nezaměnili
+        jméno autora s názvem knihy.</string>
+
+    <string name="import_assign_columns_extra">Ukážeme vám všechny hodnoty z prvního řádku vaší
+        tabulky a vy vyznačte, k jakému sloupci je máme přiřadit.</string>
+
+    <string name="import_assign_columns_first">Uložit i první (zobrazen) řádek</string>
+
     <string name="import_chooser">Vyberte soubor</string>
     <string name="import_first_row">Importovat i první řádek?</string>
     <string name="import_import">Import</string>
@@ -141,7 +174,7 @@
     <string name="preferences_import_title">Import dat z Excelu</string>
     <string name="preferences_import_description">Klikni zde pro import dat ve formatu CSV</string>
     <string-array name="column_names">
-		<item>Ignorovat</item>
+        <item>Ignorovat</item>
         <item>Název knihy</item>
         <item>Jméno autora</item>
         <item>Vydavatel</item>

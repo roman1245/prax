@@ -31,13 +31,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:text="V tomto kroku budeme potrebovať súbor, z ktorého sa majú údaje o knihách kopírovať. Súbor musí mať formát CSV. Ak neviete ako takýto súbor vytvoriť, pozrite si pomocníka." />
+                android:text="@string/import_select_file_content" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:text="Takýto súbor vytvoríte obvykle výberom Súbor > Uložiť ako > typ súboru .csv. Pokročilé nastavenia nechajte predvolené" />
+                android:text="@string/import_select_file_description" />
             <!-- https://support.office.com/en-us/article/Import-or-export-text-txt-or-csv-files-5250ac4c-663c-47ce-937b-339e391393ba#bmexport -->
             <Button
                 android:id="@+id/import_excel"
@@ -45,7 +45,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:text="CSV súbor v Exceli?" />
+                android:text="@string/import_select_file_excel" />
 
             <!-- https://help.libreoffice.org/Calc/Importing_and_Exporting_CSV_Files#To_Save_a_Sheet_as_a_Text_CSV_File -->
             <Button
@@ -54,7 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:text="CSV súbor v Libre / Open Office?" />
+                android:text="@string/import_select_file_libre" />
 
         </LinearLayout>
     </ScrollView>

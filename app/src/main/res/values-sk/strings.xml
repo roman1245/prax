@@ -128,6 +128,39 @@
     <string name="import_title_assign_columns">Priradenie stĺpcov</string>
     <string name="import_title_select_file">Výber súboru</string>
     <string name="import_title_file_format">Formát súboru</string>
+
+    <string name="import_welcome_content">Vitajte v pomocníkovi pre import kníh.
+        Ak máte vytvorenú akúkoľvek tabuľku (napríklad v programe Excel alebo Libre Office) s údami o knihách,
+        tak je tento pomocník určený práve vám. Vyberiete si súbor, priložíte zopár doplňujúcich informácií
+        a knihy do aplikácie vložíme my.</string>
+
+    <string name="import_select_file_content">V tomto kroku budeme potrebovať vybrať súbor,
+        z ktorého sa majú údaje o knihách kopírovať. Súbor musí mať formát CSV.
+        Ak neviete ako takýto súbor vytvoriť, pozrite si pomocníka.</string>
+
+    <string name="import_select_file_description">Takýto súbor vytvoríte obvykle výberom
+        Súbor > Uložiť ako > typ súboru .csv.
+        Pokročilé nastavení nechte výchozí</string>
+
+    <string name="import_select_file_excel">CSV súbor v Exceli</string>
+    <string name="import_select_file_libre">CSV súbor v Libre / Open Office</string>
+
+    <string name="import_file_format_content">Súbor môže byť formátovaný rôznym spôsobom.
+        Japonsko potrebuje inú sadu znakov ako Nemecko. Postupne vyberajte rôzne druhy formátovania
+        a skontrolujte, či náhodne zobrazené slová sú formátované správne. Hlavne bez zvláštnych
+        znakov na začiatku riadku.</string>
+
+    <string name="import_file_format_sample">Ukážka textu s vybraným formátovaním:</string>
+
+    <string name="import_assign_columns_content">Teraz ostáva priradiť stĺce z vašej tabuľky
+        k stĺpcom z tabuľky, ktorá je skrytá v aplikácii. Aby sme si napríklad nepomýlili
+        meno autora s názvom knihy.</string>
+
+    <string name="import_assign_columns_extra">Ukážeme vám všetky hodnoty z prvého riadku
+        vašej tabuľky a vy vyznačte, k akému stĺpcu ich máme priradiť.</string>
+
+    <string name="import_assign_columns_first">Uložiť aj prvý (zobrazený) riadok</string>
+
     <string name="import_chooser">Vyberte súbor</string>
     <string name="import_first_row">Importovať aj prvý riadok?</string>
     <string name="import_import">Import</string>

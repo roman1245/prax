@@ -127,6 +127,39 @@
     <string name="import_title_assign_columns">Assign columns</string>
     <string name="import_title_select_file">File selection</string>
     <string name="import_title_file_format">File formatting</string>
+
+    <string name="import_welcome_content">Welcome in Import book Wizard.
+        If you have any table created (for example Excel or Libre Office table) with book data,
+        then the Wizard is made for you. You will select table file, add some more information
+        and we will import books for you.</string>
+
+    <string name="import_select_file_content">In this step, we need you to select the file
+        from which we should copy data about your books. The file must be in CSV format.
+        If you do not know how to create such a file, see Help.</string>
+
+    <string name="import_select_file_description">Such files can be normally created by selecting
+        File > Save As > .csv file type.
+        Advanced settings can be default</string>
+
+    <string name="import_select_file_excel">CSV file in Excel</string>
+    <string name="import_select_file_libre">CSV file in Libre / Open Office</string>
+
+    <string name="import_file_format_content">The file can be formatted in different ways.
+        Japan needs a different set of characters then as Germany. Select different types
+        of formatting and make sure that randomly displayed words are formatted properly.
+        Especially without special characters at start of line.</string>
+
+    <string name="import_file_format_sample">Sample text with selected formatting:</string>
+
+    <string name="import_assign_columns_content">Now we need to assign the columns of your table
+        to the table that is hidden in the application. So we do not mistake name of the author
+        with book title.</string>
+
+    <string name="import_assign_columns_extra">We will show you all the values from the first row
+        of your table. Please select column for each value to be properly assigned.</string>
+
+    <string name="import_assign_columns_first">Save first (shown) row as well</string>
+
     <string name="import_chooser">Select file</string>
     <string name="import_first_row">Import first row as well?</string>
     <string name="import_import">Import</string>

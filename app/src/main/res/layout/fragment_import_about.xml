@@ -10,7 +10,7 @@
         android:layout_weight="1">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
@@ -29,13 +29,9 @@
                 style="@style/TextAppearance.AppCompat.Small"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:padding="16dp"
-                android:text="Vitaj v pomocníkovi pre vloženie kníh z excelovských tabuliek. Ak máte vytvorenú akúkoľvek tabuľku s údami ako sú:
-        - názov knihy
-        - meno autora
-        - názov vydavateľa
-        - ISBN
-a ďalšími, tak je tento pomocník určený pre vás." />
+                android:text="@string/import_welcome_content" />
         </LinearLayout>
     </ScrollView>
 
