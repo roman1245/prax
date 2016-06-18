@@ -9,7 +9,7 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_borow"
+        android:id="@+id/action_borrow"
         android:icon="@drawable/ic_share_white"
         android:title="@string/action_borrow"
         app:showAsAction="never" />

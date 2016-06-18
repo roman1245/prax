@@ -35,7 +35,7 @@ import xyz.kandrac.library.model.obj.Author;
  * List of authors displayed in this fragment is based on data stored in
  * {@link xyz.kandrac.library.model.Contract.Authors} table. List contains all
  * non-deleted authors and on clicking author line {@link AuthorDetailActivity}
- * starts. To see details about the UI please reffer to
+ * starts. To see details about the UI please refer to
  * {@link AuthorBooksListFragment.AuthorCursorAdapter}
  * <p/>
  * Created by kandrac on 22/10/15.

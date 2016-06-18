@@ -13,6 +13,7 @@
     <string name="incorrect_borrow_date">Datum vrácení knihy nemůže být nastaven do minulosti</string>
     <!-- General formatting strings -->
     <string name="format_book_title_subtitle">%1$s: %2$s</string>
+    <string name="format_book_published_year">%s</string>
     <string name="title_add_new_book">Nová kniha</string>
     <string name="title_edit_book">Úprava knihy</string>
     <!-- Optimization -->
@@ -27,6 +28,8 @@
     <string name="action_move_to_library">Přesunout do knihovny</string>
     <string name="action_ok">OK</string>
     <string name="action_cancel">Zrušit</string>
+    <string name="action_continue">Pokračovat</string>
+    <string name="action_select_file">Vyber soubor</string>
     <!-- Placeholders -->
     <string name="author_unknown">Neznámý autor</string>
     <string name="publisher_unknown">Neznámý vydavatel</string>
@@ -92,7 +95,6 @@
     <string name="menu_libraries">Knihovny</string>
     <string name="menu_settings">Nastavení</string>
     <string name="menu_books_wish_list">Seznam přání</string>
-    <string name="soon">Již brzy…</string>
     <string name="navigation_head">Hlavní navigace</string>
     <!-- Dialog Actions -->
     <string name="dialog_book_delete_title">Smazat knihu</string>
@@ -121,10 +123,11 @@
     <string name="edit_book_barcode_contact_permission">Pro vyhledávaní v kontaktech, potřebujeme Vaše svolení.</string>
     <string name="edit_book_save_image_error">Chyba při ukládání fotografie, skuste to znovu.</string>
     <!-- Import Screen -->
-    <string name="import_activity_name">Import dat.</string>
+    <string name="import_activity_name">Import knih</string>
+    <string name="import_title_assign_columns">Přiřazení sloupců</string>
+    <string name="import_title_select_file">Výběr souboru</string>
+    <string name="import_title_file_format">Format souboru</string>
     <string name="import_chooser">Vyberte soubor</string>
-    <string name="import_description">Pro import dat je potřeba vložit CSV soubor s UTF-8 kódováním s tabulkou knih</string>
-    <string name="import_select_file">Vybrat soubor</string>
     <string name="import_first_row">Importovat i první řádek?</string>
     <string name="import_import">Import</string>
     <string name="import_no_file_manager">Nebyla nalezena žádná aplikace pro prohlížení souborů</string>
@@ -135,7 +138,7 @@
     <string name="preferences_visual_conservative_title">Konzervativní barvy</string>
     <string name="preferences_visual_conservative_description">Povol tohle nastavení pro zobrazení jednoduchých barev v seznamech knih, autorů, vydavatelů a knihoven</string>
     <string name="preferences_import_export_category">Import, Export a Zálohování</string>
-    <string name="preferences_import_title">Import dat z Excelu (Beta)</string>
+    <string name="preferences_import_title">Import dat z Excelu</string>
     <string name="preferences_import_description">Klikni zde pro import dat ve formatu CSV</string>
     <string-array name="column_names">
 		<item>Ignorovat</item>
@@ -143,5 +146,13 @@
         <item>Jméno autora</item>
         <item>Vydavatel</item>
         <item>ISBN</item>
+    </string-array>
+
+    <string-array name="file_formats">
+        <item>UTF-8</item>
+        <item>UTF-16</item>
+        <item>ISO–8859–1</item>
+        <item>Windows-1251</item>
+        <item>Windows-1252</item>
     </string-array>
 </resources>

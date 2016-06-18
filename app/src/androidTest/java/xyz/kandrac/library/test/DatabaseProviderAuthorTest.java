@@ -115,14 +115,14 @@ public class DatabaseProviderAuthorTest extends ProviderTestCase2<DatabaseProvid
         ContentValues[] values = new ContentValues[]{
                 generateAuthor("John").getContentValues(),
                 generateAuthor("Mary").getContentValues(),
-                generateAuthor("Suzan").getContentValues()
+                generateAuthor("Susan").getContentValues()
         };
 
         getProvider().bulkInsert(Contract.Authors.CONTENT_URI, values);
 
         assertEquals("John", getAuthorName(selectAuthorByName("John")));
         assertEquals("Mary", getAuthorName(selectAuthorByName("Mary")));
-        assertEquals("Suzan", getAuthorName(selectAuthorByName("Suzan")));
+        assertEquals("Susan", getAuthorName(selectAuthorByName("Susan")));
     }
 
     /**

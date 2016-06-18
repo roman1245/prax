@@ -23,7 +23,7 @@
                 android:paddingBottom="24dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                android:text="Priradiť stĺpce" />
+                android:text="@string/import_title_assign_columns" />
 
             <TextView
                 style="@style/TextAppearance.AppCompat.Small"
@@ -52,7 +52,6 @@
                 android:id="@+id/import_columns"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/import_first_row"
                 android:layout_margin="16dp"
                 android:orientation="vertical" />
         </LinearLayout>
@@ -64,5 +63,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_margin="16dp"
-        android:text="Uložiť" />
+        android:text="@string/action_save" />
 </LinearLayout>

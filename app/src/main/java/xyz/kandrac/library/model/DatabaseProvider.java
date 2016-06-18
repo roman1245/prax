@@ -65,8 +65,8 @@ public class DatabaseProvider extends ContentProvider {
         uriMatcher.addURI(authority, "books/#", BOOK_ID);
         uriMatcher.addURI(authority, "books/isbn/*", BOOKS_BY_ISBN);
         uriMatcher.addURI(authority, "books/#/authors", AUTHOR_BY_BOOK);
-        uriMatcher.addURI(authority, "books/#/borrowinfo", BORROW_INFO_BY_BOOK);
-        uriMatcher.addURI(authority, "books/#/borrowmeinfo", BORROW_ME_INFO_BY_BOOK);
+        uriMatcher.addURI(authority, "books/#/borrow_info", BORROW_INFO_BY_BOOK);
+        uriMatcher.addURI(authority, "books/#/borrow_me_info", BORROW_ME_INFO_BY_BOOK);
         uriMatcher.addURI(authority, "books/#/publishers", PUBLISHER_BY_BOOK);
         uriMatcher.addURI(authority, "books/#/libraries", LIBRARY_BY_BOOK);
 
@@ -78,11 +78,11 @@ public class DatabaseProvider extends ContentProvider {
         uriMatcher.addURI(authority, "publishers/#/books", BOOK_BY_PUBLISHER);
 
         uriMatcher.addURI(authority, "books/authors", BOOKS_AUTHORS);
-        uriMatcher.addURI(authority, "borrowinfo", BORROW_INFO);
-        uriMatcher.addURI(authority, "borrowinfo/#", BORROW_INFO_ID);
+        uriMatcher.addURI(authority, "borrow_info", BORROW_INFO);
+        uriMatcher.addURI(authority, "borrow_info/#", BORROW_INFO_ID);
 
-        uriMatcher.addURI(authority, "books/borrowinfo", BOOKS_BORROW);
-        uriMatcher.addURI(authority, "borrowmeinfo/#", BORROW_ME_INFO_ID);
+        uriMatcher.addURI(authority, "books/borrow_info", BOOKS_BORROW);
+        uriMatcher.addURI(authority, "borrow_me_info/#", BORROW_ME_INFO_ID);
 
         uriMatcher.addURI(authority, "libraries", LIBRARIES);
         uriMatcher.addURI(authority, "libraries/#", LIBRARY_ID);
@@ -361,6 +361,7 @@ public class DatabaseProvider extends ContentProvider {
      * @param uniqueColumn unique column name
      * @return _id column value
      */
+    @SuppressWarnings("unused")
     private long insertOrUpdate(SQLiteDatabase db, ContentValues values, String table, String uniqueColumn) {
         long id = db.insert(table, null, values);
         if (id == -1) {

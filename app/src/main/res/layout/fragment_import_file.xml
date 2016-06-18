@@ -24,7 +24,7 @@
                 android:paddingBottom="24dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                android:text="Výber súboru" />
+                android:text="@string/import_title_select_file" />
 
             <TextView
                 style="@style/TextAppearance.AppCompat.Small"
@@ -65,5 +65,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_margin="16dp"
-        android:text="Výber súboru" />
+        android:text="@string/action_select_file" />
 </LinearLayout>

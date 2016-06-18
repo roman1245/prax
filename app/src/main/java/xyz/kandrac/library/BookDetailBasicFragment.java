@@ -206,7 +206,7 @@ public class BookDetailBasicFragment extends Fragment implements LoaderManager.L
         } else {
             publishedText.setVisibility(View.VISIBLE);
             publishedTitle.setVisibility(View.VISIBLE);
-            publishedText.setText("" + book.published);
+            publishedText.setText(getString(R.string.format_book_published_year, book.published));
         }
 
         if (TextUtils.isEmpty(book.description)) {

@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 24
     buildToolsVersion '23.0.2'
 
     defaultConfig {
         applicationId "xyz.kandrac.library"
         testApplicationId "kandrac.xyz.library.test"
         minSdkVersion 16
-        targetSdkVersion 23
+        targetSdkVersion 24
         versionCode 18
         versionName "1.2.1"
 
@@ -24,6 +24,7 @@ android {
     }
 
     signingConfigs {
+        //noinspection GroovyMissingReturnStatement
         release {
             if (System.getenv("KANDRAC_KEYSTORE") != null)
                 storeFile file(System.getenv("KANDRAC_KEYSTORE"))
@@ -39,8 +40,9 @@ android {
     buildTypes {
 
         release {
-            minifyEnabled true
+            //noinspection GroovyAssignabilityCheck
             signingConfig signingConfigs.release
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
             buildConfigField 'String', 'GOOGLE_API_KEY', '"AIzaSyB856kGT7z6lYo_99pikNEGs1jFaCCltxs"'
@@ -68,7 +70,7 @@ android {
 }
 
 ext {
-    supportLibVersion = '23.4.0'
+    supportLibVersion = '24.0.0'
 }
 
 repositories {

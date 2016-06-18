@@ -104,6 +104,7 @@ public class ImportFileFragment extends Fragment {
         intent.addCategory(Intent.CATEGORY_OPENABLE);
 
         // special intent for Samsung file manager
+        @SuppressWarnings("SpellCheckingInspection")
         Intent sIntent = new Intent("com.sec.android.app.myfiles.PICK_DATA");
         sIntent.putExtra("CONTENT_TYPE", "text/*");
         sIntent.addCategory(Intent.CATEGORY_DEFAULT);

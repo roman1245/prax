@@ -25,7 +25,7 @@
         android:layout_weight="1"
         android:ellipsize="end"
         android:maxLines="1"
-        tools:text="Autor" />
+        tools:text="Author" />
 
     <Spinner
         android:id="@+id/column_representation"

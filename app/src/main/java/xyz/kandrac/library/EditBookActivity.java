@@ -581,7 +581,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
     /**
      * Handles the requesting of the camera permission.  This includes
-     * showing a "Snackbar" message of why the permission is needed then
+     * showing a "SnackBar" message of why the permission is needed then
      * sending the request.
      */
     private void requestPermissions(final View view, final int message, final int request, final String... permissions) {
@@ -681,6 +681,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
      */
     private File createImageFile() {
         // Create an image file name
+        @SuppressWarnings("SpellCheckingInspection")
         String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(new Date());
         String fileName = "book_" + timeStamp;
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);

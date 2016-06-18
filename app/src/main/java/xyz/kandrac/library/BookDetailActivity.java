@@ -111,7 +111,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
         tabs.addTab(tabs.newTab().setText(R.string.book_detail_tab_basic));
         tabs.addTab(tabs.newTab().setText(R.string.book_detail_tab_others));
 
-        tabs.setOnTabSelectedListener(this);
+        tabs.addOnTabSelectedListener(this);
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().add(R.id.content, mContents[0]).commit();
@@ -133,7 +133,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem borrowItem = menu.findItem(R.id.action_borow);
+        MenuItem borrowItem = menu.findItem(R.id.action_borrow);
         MenuItem moveItem = menu.findItem(R.id.action_move);
 
         if (mBook != null) {
@@ -147,7 +147,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            case R.id.action_borow: {
+            case R.id.action_borrow: {
                 int readContactPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
                 if (readContactPermission == PackageManager.PERMISSION_GRANTED) {
                     searchContact();

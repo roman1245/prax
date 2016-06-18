@@ -24,7 +24,7 @@
                 android:paddingBottom="24dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                android:text="Formát súboru" />
+                android:text="@string/import_title_file_format" />
 
             <TextView
                 style="@style/TextAppearance.AppCompat.Small"
@@ -48,10 +48,10 @@
                 android:text="Ukážka textu s vybraným formátovaním:" />
 
             <TextView
-                android:padding="16dp"
                 android:id="@+id/import_samples"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:padding="16dp" />
         </LinearLayout>
     </ScrollView>
 
@@ -61,5 +61,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_margin="16dp"
-        android:text="Pokračovať" />
+        android:text="@string/action_continue" />
 </LinearLayout>
