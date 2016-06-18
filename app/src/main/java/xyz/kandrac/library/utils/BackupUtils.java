@@ -50,7 +50,7 @@ public final class BackupUtils {
      * @param uri     of file
      * @throws IOException
      */
-    public static int importCSV(Context context, Uri uri, CsvColumn[] csvColumns, String charset) throws IOException {
+    public static int importCSV(Context context, Uri uri, CsvColumn[] csvColumns, String charset, boolean importFirst) throws IOException {
 
         // uri check
         if (uri == null) {
@@ -65,7 +65,7 @@ public final class BackupUtils {
                 return 0;
             } else {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, charset));
-                return importCsv(context, reader, csvColumns);
+                return importCsv(context, reader, csvColumns, importFirst);
             }
         } finally {
             if (inputStream != null) {
@@ -80,7 +80,7 @@ public final class BackupUtils {
      * @param context to get database from
      * @param reader  to import data from
      */
-    public static int importCsv(Context context, Reader reader, CsvColumn[] csvColumns) throws IOException {
+    public static int importCsv(Context context, Reader reader, CsvColumn[] csvColumns, boolean importFirst) throws IOException {
 
         int count = 0;
         // reader check
@@ -92,6 +92,11 @@ public final class BackupUtils {
         CSVReader csvReader = new CSVReader(reader);
         ContentResolver contentResolver = context.getContentResolver();
         String[] nextLine;
+
+        if (!importFirst) {
+            csvReader.readNext();
+        }
+
         while ((nextLine = csvReader.readNext()) != null) {
             if (importCsvLine(contentResolver, nextLine, csvColumns)) {
                 count++;

@@ -81,22 +81,24 @@ public class ImportWizardActivity extends AppCompatActivity implements ImportFlo
     }
 
     @Override
-    public void importCsv(ArrayList<BackupUtils.CsvColumn> columns) {
-        new ImportAsyncTask(columns.toArray(new BackupUtils.CsvColumn[columns.size()])).execute();
+    public void importCsv(ArrayList<BackupUtils.CsvColumn> columns, boolean importFirst) {
+        new ImportAsyncTask(columns.toArray(new BackupUtils.CsvColumn[columns.size()]), importFirst).execute();
     }
 
     private class ImportAsyncTask extends AsyncTask<Void, Void, Integer> {
 
         private BackupUtils.CsvColumn[] mColumns;
+        private boolean mImportFirst;
 
-        public ImportAsyncTask(BackupUtils.CsvColumn[] columns) {
+        public ImportAsyncTask(BackupUtils.CsvColumn[] columns, boolean importFirst) {
             mColumns = columns;
+            mImportFirst = importFirst;
         }
 
         @Override
         protected Integer doInBackground(Void... params) {
             try {
-                return BackupUtils.importCSV(ImportWizardActivity.this, mFileUri, mColumns, mFormatting);
+                return BackupUtils.importCSV(ImportWizardActivity.this, mFileUri, mColumns, mFormatting, mImportFirst);
             } catch (IOException exception) {
                 return 0;
             }

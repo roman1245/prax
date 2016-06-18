@@ -67,7 +67,7 @@ public final class DatabaseStoreUtils {
 
         ContentValues bookContentValues = new ContentValues();
 
-        bookContentValues.put(Contract.Books.BOOK_TITLE, book.title);
+        bookContentValues.put(Contract.Books.BOOK_TITLE, book.title == null ? "" : book.title);
         bookContentValues.put(Contract.Books.BOOK_SUBTITLE, book.subtitle);
         bookContentValues.put(Contract.Books.BOOK_IMAGE_FILE, book.imageFilePath);
         bookContentValues.put(Contract.Books.BOOK_DESCRIPTION, book.description);

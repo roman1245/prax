@@ -112,9 +112,7 @@ public class ImportAssignColumnsFragment extends Fragment {
 
         ArrayList<BackupUtils.CsvColumn> columns = new ArrayList<>();
 
-        int start = mImportFirst.isChecked() ? 0 : 1;
-
-        for (int i = start; i < mColumns.getChildCount(); i++) {
+        for (int i = 0; i < mColumns.getChildCount(); i++) {
             int selectedPosition = ((Spinner) mColumns.findViewWithTag(i)).getSelectedItemPosition();
             switch (selectedPosition) {
                 case 0:
@@ -134,6 +132,6 @@ public class ImportAssignColumnsFragment extends Fragment {
             }
         }
 
-        handler.importCsv(columns);
+        handler.importCsv(columns, mImportFirst.isChecked());
     }
 }

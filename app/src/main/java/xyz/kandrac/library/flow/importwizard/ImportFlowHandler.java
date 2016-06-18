@@ -13,5 +13,5 @@ public interface ImportFlowHandler {
     void aboutContinue();
     void fileSelected(Uri data);
     void formattingSelected(String formatting);
-    void importCsv(ArrayList<BackupUtils.CsvColumn> columns);
+    void importCsv(ArrayList<BackupUtils.CsvColumn> columns, boolean importFirst);
 }
