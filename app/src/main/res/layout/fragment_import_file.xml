@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:text="@string/import_select_file_description" />
-            <!-- https://support.office.com/en-us/article/Import-or-export-text-txt-or-csv-files-5250ac4c-663c-47ce-937b-339e391393ba#bmexport -->
+
             <Button
                 android:id="@+id/import_excel"
                 style="@style/Base.Widget.AppCompat.Button.Borderless.Theme.Variant"
@@ -47,7 +47,6 @@
                 android:padding="16dp"
                 android:text="@string/import_select_file_excel" />
 
-            <!-- https://help.libreoffice.org/Calc/Importing_and_Exporting_CSV_Files#To_Save_a_Sheet_as_a_Text_CSV_File -->
             <Button
                 android:id="@+id/import_open_office"
                 style="@style/Base.Widget.AppCompat.Button.Borderless.Theme.Variant"

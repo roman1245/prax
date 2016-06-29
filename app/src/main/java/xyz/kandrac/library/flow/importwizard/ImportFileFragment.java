@@ -6,6 +6,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -145,10 +146,20 @@ public class ImportFileFragment extends Fragment implements View.OnClickListener
             case R.id.import_continue:
                 importClick();
                 break;
-            case R.id.import_excel:
+            case R.id.import_excel: {
+                String url = "https://support.office.com/en-us/article/Import-or-export-text-txt-or-csv-files-5250ac4c-663c-47ce-937b-339e391393ba#bmexport";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
                 break;
-            case R.id.import_open_office:
+            }
+            case R.id.import_open_office: {
+                String url = "https://help.libreoffice.org/Calc/Importing_and_Exporting_CSV_Files#To_Save_a_Sheet_as_a_Text_CSV_File";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
                 break;
+            }
         }
     }
 }
