@@ -9,7 +9,7 @@ android {
         testApplicationId "kandrac.xyz.library.test"
         minSdkVersion 16
         targetSdkVersion 24
-        versionCode 20
+        versionCode 21
         versionName "1.2.3"
 
         // Database authorities definitions
@@ -18,17 +18,8 @@ android {
         buildConfigField 'String', 'LIBRARY_API_URL', '"http://kandrac.xyz"'
 
         vectorDrawables.useSupportLibrary = true
-
-        jackOptions {
-            enabled true
-        }
         manifestPlaceholders = [databaseAuthority   : "xyz.kandrac.library",
                                 snkDatabaseAuthority: "xyz.kandrac.library.snk"]
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     signingConfigs {
@@ -57,7 +48,7 @@ android {
         }
 
         debug {
-            applicationIdSuffix '.debug'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
             // Database authorities definitions
             buildConfigField 'String', 'DATABASE_AUTHORITY', '"xyz.kandrac.library.debug"'

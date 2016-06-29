@@ -21,7 +21,7 @@ import xyz.kandrac.library.utils.BookCursorAdapter;
 /**
  * Fragment with list of all books without any pre scripted selection. This fragment also contains
  * {@link FloatingActionButton} for basic actions.
- * <p>
+ * <p/>
  * Created by kandrac on 20/10/15.
  */
 public class BookListFragment extends Fragment implements Searchable, BookCursorAdapter.CursorSizeChangedListener {
@@ -89,14 +89,14 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
      * Get instance of {@link BookListFragment} for setting all custom fields. {@code title} hold
      * the title representing this fragments content (for example: old books, borrowed books, all
      * books etc.)
-     * <p>
+     * <p/>
      * {@code filter} should be closely related to {@code title} because it contains
      * string that will be added to search selection String and specifies which books exactly will
      * be shown. Always use column names from {@link xyz.kandrac.library.model.Contract.BorrowInfo}
      * or {@link xyz.kandrac.library.model.Contract.Books}
-     * <p>
+     * <p/>
      * {@code addButtonVisible} determines whether button for adding new books is visible or not
-     * <p>
+     * <p/>
      * {@code loaderId} is unique id that will be used with this instance only. It should not be
      * same for 2 or more fragments inside one activity.
      *
@@ -169,11 +169,14 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mFab.setOnClickListener(listener -> {
-            Intent intent = new Intent(getActivity(), EditBookActivity.class);
-            intent.putExtra(EditBookActivity.EXTRA_WISH_LIST, mWishList);
-            intent.putExtra(EditBookActivity.EXTRA_BORROWED_TO_ME, mBorrowedToMe);
-            startActivity(intent);
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), EditBookActivity.class);
+                intent.putExtra(EditBookActivity.EXTRA_WISH_LIST, mWishList);
+                intent.putExtra(EditBookActivity.EXTRA_BORROWED_TO_ME, mBorrowedToMe);
+                startActivity(intent);
+            }
         });
     }
 
