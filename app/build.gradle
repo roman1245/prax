@@ -14,12 +14,13 @@ android {
 
         // Database authorities definitions
         buildConfigField 'String', 'DATABASE_AUTHORITY', '"xyz.kandrac.library"'
+        buildConfigField 'String', 'FILE_PROVIDER_AUTHORITY', '"xyz.kandrac.library.files"'
         buildConfigField 'String', 'GOOGLE_BOOKS_API_URL', '"https://www.googleapis.com"'
         buildConfigField 'String', 'LIBRARY_API_URL', '"http://kandrac.xyz"'
 
         vectorDrawables.useSupportLibrary = true
-        manifestPlaceholders = [databaseAuthority   : "xyz.kandrac.library",
-                                snkDatabaseAuthority: "xyz.kandrac.library.snk"]
+        manifestPlaceholders = [databaseAuthority    : "xyz.kandrac.library",
+                                fileProviderAuthority: "xyz.kandrac.library.files"]
     }
 
     signingConfigs {
@@ -48,13 +49,15 @@ android {
         }
 
         debug {
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            applicationIdSuffix '.debug'
 
             // Database authorities definitions
             buildConfigField 'String', 'DATABASE_AUTHORITY', '"xyz.kandrac.library.debug"'
             buildConfigField 'String', 'GOOGLE_API_KEY', '"AIzaSyBhGenifD9XgRW8q-rzEKyo3KlplHAf8J8"'
+            buildConfigField 'String', 'FILE_PROVIDER_AUTHORITY', '"xyz.kandrac.library.files.debug"'
 
-            manifestPlaceholders = [databaseAuthority: "xyz.kandrac.library.debug"]
+            manifestPlaceholders = [databaseAuthority    : "xyz.kandrac.library.debug",
+                                    fileProviderAuthority: "xyz.kandrac.library.files.debug"]
         }
     }
 

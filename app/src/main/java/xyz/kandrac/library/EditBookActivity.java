@@ -24,6 +24,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
+import android.support.v4.content.FileProvider;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBar;
@@ -183,6 +184,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         mOriginImage.setVisibility(mBorrowedToMe ? View.VISIBLE : View.GONE);
         fab.setOnClickListener(this);
         mImageEdit.setOnClickListener(this);
+        mScanButton.setOnClickListener(this);
 
         if (mBookId > 0) {
             setTitle(R.string.title_edit_book);
@@ -534,8 +536,8 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             File photoFile = createImageFile();
             if (photoFile != null) {
-                Uri uri = Uri.fromFile(photoFile);
-                LogUtils.d(TAG, "taking picture to store into " + uri.toString());
+                Uri uri = FileProvider.getUriForFile(this, BuildConfig.FILE_PROVIDER_AUTHORITY, photoFile);
+                takePictureIntent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
