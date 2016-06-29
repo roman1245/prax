@@ -9,7 +9,7 @@ android {
         testApplicationId "kandrac.xyz.library.test"
         minSdkVersion 16
         targetSdkVersion 24
-        versionCode 21
+        versionCode 22
         versionName "1.2.3"
 
         // Database authorities definitions
