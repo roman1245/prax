@@ -19,6 +19,7 @@ import android.provider.BaseColumns;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
@@ -46,9 +47,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import xyz.kandrac.barcode.BarcodeActivity;
@@ -70,10 +69,10 @@ import xyz.kandrac.library.views.DummyTextWatcher;
 
 /**
  * Book Adding/Editing
- * <p/>
+ * <p>
  * Created by VizGhar on 11.10.2015.
  */
-public class EditBookActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class EditBookActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener {
 
     private static final String TAG = EditBookActivity.class.getName();
 
@@ -117,47 +116,20 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     private String imageFileName;
     private boolean mStartingActivityForResult = false;
 
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
-
-    @Bind(R.id.book_input_origin_image)
-    ImageView mOriginImage;
-
-    @Bind(R.id.book_input_origin)
-    AutoCompleteTextView mOriginEdit;
-
-    @Bind(R.id.book_input_author)
-    AutoCompleteTextView mAuthorEdit;
-
-    @Bind(R.id.book_input_publisher)
-    AutoCompleteTextView mPublisherEdit;
-
-    @Bind(R.id.book_input_library_icon)
-    ImageView mLibraryImage;
-
-    @Bind(R.id.book_input_library)
-    AutoCompleteTextView mLibraryEdit;
-
-    @Bind(R.id.book_input_title)
-    EditText mTitleEdit;
-
-    @Bind(R.id.book_input_subtitle)
-    EditText mSubtitleEdit;
-
-    @Bind(R.id.book_input_isbn)
-    EditText mIsbnEdit;
-
-    @Bind(R.id.book_input_scan)
-    Button mScanButton;
-
-    @Bind(R.id.parallax_cover_image)
-    ImageView mImageEdit;
-
-    @Bind(R.id.book_input_description_edit)
-    EditText mDescription;
-
-    @Bind(R.id.book_input_published)
-    EditText mPublished;
+    private Toolbar toolbar;
+    private ImageView mOriginImage;
+    private AutoCompleteTextView mOriginEdit;
+    private AutoCompleteTextView mAuthorEdit;
+    private AutoCompleteTextView mPublisherEdit;
+    private ImageView mLibraryImage;
+    private AutoCompleteTextView mLibraryEdit;
+    private EditText mTitleEdit;
+    private EditText mSubtitleEdit;
+    private EditText mIsbnEdit;
+    private Button mScanButton;
+    private ImageView mImageEdit;
+    private EditText mDescription;
+    private EditText mPublished;
 
     // Basic Activity Tasks
     @SuppressWarnings("SimplifiableConditionalExpression")
@@ -166,7 +138,21 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_book_edit);
 
-        ButterKnife.bind(this);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        mOriginImage = (ImageView) findViewById(R.id.book_input_origin_image);
+        mOriginEdit = (AutoCompleteTextView) findViewById(R.id.book_input_origin);
+        mAuthorEdit = (AutoCompleteTextView) findViewById(R.id.book_input_author);
+        mPublisherEdit = (AutoCompleteTextView) findViewById(R.id.book_input_publisher);
+        mLibraryImage = (ImageView) findViewById(R.id.book_input_library_icon);
+        mLibraryEdit = (AutoCompleteTextView) findViewById(R.id.book_input_library);
+        mTitleEdit = (EditText) findViewById(R.id.book_input_title);
+        mSubtitleEdit = (EditText) findViewById(R.id.book_input_subtitle);
+        mIsbnEdit = (EditText) findViewById(R.id.book_input_isbn);
+        mScanButton = (Button) findViewById(R.id.book_input_scan);
+        mImageEdit = (ImageView) findViewById(R.id.parallax_cover_image);
+        mDescription = (EditText) findViewById(R.id.book_input_description_edit);
+        mPublished = (EditText) findViewById(R.id.book_input_published);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
         // set ToolBar
         setSupportActionBar(toolbar);
@@ -195,6 +181,8 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
         mOriginEdit.setVisibility(mBorrowedToMe ? View.VISIBLE : View.GONE);
         mOriginImage.setVisibility(mBorrowedToMe ? View.VISIBLE : View.GONE);
+        fab.setOnClickListener(this);
+        mImageEdit.setOnClickListener(this);
 
         if (mBookId > 0) {
             setTitle(R.string.title_edit_book);
@@ -298,8 +286,8 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
         RetrofitConfig.getInstance().getLibraryApi().getBookByIsbn(barcode).enqueue(new Callback<LibraryResponse>() {
             @Override
-            public void onResponse(Response<LibraryResponse> response) {
-                if (response.isSuccess()) {
+            public void onResponse(Call<LibraryResponse> call, Response<LibraryResponse> response) {
+                if (response.isSuccessful()) {
                     LibraryResponse book = response.body();
                     mTitleEdit.setText(book.title);
                     mSubtitleEdit.setText(book.subtitle);
@@ -313,7 +301,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(Call<LibraryResponse> call, Throwable t) {
                 dialog.dismiss();
                 Toast.makeText(EditBookActivity.this, R.string.communication_error, Toast.LENGTH_LONG).show();
                 LogUtils.e(TAG, "retrofit error", t);
@@ -361,12 +349,6 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 finish();
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    // Open Camera for taking image of Book Cover
-    @OnClick(R.id.parallax_cover_image)
-    public void takeImage(View view) {
-        openContextMenu(view);
     }
 
     public void takePhoto() {
@@ -420,8 +402,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     }
 
     // Open Barcode scanner
-    @OnClick(R.id.fab)
-    public void save(View view) {
+    public void save() {
         String isbn = mIsbnEdit.getText().toString();
 
         if (mBookId != 0 || TextUtils.isEmpty(isbn)) {
@@ -505,7 +486,6 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         finish();
     }
 
-    @OnClick(R.id.book_input_scan)
     public void scan(View view) {
         if (mIsbnEdit.getText().length() == 0) {
             int cameraPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
@@ -581,7 +561,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
     /**
      * Handles the requesting of the camera permission.  This includes
-     * showing a "Snackbar" message of why the permission is needed then
+     * showing a "SnackBar" message of why the permission is needed then
      * sending the request.
      */
     private void requestPermissions(final View view, final int message, final int request, final String... permissions) {
@@ -681,6 +661,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
      */
     private File createImageFile() {
         // Create an image file name
+        @SuppressWarnings("SpellCheckingInspection")
         String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(new Date());
         String fileName = "book_" + timeStamp;
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
@@ -874,6 +855,22 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         if (!mStartingActivityForResult) {
             mStartingActivityForResult = true;
             super.startActivityForResult(intent, requestCode, options);
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        int id = view.getId();
+        switch (id) {
+            case R.id.fab:
+                save();
+                break;
+            case R.id.book_input_scan:
+                scan(view);
+                break;
+            case R.id.parallax_cover_image:
+                openContextMenu(view);
+                break;
         }
     }
 }

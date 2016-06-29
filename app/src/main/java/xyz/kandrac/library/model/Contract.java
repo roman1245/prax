@@ -92,8 +92,8 @@ public final class Contract {
     public static final String PATH_PUBLISHERS = "publishers";
     public static final String PATH_LIBRARIES = "libraries";
 
-    public static final String PATH_BORROW_INFO = "borrowinfo";
-    public static final String PATH_BORROW_ME_INFO = "borrowmeinfo";
+    public static final String PATH_BORROW_INFO = "borrow_info";
+    public static final String PATH_BORROW_ME_INFO = "borrow_me_info";
     public static final String PATH_ISBN = "isbn";
 
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);

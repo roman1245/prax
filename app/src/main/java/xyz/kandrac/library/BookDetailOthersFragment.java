@@ -23,8 +23,6 @@ public class BookDetailOthersFragment extends Fragment implements BookDetailActi
 
     public static final String BOOK_ID_EXTRA = "book_id_extra";
 
-    private long mBookId;
-
     public static BookDetailOthersFragment newInstance(long bookId) {
         BookDetailOthersFragment result = new BookDetailOthersFragment();
         Bundle arguments = new Bundle();
@@ -36,7 +34,6 @@ public class BookDetailOthersFragment extends Fragment implements BookDetailActi
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBookId = getArguments().getLong(BOOK_ID_EXTRA);
     }
 
     @Nullable

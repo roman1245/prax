@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion '23.0.2'
+    compileSdkVersion 24
+    buildToolsVersion '24.0.0'
 
     defaultConfig {
         applicationId "xyz.kandrac.library"
         testApplicationId "kandrac.xyz.library.test"
         minSdkVersion 16
-        targetSdkVersion 23
+        targetSdkVersion 24
         versionCode 19
         versionName "1.2.2"
 
@@ -19,11 +19,20 @@ android {
 
         vectorDrawables.useSupportLibrary = true
 
+        jackOptions {
+            enabled true
+        }
         manifestPlaceholders = [databaseAuthority   : "xyz.kandrac.library",
                                 snkDatabaseAuthority: "xyz.kandrac.library.snk"]
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     signingConfigs {
+        //noinspection GroovyMissingReturnStatement
         release {
             if (System.getenv("KANDRAC_KEYSTORE") != null)
                 storeFile file(System.getenv("KANDRAC_KEYSTORE"))
@@ -39,8 +48,9 @@ android {
     buildTypes {
 
         release {
-            minifyEnabled true
+            //noinspection GroovyAssignabilityCheck
             signingConfig signingConfigs.release
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
             buildConfigField 'String', 'GOOGLE_API_KEY', '"AIzaSyB856kGT7z6lYo_99pikNEGs1jFaCCltxs"'
@@ -68,7 +78,7 @@ android {
 }
 
 ext {
-    supportLibVersion = '23.4.0'
+    supportLibVersion = '24.0.0'
 }
 
 repositories {
@@ -85,9 +95,8 @@ dependencies {
     compile "com.android.support:cardview-v7:${supportLibVersion}"
     compile "com.android.support:design:${supportLibVersion}"
     compile "com.android.support:gridlayout-v7:${supportLibVersion}"
-    compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.squareup.okhttp3:logging-interceptor:3.0.0-RC1'
-    compile 'com.squareup.retrofit2:retrofit:2.0.0-beta3'
-    compile 'com.squareup.retrofit2:converter-gson:2.0.0-beta3'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.3.1'
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
 }

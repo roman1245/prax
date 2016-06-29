@@ -18,8 +18,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import xyz.kandrac.library.model.Contract;
 import xyz.kandrac.library.utils.BookCursorAdapter;
 
@@ -34,27 +32,22 @@ public class LibraryDetailActivity extends AppCompatActivity implements LoaderMa
     public static final String EXTRA_LIBRARY_ID = "library_id_extra";
     private long mLibraryId;
 
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
-
-    @Bind(R.id.collapsing_toolbar)
-    CollapsingToolbarLayout collapsingToolbarLayout;
-
-    @Bind(R.id.parallax_cover_image)
-    ImageView cover;
-
-    @Bind(R.id.list)
-    RecyclerView recyclerView;
+    private Toolbar toolbar;
+    private CollapsingToolbarLayout collapsingToolbarLayout;
+    private ImageView cover;
+    private RecyclerView recyclerView;
 
     BookCursorAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.fragment_publisher_detail);
 
-        ButterKnife.bind(this);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        cover = (ImageView) findViewById(R.id.parallax_cover_image);
+        recyclerView = (RecyclerView) findViewById(R.id.list);
 
         // set ToolBar
         setSupportActionBar(toolbar);

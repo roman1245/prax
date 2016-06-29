@@ -21,8 +21,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import xyz.kandrac.library.AuthorDetailActivity;
 import xyz.kandrac.library.MainActivity;
 import xyz.kandrac.library.R;
@@ -35,7 +33,7 @@ import xyz.kandrac.library.model.obj.Author;
  * List of authors displayed in this fragment is based on data stored in
  * {@link xyz.kandrac.library.model.Contract.Authors} table. List contains all
  * non-deleted authors and on clicking author line {@link AuthorDetailActivity}
- * starts. To see details about the UI please reffer to
+ * starts. To see details about the UI please refer to
  * {@link AuthorBooksListFragment.AuthorCursorAdapter}
  * <p/>
  * Created by kandrac on 22/10/15.
@@ -46,20 +44,17 @@ public class AuthorBooksListFragment extends Fragment implements LoaderManager.L
 
     private String mSearchQuery;
 
-    @Bind(R.id.list)
-    RecyclerView list;
-
-    @Bind(R.id.fab)
-    FloatingActionButton mFab;
-
-    @Bind(R.id.list_empty)
-    public TextView mEmpty;
+    private RecyclerView list;
+    private FloatingActionButton mFab;
+    private TextView mEmpty;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View result = inflater.inflate(R.layout.book_list_fragment, container, false);
-        ButterKnife.bind(this, result);
+        list = (RecyclerView) result.findViewById(R.id.list);
+        mFab = (FloatingActionButton) result.findViewById(R.id.fab);
+        mEmpty = (TextView) result.findViewById(R.id.list_empty);
 
         mFab.setVisibility(View.GONE);
         mEmpty.setText(R.string.author_list_empty);

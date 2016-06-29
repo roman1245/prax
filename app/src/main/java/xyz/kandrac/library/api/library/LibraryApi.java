@@ -7,6 +7,7 @@ import retrofit2.http.Query;
 /**
  * Created by kandrac on 04/02/16.
  */
+@SuppressWarnings("SpellCheckingInspection")
 public interface LibraryApi {
 
     @GET("/libraryapi")

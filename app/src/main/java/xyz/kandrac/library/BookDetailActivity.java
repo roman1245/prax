@@ -29,8 +29,6 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import xyz.kandrac.library.dialogs.BorrowBookDialog;
 import xyz.kandrac.library.model.Contract;
 import xyz.kandrac.library.model.obj.Author;
@@ -68,17 +66,10 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     private Fragment[] mContents;
 
     // Layout binding
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
-
-    @Bind(R.id.collapsing_toolbar)
-    CollapsingToolbarLayout collapsingToolbarLayout;
-
-    @Bind(R.id.parallax_cover_image)
-    ImageView cover;
-
-    @Bind(R.id.tabs)
-    TabLayout tabs;
+    private Toolbar toolbar;
+    private CollapsingToolbarLayout collapsingToolbarLayout;
+    private ImageView cover;
+    private TabLayout tabs;
 
     private boolean mShowBorrowDialog = false;
 
@@ -88,7 +79,10 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
 
         setContentView(R.layout.activity_detail);
 
-        ButterKnife.bind(this);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        cover = (ImageView) findViewById(R.id.parallax_cover_image);
+        tabs = (TabLayout) findViewById(R.id.tabs);
 
         // set Action Bar
         setSupportActionBar(toolbar);
@@ -111,7 +105,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
         tabs.addTab(tabs.newTab().setText(R.string.book_detail_tab_basic));
         tabs.addTab(tabs.newTab().setText(R.string.book_detail_tab_others));
 
-        tabs.setOnTabSelectedListener(this);
+        tabs.addOnTabSelectedListener(this);
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().add(R.id.content, mContents[0]).commit();
@@ -133,7 +127,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem borrowItem = menu.findItem(R.id.action_borow);
+        MenuItem borrowItem = menu.findItem(R.id.action_borrow);
         MenuItem moveItem = menu.findItem(R.id.action_move);
 
         if (mBook != null) {
@@ -147,7 +141,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            case R.id.action_borow: {
+            case R.id.action_borrow: {
                 int readContactPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
                 if (readContactPermission == PackageManager.PERMISSION_GRANTED) {
                     searchContact();

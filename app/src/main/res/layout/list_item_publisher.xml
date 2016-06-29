@@ -26,5 +26,5 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:gravity="center_vertical"
-        tools:text="Slovart" />
+        tools:text="Slovak" />
 </LinearLayout>

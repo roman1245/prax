@@ -7,9 +7,9 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
-import xyz.kandrac.library.ImportWizardActivity;
 import xyz.kandrac.library.MainActivity;
 import xyz.kandrac.library.R;
+import xyz.kandrac.library.flow.importwizard.ImportWizardActivity;
 
 /**
  * Settings displayed based on {@link R.xml#preferences} (preferences.xml) file

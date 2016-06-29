@@ -67,9 +67,10 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity
+            android:name=".flow.importwizard.ImportWizardActivity"
             android:label="@string/import_activity_name"
-            android:name=".ImportWizardActivity"
             android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Variant.Base"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
         <provider

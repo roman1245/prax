@@ -22,8 +22,6 @@ import android.widget.TextView;
 
 import java.util.Date;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import xyz.kandrac.library.fragments.SettingsFragment;
 import xyz.kandrac.library.model.Contract;
 import xyz.kandrac.library.model.obj.Author;
@@ -43,56 +41,23 @@ public class BookDetailBasicFragment extends Fragment implements LoaderManager.L
 
     private long mBookId;
 
-    @Bind(R.id.book_detail_isbn_image)
-    ImageView isbnImage;
-
-    @Bind(R.id.book_detail_description_image)
-    ImageView descriptionImage;
-
-    @Bind(R.id.book_detail_full_book_name)
-    TextView fullTitle;
-
-    @Bind(R.id.book_detail_author)
-    TextView author;
-
-    @Bind(R.id.book_detail_isbn)
-    TextView isbnText;
-
-    @Bind(R.id.book_detail_isbn_title)
-    TextView isbnTitle;
-
-    @Bind(R.id.book_detail_description)
-    TextView descriptionText;
-
-    @Bind(R.id.book_detail_publisher)
-    TextView publisher;
-
-    @Bind(R.id.book_detail_library)
-    TextView library;
-
-    @Bind(R.id.book_detail_library_heading)
-    TextView libraryHead;
-
-    @Bind(R.id.book_detail_borrow_image)
-    ImageView borrowImage;
-
-    @Bind(R.id.book_detail_library_icon)
-    ImageView libraryImage;
-
-    @Bind(R.id.book_detail_borrow)
-    Button borrowButton;
-
-    @Bind(R.id.book_detail_borrow_me_image)
-    ImageView borrowMeImage;
-
-    @Bind(R.id.book_detail_borrow_me)
-    Button borrowMeButton;
-
-    @Bind(R.id.book_detail_published)
-    TextView publishedText;
-
-    @Bind(R.id.book_detail_published_title)
-    TextView publishedTitle;
+    private ImageView isbnImage;
+    private ImageView descriptionImage;
+    private TextView fullTitle;
+    private TextView author;
+    private TextView isbnText;
+    private TextView isbnTitle;
+    private TextView descriptionText;
+    private TextView publisher;
+    private TextView library;
+    private TextView libraryHead;
+    private ImageView borrowImage;
+    private ImageView libraryImage;
+    private Button borrowButton;
+    private ImageView borrowMeImage;
+    private Button borrowMeButton;
+    private TextView publishedText;
+    private TextView publishedTitle;
 
     public static BookDetailBasicFragment newInstance(long bookId) {
         BookDetailBasicFragment result = new BookDetailBasicFragment();
@@ -112,7 +77,23 @@ public class BookDetailBasicFragment extends Fragment implements LoaderManager.L
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View result = inflater.inflate(R.layout.fragment_book_detail_basic, container, false);
-        ButterKnife.bind(this, result);
+        isbnImage = (ImageView) result.findViewById(R.id.book_detail_isbn_image);
+        descriptionImage = (ImageView) result.findViewById(R.id.book_detail_description_image);
+        fullTitle = (TextView) result.findViewById(R.id.book_detail_full_book_name);
+        author = (TextView) result.findViewById(R.id.book_detail_author);
+        isbnText = (TextView) result.findViewById(R.id.book_detail_isbn);
+        isbnTitle = (TextView) result.findViewById(R.id.book_detail_isbn_title);
+        descriptionText = (TextView) result.findViewById(R.id.book_detail_description);
+        publisher = (TextView) result.findViewById(R.id.book_detail_publisher);
+        library = (TextView) result.findViewById(R.id.book_detail_library);
+        libraryHead = (TextView) result.findViewById(R.id.book_detail_library_heading);
+        borrowImage = (ImageView) result.findViewById(R.id.book_detail_borrow_image);
+        libraryImage = (ImageView) result.findViewById(R.id.book_detail_library_icon);
+        borrowButton = (Button) result.findViewById(R.id.book_detail_borrow);
+        borrowMeImage = (ImageView) result.findViewById(R.id.book_detail_borrow_me_image);
+        borrowMeButton = (Button) result.findViewById(R.id.book_detail_borrow_me);
+        publishedText = (TextView) result.findViewById(R.id.book_detail_published);
+        publishedTitle = (TextView) result.findViewById(R.id.book_detail_published_title);
         return result;
     }
 
@@ -206,7 +187,7 @@ public class BookDetailBasicFragment extends Fragment implements LoaderManager.L
         } else {
             publishedText.setVisibility(View.VISIBLE);
             publishedTitle.setVisibility(View.VISIBLE);
-            publishedText.setText("" + book.published);
+            publishedText.setText(getString(R.string.format_book_published_year, book.published));
         }
 
         if (TextUtils.isEmpty(book.description)) {

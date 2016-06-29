@@ -14,6 +14,7 @@
     <string name="incorrect_borrow_date">Dátum vrátenia knihy nemôže byť nastavený do minulosti</string>
     <!-- General formatting strings -->
     <string name="format_book_title_subtitle">%1$s: %2$s</string>
+    <string name="format_book_published_year">%s</string>
     <string name="title_add_new_book">Nová kniha</string>
     <string name="title_edit_book">Úprava knihy</string>
     <!-- Optimization -->
@@ -28,6 +29,8 @@
     <string name="action_move_to_library">Presunúť do knižnice</string>
     <string name="action_ok">OK</string>
     <string name="action_cancel">Zrušiť</string>
+    <string name="action_continue">Pokračovať</string>
+    <string name="action_select_file">Vyber súbor</string>
     <!-- Placeholders -->
     <string name="author_unknown">Neznámy autor</string>
     <string name="publisher_unknown">Neznámy vydavateľ</string>
@@ -93,7 +96,6 @@
     <string name="menu_libraries">Knižnice</string>
     <string name="menu_settings">Nastavenia</string>
     <string name="menu_books_wish_list">Wishlist</string>
-    <string name="soon">Čoskoro…</string>
     <string name="navigation_head">Hlavná navigácia</string>
     <!-- Dialog Actions -->
     <string name="dialog_book_delete_title">Vymazať knihu</string>
@@ -122,10 +124,44 @@
     <string name="edit_book_barcode_contact_permission">Pre vyhľadávanie v kontaktoch, potrebujeme vaše povolenie</string>
     <string name="edit_book_save_image_error">Chyba pri ukladaní fotografie, skúste to znova</string>
     <!-- Import Screen -->
-    <string name="import_activity_name">Import údajov</string>
+    <string name="import_activity_name">Import kníh</string>
+    <string name="import_title_assign_columns">Priradenie stĺpcov</string>
+    <string name="import_title_select_file">Výber súboru</string>
+    <string name="import_title_file_format">Formát súboru</string>
+
+    <string name="import_welcome_content">Vitajte v pomocníkovi pre import kníh.
+        Ak máte vytvorenú akúkoľvek tabuľku (napríklad v programe Excel alebo Libre Office) s údami o knihách,
+        tak je tento pomocník určený práve vám. Vyberiete si súbor, priložíte zopár doplňujúcich informácií
+        a knihy do aplikácie vložíme my.</string>
+
+    <string name="import_select_file_content">V tomto kroku budeme potrebovať vybrať súbor,
+        z ktorého sa majú údaje o knihách kopírovať. Súbor musí mať formát CSV.
+        Ak neviete ako takýto súbor vytvoriť, pozrite si pomocníka.</string>
+
+    <string name="import_select_file_description">Takýto súbor vytvoríte obvykle výberom
+        Súbor > Uložiť ako > typ súboru .csv.
+        Pokročilé nastavení nechte výchozí</string>
+
+    <string name="import_select_file_excel">CSV súbor v Exceli</string>
+    <string name="import_select_file_libre">CSV súbor v Libre / Open Office</string>
+
+    <string name="import_file_format_content">Súbor môže byť formátovaný rôznym spôsobom.
+        Japonsko potrebuje inú sadu znakov ako Nemecko. Postupne vyberajte rôzne druhy formátovania
+        a skontrolujte, či náhodne zobrazené slová sú formátované správne. Hlavne bez zvláštnych
+        znakov na začiatku riadku.</string>
+
+    <string name="import_file_format_sample">Ukážka textu s vybraným formátovaním:</string>
+
+    <string name="import_assign_columns_content">Teraz ostáva priradiť stĺce z vašej tabuľky
+        k stĺpcom z tabuľky, ktorá je skrytá v aplikácii. Aby sme si napríklad nepomýlili
+        meno autora s názvom knihy.</string>
+
+    <string name="import_assign_columns_extra">Ukážeme vám všetky hodnoty z prvého riadku
+        vašej tabuľky a vy vyznačte, k akému stĺpcu ich máme priradiť.</string>
+
+    <string name="import_assign_columns_first">Uložiť aj prvý (zobrazený) riadok</string>
+
     <string name="import_chooser">Vyberte súbor</string>
-    <string name="import_description">Pre importovanie údajov je potrebné vložiť CSV súbor s UTF-8 kódovaním s tabuľkou kníh</string>
-    <string name="import_select_file">Vybrať súbor</string>
     <string name="import_first_row">Importovať aj prvý riadok?</string>
     <string name="import_import">Import</string>
     <string name="import_no_file_manager">Nebola nájdená žiadna aplikácia pre prehliadanie súborov</string>
@@ -137,7 +173,7 @@
     <string name="preferences_visual_conservative_title">Konzervatívne farby</string>
     <string name="preferences_visual_conservative_description">Povoľ toto nastavenie pre zobrazenie jednoduchých farieb v zoznamoch kníh, autorov, vydavateľov a knižníc</string>
     <string name="preferences_import_export_category">Import, Export a Zálohovanie</string>
-    <string name="preferences_import_title">Import údajov z Excelu (Beta)</string>
+    <string name="preferences_import_title">Import údajov z Excelu</string>
     <string name="preferences_import_description">Klikni sem pre importovanie údajov vo formáte CSV (ďalšie vylepšenia očakávajte neskór)</string>
     <string-array name="column_names">
         <item>Ignorovať</item>
@@ -145,5 +181,13 @@
         <item>Meno autora</item>
         <item>Vydavateľ</item>
         <item>ISBN</item>
+    </string-array>
+
+    <string-array name="file_formats">
+        <item>UTF-8</item>
+        <item>UTF-16</item>
+        <item>ISO–8859–1</item>
+        <item>Windows-1251</item>
+        <item>Windows-1252</item>
     </string-array>
 </resources>

@@ -28,8 +28,6 @@ import android.widget.Toast;
 
 import java.io.File;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import xyz.kandrac.library.fragments.SettingsFragment;
 import xyz.kandrac.library.fragments.lists.AuthorBooksListFragment;
 import xyz.kandrac.library.fragments.lists.BookListFragment;
@@ -67,14 +65,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static final String PREFERENCE_PHOTOS_RESIZED = "photos_resized_preference_2";
     public static final String PREFERENCE_PHOTOS_REMOVED = "photos_removed_preference";
 
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
-
-    @Bind(R.id.main_navigation)
-    NavigationView navigation;
-
-    @Bind(R.id.main_drawer)
-    DrawerLayout drawerLayout;
+    private Toolbar toolbar;
+    private NavigationView navigation;
+    private DrawerLayout drawerLayout;
 
     private MenuItem lastChecked;
     private Fragment mShownFragment;
@@ -87,7 +80,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         InitService.start(this);
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        navigation = (NavigationView) findViewById(R.id.main_navigation);
+        drawerLayout = (DrawerLayout) findViewById(R.id.main_drawer);
+
 
         // Action Bar settings
         setSupportActionBar(toolbar);

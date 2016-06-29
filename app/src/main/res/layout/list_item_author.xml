@@ -26,5 +26,5 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:gravity="center_vertical"
-        tools:text="John Ronald Reuel Tolkien" />
+        tools:text="John Ronald Tolkien" />
 </LinearLayout>
