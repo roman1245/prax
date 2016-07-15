@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.LoaderManager;
 import android.app.ProgressDialog;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -225,7 +226,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         // Get fragment to show
-        Fragment fragmentToShow = getFragmentToShow(menuItem.getItemId());
+        int menuItemId = menuItem.getItemId();
+        Fragment fragmentToShow = null;
+
+        switch (menuItemId) {
+            case R.id.main_navigation_books:
+                fragmentToShow = BookListFragment.getInstance();
+                break;
+            case R.id.main_navigation_borrowed:
+                fragmentToShow = BookListFragment.getBorrowedBooksInstance();
+                break;
+            case R.id.main_navigation_borrowed_to_me:
+                fragmentToShow = BookListFragment.getBorrowedToMeBooksInstance();
+                break;
+            case R.id.main_navigation_wish_list:
+                fragmentToShow = BookListFragment.getWishListBooksInstance();
+                break;
+            case R.id.main_navigation_authors:
+                fragmentToShow = new AuthorBooksListFragment();
+                break;
+            case R.id.main_navigation_publishers:
+                fragmentToShow = new PublisherBooksListFragment();
+                break;
+            case R.id.main_navigation_libraries:
+                fragmentToShow = new LibraryBooksListFragment();
+                break;
+            case R.id.main_navigation_settings:
+                fragmentToShow = new SettingsFragment();
+                break;
+            case R.id.main_navigation_drive:
+                startActivity(new Intent(this, DriveActivity.class));
+                return true;
+        }
 
         if (fragmentToShow == null) {
             return false;
@@ -257,35 +289,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         lastChecked = menuItem;
 
         return true;
-    }
-
-    /**
-     * Based on ID of menu item, get new instance of fragment related to it.
-     *
-     * @param menuItemId ID of menu item
-     * @return null if nothing to be shown
-     */
-    private Fragment getFragmentToShow(final int menuItemId) {
-        switch (menuItemId) {
-            case R.id.main_navigation_books:
-                return BookListFragment.getInstance();
-            case R.id.main_navigation_borrowed:
-                return BookListFragment.getBorrowedBooksInstance();
-            case R.id.main_navigation_borrowed_to_me:
-                return BookListFragment.getBorrowedToMeBooksInstance();
-            case R.id.main_navigation_wish_list:
-                return BookListFragment.getWishListBooksInstance();
-            case R.id.main_navigation_authors:
-                return new AuthorBooksListFragment();
-            case R.id.main_navigation_publishers:
-                return new PublisherBooksListFragment();
-            case R.id.main_navigation_libraries:
-                return new LibraryBooksListFragment();
-            case R.id.main_navigation_settings:
-                return new SettingsFragment();
-            default:
-                return null;
-        }
     }
 
     /**

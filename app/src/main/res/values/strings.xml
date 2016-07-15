@@ -95,6 +95,7 @@
     <string name="menu_libraries">Libraries</string>
     <string name="menu_settings">Settings</string>
     <string name="menu_books_wish_list">Wishlist</string>
+    <string name="menu_drive">Cloud</string>
     <string name="navigation_head">Main navigation</string>
     <!-- Dialog Actions -->
     <string name="dialog_book_delete_title">Delete book</string>

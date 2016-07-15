@@ -27,6 +27,14 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme.Base">
 
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <meta-data
+            android:name="com.google.android.apps.drive.APP_ID"
+            android:value="AIzaSyBhGenifD9XgRW8q-rzEKyo3KlplHAf8J8"/>
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -63,6 +71,11 @@
 
         <activity
             android:name=".LibraryDetailActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <activity
+            android:name=".DriveActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
