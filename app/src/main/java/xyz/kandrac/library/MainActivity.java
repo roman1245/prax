@@ -3,14 +3,18 @@ package xyz.kandrac.library;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.app.ProgressDialog;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.IdRes;
 import android.support.design.widget.NavigationView;
@@ -27,8 +31,11 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.vending.billing.IInAppBillingService;
+
 import java.io.File;
 
+import xyz.kandrac.library.billing.MultipleBillingItemAsyncTask;
 import xyz.kandrac.library.fragments.SettingsFragment;
 import xyz.kandrac.library.fragments.lists.AuthorBooksListFragment;
 import xyz.kandrac.library.fragments.lists.BookListFragment;
@@ -48,6 +55,7 @@ import xyz.kandrac.library.views.DummyDrawerCallback;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final long WAIT_FOR_DOUBLE_CLICK_BACK = 3000;
+    public static final String IAB_LOG = "In-App-Billing";
 
     // Loader constants. Ensure that fragments are using this constants and not the
     public static final int BOOK_LIST_LOADER = 1;
@@ -75,6 +83,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private SearchView searchView;
     private ActionBar mActionBar;
     private long mLastFinishingBackClicked;
+
+
+    // In App billing service specification
+    private IInAppBillingService mBillingService;
+
+    private ServiceConnection mBillingServiceConn = new ServiceConnection() {
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            LogUtils.d(IAB_LOG, "service disconnected");
+            mBillingService = null;
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name,
+                                       IBinder service) {
+            LogUtils.d(IAB_LOG, "service connected");
+            mBillingService = IInAppBillingService.Stub.asInterface(service);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,12 +161,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getLoaderManager().initLoader(MY_COUNT, null, this);
         getLoaderManager().initLoader(BORROWED_COUNT, null, this);
         getLoaderManager().initLoader(FROM_FRIENDS_COUNT, null, this);
+
+        bindBillingService();
+    }
+
+    /**
+     * Binds Billing service so application can actually get data about in app products
+     */
+    private void bindBillingService() {
+        Intent serviceIntent = new Intent("com.android.vending.billing.InAppBillingService.BIND");
+        serviceIntent.setPackage("com.android.vending");
+        bindService(serviceIntent, mBillingServiceConn, Context.BIND_AUTO_CREATE);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         InitService.start(this, InitService.ACTION_CLEAR_DATABASE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mBillingService != null) {
+            unbindService(mBillingServiceConn);
+        }
     }
 
     public void checkLibrariesPreferences() {
@@ -255,6 +301,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 fragmentToShow = new SettingsFragment();
                 break;
             case R.id.main_navigation_drive:
+
+                new MultipleBillingItemAsyncTask(getPackageName(), mBillingService).execute("drive");
+                // start Drive activity only if drive plugin is purchased
                 startActivity(new Intent(this, DriveActivity.class));
                 return true;
         }
