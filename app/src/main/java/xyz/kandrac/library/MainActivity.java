@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.LoaderManager;
 import android.app.ProgressDialog;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -27,10 +28,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.util.ArrayList;
 
+import xyz.kandrac.library.billing.BillingSkus;
 import xyz.kandrac.library.billing.util.IABKeyEncoder;
 import xyz.kandrac.library.billing.util.IabHelper;
 import xyz.kandrac.library.billing.util.IabResult;
+import xyz.kandrac.library.billing.util.Inventory;
 import xyz.kandrac.library.fragments.SettingsFragment;
 import xyz.kandrac.library.fragments.lists.AuthorBooksListFragment;
 import xyz.kandrac.library.fragments.lists.BookListFragment;
@@ -81,6 +85,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private SearchView searchView;
     private ActionBar mActionBar;
     private long mLastFinishingBackClicked;
+
+    private boolean driveBought = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,8 +146,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getLoaderManager().initLoader(MY_COUNT, null, this);
         getLoaderManager().initLoader(BORROWED_COUNT, null, this);
         getLoaderManager().initLoader(FROM_FRIENDS_COUNT, null, this);
-        configureIAB();
 
+        configureIAB();
     }
 
     private void configureIAB() {
@@ -152,13 +158,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
             public void onIabSetupFinished(IabResult result) {
                 if (!result.isSuccess()) {
-                    // Oh noes, there was a problem.
                     LogUtils.d(LOG_TAG, "Problem setting up In-app Billing: " + result);
                 }
-                LogUtils.d(LOG_TAG, "IAB is setup: " + result);
-                // Hooray, IAB is fully set up!
+                LogUtils.d(LOG_TAG, "IAB is setup - getting info about paid content");
+                setupPaidContent();
             }
         });
+    }
+
+    private void setupPaidContent() {
+        try {
+            ArrayList<String> skus = new ArrayList<>();
+            skus.add(BillingSkus.DRIVE_SKU);
+            mHelper.queryInventoryAsync(true, skus, null, new IabHelper.QueryInventoryFinishedListener() {
+                @Override
+                public void onQueryInventoryFinished(IabResult result, Inventory inventory) {
+                    if (result.isFailure()) {
+                        LogUtils.d(LOG_TAG, "error getting inventory: " + result);
+                    } else {
+                        View actionView = navigation.getMenu().findItem(R.id.main_navigation_drive).getActionView();
+                        driveBought = inventory.hasPurchase(BillingSkus.DRIVE_SKU);
+                        actionView.setVisibility(driveBought ?
+                                View.GONE :
+                                View.VISIBLE
+                        );
+                    }
+                }
+            });
+        } catch (IabHelper.IabAsyncInProgressException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -170,10 +199,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onDestroy() {
         super.onDestroy();
-
-//        if (mBroadcastReceiver != null) {
-//            unregisterReceiver(mBroadcastReceiver);
-//        }
 
         LogUtils.d(LOG_TAG, "Destroying helper.");
         if (mHelper != null) {
@@ -295,10 +320,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 fragmentToShow = new SettingsFragment();
                 break;
             case R.id.main_navigation_drive:
-                // TODO: drive navigation
-                // new MultipleBillingItemAsyncTask(getPackageName(), mBillingService).execute("android.test.purchased", "android.test.canceled", "android.test.refunded", "android.test.item_unavailable");
-                // start Drive activity only if drive plugin is purchased
-                // startActivity(new Intent(this, DriveActivity.class));
+
+                if (driveBought) {
+                    startActivity(new Intent(this, DriveActivity.class));
+                } else {
+                    // invoke buying
+                }
                 return true;
         }
 
@@ -471,32 +498,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        @IdRes int viewId;
         switch (loader.getId()) {
             case WISH_COUNT: {
-                setActionViewTextFromCursor(R.id.main_navigation_wish_list, data);
+                viewId = R.id.main_navigation_wish_list;
                 break;
             }
             case MY_COUNT: {
-                setActionViewTextFromCursor(R.id.main_navigation_books, data);
+                viewId = R.id.main_navigation_books;
                 break;
             }
             case BORROWED_COUNT: {
-                setActionViewTextFromCursor(R.id.main_navigation_borrowed, data);
+                viewId = R.id.main_navigation_borrowed;
                 break;
             }
             case FROM_FRIENDS_COUNT: {
-                setActionViewTextFromCursor(R.id.main_navigation_borrowed_to_me, data);
+                viewId = R.id.main_navigation_borrowed_to_me;
                 break;
             }
+            default:
+                return;
         }
+        setActionViewTextFromCursor(viewId, data.moveToFirst() ? data.getString(0) : "0");
     }
 
-    private void setActionViewTextFromCursor(@IdRes int viewId, Cursor data) {
-        if (data.moveToFirst()) {
-            String count = data.getString(0);
+    private void setActionViewTextFromCursor(@IdRes int viewId, String show) {
+        if (show != null) {
             View actionView = navigation.getMenu().findItem(viewId).getActionView();
             TextView text = (TextView) actionView.findViewById(R.id.action_view);
-            text.setText(count);
+            text.setText(show);
             text.setVisibility(View.VISIBLE);
         }
     }
