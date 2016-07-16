@@ -35,6 +35,7 @@ import xyz.kandrac.library.billing.util.IABKeyEncoder;
 import xyz.kandrac.library.billing.util.IabHelper;
 import xyz.kandrac.library.billing.util.IabResult;
 import xyz.kandrac.library.billing.util.Inventory;
+import xyz.kandrac.library.billing.util.Purchase;
 import xyz.kandrac.library.fragments.SettingsFragment;
 import xyz.kandrac.library.fragments.lists.AuthorBooksListFragment;
 import xyz.kandrac.library.fragments.lists.BookListFragment;
@@ -70,6 +71,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static final int MY_COUNT = 9;
     public static final int BORROWED_COUNT = 10;
     public static final int FROM_FRIENDS_COUNT = 11;
+
+    public static final int PURCHASE_DRIVE_REQUEST = 1241;
 
     public static final String PREFERENCE_PHOTOS_RESIZED = "photos_resized_preference_2";
     public static final String PREFERENCE_PHOTOS_REMOVED = "photos_removed_preference";
@@ -324,7 +327,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (driveBought) {
                     startActivity(new Intent(this, DriveActivity.class));
                 } else {
-                    // invoke buying
+                    try {
+                        mHelper.launchPurchaseFlow(this, BillingSkus.DRIVE_SKU, PURCHASE_DRIVE_REQUEST, new IabHelper.OnIabPurchaseFinishedListener() {
+                            @Override
+                            public void onIabPurchaseFinished(IabResult result, Purchase info) {
+                                if (result.isFailure()) {
+                                    LogUtils.d(LOG_TAG, "Error purchasing: " + result);
+                                } else if (info.getSku().equals(BillingSkus.DRIVE_SKU)) {
+                                    startActivity(new Intent(MainActivity.this, DriveActivity.class));
+                                }
+                            }
+                        });
+                    } catch (IabHelper.IabAsyncInProgressException e) {
+                        e.printStackTrace();
+                    }
                 }
                 return true;
         }
@@ -359,6 +375,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         lastChecked = menuItem;
 
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        LogUtils.d(LOG_TAG, "onActivityResult(" + requestCode + "," + resultCode + "," + data);
+
+        // Pass on the activity result to the helper for handling
+        if (!mHelper.handleActivityResult(requestCode, resultCode, data)) {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+        else {
+            LogUtils.d(LOG_TAG, "onActivityResult handled by IABUtil.");
+        }
     }
 
     /**
