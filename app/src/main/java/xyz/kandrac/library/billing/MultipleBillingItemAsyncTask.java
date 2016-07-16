@@ -39,7 +39,6 @@ public class MultipleBillingItemAsyncTask extends AsyncTask<String, Void, Pair<S
         Bundle querySkus = new Bundle();
         querySkus.putStringArrayList("ITEM_ID_LIST", skuList);
 
-        Pair<String, String> result = null;
         try {
             Bundle skuDetails = mBillingService.getSkuDetails(3, mPackageName, "inapp", querySkus);
 
@@ -50,6 +49,7 @@ public class MultipleBillingItemAsyncTask extends AsyncTask<String, Void, Pair<S
                 if (responseList == null) {
                     return null;
                 }
+                Log.d(LOG_TAG, "Response count = " + responseList.size());
                 for (String thisResponse : responseList) {
                     try {
                         JSONObject object = new JSONObject(thisResponse);

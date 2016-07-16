@@ -35,7 +35,6 @@ import com.android.vending.billing.IInAppBillingService;
 
 import java.io.File;
 
-import xyz.kandrac.library.billing.MultipleBillingItemAsyncTask;
 import xyz.kandrac.library.fragments.SettingsFragment;
 import xyz.kandrac.library.fragments.lists.AuthorBooksListFragment;
 import xyz.kandrac.library.fragments.lists.BookListFragment;
@@ -301,10 +300,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 fragmentToShow = new SettingsFragment();
                 break;
             case R.id.main_navigation_drive:
-
-                new MultipleBillingItemAsyncTask(getPackageName(), mBillingService).execute("drive");
+                // TODO: drive navigation
+                // new MultipleBillingItemAsyncTask(getPackageName(), mBillingService).execute("android.test.purchased", "android.test.canceled", "android.test.refunded", "android.test.item_unavailable");
                 // start Drive activity only if drive plugin is purchased
-                startActivity(new Intent(this, DriveActivity.class));
+                // startActivity(new Intent(this, DriveActivity.class));
                 return true;
         }
 
