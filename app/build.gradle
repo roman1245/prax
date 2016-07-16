@@ -17,6 +17,7 @@ android {
         buildConfigField 'String', 'FILE_PROVIDER_AUTHORITY', '"xyz.kandrac.library.files"'
         buildConfigField 'String', 'GOOGLE_BOOKS_API_URL', '"https://www.googleapis.com"'
         buildConfigField 'String', 'LIBRARY_API_URL', '"http://kandrac.xyz"'
+        buildConfigField 'String', 'APP_PUBLIC_KEY', APP_PUBLIC_KEY
 
         vectorDrawables.useSupportLibrary = true
         manifestPlaceholders = [databaseAuthority    : "xyz.kandrac.library",

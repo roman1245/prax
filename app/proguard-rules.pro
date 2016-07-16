@@ -13,3 +13,6 @@
 
 # open CSV
 -dontwarn com.opencsv.**
+
+# in app billing
+-keep class com.android.vending.billing.**

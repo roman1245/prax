@@ -97,6 +97,7 @@
     <string name="menu_books_wish_list">Seznam přání</string>
     <string name="menu_drive">Cloud</string>
     <string name="navigation_head">Hlavní navigace</string>
+    <string name="navigation_buy">KOUPIT</string>
     <!-- Dialog Actions -->
     <string name="dialog_book_delete_title">Smazat knihu</string>
     <string name="dialog_book_delete_message">Opravdu chcete smazat tuto knihu?</string>
