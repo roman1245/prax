@@ -55,7 +55,6 @@ import xyz.kandrac.library.views.DummyDrawerCallback;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final long WAIT_FOR_DOUBLE_CLICK_BACK = 3000;
-    public static final String IAB_LOG = "In-App-Billing";
     private static final String LOG_TAG = MainActivity.class.getName();
 
     // Loader constants. Ensure that fragments are using this constants and not the
@@ -79,7 +78,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private IabHelper mHelper;
 
-    private Toolbar toolbar;
     private NavigationView navigation;
     private DrawerLayout drawerLayout;
 
@@ -97,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         InitService.start(this);
         setContentView(R.layout.activity_main);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         navigation = (NavigationView) findViewById(R.id.main_navigation);
         drawerLayout = (DrawerLayout) findViewById(R.id.main_drawer);
 
@@ -172,19 +170,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void setupPaidContent() {
         try {
             ArrayList<String> skus = new ArrayList<>();
-            skus.add(BillingSkus.DRIVE_SKU);
+            skus.add(BillingSkus.getDriveSku());
             mHelper.queryInventoryAsync(true, skus, null, new IabHelper.QueryInventoryFinishedListener() {
                 @Override
                 public void onQueryInventoryFinished(IabResult result, Inventory inventory) {
                     if (result.isFailure()) {
                         LogUtils.d(LOG_TAG, "error getting inventory: " + result);
                     } else {
-                        View actionView = navigation.getMenu().findItem(R.id.main_navigation_drive).getActionView();
-                        driveBought = inventory.hasPurchase(BillingSkus.DRIVE_SKU);
-                        actionView.setVisibility(driveBought ?
-                                View.GONE :
-                                View.VISIBLE
-                        );
+                        driveBought = inventory.hasPurchase(BillingSkus.getDriveSku());
+                        setActionViewVisibility(R.id.main_navigation_drive,
+                                driveBought ? View.GONE : View.VISIBLE);
                     }
                 }
             });
@@ -226,6 +221,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (item.getItemId()) {
             case android.R.id.home:
                 drawerLayout.openDrawer(GravityCompat.START);
+                return true;
+            case R.id.purchase_test_purchased:
+                BillingSkus.getInstance().setDebugAlternative(BillingSkus.TEST_PURCHASED);
+                Toast.makeText(this, BillingSkus.TEST_PURCHASED + " set", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.purchase_test_cancelled:
+                BillingSkus.getInstance().setDebugAlternative(BillingSkus.TEST_CANCELLED);
+                Toast.makeText(this, BillingSkus.TEST_CANCELLED + " set", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.purchase_test_refunded:
+                BillingSkus.getInstance().setDebugAlternative(BillingSkus.TEST_REFUNDED);
+                Toast.makeText(this, BillingSkus.TEST_REFUNDED + " set", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.purchase_test_unavailable:
+                BillingSkus.getInstance().setDebugAlternative(BillingSkus.TEST_UNAVAILABLE);
+                Toast.makeText(this, BillingSkus.TEST_UNAVAILABLE + " set", Toast.LENGTH_SHORT).show();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -328,12 +339,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     startActivity(new Intent(this, DriveActivity.class));
                 } else {
                     try {
-                        mHelper.launchPurchaseFlow(this, BillingSkus.DRIVE_SKU, PURCHASE_DRIVE_REQUEST, new IabHelper.OnIabPurchaseFinishedListener() {
+                        mHelper.launchPurchaseFlow(this, BillingSkus.getDriveSku(), PURCHASE_DRIVE_REQUEST, new IabHelper.OnIabPurchaseFinishedListener() {
                             @Override
                             public void onIabPurchaseFinished(IabResult result, Purchase info) {
-                                if (result.isFailure()) {
+                                if (result.isFailure() && result.getResponse() != 7) {
                                     LogUtils.d(LOG_TAG, "Error purchasing: " + result);
-                                } else if (info.getSku().equals(BillingSkus.DRIVE_SKU)) {
+                                } else if (info.getSku().equals(BillingSkus.getDriveSku())) {
+                                    driveBought = true;
+                                    setActionViewVisibility(R.id.main_navigation_drive, View.GONE);
                                     startActivity(new Intent(MainActivity.this, DriveActivity.class));
                                 }
                             }
@@ -384,8 +397,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Pass on the activity result to the helper for handling
         if (!mHelper.handleActivityResult(requestCode, resultCode, data)) {
             super.onActivityResult(requestCode, resultCode, data);
-        }
-        else {
+        } else {
             LogUtils.d(LOG_TAG, "onActivityResult handled by IABUtil.");
         }
     }
@@ -558,6 +570,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             text.setText(show);
             text.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void setActionViewVisibility(@IdRes int menuItemId, int visibility) {
+        View actionView = navigation.getMenu().findItem(menuItemId).getActionView();
+        actionView.setVisibility(visibility);
     }
 
     @Override
