@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion '24.0.0'
+    buildToolsVersion '24.0.1'
 
     defaultConfig {
         applicationId "xyz.kandrac.library"
@@ -17,7 +17,7 @@ android {
         buildConfigField 'String', 'FILE_PROVIDER_AUTHORITY', '"xyz.kandrac.library.files"'
         buildConfigField 'String', 'GOOGLE_BOOKS_API_URL', '"https://www.googleapis.com"'
         buildConfigField 'String', 'LIBRARY_API_URL', '"http://kandrac.xyz"'
-        buildConfigField 'String', 'APP_PUBLIC_KEY', APP_PUBLIC_KEY
+        buildConfigField 'String', 'APP_PUBLIC_KEY', '""'
 
         vectorDrawables.useSupportLibrary = true
         manifestPlaceholders = [databaseAuthority    : "xyz.kandrac.library",
@@ -73,7 +73,7 @@ android {
 }
 
 ext {
-    supportLibVersion = '24.0.0'
+    supportLibVersion = '24.2.0'
 }
 
 repositories {
@@ -81,17 +81,28 @@ repositories {
 }
 
 dependencies {
-    testCompile 'junit:junit:4.12'
+
+    // project dependencies
     compile files('libs/opencsv-3.7.jar')
     compile project(':barcode')
+
+    // compat libraries
     compile "com.android.support:appcompat-v7:${supportLibVersion}"
     compile "com.android.support:design:${supportLibVersion}"
     compile "com.android.support:recyclerview-v7:${supportLibVersion}"
     compile "com.android.support:cardview-v7:${supportLibVersion}"
     compile "com.android.support:gridlayout-v7:${supportLibVersion}"
+
+    // helper libraries
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.squareup.okhttp3:logging-interceptor:3.3.1'
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
-    compile 'com.google.android.gms:play-services:9.2.1'
+
+    // gms and fire-base
+    compile 'com.google.android.gms:play-services:9.4.0'
+    compile 'com.google.firebase:firebase-database:9.4.0'
+
+    // test dependencies
+    testCompile 'junit:junit:4.12'
 }
