@@ -1,51 +1,47 @@
 package xyz.kandrac.library;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.drive.Drive;
-
-import xyz.kandrac.library.utils.LogUtils;
+import com.firebase.ui.auth.AuthUI;
 
 /**
  * Created by Jan Kandrac on 14.7.2016.
  */
-public class DriveActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+public class DriveActivity extends AppCompatActivity {
 
-    public static final String LOG_TAG = MainActivity.class.getName();
+    public static final String LOG_TAG = DriveActivity.class.getName();
+
     public static final int RESOLVE_CONNECTION_REQUEST_CODE = 115;
+    public static final int RC_SIGN_IN = 322;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        driveOnCreate();
-    }
 
+        startActivityForResult(
+                AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setProviders(
+                                AuthUI.EMAIL_PROVIDER,
+                                AuthUI.GOOGLE_PROVIDER,
+                                AuthUI.FACEBOOK_PROVIDER)
+                        .setIsSmartLockEnabled(!BuildConfig.DEBUG)
+                        .build(),
+                RC_SIGN_IN);
+    }
     @Override
-    protected void onStart() {
-        super.onStart();
-        mGoogleApiClient.connect();
-    }
-
-    GoogleApiClient mGoogleApiClient;
-
-    private void driveOnCreate() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, this)
-                .addApi(Drive.API)
-                .addScope(Drive.SCOPE_FILE)
-                .build();
-    }
-
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        LogUtils.d("janko", connectionResult.getErrorMessage() + " : " + connectionResult.getErrorCode());
-        Toast.makeText(this, "Result = " + connectionResult.getErrorCode(), Toast.LENGTH_SHORT).show();
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_SIGN_IN) {
+            if (resultCode == RESULT_OK) {
+                Toast.makeText(this, "hooray", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "nah", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }
