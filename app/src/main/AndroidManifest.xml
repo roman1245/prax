@@ -41,7 +41,7 @@
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Base.NoStatusBar"
+            android:theme="@style/AppTheme.Splash"
             android:windowSoftInputMode="stateAlwaysHidden">
 
             <intent-filter>
