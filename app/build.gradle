@@ -2,15 +2,15 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion '24.0.1'
+    buildToolsVersion '24.0.2'
 
     defaultConfig {
         applicationId "xyz.kandrac.library"
         testApplicationId "kandrac.xyz.library.test"
         minSdkVersion 16
         targetSdkVersion 24
-        versionCode 22
-        versionName "1.2.3"
+        versionCode 24
+        versionName "1.2.4"
 
         // Database authorities definitions
         buildConfigField 'String', 'DATABASE_AUTHORITY', '"xyz.kandrac.library"'
