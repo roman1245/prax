@@ -12,11 +12,15 @@ import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import xyz.kandrac.library.utils.LogUtils;
+
 /**
  * Content provider for all database items.
  * Created by VizGhar on 9.8.2015.
  */
 public class DatabaseProvider extends ContentProvider {
+
+    private static final String LOG_TAG = DatabaseProvider.class.getName();
 
     private Database databaseHelper;
 
@@ -381,7 +385,12 @@ public class DatabaseProvider extends ContentProvider {
      * @return _id column value
      */
     private long selectId(SQLiteDatabase db, ContentValues values, String table, String uniqueColumn) {
-        String selectStatement = "SELECT " + BaseColumns._ID + " FROM " + table + " WHERE " + uniqueColumn + " = '" + values.getAsString(uniqueColumn) + "'";
+        String selectStatement = "SELECT " + BaseColumns._ID +
+                " FROM " + table +
+                " WHERE " + uniqueColumn + " = '" + values.getAsString(uniqueColumn).replace("'","''") + "'";
+
+        LogUtils.d(LOG_TAG, selectStatement);
+
         return db.compileStatement(selectStatement).simpleQueryForLong();
     }
 
