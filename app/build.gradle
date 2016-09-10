@@ -46,6 +46,7 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
+            buildConfigField 'String', 'GOOGLE_SIGN_TOKEN', '"958496077479-j3e710esiqdgpfocf26pj257iev8tbe8.apps.googleusercontent.com"'
             buildConfigField 'String', 'GOOGLE_API_KEY', '"AIzaSyB856kGT7z6lYo_99pikNEGs1jFaCCltxs"'
         }
 
@@ -53,6 +54,7 @@ android {
             applicationIdSuffix '.debug'
 
             // Database authorities definitions
+            buildConfigField 'String', 'GOOGLE_SIGN_TOKEN', '"958496077479-99fu3itr0squ1oplpivqqbahl7544uv0.apps.googleusercontent.com"'
             buildConfigField 'String', 'DATABASE_AUTHORITY', '"xyz.kandrac.library.debug"'
             buildConfigField 'String', 'GOOGLE_API_KEY', '"AIzaSyBhGenifD9XgRW8q-rzEKyo3KlplHAf8J8"'
             buildConfigField 'String', 'FILE_PROVIDER_AUTHORITY', '"xyz.kandrac.library.files.debug"'
@@ -102,7 +104,7 @@ dependencies {
     // gms and fire-base
     compile 'com.google.android.gms:play-services:9.4.0'
     compile 'com.google.firebase:firebase-database:9.4.0'
-    compile 'com.firebaseui:firebase-ui:0.5.1'
+    compile 'com.google.firebase:firebase-auth:9.4.0'
 
     // test dependencies
     testCompile 'junit:junit:4.12'

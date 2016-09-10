@@ -124,6 +124,9 @@
     <string name="edit_book_origin">Půjčené od</string>
     <string name="edit_book_barcode_contact_permission">Pro vyhledávaní v kontaktech, potřebujeme Vaše svolení.</string>
     <string name="edit_book_save_image_error">Chyba při ukládání fotografie, skuste to znovu.</string>
+    <!-- Authentication -->
+    <string name="auth_sign_in">Přihlásit se</string>
+    <string name="auth_sign_out">Odhlásit se</string>
     <!-- Import Screen -->
     <string name="import_activity_name">Import knih</string>
     <string name="import_title_assign_columns">Přiřazení sloupců</string>

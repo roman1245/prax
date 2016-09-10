@@ -21,12 +21,27 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -53,7 +68,7 @@ import xyz.kandrac.library.views.DummyDrawerCallback;
  *
  * @see NavigationView
  */
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener, GoogleApiClient.OnConnectionFailedListener {
 
     public static final long WAIT_FOR_DOUBLE_CLICK_BACK = 3000;
     private static final String LOG_TAG = MainActivity.class.getName();
@@ -77,7 +92,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static final String PREFERENCE_PHOTOS_RESIZED = "photos_resized_preference_2";
     public static final String PREFERENCE_PHOTOS_REMOVED = "photos_removed_preference";
 
+    private static final int RC_SIGN_IN = 115;
+
     private IabHelper mHelper;
+    private FirebaseAuth mAuth;
 
     private NavigationView navigation;
     private DrawerLayout drawerLayout;
@@ -87,8 +105,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private SearchView searchView;
     private ActionBar mActionBar;
     private long mLastFinishingBackClicked;
-
+    private GoogleApiClient mGoogleApiClient;
     private boolean driveBought = false;
+
+    private FirebaseAuth.AuthStateListener mAuthListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         navigation = (NavigationView) findViewById(R.id.main_navigation);
+        View navigationHeader = navigation.getHeaderView(0);
         drawerLayout = (DrawerLayout) findViewById(R.id.main_drawer);
 
 
@@ -112,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // Navigation View settings
         navigation.setNavigationItemSelectedListener(this);
+        navigationHeader.setOnClickListener(this);
 
         MenuItem booksMenuItem = navigation.getMenu().findItem(R.id.main_navigation_books);
         booksMenuItem.setChecked(true);
@@ -150,6 +172,47 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getLoaderManager().initLoader(FROM_FRIENDS_COUNT, null, this);
 
         configureIAB();
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken("958496077479-k98j56dm8cm42ltmrtvl7n452g73f6l5.apps.googleusercontent.com")
+                .requestEmail()
+                .build();
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+
+        mAuth = FirebaseAuth.getInstance();
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    Log.d(LOG_TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                } else {
+                    // User is signed out
+                    Log.d(LOG_TAG, "onAuthStateChanged:signed_out");
+                }
+            }
+        };
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 
     private void configureIAB() {
@@ -393,13 +456,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        LogUtils.d(LOG_TAG, "onActivityResult(" + requestCode + "," + resultCode + "," + data);
-
         // Pass on the activity result to the helper for handling
-        if (!mHelper.handleActivityResult(requestCode, resultCode, data)) {
-            super.onActivityResult(requestCode, resultCode, data);
-        } else {
+        if (mHelper.handleActivityResult(requestCode, resultCode, data)) {
             LogUtils.d(LOG_TAG, "onActivityResult handled by IABUtil.");
+        } else if (requestCode == RC_SIGN_IN) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            if (!result.isSuccess()) {
+                Toast.makeText(this, result.getStatus().getStatusMessage(), Toast.LENGTH_SHORT).show();
+            } else {
+                firebaseAuthWithGoogle(result.getSignInAccount());
+                ProfileActivity.startOrInvokeSignIn(this);
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -581,5 +650,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    @Override
+    public void onClick(View view) {
+        int id = view.getId();
+        switch (id) {
+            case R.id.navigation_header:
+                if (!ProfileActivity.startOrInvokeSignIn(this)) {
+                    signIn();
+                }
+        }
+    }
+
+    private void signIn() {
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Toast.makeText(this, connectionResult.getErrorMessage(), Toast.LENGTH_SHORT).show();
+    }
+
+    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+
+        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                    }
+                });
     }
 }

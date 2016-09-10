@@ -124,6 +124,9 @@
     <string name="edit_book_origin">Borrowed from</string>
     <string name="edit_book_barcode_contact_permission">We need your permission to search in contacts</string>
     <string name="edit_book_save_image_error">Error saving photo, please try again</string>
+    <!-- Authentication -->
+    <string name="auth_sign_in">Sign In</string>
+    <string name="auth_sign_out">Sign Out</string>
     <!-- Import Screen -->
     <string name="import_activity_name">Import books</string>
     <string name="import_title_assign_columns">Assign columns</string>
