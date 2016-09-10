@@ -16,6 +16,10 @@
         <item name="colorAccent">@color/accent_variant</item>
     </style>
 
+    <style name="AppTheme.Splash" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/splash</item>
+    </style>
+
     <!-- More specified for this APIs -->
     <style name="AppTheme.Base" parent="@style/AppTheme" />
 

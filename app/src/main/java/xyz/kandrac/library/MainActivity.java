@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppTheme_Base_NoStatusBar);
         super.onCreate(savedInstanceState);
         InitService.start(this);
         setContentView(R.layout.activity_main);
