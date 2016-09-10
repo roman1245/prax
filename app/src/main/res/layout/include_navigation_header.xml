@@ -26,6 +26,7 @@
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:layout_marginBottom="16dp"
+            android:scaleType="centerCrop"
             android:src="@drawable/unknown_user"
             app:layout_column="0"
             app:layout_columnSpan="2"
@@ -36,7 +37,7 @@
             style="@style/TextAppearance.AppCompat.Medium.Inverse"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="Welcome to Library"
+            android:text="@string/navigation_header_welcome"
             app:layout_columnSpan="2"
             tools:text="Ján Kandráč" />
 
@@ -44,7 +45,7 @@
             android:id="@+id/navigation_header_line2"
             style="@style/TextAppearance.AppCompat.Small.Inverse"
             android:maxLines="2"
-            android:text="Check your profile here"
+            android:text="@string/navigation_header_sign_in"
             app:layout_columnSpan="2"
             app:layout_row="2"
             tools:text="kandrac.jan@gmail.com" />

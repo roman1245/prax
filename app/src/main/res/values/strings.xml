@@ -7,6 +7,7 @@
     <!-- General errors and messages -->
     <string name="unexpected_error_occurs">Unexpected error occurred</string>
     <string name="not_connected_book_info">Not connected to internet. Cannot get info about book</string>
+    <string name="sign_in_connection_error">Cannot Sign-in. Please check your internet connection</string>
     <string name="communication_error">Communication error. Cannot get info about book</string>
     <string name="incorrect_date_format">Incorrect date format. Please use calendar button</string>
     <string name="empty_name">Name should not be empty</string>
@@ -87,6 +88,9 @@
     <string name="borrow_title">Borrow book</string>
     <string name="borrow_message">Who do you want do borrow the book and for how long?</string>
     <!-- Navigation menu items -->
+    <string name="navigation_header_welcome">Welcome to Library</string>
+    <string name="navigation_header_sign_in">Please Sign-in here</string>
+
     <string name="menu_books">Books</string>
     <string name="menu_books_mine">My books</string>
     <string name="menu_books_borrowed">Books I borrowed</string>

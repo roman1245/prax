@@ -26,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +43,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -100,6 +102,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView navigation;
     private DrawerLayout drawerLayout;
 
+    private TextView userName;
+    private TextView userMail;
+    private ImageView userPhoto;
+
     private MenuItem lastChecked;
     private Fragment mShownFragment;
     private SearchView searchView;
@@ -117,9 +123,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         InitService.start(this);
         setContentView(R.layout.activity_main);
 
+        // get views
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         navigation = (NavigationView) findViewById(R.id.main_navigation);
         View navigationHeader = navigation.getHeaderView(0);
+        userName = (TextView) navigationHeader.findViewById(R.id.navigation_header_line1);
+        userMail = (TextView) navigationHeader.findViewById(R.id.navigation_header_line2);
+        userPhoto = (ImageView) navigationHeader.findViewById(R.id.navigation_header_profile_image);
         drawerLayout = (DrawerLayout) findViewById(R.id.main_drawer);
 
 
@@ -175,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         configureIAB();
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken("958496077479-k98j56dm8cm42ltmrtvl7n452g73f6l5.apps.googleusercontent.com")
+                .requestIdToken(BuildConfig.GOOGLE_TOKEN)
                 .requestEmail()
                 .build();
 
@@ -191,15 +201,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-                    // User is signed in
-                    Log.d(LOG_TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                    userName.setText(user.getDisplayName());
+                    userMail.setText(user.getEmail());
+                    Picasso.with(MainActivity.this).load(user.getPhotoUrl()).into(userPhoto);
                 } else {
-                    // User is signed out
                     Log.d(LOG_TAG, "onAuthStateChanged:signed_out");
                 }
             }
         };
-
     }
 
     @Override
@@ -211,9 +220,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onStop() {
         super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
+        mAuth.removeAuthStateListener(mAuthListener);
     }
 
     private void configureIAB() {
@@ -463,10 +470,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (!result.isSuccess()) {
-                Toast.makeText(this, result.getStatus().getStatusMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.sign_in_connection_error, Toast.LENGTH_SHORT).show();
             } else {
                 firebaseAuthWithGoogle(result.getSignInAccount());
-                ProfileActivity.startOrInvokeSignIn(this);
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
@@ -658,15 +664,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = view.getId();
         switch (id) {
             case R.id.navigation_header:
-                if (!ProfileActivity.startOrInvokeSignIn(this)) {
-                    signIn();
+                if (mAuth.getCurrentUser() == null) {
+                    Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+                    startActivityForResult(signInIntent, RC_SIGN_IN);
                 }
         }
-    }
-
-    private void signIn() {
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
     @Override
@@ -681,6 +683,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (!task.isSuccessful()) {
+                            Toast.makeText(MainActivity.this, R.string.sign_in_connection_error, Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
     }

@@ -7,6 +7,7 @@
     <!-- General errors and messages -->
     <string name="unexpected_error_occurs">Došlo k neočekávané chybě</string>
     <string name="not_connected_book_info">Chybí připojení k internetu. Nemůžu zjistit podrobnosti o knize</string>
+    <string name="sign_in_connection_error">Nemohu se přihlásit. Ověřte připojení k internetu</string>
     <string name="communication_error">Chyba komunikace. Nemůžu zjistit podrobnosti o knize</string>
     <string name="incorrect_date_format">Nesprávný formát data. Zkus použít tlačítko s kalendářem</string>
     <string name="empty_name">Jméno nesmí být prázdné</string>
@@ -87,6 +88,9 @@
     <string name="borrow_title">Půjčení knihy</string>
     <string name="borrow_message">Komu a na jak dlouho chcete půjčit tuto knihu</string>
     <!-- Navigation menu items -->
+    <string name="navigation_header_welcome">Vítejte v Knihovně</string>
+    <string name="navigation_header_sign_in">Přihlaste se zde</string>
+
     <string name="menu_books">Knihy</string>
     <string name="menu_books_mine">Moje knihy</string>
     <string name="menu_books_borrowed">Půjčené knihy</string>
