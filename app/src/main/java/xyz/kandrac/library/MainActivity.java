@@ -250,8 +250,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         LogUtils.d(LOG_TAG, "error getting inventory: " + result);
                     } else {
                         driveBought = inventory.hasPurchase(BillingSkus.getDriveSku());
-                        setActionViewVisibility(R.id.main_navigation_drive,
-                                driveBought ? View.GONE : View.VISIBLE);
+                        setActionViewVisibility(R.id.main_navigation_drive, driveBought ? View.GONE : View.VISIBLE);
+
+                        if (driveBought) {
+                            findViewById(R.id.main_navigation_drive)
+                        }
+
                     }
                 }
             });
@@ -406,26 +410,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 fragmentToShow = new SettingsFragment();
                 break;
             case R.id.main_navigation_drive:
-
-                if (driveBought) {
-                    startActivity(new Intent(this, DriveActivity.class));
-                } else {
-                    try {
-                        mHelper.launchPurchaseFlow(this, BillingSkus.getDriveSku(), PURCHASE_DRIVE_REQUEST, new IabHelper.OnIabPurchaseFinishedListener() {
-                            @Override
-                            public void onIabPurchaseFinished(IabResult result, Purchase info) {
-                                if (result.isFailure() && result.getResponse() != 7) {
-                                    LogUtils.d(LOG_TAG, "Error purchasing: " + result);
-                                } else if (info.getSku().equals(BillingSkus.getDriveSku())) {
-                                    driveBought = true;
-                                    setActionViewVisibility(R.id.main_navigation_drive, View.GONE);
-                                    startActivity(new Intent(MainActivity.this, DriveActivity.class));
-                                }
+                try {
+                    mHelper.launchPurchaseFlow(this, BillingSkus.getDriveSku(), PURCHASE_DRIVE_REQUEST, new IabHelper.OnIabPurchaseFinishedListener() {
+                        @Override
+                        public void onIabPurchaseFinished(IabResult result, Purchase info) {
+                            if (result.isFailure() && result.getResponse() != 7) {
+                                LogUtils.d(LOG_TAG, "Error purchasing: " + result);
+                            } else if (info.getSku().equals(BillingSkus.getDriveSku())) {
+                                driveBought = true;
+                                setActionViewVisibility(R.id.main_navigation_drive, View.GONE);
+                                startActivity(new Intent(MainActivity.this, DriveActivity.class));
                             }
-                        });
-                    } catch (IabHelper.IabAsyncInProgressException e) {
-                        e.printStackTrace();
-                    }
+                        }
+                    });
+                } catch (IabHelper.IabAsyncInProgressException e) {
+                    e.printStackTrace();
                 }
                 return true;
         }
@@ -650,6 +649,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void setActionViewVisibility(@IdRes int menuItemId, int visibility) {
+        View actionView = navigation.getMenu().findItem(menuItemId).getActionView();
+        actionView.setVisibility(visibility);
+    }
+
+
+    private void setMenuViewVisibility(@IdRes int menuItemId, int visibility) {
         View actionView = navigation.getMenu().findItem(menuItemId).getActionView();
         actionView.setVisibility(visibility);
     }
