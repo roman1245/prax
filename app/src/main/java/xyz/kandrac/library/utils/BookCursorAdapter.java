@@ -211,7 +211,7 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
      * {@link BookCursorAdapter}'s {@code ViewHolder}. Required for using with {@link RecyclerView}
      * and really the best practice in order to be efficient with {@link android.widget.AdapterView}
      */
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView image;
         private TextView title;
@@ -220,7 +220,7 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
         private ImageView borrowed;
         private ImageView borrowedToMe;
 
-        public ViewHolder(View rowView) {
+        private ViewHolder(View rowView) {
             super(rowView);
             image = (ImageView) rowView.findViewById(R.id.list_item_book_image);
             title = (TextView) rowView.findViewById(R.id.list_item_book_title);

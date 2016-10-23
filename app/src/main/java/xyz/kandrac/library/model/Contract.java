@@ -96,6 +96,8 @@ public final class Contract {
     public static final String PATH_BORROW_ME_INFO = "borrow_me_info";
     public static final String PATH_ISBN = "isbn";
 
+    public static final String PATH_SPECIAL = "special";
+
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
     public static final Uri BOOKS_AUTHORS_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_BOOKS).appendPath(PATH_AUTHORS).build();
@@ -117,6 +119,7 @@ public final class Contract {
     public static class Books implements BooksColumns {
 
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_BOOKS).build();
+        public static String FULL_BOOK_ID = Database.Tables.BOOKS + "." + BOOK_ID;
 
         public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.books";
         public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.books";
@@ -408,5 +411,14 @@ public final class Contract {
         public static long getBookId(Uri uri) {
             return Long.parseLong(uri.getPathSegments().get(1));
         }
+    }
+
+    public static class Special {
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_SPECIAL).build();
+
+        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.special";
+        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.special";
+
+        public static final Uri TABLE_URI = CONTENT_URI.buildUpon().appendPath("table").build();
     }
 }

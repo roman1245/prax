@@ -61,6 +61,8 @@ public class DatabaseProvider extends ContentProvider {
     public static final int LIBRARY_ID = 601;
     public static final int LIBRARY_BY_BOOK = 602;
 
+    public static final int SPECIAL_TABLE = 700;
+
     private static UriMatcher buildUriMatcher() {
         final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = Contract.CONTENT_AUTHORITY;
@@ -77,6 +79,7 @@ public class DatabaseProvider extends ContentProvider {
         uriMatcher.addURI(authority, "authors", AUTHORS);
         uriMatcher.addURI(authority, "authors/#", AUTHOR_ID);
         uriMatcher.addURI(authority, "authors/#/books", BOOK_BY_AUTHOR);
+
         uriMatcher.addURI(authority, "publishers", PUBLISHERS);
         uriMatcher.addURI(authority, "publishers/#", PUBLISHER_ID);
         uriMatcher.addURI(authority, "publishers/#/books", BOOK_BY_PUBLISHER);
@@ -91,6 +94,8 @@ public class DatabaseProvider extends ContentProvider {
         uriMatcher.addURI(authority, "libraries", LIBRARIES);
         uriMatcher.addURI(authority, "libraries/#", LIBRARY_ID);
         uriMatcher.addURI(authority, "libraries/#/books", BOOKS_BY_LIBRARY);
+
+        uriMatcher.addURI(authority, "special/table", SPECIAL_TABLE);
         return uriMatcher;
     }
 
@@ -140,6 +145,8 @@ public class DatabaseProvider extends ContentProvider {
                 return Contract.Books.CONTENT_TYPE;
             case LIBRARY_BY_BOOK:
                 return Contract.Libraries.CONTENT_ITEM_TYPE;
+            case SPECIAL_TABLE:
+                return Contract.Special.CONTENT_TYPE;
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
@@ -238,6 +245,20 @@ public class DatabaseProvider extends ContentProvider {
                 qb.setTables(Database.Tables.BOOKS_JOIN_LIBRARIES);
                 qb.appendWhere(Database.Tables.BOOKS + "." + Contract.Books.BOOK_ID + "=" + Contract.Books.getBookId(uri));
                 sortOrder = sortOrder == null ? Contract.Libraries.DEFAULT_SORT : sortOrder;
+                break;
+            case SPECIAL_TABLE:
+                projection = new String[]{
+                        Contract.Books.FULL_BOOK_ID,
+                        Contract.Books.BOOK_TITLE,
+                        Contract.Books.BOOK_ISBN,
+                        Contract.Books.BOOK_DESCRIPTION,
+                        Contract.Books.BOOK_PUBLISHED,
+                        Contract.Books.BOOK_SUBTITLE,
+                        "group_concat(" + Contract.Authors.AUTHOR_NAME + ", \",\") AS " + Contract.Authors.AUTHOR_NAME,
+                        Contract.Publishers.PUBLISHER_NAME};
+
+                group = Contract.Books.FULL_BOOK_ID;
+                qb.setTables(Database.Tables.BOOKS_JOIN_AUTHORS + " " + Database.Tables.JOIN_PUBLISHERS);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
@@ -387,7 +408,7 @@ public class DatabaseProvider extends ContentProvider {
     private long selectId(SQLiteDatabase db, ContentValues values, String table, String uniqueColumn) {
         String selectStatement = "SELECT " + BaseColumns._ID +
                 " FROM " + table +
-                " WHERE " + uniqueColumn + " = '" + values.getAsString(uniqueColumn).replace("'","''") + "'";
+                " WHERE " + uniqueColumn + " = '" + values.getAsString(uniqueColumn).replace("'", "''") + "'";
 
         LogUtils.d(LOG_TAG, selectStatement);
 
