@@ -249,6 +249,7 @@ public class DatabaseProvider extends ContentProvider {
             case SPECIAL_TABLE:
                 projection = new String[]{
                         Contract.Books.FULL_BOOK_ID,
+                        Contract.Books.BOOK_REFERENCE,
                         Contract.Books.BOOK_TITLE,
                         Contract.Books.BOOK_ISBN,
                         Contract.Books.BOOK_DESCRIPTION,

@@ -38,6 +38,7 @@ public final class Contract {
         String BOOK_BORROWED_TO_ME = "book_borrowed_to_me";
         String BOOK_WISH_LIST = "book_wish";
         String BOOK_PUBLISHED = "book_published";
+        String BOOK_REFERENCE = "book_reference";
     }
 
     interface AuthorsColumns {
@@ -135,6 +136,13 @@ public final class Contract {
          */
         public static Uri buildBookUri(long bookId) {
             return CONTENT_URI.buildUpon().appendPath(Long.toString(bookId)).build();
+        }
+
+        /**
+         * Build {@link Uri} for requested {@link #BOOK_ID}.
+         */
+        public static Uri buildBookUri(String bookId) {
+            return CONTENT_URI.buildUpon().appendPath(bookId).build();
         }
 
         public static Uri buildBookIsbnUri(String isbn) {

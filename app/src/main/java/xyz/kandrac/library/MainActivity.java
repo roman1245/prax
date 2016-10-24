@@ -3,6 +3,7 @@ package xyz.kandrac.library;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -21,6 +22,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -43,6 +45,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
@@ -655,6 +658,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             case SYNC_LOADER: {
 
+                // TODO: move to service
+
                 // get user identifier
                 FirebaseAuth auth = FirebaseAuth.getInstance();
                 if (auth == null || auth.getCurrentUser() == null) {
@@ -669,7 +674,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 // parse cursor data
                 data.moveToFirst();
                 do {
-                    String id = data.getString(data.getColumnIndex(Contract.Books.BOOK_ID));
+                    long id = data.getLong(data.getColumnIndex(Contract.Books.BOOK_ID));
+                    String dbReference = data.getString(data.getColumnIndex(Contract.Books.BOOK_REFERENCE));
                     String title = data.getString(data.getColumnIndex(Contract.Books.BOOK_TITLE));
                     String isbn = data.getString(data.getColumnIndex(Contract.Books.BOOK_ISBN));
                     String description = data.getString(data.getColumnIndex(Contract.Books.BOOK_DESCRIPTION));
@@ -678,13 +684,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     String authors = data.getString(data.getColumnIndex(Contract.Authors.AUTHOR_NAME));
                     String publisher = data.getString(data.getColumnIndex(Contract.Publishers.PUBLISHER_NAME));
 
-                    database.getReference()
-                            .child(References.USERS_REFERENCE).child(userUid)
-                            .child(References.BOOKS_REFERENCE).child(id)
-                            .setValue(new FirebaseBook(title, id, isbn, description, subtitle, published, authors, publisher));
+                    FirebaseBook result = new FirebaseBook(title, id, isbn, description, subtitle, published, authors, publisher);
 
+                    if (TextUtils.isEmpty(dbReference)) {
+                        DatabaseReference reference = database.getReference()
+                                .child(References.USERS_REFERENCE).child(userUid)
+                                .child(References.BOOKS_REFERENCE).push();
+
+                        dbReference = reference.getKey();
+
+                        reference.setValue(result);
+
+                        ContentValues cv = new ContentValues();
+                        cv.put(Contract.Books.BOOK_REFERENCE, dbReference);
+                        getContentResolver().update(Contract.Books.buildBookUri(id), cv, null, null);
+                    } else {
+                        database.getReference()
+                                .child(References.USERS_REFERENCE).child(userUid)
+                                .child(References.BOOKS_REFERENCE).child(dbReference)
+                                .setValue(result);
+                    }
                 } while (data.moveToNext());
-
                 return;
             }
             default:

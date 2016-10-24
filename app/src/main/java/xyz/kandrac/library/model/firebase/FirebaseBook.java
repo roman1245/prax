@@ -9,7 +9,7 @@ import com.google.firebase.database.IgnoreExtraProperties;
 public class FirebaseBook {
 
     public String title;
-    public String id;
+    public long id;
     public String isbn;
     public String description;
     public String subtitle;
@@ -20,7 +20,7 @@ public class FirebaseBook {
     public FirebaseBook() {
     }
 
-    public FirebaseBook(String title, String id, String isbn, String description, String subtitle, String published, String authors, String publisher) {
+    public FirebaseBook(String title, long id, String isbn, String description, String subtitle, String published, String authors, String publisher) {
         this.title = title;
         this.id = id;
         this.isbn = isbn;

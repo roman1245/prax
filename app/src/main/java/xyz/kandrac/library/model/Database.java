@@ -12,7 +12,7 @@ public class Database extends SQLiteOpenHelper {
 
 
     public static final String DATABASE_NAME = "library.db";
-    public static final int DATABASE_VERSION = 5;
+    public static final int DATABASE_VERSION = 6;
 
     public Database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -48,6 +48,7 @@ public class Database extends SQLiteOpenHelper {
     public static final String BOOKS_CREATE_TABLE =
             "CREATE TABLE " + Tables.BOOKS + " (" +
                     Contract.Books.BOOK_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    Contract.Books.BOOK_REFERENCE + " TEXT," +
                     Contract.Books.BOOK_TITLE + " TEXT NOT NULL," +
                     Contract.Books.BOOK_SUBTITLE + " TEXT," +
                     Contract.Books.BOOK_DESCRIPTION + " TEXT," +
@@ -136,6 +137,8 @@ public class Database extends SQLiteOpenHelper {
                 db.execSQL("ALTER TABLE " + Tables.BOOKS + " ADD " + Contract.Books.BOOK_BORROWED_TO_ME + " BOOLEAN DEFAULT 0");
             case 4:
                 db.execSQL("ALTER TABLE " + Tables.BOOKS + " ADD " + Contract.Books.BOOK_PUBLISHED + " INTEGER");
+            case 5:
+                db.execSQL("ALTER TABLE " + Tables.BOOKS + " ADD " + Contract.Books.BOOK_REFERENCE + " TEXT");
         }
     }
 }
