@@ -43,6 +43,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -50,6 +51,7 @@ import java.util.ArrayList;
 
 import xyz.kandrac.library.billing.BillingSkus;
 import xyz.kandrac.library.billing.util.IABKeyEncoder;
+import xyz.kandrac.library.billing.util.IabException;
 import xyz.kandrac.library.billing.util.IabHelper;
 import xyz.kandrac.library.billing.util.IabResult;
 import xyz.kandrac.library.billing.util.Inventory;
@@ -60,6 +62,8 @@ import xyz.kandrac.library.fragments.lists.BookListFragment;
 import xyz.kandrac.library.fragments.lists.LibraryBooksListFragment;
 import xyz.kandrac.library.fragments.lists.PublisherBooksListFragment;
 import xyz.kandrac.library.model.Contract;
+import xyz.kandrac.library.model.firebase.FirebaseBook;
+import xyz.kandrac.library.model.firebase.References;
 import xyz.kandrac.library.utils.DisplayUtils;
 import xyz.kandrac.library.utils.LogUtils;
 import xyz.kandrac.library.views.DummyDrawerCallback;
@@ -88,6 +92,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static final int MY_COUNT = 9;
     public static final int BORROWED_COUNT = 10;
     public static final int FROM_FRIENDS_COUNT = 11;
+
+    public static final int SYNC_LOADER = 12;
 
     public static final int PURCHASE_DRIVE_REQUEST = 1241;
 
@@ -223,6 +229,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mAuth.removeAuthStateListener(mAuthListener);
     }
 
+    /**
+     * In App Billing configuration
+     */
     private void configureIAB() {
         String base64EncodedPublicKey = IABKeyEncoder.getKey();
 
@@ -250,12 +259,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         LogUtils.d(LOG_TAG, "error getting inventory: " + result);
                     } else {
                         driveBought = inventory.hasPurchase(BillingSkus.getDriveSku());
-                        setActionViewVisibility(R.id.main_navigation_drive, driveBought ? View.GONE : View.VISIBLE);
-
-                        if (driveBought) {
-                            findViewById(R.id.main_navigation_drive)
-                        }
-
+                        evaluatePurchases();
                     }
                 }
             });
@@ -313,6 +317,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.purchase_test_unavailable:
                 BillingSkus.getInstance().setDebugAlternative(BillingSkus.TEST_UNAVAILABLE);
                 Toast.makeText(this, BillingSkus.TEST_UNAVAILABLE + " set", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.purchase_consume:
+                // querying inventory on main thread is dangerous, but this is only visible for debug
+                try {
+                    mHelper.consumeAsync(mHelper.queryInventory().getPurchase(BillingSkus.getDriveSku()), new IabHelper.OnConsumeFinishedListener() {
+                        @Override
+                        public void onConsumeFinished(Purchase purchase, IabResult result) {
+                            Toast.makeText(MainActivity.this, "consumed = " + result.isSuccess(), Toast.LENGTH_SHORT).show();
+                            evaluatePurchases();
+                        }
+                    });
+                } catch (IabException | IabHelper.IabAsyncInProgressException ex) {
+                    Toast.makeText(this, "consumed = false", Toast.LENGTH_SHORT).show();
+                    evaluatePurchases();
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -418,8 +437,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 LogUtils.d(LOG_TAG, "Error purchasing: " + result);
                             } else if (info.getSku().equals(BillingSkus.getDriveSku())) {
                                 driveBought = true;
-                                setActionViewVisibility(R.id.main_navigation_drive, View.GONE);
-                                startActivity(new Intent(MainActivity.this, DriveActivity.class));
+                                evaluatePurchases();
                             }
                         }
                     });
@@ -609,6 +627,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return new CursorLoader(this, Contract.Books.CONTENT_URI, new String[]{"count(*) as c"}, Contract.Books.BOOK_BORROWED + " = 1", null, null);
             case FROM_FRIENDS_COUNT:
                 return new CursorLoader(this, Contract.Books.CONTENT_URI, new String[]{"count(*) as c"}, Contract.Books.BOOK_BORROWED_TO_ME + " = 1", null, null);
+            case SYNC_LOADER:
+                return new CursorLoader(this, Contract.Special.TABLE_URI, null, null, null, null);
         }
         return null;
     }
@@ -633,6 +653,40 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 viewId = R.id.main_navigation_borrowed_to_me;
                 break;
             }
+            case SYNC_LOADER: {
+
+                // get user identifier
+                FirebaseAuth auth = FirebaseAuth.getInstance();
+                if (auth == null || auth.getCurrentUser() == null) {
+                    return;
+                }
+                String userUid = auth.getCurrentUser().getUid();
+
+
+                // store parsed data to database
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+                // parse cursor data
+                data.moveToFirst();
+                do {
+                    String id = data.getString(data.getColumnIndex(Contract.Books.BOOK_ID));
+                    String title = data.getString(data.getColumnIndex(Contract.Books.BOOK_TITLE));
+                    String isbn = data.getString(data.getColumnIndex(Contract.Books.BOOK_ISBN));
+                    String description = data.getString(data.getColumnIndex(Contract.Books.BOOK_DESCRIPTION));
+                    String subtitle = data.getString(data.getColumnIndex(Contract.Books.BOOK_SUBTITLE));
+                    String published = data.getString(data.getColumnIndex(Contract.Books.BOOK_PUBLISHED));
+                    String authors = data.getString(data.getColumnIndex(Contract.Authors.AUTHOR_NAME));
+                    String publisher = data.getString(data.getColumnIndex(Contract.Publishers.PUBLISHER_NAME));
+
+                    database.getReference()
+                            .child(References.USERS_REFERENCE).child(userUid)
+                            .child(References.BOOKS_REFERENCE).child(id)
+                            .setValue(new FirebaseBook(title, id, isbn, description, subtitle, published, authors, publisher));
+
+                } while (data.moveToNext());
+
+                return;
+            }
             default:
                 return;
         }
@@ -648,15 +702,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    private void setActionViewVisibility(@IdRes int menuItemId, int visibility) {
-        View actionView = navigation.getMenu().findItem(menuItemId).getActionView();
-        actionView.setVisibility(visibility);
-    }
-
-
-    private void setMenuViewVisibility(@IdRes int menuItemId, int visibility) {
-        View actionView = navigation.getMenu().findItem(menuItemId).getActionView();
-        actionView.setVisibility(visibility);
+    private void setMenuViewVisibility(@IdRes int menuItemId, boolean visible) {
+        navigation.getMenu().findItem(menuItemId).setVisible(visible);
     }
 
     @Override
@@ -681,6 +728,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toast.makeText(this, connectionResult.getErrorMessage(), Toast.LENGTH_SHORT).show();
     }
 
+    private void evaluatePurchases() {
+        if (!driveBought && mAuth.getCurrentUser() != null) {
+            setMenuViewVisibility(R.id.main_navigation_drive, true);
+        } else {
+            setMenuViewVisibility(R.id.main_navigation_drive, false);
+        }
+
+        if (driveBought && mAuth.getCurrentUser() != null) {
+            LogUtils.d(LOG_TAG, "starting sync");
+            invokeSync();
+        }
+    }
+
+    private void invokeSync() {
+        getLoaderManager().initLoader(SYNC_LOADER, null, this);
+    }
+
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
@@ -691,6 +755,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         if (!task.isSuccessful()) {
                             Toast.makeText(MainActivity.this, R.string.sign_in_connection_error, Toast.LENGTH_SHORT).show();
                         }
+                        evaluatePurchases();
                     }
                 });
     }

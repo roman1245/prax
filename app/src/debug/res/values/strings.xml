@@ -5,4 +5,5 @@
     <string name="purchase_test_cancelled">android.test.cancelled</string>
     <string name="purchase_test_refunded">android.test.refunded</string>
     <string name="purchase_test_unavailable">android.test.item_unavailable</string>
+    <string name="purchase_consume">consume</string>
 </resources>

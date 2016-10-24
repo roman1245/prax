@@ -1,8 +1,14 @@
 package xyz.kandrac.library.billing.util;
 
 /**
+ * Encoder for in app billing key. Because it can be too easy to steal the key it have to be somehow
+ * encoded. Logic behind encoding is here.
+ * <p>
+ * Use {@link #getKey()} to obtain the key
+ * <p>
  * Created by Jan Kandrac on 16.7.2016.
  */
+@SuppressWarnings("FieldCanBeLocal")
 public class IABKeyEncoder {
 
     private static String MIDDLE = "BAQEFAAOCAQ8AMIIBCgKCAQEAkx7q73ebYDvhdJPF1xgWoffCoeKv8BShi+U" +
@@ -22,7 +28,7 @@ public class IABKeyEncoder {
         StringBuilder sb = new StringBuilder();
         char[] x = text.toCharArray();
         for (char dec : x) {
-            sb.append((char)(dec - 1));
+            sb.append((char) (dec - 1));
         }
         return sb.toString();
     }
