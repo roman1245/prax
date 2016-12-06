@@ -7,7 +7,7 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
-import xyz.kandrac.library.MainActivity;
+import xyz.kandrac.library.mviewp.MainActivity;
 import xyz.kandrac.library.R;
 import xyz.kandrac.library.flow.importwizard.ImportWizardActivity;
 

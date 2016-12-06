@@ -1,5 +1,6 @@
-package xyz.kandrac.library;
+package xyz.kandrac.library.mviewp;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.app.ProgressDialog;
@@ -52,6 +53,13 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
+import xyz.kandrac.library.BuildConfig;
+import xyz.kandrac.library.InitService;
+import xyz.kandrac.library.LibraryApplication;
+import xyz.kandrac.library.R;
+import xyz.kandrac.library.Searchable;
 import xyz.kandrac.library.billing.BillingSkus;
 import xyz.kandrac.library.billing.util.IABKeyEncoder;
 import xyz.kandrac.library.billing.util.IabException;
@@ -67,6 +75,7 @@ import xyz.kandrac.library.fragments.lists.PublisherBooksListFragment;
 import xyz.kandrac.library.model.Contract;
 import xyz.kandrac.library.model.firebase.FirebaseBook;
 import xyz.kandrac.library.model.firebase.References;
+import xyz.kandrac.library.mvpresenter.MainPresenter;
 import xyz.kandrac.library.utils.DisplayUtils;
 import xyz.kandrac.library.utils.LogUtils;
 import xyz.kandrac.library.views.DummyDrawerCallback;
@@ -77,7 +86,7 @@ import xyz.kandrac.library.views.DummyDrawerCallback;
  *
  * @see NavigationView
  */
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener, GoogleApiClient.OnConnectionFailedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener, GoogleApiClient.OnConnectionFailedListener, MainView {
 
     public static final long WAIT_FOR_DOUBLE_CLICK_BACK = 3000;
     private static final String LOG_TAG = MainActivity.class.getName();
@@ -125,12 +134,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private FirebaseAuth.AuthStateListener mAuthListener;
 
+    @Inject
+    MainPresenter presenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme_Base_NoStatusBar);
         super.onCreate(savedInstanceState);
         InitService.start(this);
         setContentView(R.layout.activity_main);
+
+        LibraryApplication.getNetComponent(this).inject(this);
+        presenter.setView(this);
 
         // get views
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -778,5 +793,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         evaluatePurchases();
                     }
                 });
+    }
+
+    @Override
+    public Activity getActivity() {
+        return this;
     }
 }

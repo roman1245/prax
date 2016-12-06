@@ -22,6 +22,7 @@
         android:smallScreens="true" />
 
     <application
+        android:name=".LibraryApplication"
         android:allowBackup="true"
         android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher"
@@ -34,10 +35,10 @@
 
         <meta-data
             android:name="com.google.android.apps.drive.APP_ID"
-            android:value="AIzaSyBhGenifD9XgRW8q-rzEKyo3KlplHAf8J8"/>
+            android:value="AIzaSyBhGenifD9XgRW8q-rzEKyo3KlplHAf8J8" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".mviewp.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"

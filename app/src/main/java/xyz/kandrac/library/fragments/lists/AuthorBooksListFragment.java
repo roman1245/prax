@@ -22,7 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import xyz.kandrac.library.AuthorDetailActivity;
-import xyz.kandrac.library.MainActivity;
+import xyz.kandrac.library.mviewp.MainActivity;
 import xyz.kandrac.library.R;
 import xyz.kandrac.library.Searchable;
 import xyz.kandrac.library.fragments.SettingsFragment;
