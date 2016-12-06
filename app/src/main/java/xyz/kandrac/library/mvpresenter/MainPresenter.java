@@ -165,9 +165,16 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
             case FROM_FRIENDS_COUNT:
                 return new CursorLoader(view.getActivity(), Contract.Books.CONTENT_URI, new String[]{"count(*) as c"}, Contract.Books.BOOK_BORROWED_TO_ME + " = 1", null, null);
             case SYNC_LOADER:
-                // TODO add proper check for syncing (updatedAt >= last update)
-                // new String[]{Long.toString(manager.getLongPreference(SharedPreferencesManager.KEY_PREF_LAST_CLOUD_SYNC))}
-                return new CursorLoader(view.getActivity(), Contract.Special.TABLE_URI, null, null, null, null);
+                long lastSync = manager.getLongPreference(SharedPreferencesManager.KEY_PREF_LAST_CLOUD_SYNC);
+                LogUtils.d(LOG_TAG, "last sync " + lastSync);
+                return new CursorLoader(
+                        view.getActivity(),
+                        Contract.Special.TABLE_URI,
+                        null,
+                        Contract.Books.BOOK_UPDATED_AT + " >= ?",
+                        new String[]{Long.toString(lastSync)},
+                        null
+                );
         }
         return null;
     }
@@ -198,6 +205,7 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
                 String userUid = mAuth.getCurrentUser().getUid();
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
 
+                LogUtils.d(LOG_TAG, "storing " + data.getCount() + " books to cloud");
                 storeToCloud(data, database, userUid);
                 storeFromCloud(database, userUid);
 
@@ -212,7 +220,7 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
     private void storeFromCloud(FirebaseDatabase database, String userUid) {
         database.getReference()
                 .child(References.USERS_REFERENCE).child(userUid)
-                .child(References.BOOKS_REFERENCE).orderByChild("id")
+                .child(References.BOOKS_REFERENCE).orderByChild("updatedAt")
                 .limitToFirst(50).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -246,8 +254,9 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
             String published = data.getString(data.getColumnIndex(Contract.Books.BOOK_PUBLISHED));
             String authors = data.getString(data.getColumnIndex(Contract.Authors.AUTHOR_NAME));
             String publisher = data.getString(data.getColumnIndex(Contract.Publishers.PUBLISHER_NAME));
+            long updatedAt = data.getLong(data.getColumnIndex(Contract.Books.BOOK_UPDATED_AT));
 
-            FirebaseBook result = new FirebaseBook(title, id, isbn, description, subtitle, published, authors, publisher);
+            FirebaseBook result = new FirebaseBook(title, id, isbn, description, subtitle, published, authors, publisher, updatedAt);
 
             if (TextUtils.isEmpty(dbReference)) {
                 DatabaseReference reference = database.getReference()

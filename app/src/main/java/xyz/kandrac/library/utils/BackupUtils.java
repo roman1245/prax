@@ -137,7 +137,7 @@ public final class BackupUtils {
         return (DatabaseStoreUtils.saveBook(contentResolver, bookBuilder.build()) > 0);
     }
 
-    public static class CsvColumn implements Parcelable{
+    public static class CsvColumn implements Parcelable {
 
         public static final int COLUMN_TITLE = 0;
         public static final int COLUMN_AUTHOR = 1;

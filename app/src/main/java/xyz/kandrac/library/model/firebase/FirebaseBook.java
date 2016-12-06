@@ -8,6 +8,7 @@ import com.google.firebase.database.IgnoreExtraProperties;
 @IgnoreExtraProperties
 public class FirebaseBook {
 
+    public long updatedAt;
     public String title;
     public long id;
     public String isbn;
@@ -18,9 +19,10 @@ public class FirebaseBook {
     public String publisher;
 
     public FirebaseBook() {
+
     }
 
-    public FirebaseBook(String title, long id, String isbn, String description, String subtitle, String published, String authors, String publisher) {
+    public FirebaseBook(String title, long id, String isbn, String description, String subtitle, String published, String authors, String publisher, long updatedAt) {
         this.title = title;
         this.id = id;
         this.isbn = isbn;
@@ -29,5 +31,21 @@ public class FirebaseBook {
         this.description = description;
         this.subtitle = subtitle;
         this.publisher = publisher;
+        this.updatedAt = updatedAt;
+    }
+
+    @Override
+    public String toString() {
+        return "FirebaseBook{" +
+                "updatedAt=" + updatedAt +
+                ", title='" + title + '\'' +
+                ", id=" + id +
+                ", isbn='" + isbn + '\'' +
+                ", description='" + description + '\'' +
+                ", subtitle='" + subtitle + '\'' +
+                ", published='" + published + '\'' +
+                ", authors='" + authors + '\'' +
+                ", publisher='" + publisher + '\'' +
+                '}';
     }
 }

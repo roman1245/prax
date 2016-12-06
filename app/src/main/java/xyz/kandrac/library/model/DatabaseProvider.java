@@ -255,6 +255,7 @@ public class DatabaseProvider extends ContentProvider {
                         Contract.Books.BOOK_DESCRIPTION,
                         Contract.Books.BOOK_PUBLISHED,
                         Contract.Books.BOOK_SUBTITLE,
+                        Contract.Books.BOOK_UPDATED_AT,
                         "group_concat(" + Contract.Authors.AUTHOR_NAME + ", \",\") AS " + Contract.Authors.AUTHOR_NAME,
                         Contract.Publishers.PUBLISHER_NAME};
 
