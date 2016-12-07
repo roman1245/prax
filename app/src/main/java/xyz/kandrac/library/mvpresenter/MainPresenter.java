@@ -37,8 +37,12 @@ import javax.inject.Inject;
 
 import xyz.kandrac.library.BuildConfig;
 import xyz.kandrac.library.model.Contract;
+import xyz.kandrac.library.model.DatabaseStoreUtils;
 import xyz.kandrac.library.model.firebase.FirebaseBook;
 import xyz.kandrac.library.model.firebase.References;
+import xyz.kandrac.library.model.obj.Author;
+import xyz.kandrac.library.model.obj.Book;
+import xyz.kandrac.library.model.obj.Publisher;
 import xyz.kandrac.library.mviewp.MainView;
 import xyz.kandrac.library.utils.IABConfigurator;
 import xyz.kandrac.library.utils.LogUtils;
@@ -204,10 +208,11 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
 
                 String userUid = mAuth.getCurrentUser().getUid();
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
+                long lastSync = manager.getLongPreference(SharedPreferencesManager.KEY_PREF_LAST_CLOUD_SYNC);
 
                 LogUtils.d(LOG_TAG, "storing " + data.getCount() + " books to cloud");
                 storeToCloud(data, database, userUid);
-                storeFromCloud(database, userUid);
+                storeFromCloud(database, userUid, lastSync);
 
                 manager.editPreference(SharedPreferencesManager.KEY_PREF_LAST_CLOUD_SYNC, System.currentTimeMillis());
 
@@ -216,18 +221,45 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
         }
     }
 
-    // TODO: store to database, request only new items, paginate properly
-    private void storeFromCloud(FirebaseDatabase database, String userUid) {
+    private void storeFromCloud(FirebaseDatabase database, String userUid, final long lastSync) {
         database.getReference()
                 .child(References.USERS_REFERENCE).child(userUid)
                 .child(References.BOOKS_REFERENCE).orderByChild("updatedAt")
-                .limitToFirst(50).addValueEventListener(new ValueEventListener() {
+                .addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot book : dataSnapshot.getChildren()) {
-                    long i = (long) book.child("id").getValue();
-                    String title = (String) book.child("title").getValue();
-                    Log.d("janko", "parsed value = " + i + " for " + title);
+                for (DataSnapshot bookSnapshot : dataSnapshot.getChildren()) {
+                    long updatedAt = (long) bookSnapshot.child("updatedAt").getValue();
+
+                    if (updatedAt < lastSync) {
+                        return;
+                    }
+
+
+                    String[] authorsSplit = TextUtils.split((String) bookSnapshot.child("authors").getValue(), ",");
+
+                    Author[] authors = new Author[authorsSplit.length];
+                    for (int i = 0; i < authorsSplit.length; i++) {
+                        String authorName = authorsSplit[i].trim();
+                        authors[i] = new Author.Builder().setName(authorName).build();
+                    }
+
+                    Book book = new Book.Builder()
+                            .setFirebaseReference(bookSnapshot.getRef().getKey())
+                            // db reference
+                            .setTitle((String) bookSnapshot.child("title").getValue())
+                            .setIsbn((String) bookSnapshot.child("isbn").getValue())
+                            .setDescription((String) bookSnapshot.child("description").getValue())
+                            .setSubtitle((String) bookSnapshot.child("subtitle").getValue())
+                            .setPublished((String) bookSnapshot.child("published").getValue())
+                            .setAuthors(authors)
+                            .setPublisher(new Publisher.Builder()
+                                    .setName((String) bookSnapshot.child("publisher").getValue())
+                                    .build())
+                            .setUpdatedAt(updatedAt).build();
+
+                    DatabaseStoreUtils.saveBook(view.getActivity().getContentResolver(), book);
+
                 }
             }
 
@@ -256,7 +288,7 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
             String publisher = data.getString(data.getColumnIndex(Contract.Publishers.PUBLISHER_NAME));
             long updatedAt = data.getLong(data.getColumnIndex(Contract.Books.BOOK_UPDATED_AT));
 
-            FirebaseBook result = new FirebaseBook(title, id, isbn, description, subtitle, published, authors, publisher, updatedAt);
+            FirebaseBook result = new FirebaseBook(title, isbn, description, subtitle, published, authors, publisher, updatedAt);
 
             if (TextUtils.isEmpty(dbReference)) {
                 DatabaseReference reference = database.getReference()

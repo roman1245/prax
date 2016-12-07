@@ -2,6 +2,7 @@ package xyz.kandrac.library.model;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.net.Uri;
 
 import xyz.kandrac.library.model.obj.Author;
@@ -78,6 +79,7 @@ public final class DatabaseStoreUtils {
         bookContentValues.put(Contract.Books.BOOK_WISH_LIST, book.wish);
         bookContentValues.put(Contract.Books.BOOK_BORROWED_TO_ME, book.borrowedToMe);
         bookContentValues.put(Contract.Books.BOOK_UPDATED_AT, book.updatedAt);
+        bookContentValues.put(Contract.Books.BOOK_REFERENCE, book.firebaseReference);
 
         if (book.published > 0) {
             bookContentValues.put(Contract.Books.BOOK_PUBLISHED, book.published);
@@ -86,6 +88,18 @@ public final class DatabaseStoreUtils {
         if (book.id > 0) {
             contentResolver.update(Contract.Books.buildBookUri(book.id), bookContentValues, null, null);
             return book.id;
+        } else if (book.firebaseReference != null && !book.firebaseReference.isEmpty()) {
+            int updated = contentResolver.update(Contract.Books.buildBookFirebaseUri(book.firebaseReference), bookContentValues, null, null);
+            if (updated == 0) {
+                Uri bookUri = contentResolver.insert(Contract.Books.CONTENT_URI, bookContentValues);
+                return Contract.Books.getBookId(bookUri);
+            } else {
+                Cursor result = contentResolver.query(Contract.Books.buildBookFirebaseUri(book.firebaseReference), null, null, null, null);
+                result.moveToFirst();
+                long id = result.getLong(result.getColumnIndex(Contract.Books.BOOK_REFERENCE));
+                result.close();
+                return id;
+            }
         } else {
             Uri bookUri = contentResolver.insert(Contract.Books.CONTENT_URI, bookContentValues);
             return Contract.Books.getBookId(bookUri);

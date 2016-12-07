@@ -96,6 +96,7 @@ public final class Contract {
 
     public static final String PATH_BORROW_INFO = "borrow_info";
     public static final String PATH_BORROW_ME_INFO = "borrow_me_info";
+    public static final String PATH_REFERENCE = "ref";
     public static final String PATH_ISBN = "isbn";
 
     public static final String PATH_SPECIAL = "special";
@@ -146,6 +147,13 @@ public final class Contract {
             return CONTENT_URI.buildUpon().appendPath(bookId).build();
         }
 
+        /**
+         * Build {@link Uri} for requested {@link #BOOK_ID}.
+         */
+        public static Uri buildBookFirebaseUri(String firebaseReference) {
+            return CONTENT_URI.buildUpon().appendPath(PATH_REFERENCE).appendPath(firebaseReference).build();
+        }
+
         public static Uri buildBookIsbnUri(String isbn) {
             return CONTENT_URI.buildUpon().appendPath(PATH_ISBN).appendPath(isbn).build();
         }
@@ -171,11 +179,16 @@ public final class Contract {
         public static long getBookId(Uri uri) {
             return Long.parseLong(uri.getPathSegments().get(1));
         }
+
         /**
          * Read {@link #BOOK_ID} from {@link Books} {@link Uri}.
          */
         public static long getBookIsbn(Uri uri) {
             return Long.parseLong(uri.getPathSegments().get(2));
+        }
+
+        public static String getBookReference(Uri uri) {
+            return uri.getPathSegments().get(2);
         }
 
         public static Uri buildBorrowInfoUri(long bookId) {

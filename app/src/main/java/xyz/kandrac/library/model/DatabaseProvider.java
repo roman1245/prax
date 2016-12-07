@@ -35,6 +35,7 @@ public class DatabaseProvider extends ContentProvider {
     public static final int BOOK_BY_PUBLISHER = 103;
     public static final int BOOKS_BY_LIBRARY = 104;
     public static final int BOOKS_BY_ISBN = 105;
+    private static final int BOOKS_BY_REFERENCE = 106;
 
     // Everything from authors (SELECT, INSERT, UPDATE, DELETE)
     public static final int AUTHORS = 200;
@@ -70,6 +71,7 @@ public class DatabaseProvider extends ContentProvider {
         uriMatcher.addURI(authority, "books", BOOKS);
         uriMatcher.addURI(authority, "books/#", BOOK_ID);
         uriMatcher.addURI(authority, "books/isbn/*", BOOKS_BY_ISBN);
+        uriMatcher.addURI(authority, "books/ref/*", BOOKS_BY_REFERENCE);
         uriMatcher.addURI(authority, "books/#/authors", AUTHOR_BY_BOOK);
         uriMatcher.addURI(authority, "books/#/borrow_info", BORROW_INFO_BY_BOOK);
         uriMatcher.addURI(authority, "books/#/borrow_me_info", BORROW_ME_INFO_BY_BOOK);
@@ -115,6 +117,8 @@ public class DatabaseProvider extends ContentProvider {
                 return Contract.Books.CONTENT_ITEM_TYPE;
             case BOOKS_BY_ISBN:
                 return Contract.Books.CONTENT_TYPE;
+            case BOOKS_BY_REFERENCE:
+                return Contract.Books.CONTENT_ITEM_TYPE;
             case AUTHORS:
                 return Contract.Authors.CONTENT_TYPE;
             case AUTHOR_ID:
@@ -170,6 +174,10 @@ public class DatabaseProvider extends ContentProvider {
             case BOOKS_BY_ISBN:
                 qb.setTables(Database.Tables.BOOKS);
                 qb.appendWhere(Contract.Books.BOOK_ISBN + "=" + Contract.Books.getBookIsbn(uri));
+                break;
+            case BOOKS_BY_REFERENCE:
+                qb.setTables(Database.Tables.BOOKS);
+                qb.appendWhere(Contract.Books.BOOK_REFERENCE + "=" + Contract.Books.getBookReference(uri));
                 break;
             case BOOK_BY_AUTHOR:
                 qb.setTables(Database.Tables.BOOKS_JOIN_AUTHORS);
@@ -555,6 +563,11 @@ public class DatabaseProvider extends ContentProvider {
             case BORROW_ME_INFO_ID: {
                 long id = Contract.BorrowMeInfo.getBookId(uri);
                 count = db.update(Database.Tables.BORROW_ME, values, Contract.BorrowMeInfo.BORROW_ID + " = ? ", new String[]{Long.toString(id)});
+                break;
+            }
+            case BOOKS_BY_REFERENCE: {
+                String reference = Contract.Books.getBookReference(uri);
+                count = db.update(Database.Tables.BOOKS, values, Contract.Books.BOOK_REFERENCE + " = ? ", new String[]{reference});
                 break;
             }
             default:
