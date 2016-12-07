@@ -25,12 +25,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
 import xyz.kandrac.library.dialogs.BorrowBookDialog;
 import xyz.kandrac.library.model.Contract;
+import xyz.kandrac.library.model.firebase.References;
 import xyz.kandrac.library.model.obj.Author;
 import xyz.kandrac.library.model.obj.Book;
 import xyz.kandrac.library.model.obj.Borrowed;
@@ -72,6 +75,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     private TabLayout tabs;
 
     private boolean mShowBorrowDialog = false;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +114,8 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().add(R.id.content, mContents[0]).commit();
         }
+
+        mAuth = FirebaseAuth.getInstance();
 
         getSupportLoaderManager().initLoader(BookDetailActivity.LOADER_BOOK, null, this);
         getSupportLoaderManager().initLoader(BookDetailActivity.LOADER_AUTHOR, null, this);
@@ -173,6 +179,14 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                             public void onClick(DialogInterface dialog, int which) {
                                 getContentResolver().delete(Contract.Books.buildBookUri(mBookId), null, null);
                                 NotificationReceiver.cancelNotification(BookDetailActivity.this, mBookId);
+
+                                if (mAuth.getCurrentUser() != null) {
+                                    FirebaseDatabase.getInstance().getReference()
+                                            .child(References.USERS_REFERENCE).child(mAuth.getCurrentUser().getUid())
+                                            .child(References.BOOKS_REFERENCE).child(mBook.firebaseReference)
+                                            .removeValue();
+                                }
+
                                 dialog.dismiss();
                                 finish();
                             }
@@ -239,7 +253,8 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                                 Contract.Books.BOOK_BORROWED_TO_ME,
                                 Contract.Books.BOOK_BORROWED,
                                 Contract.Books.BOOK_PUBLISHED,
-                                Contract.Books.BOOK_IMAGE_FILE
+                                Contract.Books.BOOK_IMAGE_FILE,
+                                Contract.Books.BOOK_REFERENCE
                         },
                         null,
                         null,
@@ -343,6 +358,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                 .setBorrowedToMe(bookCursor.getInt(bookCursor.getColumnIndex(Contract.Books.BOOK_BORROWED_TO_ME)) == 1)
                 .setBorrowed(bookCursor.getInt(bookCursor.getColumnIndex(Contract.Books.BOOK_BORROWED)) == 1)
                 .setImageFilePath(bookCursor.getString(bookCursor.getColumnIndex(Contract.Books.BOOK_IMAGE_FILE)))
+                .setFirebaseReference(bookCursor.getString(bookCursor.getColumnIndex(Contract.Books.BOOK_REFERENCE)))
                 .build();
 
         File imageFile = mBook.imageFilePath == null ? null : new File(mBook.imageFilePath);
