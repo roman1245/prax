@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.internal.NavigationMenu;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +22,9 @@ import xyz.kandrac.library.Searchable;
 import xyz.kandrac.library.flow.importwizard.ImportWizardActivity;
 import xyz.kandrac.library.mviewp.MainActivity;
 import xyz.kandrac.library.utils.BookCursorAdapter;
+
+import static xyz.kandrac.library.R.id.action_import_add;
+import static xyz.kandrac.library.utils.BookCursorAdapter.TRUE;
 
 /**
  * Fragment with list of all books without any pre scripted selection. This fragment also contains
@@ -68,7 +72,7 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
      * @return instance
      */
     public static BookListFragment getBorrowedBooksInstance() {
-        return getInstance(BookCursorAdapter.ANY, BookCursorAdapter.TRUE, BookCursorAdapter.FALSE, false, MainActivity.BORROWED_BOOK_LIST_LOADER);
+        return getInstance(BookCursorAdapter.ANY, TRUE, BookCursorAdapter.FALSE, false, MainActivity.BORROWED_BOOK_LIST_LOADER);
     }
 
     /**
@@ -77,7 +81,7 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
      * @return instance
      */
     public static BookListFragment getBorrowedToMeBooksInstance() {
-        return getInstance(BookCursorAdapter.ANY, BookCursorAdapter.FALSE, BookCursorAdapter.TRUE, true, MainActivity.BORROWED_TO_ME_LIST_LOADER);
+        return getInstance(BookCursorAdapter.ANY, BookCursorAdapter.FALSE, TRUE, true, MainActivity.BORROWED_TO_ME_LIST_LOADER);
     }
 
     /**
@@ -86,7 +90,7 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
      * @return instance
      */
     public static BookListFragment getWishListBooksInstance() {
-        return getInstance(BookCursorAdapter.TRUE, BookCursorAdapter.ANY, BookCursorAdapter.ANY, true, MainActivity.WISH_LIST_BOOK_LIST_LOADER);
+        return getInstance(TRUE, BookCursorAdapter.ANY, BookCursorAdapter.ANY, true, MainActivity.WISH_LIST_BOOK_LIST_LOADER);
     }
 
     /**
@@ -174,11 +178,21 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mFab.setMenuListener(new SimpleMenuListenerAdapter() {
+
+            @Override
+            public boolean onPrepareMenu(NavigationMenu navigationMenu) {
+                if (mWishList == TRUE || mBorrowedToMe == TRUE) {
+                    navigationMenu.findItem(R.id.action_import_add).setVisible(false);
+                    navigationMenu.findItem(R.id.action_bulk_add).setVisible(false);
+                }
+                return super.onPrepareMenu(navigationMenu);
+            }
+
             @Override
             public boolean onMenuItemSelected(MenuItem menuItem) {
                 int id = menuItem.getItemId();
                 switch (id) {
-                    case R.id.action_import_add: {
+                    case action_import_add: {
                         startActivity(new Intent(getActivity(), ImportWizardActivity.class));
                         break;
                     }
