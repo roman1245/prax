@@ -1,15 +1,9 @@
 package xyz.kandrac.library.mviewp;
 
-import android.app.Activity;
 import android.app.Fragment;
-import android.app.LoaderManager;
-import android.app.ProgressDialog;
-import android.content.ContentValues;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
-import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -23,8 +17,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -33,50 +25,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
-import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-import xyz.kandrac.library.BuildConfig;
 import xyz.kandrac.library.InitService;
 import xyz.kandrac.library.LibraryApplication;
 import xyz.kandrac.library.R;
 import xyz.kandrac.library.Searchable;
 import xyz.kandrac.library.billing.BillingSkus;
-import xyz.kandrac.library.billing.util.IABKeyEncoder;
-import xyz.kandrac.library.billing.util.IabException;
-import xyz.kandrac.library.billing.util.IabHelper;
-import xyz.kandrac.library.billing.util.IabResult;
-import xyz.kandrac.library.billing.util.Inventory;
-import xyz.kandrac.library.billing.util.Purchase;
 import xyz.kandrac.library.fragments.SettingsFragment;
 import xyz.kandrac.library.fragments.lists.AuthorBooksListFragment;
 import xyz.kandrac.library.fragments.lists.BookListFragment;
 import xyz.kandrac.library.fragments.lists.LibraryBooksListFragment;
 import xyz.kandrac.library.fragments.lists.PublisherBooksListFragment;
 import xyz.kandrac.library.model.Contract;
-import xyz.kandrac.library.model.firebase.FirebaseBook;
-import xyz.kandrac.library.model.firebase.References;
 import xyz.kandrac.library.mvpresenter.MainPresenter;
-import xyz.kandrac.library.utils.DisplayUtils;
 import xyz.kandrac.library.utils.LogUtils;
 import xyz.kandrac.library.views.DummyDrawerCallback;
 
@@ -86,10 +52,12 @@ import xyz.kandrac.library.views.DummyDrawerCallback;
  *
  * @see NavigationView
  */
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener, GoogleApiClient.OnConnectionFailedListener, MainView {
+public class MainActivity extends AppCompatActivity implements
+        NavigationView.OnNavigationItemSelectedListener,
+        View.OnClickListener,
+        MainView {
 
     public static final long WAIT_FOR_DOUBLE_CLICK_BACK = 3000;
-    private static final String LOG_TAG = MainActivity.class.getName();
 
     // Loader constants. Ensure that fragments are using this constants and not the
     public static final int BOOK_LIST_LOADER = 1;
@@ -100,22 +68,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static final int BORROWED_TO_ME_LIST_LOADER = 6;
     public static final int WISH_LIST_BOOK_LIST_LOADER = 7;
 
-    public static final int WISH_COUNT = 8;
-    public static final int MY_COUNT = 9;
-    public static final int BORROWED_COUNT = 10;
-    public static final int FROM_FRIENDS_COUNT = 11;
-
-    public static final int SYNC_LOADER = 12;
-
-    public static final int PURCHASE_DRIVE_REQUEST = 1241;
-
-    public static final String PREFERENCE_PHOTOS_RESIZED = "photos_resized_preference_2";
     public static final String PREFERENCE_PHOTOS_REMOVED = "photos_removed_preference";
-
-    private static final int RC_SIGN_IN = 115;
-
-    private IabHelper mHelper;
-    private FirebaseAuth mAuth;
 
     private NavigationView navigation;
     private DrawerLayout drawerLayout;
@@ -128,11 +81,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Fragment mShownFragment;
     private SearchView searchView;
     private ActionBar mActionBar;
-    private long mLastFinishingBackClicked;
-    private GoogleApiClient mGoogleApiClient;
-    private boolean driveBought = false;
-
-    private FirebaseAuth.AuthStateListener mAuthListener;
 
     @Inject
     MainPresenter presenter;
@@ -140,8 +88,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme_Base_NoStatusBar);
+
         super.onCreate(savedInstanceState);
         InitService.start(this);
+
         setContentView(R.layout.activity_main);
 
         LibraryApplication.getNetComponent(this).inject(this);
@@ -174,8 +124,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         booksMenuItem.setChecked(true);
         lastChecked = booksMenuItem;
 
-        checkLibrariesPreferences();
-
         // Content settings
         if (savedInstanceState != null) {
             return;
@@ -199,91 +147,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
         removeUnusedPhotosIfNeeded();
-        resizePhotosIfNeeded();
 
-        getLoaderManager().initLoader(WISH_COUNT, null, this);
-        getLoaderManager().initLoader(MY_COUNT, null, this);
-        getLoaderManager().initLoader(BORROWED_COUNT, null, this);
-        getLoaderManager().initLoader(FROM_FRIENDS_COUNT, null, this);
-
-        configureIAB();
-
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(BuildConfig.GOOGLE_TOKEN)
-                .requestEmail()
-                .build();
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
-
-        mAuth = FirebaseAuth.getInstance();
-
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    userName.setText(user.getDisplayName());
-                    userMail.setText(user.getEmail());
-                    Picasso.with(MainActivity.this).load(user.getPhotoUrl()).into(userPhoto);
-                } else {
-                    Log.d(LOG_TAG, "onAuthStateChanged:signed_out");
-                }
-            }
-        };
+        presenter.initNavigationView();
+        presenter.configureSignIn();
+        presenter.configureIAB();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
+        presenter.onStart();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        mAuth.removeAuthStateListener(mAuthListener);
-    }
-
-    /**
-     * In App Billing configuration
-     */
-    private void configureIAB() {
-        String base64EncodedPublicKey = IABKeyEncoder.getKey();
-
-        // compute your public key and store it in base64EncodedPublicKey
-        mHelper = new IabHelper(this, base64EncodedPublicKey);
-        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
-            public void onIabSetupFinished(IabResult result) {
-                if (!result.isSuccess()) {
-                    LogUtils.d(LOG_TAG, "Problem setting up In-app Billing: " + result);
-                }
-                LogUtils.d(LOG_TAG, "IAB is setup - getting info about paid content");
-                setupPaidContent();
-            }
-        });
-    }
-
-    private void setupPaidContent() {
-        try {
-            ArrayList<String> skus = new ArrayList<>();
-            skus.add(BillingSkus.getDriveSku());
-            mHelper.queryInventoryAsync(true, skus, null, new IabHelper.QueryInventoryFinishedListener() {
-                @Override
-                public void onQueryInventoryFinished(IabResult result, Inventory inventory) {
-                    if (result.isFailure()) {
-                        LogUtils.d(LOG_TAG, "error getting inventory: " + result);
-                    } else {
-                        driveBought = inventory.hasPurchase(BillingSkus.getDriveSku());
-                        evaluatePurchases();
-                    }
-                }
-            });
-        } catch (IabHelper.IabAsyncInProgressException e) {
-            e.printStackTrace();
-        }
+        presenter.onStop();
     }
 
     @Override
@@ -295,23 +174,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onDestroy() {
         super.onDestroy();
-
-        LogUtils.d(LOG_TAG, "Destroying helper.");
-        if (mHelper != null) {
-            mHelper.disposeWhenFinished();
-            mHelper = null;
-        }
-    }
-
-    public void checkLibrariesPreferences() {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean enabled = sharedPref.getBoolean(SettingsFragment.KEY_PREF_LIBRARY_ENABLED, true);
-        MenuItem librariesMenuItem = navigation.getMenu().findItem(R.id.main_navigation_libraries);
-        if (enabled) {
-            librariesMenuItem.setVisible(true);
-        } else {
-            librariesMenuItem.setVisible(false);
-        }
+        presenter.onDestroy();
     }
 
     @Override
@@ -337,19 +200,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Toast.makeText(this, BillingSkus.TEST_UNAVAILABLE + " set", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.purchase_consume:
-                // querying inventory on main thread is dangerous, but this is only visible for debug
-                try {
-                    mHelper.consumeAsync(mHelper.queryInventory().getPurchase(BillingSkus.getDriveSku()), new IabHelper.OnConsumeFinishedListener() {
-                        @Override
-                        public void onConsumeFinished(Purchase purchase, IabResult result) {
-                            Toast.makeText(MainActivity.this, "consumed = " + result.isSuccess(), Toast.LENGTH_SHORT).show();
-                            evaluatePurchases();
-                        }
-                    });
-                } catch (IabException | IabHelper.IabAsyncInProgressException ex) {
-                    Toast.makeText(this, "consumed = false", Toast.LENGTH_SHORT).show();
-                    evaluatePurchases();
-                }
+                presenter.consume(BillingSkus.getDriveSku());
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -385,26 +236,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(navigation)) {
-            // close drawer first (do not give focus to search)
-            drawerLayout.closeDrawers();
-        } else if (!searchView.isIconified()) {
-            // close search second
-            searchView.setIconified(true);
-            if (!searchView.isIconified()) {
-                // first iconify
-                searchView.setIconified(true);
-            }
-        } else {
-            // don't close immediately
-            long currentTime = System.currentTimeMillis();
-            if (currentTime > mLastFinishingBackClicked + WAIT_FOR_DOUBLE_CLICK_BACK) {
-                mLastFinishingBackClicked = currentTime;
-                Toast.makeText(this, R.string.press_again_to_leave, Toast.LENGTH_SHORT).show();
-            } else {
-                // take standard action otherwise
-                super.onBackPressed();
-            }
+        if (presenter.evaluateBack(drawerLayout, navigation, searchView)) {
+            super.onBackPressed();
         }
     }
 
@@ -447,21 +280,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 fragmentToShow = new SettingsFragment();
                 break;
             case R.id.main_navigation_drive:
-                try {
-                    mHelper.launchPurchaseFlow(this, BillingSkus.getDriveSku(), PURCHASE_DRIVE_REQUEST, new IabHelper.OnIabPurchaseFinishedListener() {
-                        @Override
-                        public void onIabPurchaseFinished(IabResult result, Purchase info) {
-                            if (result.isFailure() && result.getResponse() != 7) {
-                                LogUtils.d(LOG_TAG, "Error purchasing: " + result);
-                            } else if (info.getSku().equals(BillingSkus.getDriveSku())) {
-                                driveBought = true;
-                                evaluatePurchases();
-                            }
-                        }
-                    });
-                } catch (IabHelper.IabAsyncInProgressException e) {
-                    e.printStackTrace();
-                }
+                presenter.startPurchaseFlow(BillingSkus.getDriveSku());
                 return true;
         }
 
@@ -499,17 +318,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Pass on the activity result to the helper for handling
-        if (mHelper.handleActivityResult(requestCode, resultCode, data)) {
-            LogUtils.d(LOG_TAG, "onActivityResult handled by IABUtil.");
-        } else if (requestCode == RC_SIGN_IN) {
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            if (!result.isSuccess()) {
-                Toast.makeText(this, R.string.sign_in_connection_error, Toast.LENGTH_SHORT).show();
-            } else {
-                firebaseAuthWithGoogle(result.getSignInAccount());
-            }
-        } else {
+        if (!presenter.onActivityResult(requestCode, resultCode,data)) {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
@@ -569,234 +378,85 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         PreferenceManager.getDefaultSharedPreferences(this).edit().putLong(PREFERENCE_PHOTOS_REMOVED, System.currentTimeMillis()).apply();
     }
 
-    /**
-     * If resizing of photos was never invoked before, try to do so now. All images will be resized
-     * to 1024 width with 60% quality. This will keep application size significantly lower.
-     */
-    private void resizePhotosIfNeeded() {
-        PreferenceManager.getDefaultSharedPreferences(this).edit().remove("photos_resized_preference").apply();
-        boolean resized = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(PREFERENCE_PHOTOS_RESIZED, false);
-
-        if (!resized) {
-
-            File imageDirectory = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-
-            if (imageDirectory != null) {
-                File[] files = imageDirectory.listFiles();
-
-                if (files.length > 0) {
-
-                    new AsyncTask<File, Integer, Void>() {
-
-                        ProgressDialog dialog;
-
-                        @Override
-                        protected void onPreExecute() {
-                            super.onPreExecute();
-                            dialog = new ProgressDialog(MainActivity.this);
-                            dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                            dialog.setMessage(getString(R.string.dialog_image_optimization_message));
-                            dialog.setTitle(R.string.dialog_image_optimization_title);
-                            dialog.setProgress(0);
-                            dialog.show();
-                        }
-
-                        @Override
-                        protected Void doInBackground(File... params) {
-                            float part = 100f / params.length;
-                            for (int i = 0; i < params.length; i++) {
-                                DisplayUtils.resizeImageFile(params[i], 1024, 60);
-                                publishProgress((int) (i * part));
-                            }
-                            return null;
-                        }
-
-                        @Override
-                        protected void onPostExecute(Void aVoid) {
-                            super.onPostExecute(aVoid);
-                            dialog.dismiss();
-                        }
-
-                        @Override
-                        protected void onProgressUpdate(Integer... values) {
-                            super.onProgressUpdate(values);
-                            dialog.setProgress(values[0]);
-                        }
-
-                    }.execute(files);
-                }
-            }
-        }
-
-        PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean(PREFERENCE_PHOTOS_RESIZED, true).apply();
-    }
-
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+    public void onClick(View view) {
+        int id = view.getId();
         switch (id) {
-            case WISH_COUNT:
-                return new CursorLoader(this, Contract.Books.CONTENT_URI, new String[]{"count(*) as c"}, Contract.Books.BOOK_WISH_LIST + " = 1", null, null);
-            case MY_COUNT:
-                return new CursorLoader(this, Contract.Books.CONTENT_URI, new String[]{"count(*) as c"},
-                        Contract.Books.BOOK_WISH_LIST + " = 0 AND " +
-                                Contract.Books.BOOK_BORROWED + " = 0 AND " +
-                                Contract.Books.BOOK_BORROWED_TO_ME + " = 0", null, null);
-            case BORROWED_COUNT:
-                return new CursorLoader(this, Contract.Books.CONTENT_URI, new String[]{"count(*) as c"}, Contract.Books.BOOK_BORROWED + " = 1", null, null);
-            case FROM_FRIENDS_COUNT:
-                return new CursorLoader(this, Contract.Books.CONTENT_URI, new String[]{"count(*) as c"}, Contract.Books.BOOK_BORROWED_TO_ME + " = 1", null, null);
-            case SYNC_LOADER:
-                return new CursorLoader(this, Contract.Special.TABLE_URI, null, null, null, null);
+            case R.id.navigation_header:
+                presenter.authenticate();
         }
-        return null;
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        @IdRes int viewId;
-        switch (loader.getId()) {
-            case WISH_COUNT: {
-                viewId = R.id.main_navigation_wish_list;
-                break;
-            }
-            case MY_COUNT: {
-                viewId = R.id.main_navigation_books;
-                break;
-            }
-            case BORROWED_COUNT: {
-                viewId = R.id.main_navigation_borrowed;
-                break;
-            }
-            case FROM_FRIENDS_COUNT: {
-                viewId = R.id.main_navigation_borrowed_to_me;
-                break;
-            }
-            case SYNC_LOADER: {
-
-                // TODO: move to service
-
-                // get user identifier
-                FirebaseAuth auth = FirebaseAuth.getInstance();
-                if (auth == null || auth.getCurrentUser() == null) {
-                    return;
-                }
-                String userUid = auth.getCurrentUser().getUid();
-
-
-                // store parsed data to database
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-                // parse cursor data
-                data.moveToFirst();
-                do {
-                    long id = data.getLong(data.getColumnIndex(Contract.Books.BOOK_ID));
-                    String dbReference = data.getString(data.getColumnIndex(Contract.Books.BOOK_REFERENCE));
-                    String title = data.getString(data.getColumnIndex(Contract.Books.BOOK_TITLE));
-                    String isbn = data.getString(data.getColumnIndex(Contract.Books.BOOK_ISBN));
-                    String description = data.getString(data.getColumnIndex(Contract.Books.BOOK_DESCRIPTION));
-                    String subtitle = data.getString(data.getColumnIndex(Contract.Books.BOOK_SUBTITLE));
-                    String published = data.getString(data.getColumnIndex(Contract.Books.BOOK_PUBLISHED));
-                    String authors = data.getString(data.getColumnIndex(Contract.Authors.AUTHOR_NAME));
-                    String publisher = data.getString(data.getColumnIndex(Contract.Publishers.PUBLISHER_NAME));
-
-                    FirebaseBook result = new FirebaseBook(title, id, isbn, description, subtitle, published, authors, publisher);
-
-                    if (TextUtils.isEmpty(dbReference)) {
-                        DatabaseReference reference = database.getReference()
-                                .child(References.USERS_REFERENCE).child(userUid)
-                                .child(References.BOOKS_REFERENCE).push();
-
-                        dbReference = reference.getKey();
-
-                        reference.setValue(result);
-
-                        ContentValues cv = new ContentValues();
-                        cv.put(Contract.Books.BOOK_REFERENCE, dbReference);
-                        getContentResolver().update(Contract.Books.buildBookUri(id), cv, null, null);
-                    } else {
-                        database.getReference()
-                                .child(References.USERS_REFERENCE).child(userUid)
-                                .child(References.BOOKS_REFERENCE).child(dbReference)
-                                .setValue(result);
-                    }
-                } while (data.moveToNext());
-                return;
-            }
-            default:
-                return;
-        }
-        setActionViewTextFromCursor(viewId, data.moveToFirst() ? data.getString(0) : "0");
+    public AppCompatActivity getActivity() {
+        return this;
     }
 
-    private void setActionViewTextFromCursor(@IdRes int viewId, String show) {
+    // Action view texts based on db results
+
+    @Override
+    public void onWishlistItemsCount(int count) {
+        setActionViewText(R.id.main_navigation_wish_list, Integer.toString(count));
+    }
+
+    @Override
+    public void onMyBooksCount(int count) {
+        setActionViewText(R.id.main_navigation_books, Integer.toString(count));
+    }
+
+    @Override
+    public void onBorrowedBooksCount(int count) {
+        setActionViewText(R.id.main_navigation_borrowed, Integer.toString(count));
+    }
+
+    @Override
+    public void onBooksFromFriendsCount(int count) {
+        setActionViewText(R.id.main_navigation_borrowed_to_me, Integer.toString(count));
+    }
+
+    @Override
+    public void setLibraryItemVisibility(boolean visibility) {
+        MenuItem librariesMenuItem = navigation.getMenu().findItem(R.id.main_navigation_libraries);
+        if (visibility) {
+            librariesMenuItem.setVisible(true);
+        } else {
+            librariesMenuItem.setVisible(false);
+        }
+    }
+
+    @Override
+    public void setDriveVisibility(boolean visible) {
+        navigation.getMenu().findItem(R.id.main_navigation_drive).setVisible(visible);
+    }
+
+    @Override
+    public void showUserDetail(String displayName, String email, Uri photoUrl) {
+        userName.setText(displayName);
+        userMail.setText(email);
+        Picasso.with(MainActivity.this).load(photoUrl).into(userPhoto);
+    }
+
+    @Override
+    public void interact(int type, String message) {
+        switch (type) {
+            case ERROR_TYPE_GOOGLE_API_CONNECTION:
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                break;
+            case ERROR_TYPE_GOOGLE_SIGNIN:
+                Toast.makeText(this, R.string.sign_in_connection_error, Toast.LENGTH_SHORT).show();
+                break;
+            case INFO_PRESS_AGAIN_TO_LEAVE:
+                Toast.makeText(this, R.string.press_again_to_leave, Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    private void setActionViewText(@IdRes int viewId, String show) {
         if (show != null) {
             View actionView = navigation.getMenu().findItem(viewId).getActionView();
             TextView text = (TextView) actionView.findViewById(R.id.action_view);
             text.setText(show);
             text.setVisibility(View.VISIBLE);
         }
-    }
-
-    private void setMenuViewVisibility(@IdRes int menuItemId, boolean visible) {
-        navigation.getMenu().findItem(menuItemId).setVisible(visible);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
-    }
-
-    @Override
-    public void onClick(View view) {
-        int id = view.getId();
-        switch (id) {
-            case R.id.navigation_header:
-                if (mAuth.getCurrentUser() == null) {
-                    Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-                    startActivityForResult(signInIntent, RC_SIGN_IN);
-                }
-        }
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Toast.makeText(this, connectionResult.getErrorMessage(), Toast.LENGTH_SHORT).show();
-    }
-
-    private void evaluatePurchases() {
-        if (!driveBought && mAuth.getCurrentUser() != null) {
-            setMenuViewVisibility(R.id.main_navigation_drive, true);
-        } else {
-            setMenuViewVisibility(R.id.main_navigation_drive, false);
-        }
-
-        if (driveBought && mAuth.getCurrentUser() != null) {
-            LogUtils.d(LOG_TAG, "starting sync");
-            invokeSync();
-        }
-    }
-
-    private void invokeSync() {
-        getLoaderManager().initLoader(SYNC_LOADER, null, this);
-    }
-
-    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-
-        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (!task.isSuccessful()) {
-                            Toast.makeText(MainActivity.this, R.string.sign_in_connection_error, Toast.LENGTH_SHORT).show();
-                        }
-                        evaluatePurchases();
-                    }
-                });
-    }
-
-    @Override
-    public Activity getActivity() {
-        return this;
     }
 }

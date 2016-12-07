@@ -15,11 +15,11 @@ import java.lang.annotation.RetentionPolicy;
 @SuppressWarnings("unused")
 public class SharedPreferencesManager {
 
-    public static final String PREFERENCE_LOGIN_LOGIN = "login";
+    public static final String KEY_PREF_LIBRARY_ENABLED = "library_enabled";
 
     // Define the list of accepted constants and declare the NavigationMode annotation
     @Retention(RetentionPolicy.SOURCE)
-    @StringDef({})
+    @StringDef({KEY_PREF_LIBRARY_ENABLED})
     @interface ApplicationPreferenceKey {
     }
 

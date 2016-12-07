@@ -71,6 +71,7 @@
                     android:id="@+id/main_navigation_drive"
                     android:icon="@drawable/ic_google_drive"
                     android:title="@string/menu_drive"
+                    android:visible="false"
                     app:actionLayout="@layout/navigation_action_layout_buy" />
             </menu>
         </item>
