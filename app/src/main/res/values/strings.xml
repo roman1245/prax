@@ -31,6 +31,11 @@
     <string name="action_cancel">Cancel</string>
     <string name="action_continue">Continue</string>
     <string name="action_select_file">Select file</string>
+
+    <string name="action_add_import">Import from table</string>
+    <string name="action_add_bulk">Bulk insert books</string>
+    <string name="action_add_scan">Scan book barcode</string>
+    <string name="action_add_single">Add single book</string>
     <!-- Placeholders -->
     <string name="author_unknown">Author unknown</string>
     <string name="publisher_unknown">Publisher unknown</string>
@@ -180,9 +185,6 @@
     <string name="preferences_visual_category">Application appearance</string>
     <string name="preferences_visual_conservative_title">Conservative colors</string>
     <string name="preferences_visual_conservative_description">Enable this setting to display simple colors in lists of books, authors, publishers and libraries</string>
-    <string name="preferences_import_export_category">Import, Export and Backup</string>
-    <string name="preferences_import_title">Import data from Excel</string>
-    <string name="preferences_import_description">Click here to import the data in CSV format (further improvements expected later)</string>
     <string-array name="column_names">
         <item>Ignore</item>
         <item>Book title</item>

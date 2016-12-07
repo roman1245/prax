@@ -11,7 +11,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -21,13 +20,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import io.github.yavski.fabspeeddial.FabSpeedDial;
 import xyz.kandrac.library.AuthorDetailActivity;
-import xyz.kandrac.library.mviewp.MainActivity;
 import xyz.kandrac.library.R;
 import xyz.kandrac.library.Searchable;
 import xyz.kandrac.library.fragments.SettingsFragment;
 import xyz.kandrac.library.model.Contract;
 import xyz.kandrac.library.model.obj.Author;
+import xyz.kandrac.library.mviewp.MainActivity;
 
 /**
  * List of authors displayed in this fragment is based on data stored in
@@ -45,15 +45,15 @@ public class AuthorBooksListFragment extends Fragment implements LoaderManager.L
     private String mSearchQuery;
 
     private RecyclerView list;
-    private FloatingActionButton mFab;
+    private FabSpeedDial mFab;
     private TextView mEmpty;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View result = inflater.inflate(R.layout.book_list_fragment, container, false);
+        View result = inflater.inflate(R.layout.list_fragment, container, false);
         list = (RecyclerView) result.findViewById(R.id.list);
-        mFab = (FloatingActionButton) result.findViewById(R.id.fab);
+        mFab = (FabSpeedDial) result.findViewById(R.id.fab_speed_dial);
         mEmpty = (TextView) result.findViewById(R.id.list_empty);
 
         mFab.setVisibility(View.GONE);

@@ -8,14 +8,18 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import io.github.yavski.fabspeeddial.FabSpeedDial;
+import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 import xyz.kandrac.library.EditBookActivity;
-import xyz.kandrac.library.mviewp.MainActivity;
 import xyz.kandrac.library.R;
 import xyz.kandrac.library.Searchable;
+import xyz.kandrac.library.flow.importwizard.ImportWizardActivity;
+import xyz.kandrac.library.mviewp.MainActivity;
 import xyz.kandrac.library.utils.BookCursorAdapter;
 
 /**
@@ -44,7 +48,7 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
     private int mBorrowedToMe;
 
     private RecyclerView list;
-    private FloatingActionButton mFab;
+    private FabSpeedDial mFab;
     private TextView mEmpty;
 
     private BookCursorAdapter adapter;
@@ -142,10 +146,10 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View result = inflater.inflate(R.layout.book_list_fragment, container, false);
+        View result = inflater.inflate(R.layout.list_fragment, container, false);
 
         list = (RecyclerView) result.findViewById(R.id.list);
-        mFab = (FloatingActionButton) result.findViewById(R.id.fab);
+        mFab = (FabSpeedDial) result.findViewById(R.id.fab_speed_dial);
         mEmpty = (TextView) result.findViewById(R.id.list_empty);
 
         list.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -169,13 +173,36 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mFab.setOnClickListener(new View.OnClickListener() {
+        mFab.setMenuListener(new SimpleMenuListenerAdapter() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), EditBookActivity.class);
-                intent.putExtra(EditBookActivity.EXTRA_WISH_LIST, mWishList);
-                intent.putExtra(EditBookActivity.EXTRA_BORROWED_TO_ME, mBorrowedToMe);
-                startActivity(intent);
+            public boolean onMenuItemSelected(MenuItem menuItem) {
+                int id = menuItem.getItemId();
+                switch (id) {
+                    case R.id.action_import_add: {
+                        startActivity(new Intent(getActivity(), ImportWizardActivity.class));
+                        break;
+                    }
+                    case R.id.action_bulk_add: {
+                        // TODO: implement
+                        break;
+                    }
+                    case R.id.action_scan_add: {
+                        Intent intent = new Intent(getActivity(), EditBookActivity.class);
+                        intent.putExtra(EditBookActivity.EXTRA_WISH_LIST, mWishList);
+                        intent.putExtra(EditBookActivity.EXTRA_BORROWED_TO_ME, mBorrowedToMe);
+                        intent.putExtra(EditBookActivity.EXTRA_SCAN, true);
+                        startActivity(intent);
+                        break;
+                    }
+                    case R.id.action_standard_add: {
+                        Intent intent = new Intent(getActivity(), EditBookActivity.class);
+                        intent.putExtra(EditBookActivity.EXTRA_WISH_LIST, mWishList);
+                        intent.putExtra(EditBookActivity.EXTRA_BORROWED_TO_ME, mBorrowedToMe);
+                        startActivity(intent);
+                        break;
+                    }
+                }
+                return false;
             }
         });
     }

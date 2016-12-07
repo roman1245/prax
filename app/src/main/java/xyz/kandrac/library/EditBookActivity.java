@@ -81,6 +81,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     public static final String EXTRA_BOOK_ID = "book_id_extra";
     public static final String EXTRA_WISH_LIST = "wish_list_extra";
     public static final String EXTRA_BORROWED_TO_ME = "borrowed_to_me_extra";
+    public static final String EXTRA_SCAN = "scan_start";
 
     // Save instance state constants
     private static final String SAVE_STATE_FILE_NAME = "save_state_file_name";
@@ -165,11 +166,13 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         }
 
         // handle extras
+        boolean startScan = false;
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             mBookId = extras.getLong(EXTRA_BOOK_ID, 0);
             mToWishList = extras.getInt(EXTRA_WISH_LIST) == BookCursorAdapter.TRUE;
             mBorrowedToMe = extras.getInt(EXTRA_BORROWED_TO_ME) == BookCursorAdapter.TRUE;
+            startScan = extras.getBoolean(EXTRA_SCAN, false);
         } else {
             mBookId = 0L;
             mToWishList = false;
@@ -216,6 +219,10 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         setAdapter(Contract.Publishers.CONTENT_URI, Contract.Publishers.PUBLISHER_NAME, mPublisherEdit);
         setAdapter(Contract.Libraries.CONTENT_URI, Contract.Libraries.LIBRARY_NAME, mLibraryEdit);
         setAdapter(ContactsContract.Contacts.CONTENT_URI, ContactsContract.Contacts.DISPLAY_NAME, mOriginEdit);
+
+        if (startScan) {
+            scan(mScanButton);
+        }
     }
 
     private void requestPickContactPermission() {

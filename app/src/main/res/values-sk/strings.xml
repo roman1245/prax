@@ -32,6 +32,11 @@
     <string name="action_cancel">Zrušiť</string>
     <string name="action_continue">Pokračovať</string>
     <string name="action_select_file">Vyber súbor</string>
+
+    <string name="action_add_import">Import z tabuľky</string>
+    <string name="action_add_bulk">Hromadné vkladanie</string>
+    <string name="action_add_scan">Skenovanie čiarového kódu</string>
+    <string name="action_add_single">Pridať knihu</string>
     <!-- Placeholders -->
     <string name="author_unknown">Neznámy autor</string>
     <string name="publisher_unknown">Neznámy vydavateľ</string>
@@ -181,9 +186,6 @@
     <string name="preferences_visual_category">Vzhľad aplikácie</string>
     <string name="preferences_visual_conservative_title">Konzervatívne farby</string>
     <string name="preferences_visual_conservative_description">Povoľ toto nastavenie pre zobrazenie jednoduchých farieb v zoznamoch kníh, autorov, vydavateľov a knižníc</string>
-    <string name="preferences_import_export_category">Import, Export a Zálohovanie</string>
-    <string name="preferences_import_title">Import údajov z Excelu</string>
-    <string name="preferences_import_description">Klikni sem pre importovanie údajov vo formáte CSV (ďalšie vylepšenia očakávajte neskór)</string>
     <string-array name="column_names">
         <item>Ignorovať</item>
         <item>Názov knihy</item>
