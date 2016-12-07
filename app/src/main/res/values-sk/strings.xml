@@ -8,6 +8,7 @@
     <!-- General errors and messages -->
     <string name="unexpected_error_occurs">Vyskytla sa neočakávaná chyba</string>
     <string name="not_connected_book_info">Chýba pripojenie k internetu. Nemôžem zistiť podrobnosti o knihe</string>
+    <string name="sign_in_connection_error">Nemôžem sa prihlásiť. Overte pripojenie k internetu</string>
     <string name="communication_error">Chyba komunikácie. Nemôžem zistiť podrobnosti o knihe</string>
     <string name="incorrect_date_format">Nesprávny formát dátumu. Skús použiť tlačidlo s kalendárom</string>
     <string name="empty_name">Meno nesmie byť prázdne</string>
@@ -88,6 +89,9 @@
     <string name="borrow_title">Požičanie knihy</string>
     <string name="borrow_message">Komu a na ako dlho chceš požičať túto knihu?</string>
     <!-- Navigation menu items -->
+    <string name="navigation_header_welcome">Vitajte v Knižnici</string>
+    <string name="navigation_header_sign_in">Prihláste sa tu</string>
+
     <string name="menu_books">Knihy</string>
     <string name="menu_books_mine">Moje knihy</string>
     <string name="menu_books_borrowed">Požičané knihy</string>
@@ -96,7 +100,9 @@
     <string name="menu_libraries">Knižnice</string>
     <string name="menu_settings">Nastavenia</string>
     <string name="menu_books_wish_list">Wishlist</string>
+    <string name="menu_drive">Cloud</string>
     <string name="navigation_head">Hlavná navigácia</string>
+    <string name="navigation_buy">KÚPIŤ</string>
     <!-- Dialog Actions -->
     <string name="dialog_book_delete_title">Vymazať knihu</string>
     <string name="dialog_book_delete_message">Naozaj chceš vymazať túto knihu?</string>
@@ -123,6 +129,9 @@
     <string name="edit_book_origin">Požičané od</string>
     <string name="edit_book_barcode_contact_permission">Pre vyhľadávanie v kontaktoch, potrebujeme vaše povolenie</string>
     <string name="edit_book_save_image_error">Chyba pri ukladaní fotografie, skúste to znova</string>
+    <!-- Authentication -->
+    <string name="auth_sign_in">Prihlásiť sa</string>
+    <string name="auth_sign_out">Odhlásiť sa</string>
     <!-- Import Screen -->
     <string name="import_activity_name">Import kníh</string>
     <string name="import_title_assign_columns">Priradenie stĺpcov</string>

@@ -8,33 +8,33 @@
             android:title="@string/menu_books">
             <menu>
                 <item
-                    app:actionLayout="@layout/navigation_action_layout_text"
                     android:id="@+id/main_navigation_books"
                     android:checked="true"
-                    app:showAsAction="ifRoom"
                     android:icon="@drawable/ic_book"
-                    android:title="@string/menu_books_mine" />
+                    android:title="@string/menu_books_mine"
+                    app:actionLayout="@layout/navigation_action_layout_text"
+                    app:showAsAction="ifRoom" />
 
                 <item
-                    app:showAsAction="ifRoom"
-                    app:actionLayout="@layout/navigation_action_layout_text"
                     android:id="@+id/main_navigation_borrowed"
                     android:icon="@drawable/ic_share"
-                    android:title="@string/menu_books_borrowed" />
+                    android:title="@string/menu_books_borrowed"
+                    app:actionLayout="@layout/navigation_action_layout_text"
+                    app:showAsAction="ifRoom" />
 
                 <item
-                    app:showAsAction="ifRoom"
-                    app:actionLayout="@layout/navigation_action_layout_text"
                     android:id="@+id/main_navigation_borrowed_to_me"
                     android:icon="@drawable/ic_borrowed_to_me"
-                    android:title="@string/menu_books_borrowed_to_me" />
+                    android:title="@string/menu_books_borrowed_to_me"
+                    app:actionLayout="@layout/navigation_action_layout_text"
+                    app:showAsAction="ifRoom" />
 
                 <item
-                    app:showAsAction="ifRoom"
-                    app:actionLayout="@layout/navigation_action_layout_text"
                     android:id="@+id/main_navigation_wish_list"
                     android:icon="@drawable/ic_heart_outline"
-                    android:title="@string/menu_books_wish_list" />
+                    android:title="@string/menu_books_wish_list"
+                    app:actionLayout="@layout/navigation_action_layout_text"
+                    app:showAsAction="ifRoom" />
             </menu>
         </item>
 
@@ -67,6 +67,12 @@
                     android:id="@+id/main_navigation_settings"
                     android:icon="@drawable/ic_settings"
                     android:title="@string/menu_settings" />
+                <item
+                    android:id="@+id/main_navigation_drive"
+                    android:icon="@drawable/ic_google_drive"
+                    android:title="@string/menu_drive"
+                    android:visible="false"
+                    app:actionLayout="@layout/navigation_action_layout_buy" />
             </menu>
         </item>
     </group>

@@ -1,17 +1,15 @@
-package xyz.kandrac.library;
+package xyz.kandrac.library.mviewp;
 
 import android.app.Fragment;
-import android.app.LoaderManager;
-import android.app.ProgressDialog;
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -23,18 +21,28 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import java.io.File;
 
+import javax.inject.Inject;
+
+import xyz.kandrac.library.InitService;
+import xyz.kandrac.library.LibraryApplication;
+import xyz.kandrac.library.R;
+import xyz.kandrac.library.Searchable;
+import xyz.kandrac.library.billing.BillingSkus;
 import xyz.kandrac.library.fragments.SettingsFragment;
 import xyz.kandrac.library.fragments.lists.AuthorBooksListFragment;
 import xyz.kandrac.library.fragments.lists.BookListFragment;
 import xyz.kandrac.library.fragments.lists.LibraryBooksListFragment;
 import xyz.kandrac.library.fragments.lists.PublisherBooksListFragment;
 import xyz.kandrac.library.model.Contract;
-import xyz.kandrac.library.utils.DisplayUtils;
+import xyz.kandrac.library.mvpresenter.MainPresenter;
 import xyz.kandrac.library.utils.LogUtils;
 import xyz.kandrac.library.views.DummyDrawerCallback;
 
@@ -44,7 +52,10 @@ import xyz.kandrac.library.views.DummyDrawerCallback;
  *
  * @see NavigationView
  */
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivity extends AppCompatActivity implements
+        NavigationView.OnNavigationItemSelectedListener,
+        View.OnClickListener,
+        MainView {
 
     public static final long WAIT_FOR_DOUBLE_CLICK_BACK = 3000;
 
@@ -57,33 +68,42 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static final int BORROWED_TO_ME_LIST_LOADER = 6;
     public static final int WISH_LIST_BOOK_LIST_LOADER = 7;
 
-    public static final int WISH_COUNT = 8;
-    public static final int MY_COUNT = 9;
-    public static final int BORROWED_COUNT = 10;
-    public static final int FROM_FRIENDS_COUNT = 11;
-
-    public static final String PREFERENCE_PHOTOS_RESIZED = "photos_resized_preference_2";
     public static final String PREFERENCE_PHOTOS_REMOVED = "photos_removed_preference";
 
-    private Toolbar toolbar;
     private NavigationView navigation;
     private DrawerLayout drawerLayout;
+
+    private TextView userName;
+    private TextView userMail;
+    private ImageView userPhoto;
 
     private MenuItem lastChecked;
     private Fragment mShownFragment;
     private SearchView searchView;
     private ActionBar mActionBar;
-    private long mLastFinishingBackClicked;
+
+    @Inject
+    MainPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme_Base_NoStatusBar);
+
         super.onCreate(savedInstanceState);
         InitService.start(this);
+
         setContentView(R.layout.activity_main);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        LibraryApplication.getNetComponent(this).inject(this);
+        presenter.setView(this);
+
+        // get views
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         navigation = (NavigationView) findViewById(R.id.main_navigation);
+        View navigationHeader = navigation.getHeaderView(0);
+        userName = (TextView) navigationHeader.findViewById(R.id.navigation_header_line1);
+        userMail = (TextView) navigationHeader.findViewById(R.id.navigation_header_line2);
+        userPhoto = (ImageView) navigationHeader.findViewById(R.id.navigation_header_profile_image);
         drawerLayout = (DrawerLayout) findViewById(R.id.main_drawer);
 
 
@@ -98,12 +118,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // Navigation View settings
         navigation.setNavigationItemSelectedListener(this);
+        navigationHeader.setOnClickListener(this);
 
         MenuItem booksMenuItem = navigation.getMenu().findItem(R.id.main_navigation_books);
         booksMenuItem.setChecked(true);
         lastChecked = booksMenuItem;
-
-        checkLibrariesPreferences();
 
         // Content settings
         if (savedInstanceState != null) {
@@ -128,12 +147,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
         removeUnusedPhotosIfNeeded();
-        resizePhotosIfNeeded();
 
-        getLoaderManager().initLoader(WISH_COUNT, null, this);
-        getLoaderManager().initLoader(MY_COUNT, null, this);
-        getLoaderManager().initLoader(BORROWED_COUNT, null, this);
-        getLoaderManager().initLoader(FROM_FRIENDS_COUNT, null, this);
+        presenter.initNavigationView();
+        presenter.configureSignIn();
+        presenter.configureIAB();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        presenter.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        presenter.onStop();
     }
 
     @Override
@@ -142,15 +171,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         InitService.start(this, InitService.ACTION_CLEAR_DATABASE);
     }
 
-    public void checkLibrariesPreferences() {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean enabled = sharedPref.getBoolean(SettingsFragment.KEY_PREF_LIBRARY_ENABLED, true);
-        MenuItem librariesMenuItem = navigation.getMenu().findItem(R.id.main_navigation_libraries);
-        if (enabled) {
-            librariesMenuItem.setVisible(true);
-        } else {
-            librariesMenuItem.setVisible(false);
-        }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroy();
     }
 
     @Override
@@ -158,6 +182,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (item.getItemId()) {
             case android.R.id.home:
                 drawerLayout.openDrawer(GravityCompat.START);
+                return true;
+            case R.id.purchase_test_purchased:
+                BillingSkus.getInstance().setDebugAlternative(BillingSkus.TEST_PURCHASED);
+                Toast.makeText(this, BillingSkus.TEST_PURCHASED + " set", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.purchase_test_cancelled:
+                BillingSkus.getInstance().setDebugAlternative(BillingSkus.TEST_CANCELLED);
+                Toast.makeText(this, BillingSkus.TEST_CANCELLED + " set", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.purchase_test_refunded:
+                BillingSkus.getInstance().setDebugAlternative(BillingSkus.TEST_REFUNDED);
+                Toast.makeText(this, BillingSkus.TEST_REFUNDED + " set", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.purchase_test_unavailable:
+                BillingSkus.getInstance().setDebugAlternative(BillingSkus.TEST_UNAVAILABLE);
+                Toast.makeText(this, BillingSkus.TEST_UNAVAILABLE + " set", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.purchase_consume:
+                presenter.consume(BillingSkus.getDriveSku());
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -193,31 +236,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(navigation)) {
-            // close drawer first (do not give focus to search)
-            drawerLayout.closeDrawers();
-        } else if (!searchView.isIconified()) {
-            // close search second
-            searchView.setIconified(true);
-            if (!searchView.isIconified()) {
-                // first iconify
-                searchView.setIconified(true);
-            }
-        } else {
-            // don't close immediately
-            long currentTime = System.currentTimeMillis();
-            if (currentTime > mLastFinishingBackClicked + WAIT_FOR_DOUBLE_CLICK_BACK) {
-                mLastFinishingBackClicked = currentTime;
-                Toast.makeText(this, R.string.press_again_to_leave, Toast.LENGTH_SHORT).show();
-            } else {
-                // take standard action otherwise
-                super.onBackPressed();
-            }
+        if (presenter.evaluateBack(drawerLayout, navigation, searchView)) {
+            super.onBackPressed();
         }
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem menuItem) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
         // if last clicked menu item is same as current, do nothing
         if (lastChecked == menuItem) {
@@ -226,7 +251,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         // Get fragment to show
-        Fragment fragmentToShow = getFragmentToShow(menuItem.getItemId());
+        int menuItemId = menuItem.getItemId();
+        Fragment fragmentToShow = null;
+
+        switch (menuItemId) {
+            case R.id.main_navigation_books:
+                fragmentToShow = BookListFragment.getInstance();
+                break;
+            case R.id.main_navigation_borrowed:
+                fragmentToShow = BookListFragment.getBorrowedBooksInstance();
+                break;
+            case R.id.main_navigation_borrowed_to_me:
+                fragmentToShow = BookListFragment.getBorrowedToMeBooksInstance();
+                break;
+            case R.id.main_navigation_wish_list:
+                fragmentToShow = BookListFragment.getWishListBooksInstance();
+                break;
+            case R.id.main_navigation_authors:
+                fragmentToShow = new AuthorBooksListFragment();
+                break;
+            case R.id.main_navigation_publishers:
+                fragmentToShow = new PublisherBooksListFragment();
+                break;
+            case R.id.main_navigation_libraries:
+                fragmentToShow = new LibraryBooksListFragment();
+                break;
+            case R.id.main_navigation_settings:
+                fragmentToShow = new SettingsFragment();
+                break;
+            case R.id.main_navigation_drive:
+                presenter.startPurchaseFlow(BillingSkus.getDriveSku());
+                return true;
+        }
 
         if (fragmentToShow == null) {
             return false;
@@ -260,32 +316,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    /**
-     * Based on ID of menu item, get new instance of fragment related to it.
-     *
-     * @param menuItemId ID of menu item
-     * @return null if nothing to be shown
-     */
-    private Fragment getFragmentToShow(final int menuItemId) {
-        switch (menuItemId) {
-            case R.id.main_navigation_books:
-                return BookListFragment.getInstance();
-            case R.id.main_navigation_borrowed:
-                return BookListFragment.getBorrowedBooksInstance();
-            case R.id.main_navigation_borrowed_to_me:
-                return BookListFragment.getBorrowedToMeBooksInstance();
-            case R.id.main_navigation_wish_list:
-                return BookListFragment.getWishListBooksInstance();
-            case R.id.main_navigation_authors:
-                return new AuthorBooksListFragment();
-            case R.id.main_navigation_publishers:
-                return new PublisherBooksListFragment();
-            case R.id.main_navigation_libraries:
-                return new LibraryBooksListFragment();
-            case R.id.main_navigation_settings:
-                return new SettingsFragment();
-            default:
-                return null;
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (!presenter.onActivityResult(requestCode, resultCode,data)) {
+            super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -344,120 +378,85 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         PreferenceManager.getDefaultSharedPreferences(this).edit().putLong(PREFERENCE_PHOTOS_REMOVED, System.currentTimeMillis()).apply();
     }
 
-    /**
-     * If resizing of photos was never invoked before, try to do so now. All images will be resized
-     * to 1024 width with 60% quality. This will keep application size significantly lower.
-     */
-    private void resizePhotosIfNeeded() {
-        PreferenceManager.getDefaultSharedPreferences(this).edit().remove("photos_resized_preference").apply();
-        boolean resized = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(PREFERENCE_PHOTOS_RESIZED, false);
-
-        if (!resized) {
-
-            File imageDirectory = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-
-            if (imageDirectory != null) {
-                File[] files = imageDirectory.listFiles();
-
-                if (files.length > 0) {
-
-                    new AsyncTask<File, Integer, Void>() {
-
-                        ProgressDialog dialog;
-
-                        @Override
-                        protected void onPreExecute() {
-                            super.onPreExecute();
-                            dialog = new ProgressDialog(MainActivity.this);
-                            dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                            dialog.setMessage(getString(R.string.dialog_image_optimization_message));
-                            dialog.setTitle(R.string.dialog_image_optimization_title);
-                            dialog.setProgress(0);
-                            dialog.show();
-                        }
-
-                        @Override
-                        protected Void doInBackground(File... params) {
-                            float part = 100f / params.length;
-                            for (int i = 0; i < params.length; i++) {
-                                DisplayUtils.resizeImageFile(params[i], 1024, 60);
-                                publishProgress((int) (i * part));
-                            }
-                            return null;
-                        }
-
-                        @Override
-                        protected void onPostExecute(Void aVoid) {
-                            super.onPostExecute(aVoid);
-                            dialog.dismiss();
-                        }
-
-                        @Override
-                        protected void onProgressUpdate(Integer... values) {
-                            super.onProgressUpdate(values);
-                            dialog.setProgress(values[0]);
-                        }
-
-                    }.execute(files);
-                }
-            }
-        }
-
-        PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean(PREFERENCE_PHOTOS_RESIZED, true).apply();
-    }
-
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+    public void onClick(View view) {
+        int id = view.getId();
         switch (id) {
-            case WISH_COUNT:
-                return new CursorLoader(this, Contract.Books.CONTENT_URI, new String[]{"count(*) as c"}, Contract.Books.BOOK_WISH_LIST + " = 1", null, null);
-            case MY_COUNT:
-                return new CursorLoader(this, Contract.Books.CONTENT_URI, new String[]{"count(*) as c"},
-                        Contract.Books.BOOK_WISH_LIST + " = 0 AND " +
-                                Contract.Books.BOOK_BORROWED + " = 0 AND " +
-                                Contract.Books.BOOK_BORROWED_TO_ME + " = 0", null, null);
-            case BORROWED_COUNT:
-                return new CursorLoader(this, Contract.Books.CONTENT_URI, new String[]{"count(*) as c"}, Contract.Books.BOOK_BORROWED + " = 1", null, null);
-            case FROM_FRIENDS_COUNT:
-                return new CursorLoader(this, Contract.Books.CONTENT_URI, new String[]{"count(*) as c"}, Contract.Books.BOOK_BORROWED_TO_ME + " = 1", null, null);
+            case R.id.navigation_header:
+                presenter.authenticate();
         }
-        return null;
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        switch (loader.getId()) {
-            case WISH_COUNT: {
-                setActionViewTextFromCursor(R.id.main_navigation_wish_list, data);
-                break;
-            }
-            case MY_COUNT: {
-                setActionViewTextFromCursor(R.id.main_navigation_books, data);
-                break;
-            }
-            case BORROWED_COUNT: {
-                setActionViewTextFromCursor(R.id.main_navigation_borrowed, data);
-                break;
-            }
-            case FROM_FRIENDS_COUNT: {
-                setActionViewTextFromCursor(R.id.main_navigation_borrowed_to_me, data);
-                break;
-            }
+    public AppCompatActivity getActivity() {
+        return this;
+    }
+
+    // Action view texts based on db results
+
+    @Override
+    public void onWishlistItemsCount(int count) {
+        setActionViewText(R.id.main_navigation_wish_list, Integer.toString(count));
+    }
+
+    @Override
+    public void onMyBooksCount(int count) {
+        setActionViewText(R.id.main_navigation_books, Integer.toString(count));
+    }
+
+    @Override
+    public void onBorrowedBooksCount(int count) {
+        setActionViewText(R.id.main_navigation_borrowed, Integer.toString(count));
+    }
+
+    @Override
+    public void onBooksFromFriendsCount(int count) {
+        setActionViewText(R.id.main_navigation_borrowed_to_me, Integer.toString(count));
+    }
+
+    @Override
+    public void setLibraryItemVisibility(boolean visibility) {
+        MenuItem librariesMenuItem = navigation.getMenu().findItem(R.id.main_navigation_libraries);
+        if (visibility) {
+            librariesMenuItem.setVisible(true);
+        } else {
+            librariesMenuItem.setVisible(false);
         }
     }
 
-    private void setActionViewTextFromCursor(@IdRes int viewId, Cursor data) {
-        if (data.moveToFirst()) {
-            String count = data.getString(0);
+    @Override
+    public void setDriveVisibility(boolean visible) {
+        navigation.getMenu().findItem(R.id.main_navigation_drive).setVisible(visible);
+    }
+
+    @Override
+    public void showUserDetail(String displayName, String email, Uri photoUrl) {
+        userName.setText(displayName);
+        userMail.setText(email);
+        Picasso.with(MainActivity.this).load(photoUrl).into(userPhoto);
+    }
+
+    @Override
+    public void interact(int type, String message) {
+        switch (type) {
+            case ERROR_TYPE_GOOGLE_API_CONNECTION:
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                break;
+            case ERROR_TYPE_GOOGLE_SIGNIN:
+                Toast.makeText(this, R.string.sign_in_connection_error, Toast.LENGTH_SHORT).show();
+                break;
+            case INFO_PRESS_AGAIN_TO_LEAVE:
+                Toast.makeText(this, R.string.press_again_to_leave, Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    private void setActionViewText(@IdRes int viewId, String show) {
+        if (show != null) {
             View actionView = navigation.getMenu().findItem(viewId).getActionView();
             TextView text = (TextView) actionView.findViewById(R.id.action_view);
-            text.setText(count);
+            text.setText(show);
             text.setVisibility(View.VISIBLE);
         }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
     }
 }

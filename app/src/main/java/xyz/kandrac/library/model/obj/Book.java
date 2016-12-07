@@ -22,6 +22,8 @@ public class Book {
     public final boolean borrowedToMe;
     public final boolean borrowed;
     public final int published;
+    public final long updatedAt;
+    public final String firebaseReference;
 
     public Author[] authors;
     public Publisher publisher;
@@ -42,6 +44,8 @@ public class Book {
         borrowedToMe = builder.borrowedToMe;
         borrowed = builder.borrowed;
         published = builder.published;
+        updatedAt = builder.updatedAt;
+        firebaseReference = builder.firebaseReference;
     }
 
     public ContentValues getContentValues() {
@@ -72,6 +76,8 @@ public class Book {
         private Author[] authors;
         private Library library;
         private int published;
+        private long updatedAt;
+        private String firebaseReference;
 
         public Builder setId(long id) {
             this.id = id;
@@ -149,6 +155,16 @@ public class Book {
             } catch (NumberFormatException ex) {
                 return this;
             }
+            return this;
+        }
+
+        public Builder setUpdatedAt(long timestamp) {
+            this.updatedAt = timestamp;
+            return this;
+        }
+
+        public Builder setFirebaseReference(String firebaseReference) {
+            this.firebaseReference = firebaseReference;
             return this;
         }
 

@@ -37,7 +37,9 @@ public final class Contract {
         String BOOK_BORROWED = "book_borrowed";
         String BOOK_BORROWED_TO_ME = "book_borrowed_to_me";
         String BOOK_WISH_LIST = "book_wish";
+        String BOOK_UPDATED_AT = "book_updated_at";
         String BOOK_PUBLISHED = "book_published";
+        String BOOK_REFERENCE = "book_reference";
     }
 
     interface AuthorsColumns {
@@ -94,7 +96,10 @@ public final class Contract {
 
     public static final String PATH_BORROW_INFO = "borrow_info";
     public static final String PATH_BORROW_ME_INFO = "borrow_me_info";
+    public static final String PATH_REFERENCE = "ref";
     public static final String PATH_ISBN = "isbn";
+
+    public static final String PATH_SPECIAL = "special";
 
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
@@ -117,6 +122,7 @@ public final class Contract {
     public static class Books implements BooksColumns {
 
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_BOOKS).build();
+        public static String FULL_BOOK_ID = Database.Tables.BOOKS + "." + BOOK_ID;
 
         public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.books";
         public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.books";
@@ -132,6 +138,20 @@ public final class Contract {
          */
         public static Uri buildBookUri(long bookId) {
             return CONTENT_URI.buildUpon().appendPath(Long.toString(bookId)).build();
+        }
+
+        /**
+         * Build {@link Uri} for requested {@link #BOOK_ID}.
+         */
+        public static Uri buildBookUri(String bookId) {
+            return CONTENT_URI.buildUpon().appendPath(bookId).build();
+        }
+
+        /**
+         * Build {@link Uri} for requested {@link #BOOK_ID}.
+         */
+        public static Uri buildBookFirebaseUri(String firebaseReference) {
+            return CONTENT_URI.buildUpon().appendPath(PATH_REFERENCE).appendPath(firebaseReference).build();
         }
 
         public static Uri buildBookIsbnUri(String isbn) {
@@ -159,11 +179,16 @@ public final class Contract {
         public static long getBookId(Uri uri) {
             return Long.parseLong(uri.getPathSegments().get(1));
         }
+
         /**
          * Read {@link #BOOK_ID} from {@link Books} {@link Uri}.
          */
         public static long getBookIsbn(Uri uri) {
             return Long.parseLong(uri.getPathSegments().get(2));
+        }
+
+        public static String getBookReference(Uri uri) {
+            return uri.getPathSegments().get(2);
         }
 
         public static Uri buildBorrowInfoUri(long bookId) {
@@ -408,5 +433,14 @@ public final class Contract {
         public static long getBookId(Uri uri) {
             return Long.parseLong(uri.getPathSegments().get(1));
         }
+    }
+
+    public static class Special {
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_SPECIAL).build();
+
+        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.special";
+        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.special";
+
+        public static final Uri TABLE_URI = CONTENT_URI.buildUpon().appendPath("table").build();
     }
 }

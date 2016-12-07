@@ -7,9 +7,12 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
-import xyz.kandrac.library.MainActivity;
 import xyz.kandrac.library.R;
 import xyz.kandrac.library.flow.importwizard.ImportWizardActivity;
+import xyz.kandrac.library.mviewp.MainActivity;
+import xyz.kandrac.library.utils.SharedPreferencesManager;
+
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
 /**
  * Settings displayed based on {@link R.xml#preferences} (preferences.xml) file
@@ -41,7 +44,11 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         if (key.equals(KEY_PREF_LIBRARY_DEFAULT)) {
             setDefaultLibrary();
         } else if (key.equals(KEY_PREF_LIBRARY_ENABLED)) {
-            ((MainActivity) getActivity()).checkLibrariesPreferences();
+            boolean enable = PreferenceManager
+                    .getDefaultSharedPreferences(getActivity())
+                    .getBoolean(SharedPreferencesManager.KEY_PREF_LIBRARY_ENABLED, true);
+
+            ((MainActivity) getActivity()).setLibraryItemVisibility(enable);
         }
     }
 
@@ -60,7 +67,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     }
 
     private void setDefaultLibrary() {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        SharedPreferences sharedPref = getDefaultSharedPreferences(getActivity());
         String defaultLibraryName = sharedPref.getString(SettingsFragment.KEY_PREF_LIBRARY_DEFAULT, "");
 
         Preference defaultLibraryPreference = findPreference(KEY_PREF_LIBRARY_DEFAULT);

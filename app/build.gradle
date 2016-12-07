@@ -1,22 +1,27 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion '24.0.2'
+    compileSdkVersion rootProject.compileSdkVersion
+    buildToolsVersion rootProject.buildToolsVersion
 
     defaultConfig {
         applicationId "xyz.kandrac.library"
         testApplicationId "kandrac.xyz.library.test"
-        minSdkVersion 16
-        targetSdkVersion 24
+        minSdkVersion rootProject.minSdkVersion
+        targetSdkVersion rootProject.targetSdkVersion
         versionCode 24
         versionName "1.2.4"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         // Database authorities definitions
         buildConfigField 'String', 'DATABASE_AUTHORITY', '"xyz.kandrac.library"'
         buildConfigField 'String', 'FILE_PROVIDER_AUTHORITY', '"xyz.kandrac.library.files"'
         buildConfigField 'String', 'GOOGLE_BOOKS_API_URL', '"https://www.googleapis.com"'
         buildConfigField 'String', 'LIBRARY_API_URL', '"http://kandrac.xyz"'
+        buildConfigField 'String', 'APP_PUBLIC_KEY', '""'
+        buildConfigField 'String', 'GOOGLE_TOKEN', '"958496077479-k98j56dm8cm42ltmrtvl7n452g73f6l5.apps.googleusercontent.com"';
 
         vectorDrawables.useSupportLibrary = true
         manifestPlaceholders = [databaseAuthority    : "xyz.kandrac.library",
@@ -45,6 +50,7 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
+            buildConfigField 'String', 'GOOGLE_SIGN_TOKEN', '"958496077479-j3e710esiqdgpfocf26pj257iev8tbe8.apps.googleusercontent.com"'
             buildConfigField 'String', 'GOOGLE_API_KEY', '"AIzaSyB856kGT7z6lYo_99pikNEGs1jFaCCltxs"'
         }
 
@@ -52,6 +58,7 @@ android {
             applicationIdSuffix '.debug'
 
             // Database authorities definitions
+            buildConfigField 'String', 'GOOGLE_SIGN_TOKEN', '"958496077479-99fu3itr0squ1oplpivqqbahl7544uv0.apps.googleusercontent.com"'
             buildConfigField 'String', 'DATABASE_AUTHORITY', '"xyz.kandrac.library.debug"'
             buildConfigField 'String', 'GOOGLE_API_KEY', '"AIzaSyBhGenifD9XgRW8q-rzEKyo3KlplHAf8J8"'
             buildConfigField 'String', 'FILE_PROVIDER_AUTHORITY', '"xyz.kandrac.library.files.debug"'
@@ -69,10 +76,13 @@ android {
             applicationIdSuffix ".free"
         }
     }
-}
 
-ext {
-    supportLibVersion = '24.2.0'
+    // Always show the result of every unit test, even if it passes.
+    testOptions.unitTests.all {
+        testLogging {
+            events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
+        }
+    }
 }
 
 repositories {
@@ -86,16 +96,51 @@ dependencies {
     compile project(':barcode')
 
     // compat libraries
-    compile "com.android.support:appcompat-v7:${supportLibVersion}"
-    compile "com.android.support:design:${supportLibVersion}"
-    compile "com.android.support:recyclerview-v7:${supportLibVersion}"
-    compile "com.android.support:cardview-v7:${supportLibVersion}"
-    compile "com.android.support:design:${supportLibVersion}"
-    compile "com.android.support:gridlayout-v7:${supportLibVersion}"
+    compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
+    compile "com.android.support:design:$rootProject.supportLibraryVersion"
+    compile "com.android.support:recyclerview-v7:$rootProject.supportLibraryVersion"
+    compile "com.android.support:cardview-v7:$rootProject.supportLibraryVersion"
+    compile "com.android.support:gridlayout-v7:$rootProject.supportLibraryVersion"
 
     // helper libraries
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.squareup.okhttp3:logging-interceptor:3.3.1'
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+
+    // gms and fire-base
+    compile "com.google.android.gms:play-services:$rootProject.playServicesVersion"
+    compile "com.google.firebase:firebase-database:$rootProject.firebaseVersion"
+    compile "com.google.firebase:firebase-auth:$rootProject.firebaseVersion"
+
+    compile "com.android.support.test.espresso:espresso-idling-resource:$rootProject.espressoVersion"
+
+    // Dagger dependencies
+    apt "com.google.dagger:dagger-compiler:$rootProject.daggerVersion"
+    compile "com.google.dagger:dagger:$rootProject.daggerVersion"
+
+    // Dependencies for local unit tests
+    testCompile "junit:junit:$rootProject.ext.junitVersion"
+
+    // Android Testing Support Library's runner and rules
+    androidTestCompile "com.android.support.test:runner:$rootProject.ext.runnerVersion"
+    androidTestCompile "com.android.support.test:rules:$rootProject.ext.runnerVersion"
+
+    // Dependencies for Android unit tests
+    androidTestCompile "junit:junit:$rootProject.ext.junitVersion"
+
+    // Espresso UI Testing
+    androidTestCompile "com.android.support.test.espresso:espresso-core:$rootProject.espressoVersion"
+    androidTestCompile "com.android.support.test.espresso:espresso-contrib:$rootProject.espressoVersion"
+    androidTestCompile "com.android.support.test.espresso:espresso-intents:$rootProject.espressoVersion"
+
+    // Resolve conflicts between main and test APK:
+    androidTestCompile "com.android.support:support-annotations:$rootProject.supportLibraryVersion"
+    androidTestCompile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
+    androidTestCompile "com.android.support:design:$rootProject.supportLibraryVersion"
+
+    androidTestCompile 'com.google.dexmaker:dexmaker:1.2'
+    provided 'org.glassfish:javax.annotation:10.0-b28'
 }
+
+apply plugin: 'com.google.gms.google-services'

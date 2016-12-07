@@ -35,6 +35,7 @@ public class DatabaseProvider extends ContentProvider {
     public static final int BOOK_BY_PUBLISHER = 103;
     public static final int BOOKS_BY_LIBRARY = 104;
     public static final int BOOKS_BY_ISBN = 105;
+    private static final int BOOKS_BY_REFERENCE = 106;
 
     // Everything from authors (SELECT, INSERT, UPDATE, DELETE)
     public static final int AUTHORS = 200;
@@ -61,6 +62,8 @@ public class DatabaseProvider extends ContentProvider {
     public static final int LIBRARY_ID = 601;
     public static final int LIBRARY_BY_BOOK = 602;
 
+    public static final int SPECIAL_TABLE = 700;
+
     private static UriMatcher buildUriMatcher() {
         final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = Contract.CONTENT_AUTHORITY;
@@ -68,6 +71,7 @@ public class DatabaseProvider extends ContentProvider {
         uriMatcher.addURI(authority, "books", BOOKS);
         uriMatcher.addURI(authority, "books/#", BOOK_ID);
         uriMatcher.addURI(authority, "books/isbn/*", BOOKS_BY_ISBN);
+        uriMatcher.addURI(authority, "books/ref/*", BOOKS_BY_REFERENCE);
         uriMatcher.addURI(authority, "books/#/authors", AUTHOR_BY_BOOK);
         uriMatcher.addURI(authority, "books/#/borrow_info", BORROW_INFO_BY_BOOK);
         uriMatcher.addURI(authority, "books/#/borrow_me_info", BORROW_ME_INFO_BY_BOOK);
@@ -77,6 +81,7 @@ public class DatabaseProvider extends ContentProvider {
         uriMatcher.addURI(authority, "authors", AUTHORS);
         uriMatcher.addURI(authority, "authors/#", AUTHOR_ID);
         uriMatcher.addURI(authority, "authors/#/books", BOOK_BY_AUTHOR);
+
         uriMatcher.addURI(authority, "publishers", PUBLISHERS);
         uriMatcher.addURI(authority, "publishers/#", PUBLISHER_ID);
         uriMatcher.addURI(authority, "publishers/#/books", BOOK_BY_PUBLISHER);
@@ -91,6 +96,8 @@ public class DatabaseProvider extends ContentProvider {
         uriMatcher.addURI(authority, "libraries", LIBRARIES);
         uriMatcher.addURI(authority, "libraries/#", LIBRARY_ID);
         uriMatcher.addURI(authority, "libraries/#/books", BOOKS_BY_LIBRARY);
+
+        uriMatcher.addURI(authority, "special/table", SPECIAL_TABLE);
         return uriMatcher;
     }
 
@@ -110,6 +117,8 @@ public class DatabaseProvider extends ContentProvider {
                 return Contract.Books.CONTENT_ITEM_TYPE;
             case BOOKS_BY_ISBN:
                 return Contract.Books.CONTENT_TYPE;
+            case BOOKS_BY_REFERENCE:
+                return Contract.Books.CONTENT_ITEM_TYPE;
             case AUTHORS:
                 return Contract.Authors.CONTENT_TYPE;
             case AUTHOR_ID:
@@ -140,6 +149,8 @@ public class DatabaseProvider extends ContentProvider {
                 return Contract.Books.CONTENT_TYPE;
             case LIBRARY_BY_BOOK:
                 return Contract.Libraries.CONTENT_ITEM_TYPE;
+            case SPECIAL_TABLE:
+                return Contract.Special.CONTENT_TYPE;
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
@@ -163,6 +174,10 @@ public class DatabaseProvider extends ContentProvider {
             case BOOKS_BY_ISBN:
                 qb.setTables(Database.Tables.BOOKS);
                 qb.appendWhere(Contract.Books.BOOK_ISBN + "=" + Contract.Books.getBookIsbn(uri));
+                break;
+            case BOOKS_BY_REFERENCE:
+                qb.setTables(Database.Tables.BOOKS);
+                qb.appendWhere(Contract.Books.BOOK_REFERENCE + "=" + Contract.Books.getBookReference(uri));
                 break;
             case BOOK_BY_AUTHOR:
                 qb.setTables(Database.Tables.BOOKS_JOIN_AUTHORS);
@@ -238,6 +253,22 @@ public class DatabaseProvider extends ContentProvider {
                 qb.setTables(Database.Tables.BOOKS_JOIN_LIBRARIES);
                 qb.appendWhere(Database.Tables.BOOKS + "." + Contract.Books.BOOK_ID + "=" + Contract.Books.getBookId(uri));
                 sortOrder = sortOrder == null ? Contract.Libraries.DEFAULT_SORT : sortOrder;
+                break;
+            case SPECIAL_TABLE:
+                projection = new String[]{
+                        Contract.Books.FULL_BOOK_ID,
+                        Contract.Books.BOOK_REFERENCE,
+                        Contract.Books.BOOK_TITLE,
+                        Contract.Books.BOOK_ISBN,
+                        Contract.Books.BOOK_DESCRIPTION,
+                        Contract.Books.BOOK_PUBLISHED,
+                        Contract.Books.BOOK_SUBTITLE,
+                        Contract.Books.BOOK_UPDATED_AT,
+                        "group_concat(" + Contract.Authors.AUTHOR_NAME + ", \",\") AS " + Contract.Authors.AUTHOR_NAME,
+                        Contract.Publishers.PUBLISHER_NAME};
+
+                group = Contract.Books.FULL_BOOK_ID;
+                qb.setTables(Database.Tables.BOOKS_JOIN_AUTHORS + " " + Database.Tables.JOIN_PUBLISHERS);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
@@ -387,7 +418,7 @@ public class DatabaseProvider extends ContentProvider {
     private long selectId(SQLiteDatabase db, ContentValues values, String table, String uniqueColumn) {
         String selectStatement = "SELECT " + BaseColumns._ID +
                 " FROM " + table +
-                " WHERE " + uniqueColumn + " = '" + values.getAsString(uniqueColumn).replace("'","''") + "'";
+                " WHERE " + uniqueColumn + " = '" + values.getAsString(uniqueColumn).replace("'", "''") + "'";
 
         LogUtils.d(LOG_TAG, selectStatement);
 
@@ -532,6 +563,11 @@ public class DatabaseProvider extends ContentProvider {
             case BORROW_ME_INFO_ID: {
                 long id = Contract.BorrowMeInfo.getBookId(uri);
                 count = db.update(Database.Tables.BORROW_ME, values, Contract.BorrowMeInfo.BORROW_ID + " = ? ", new String[]{Long.toString(id)});
+                break;
+            }
+            case BOOKS_BY_REFERENCE: {
+                String reference = Contract.Books.getBookReference(uri);
+                count = db.update(Database.Tables.BOOKS, values, Contract.Books.BOOK_REFERENCE + " = ? ", new String[]{reference});
                 break;
             }
             default:
