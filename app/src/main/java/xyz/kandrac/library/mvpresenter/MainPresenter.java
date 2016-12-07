@@ -27,8 +27,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import javax.inject.Inject;
 
@@ -162,6 +165,8 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
             case FROM_FRIENDS_COUNT:
                 return new CursorLoader(view.getActivity(), Contract.Books.CONTENT_URI, new String[]{"count(*) as c"}, Contract.Books.BOOK_BORROWED_TO_ME + " = 1", null, null);
             case SYNC_LOADER:
+                // TODO add proper check for syncing (updatedAt >= last update)
+                // new String[]{Long.toString(manager.getLongPreference(SharedPreferencesManager.KEY_PREF_LAST_CLOUD_SYNC))}
                 return new CursorLoader(view.getActivity(), Contract.Special.TABLE_URI, null, null, null, null);
         }
         return null;
@@ -185,58 +190,84 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
                 break;
             case SYNC_LOADER: {
 
-                // TODO: move to service
-
                 // get user identifier
-                FirebaseAuth auth = FirebaseAuth.getInstance();
-                if (auth == null || auth.getCurrentUser() == null) {
+                if (mAuth.getCurrentUser() == null) {
                     return;
                 }
-                String userUid = auth.getCurrentUser().getUid();
 
-
-                // store parsed data to database
+                String userUid = mAuth.getCurrentUser().getUid();
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-                // parse cursor data
-                if (!data.moveToFirst()) {
-                    break;
-                }
-                do {
-                    long id = data.getLong(data.getColumnIndex(Contract.Books.BOOK_ID));
-                    String dbReference = data.getString(data.getColumnIndex(Contract.Books.BOOK_REFERENCE));
-                    String title = data.getString(data.getColumnIndex(Contract.Books.BOOK_TITLE));
-                    String isbn = data.getString(data.getColumnIndex(Contract.Books.BOOK_ISBN));
-                    String description = data.getString(data.getColumnIndex(Contract.Books.BOOK_DESCRIPTION));
-                    String subtitle = data.getString(data.getColumnIndex(Contract.Books.BOOK_SUBTITLE));
-                    String published = data.getString(data.getColumnIndex(Contract.Books.BOOK_PUBLISHED));
-                    String authors = data.getString(data.getColumnIndex(Contract.Authors.AUTHOR_NAME));
-                    String publisher = data.getString(data.getColumnIndex(Contract.Publishers.PUBLISHER_NAME));
+                storeToCloud(data, database, userUid);
+                storeFromCloud(database, userUid);
 
-                    FirebaseBook result = new FirebaseBook(title, id, isbn, description, subtitle, published, authors, publisher);
+                manager.editPreference(SharedPreferencesManager.KEY_PREF_LAST_CLOUD_SYNC, System.currentTimeMillis());
 
-                    if (TextUtils.isEmpty(dbReference)) {
-                        DatabaseReference reference = database.getReference()
-                                .child(References.USERS_REFERENCE).child(userUid)
-                                .child(References.BOOKS_REFERENCE).push();
-
-                        dbReference = reference.getKey();
-
-                        reference.setValue(result);
-
-                        ContentValues cv = new ContentValues();
-                        cv.put(Contract.Books.BOOK_REFERENCE, dbReference);
-                        view.getActivity().getContentResolver().update(Contract.Books.buildBookUri(id), cv, null, null);
-                    } else {
-                        database.getReference()
-                                .child(References.USERS_REFERENCE).child(userUid)
-                                .child(References.BOOKS_REFERENCE).child(dbReference)
-                                .setValue(result);
-                    }
-                } while (data.moveToNext());
                 break;
             }
         }
+    }
+
+    // TODO: store to database, request only new items, paginate properly
+    private void storeFromCloud(FirebaseDatabase database, String userUid) {
+        database.getReference()
+                .child(References.USERS_REFERENCE).child(userUid)
+                .child(References.BOOKS_REFERENCE).orderByChild("id")
+                .limitToFirst(50).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot book : dataSnapshot.getChildren()) {
+                    long i = (long) book.child("id").getValue();
+                    String title = (String) book.child("title").getValue();
+                    Log.d("janko", "parsed value = " + i + " for " + title);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void storeToCloud(Cursor data, FirebaseDatabase database, String userUid) {
+
+        // parse cursor data
+        if (!data.moveToFirst()) {
+            return;
+        }
+        do {
+            long id = data.getLong(data.getColumnIndex(Contract.Books.BOOK_ID));
+            String dbReference = data.getString(data.getColumnIndex(Contract.Books.BOOK_REFERENCE));
+            String title = data.getString(data.getColumnIndex(Contract.Books.BOOK_TITLE));
+            String isbn = data.getString(data.getColumnIndex(Contract.Books.BOOK_ISBN));
+            String description = data.getString(data.getColumnIndex(Contract.Books.BOOK_DESCRIPTION));
+            String subtitle = data.getString(data.getColumnIndex(Contract.Books.BOOK_SUBTITLE));
+            String published = data.getString(data.getColumnIndex(Contract.Books.BOOK_PUBLISHED));
+            String authors = data.getString(data.getColumnIndex(Contract.Authors.AUTHOR_NAME));
+            String publisher = data.getString(data.getColumnIndex(Contract.Publishers.PUBLISHER_NAME));
+
+            FirebaseBook result = new FirebaseBook(title, id, isbn, description, subtitle, published, authors, publisher);
+
+            if (TextUtils.isEmpty(dbReference)) {
+                DatabaseReference reference = database.getReference()
+                        .child(References.USERS_REFERENCE).child(userUid)
+                        .child(References.BOOKS_REFERENCE).push();
+
+                dbReference = reference.getKey();
+
+                reference.setValue(result);
+
+                ContentValues cv = new ContentValues();
+                cv.put(Contract.Books.BOOK_REFERENCE, dbReference);
+                view.getActivity().getContentResolver().update(Contract.Books.buildBookUri(id), cv, null, null);
+            } else {
+                database.getReference()
+                        .child(References.USERS_REFERENCE).child(userUid)
+                        .child(References.BOOKS_REFERENCE).child(dbReference)
+                        .setValue(result);
+            }
+        } while (data.moveToNext());
     }
 
     @Override

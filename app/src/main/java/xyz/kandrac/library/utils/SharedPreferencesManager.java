@@ -16,10 +16,11 @@ import java.lang.annotation.RetentionPolicy;
 public class SharedPreferencesManager {
 
     public static final String KEY_PREF_LIBRARY_ENABLED = "library_enabled";
+    public static final String KEY_PREF_LAST_CLOUD_SYNC = "last_cloud_sync";
 
     // Define the list of accepted constants and declare the NavigationMode annotation
     @Retention(RetentionPolicy.SOURCE)
-    @StringDef({KEY_PREF_LIBRARY_ENABLED})
+    @StringDef({KEY_PREF_LIBRARY_ENABLED, KEY_PREF_LAST_CLOUD_SYNC})
     @interface ApplicationPreferenceKey {
     }
 
@@ -59,5 +60,9 @@ public class SharedPreferencesManager {
 
     public String getStringPreference(@ApplicationPreferenceKey String preferenceKey) {
         return mPreferences.getString(preferenceKey, null);
+    }
+
+    public long getLongPreference(@ApplicationPreferenceKey String preferenceKey) {
+        return mPreferences.getLong(preferenceKey, 0L);
     }
 }
