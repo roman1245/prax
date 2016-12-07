@@ -183,8 +183,8 @@ public final class Contract {
         /**
          * Read {@link #BOOK_ID} from {@link Books} {@link Uri}.
          */
-        public static long getBookIsbn(Uri uri) {
-            return Long.parseLong(uri.getPathSegments().get(2));
+        public static String getBookIsbn(Uri uri) {
+            return uri.getPathSegments().get(2);
         }
 
         public static String getBookReference(Uri uri) {

@@ -169,19 +169,23 @@ public class DatabaseProvider extends ContentProvider {
                 break;
             case BOOK_ID:
                 qb.setTables(Database.Tables.BOOKS);
-                qb.appendWhere(Contract.Books.BOOK_ID + "=" + Contract.Books.getBookId(uri));
+                selection = Contract.Books.BOOK_ID + "=?";
+                selectionArgs = new String[]{Long.toString(Contract.Books.getBookId(uri))};
                 break;
             case BOOKS_BY_ISBN:
                 qb.setTables(Database.Tables.BOOKS);
-                qb.appendWhere(Contract.Books.BOOK_ISBN + "=" + Contract.Books.getBookIsbn(uri));
+                selection = Contract.Books.BOOK_ISBN + "=?";
+                selectionArgs = new String[]{Contract.Books.getBookIsbn(uri)};
                 break;
             case BOOKS_BY_REFERENCE:
                 qb.setTables(Database.Tables.BOOKS);
-                qb.appendWhere(Contract.Books.BOOK_REFERENCE + "=" + Contract.Books.getBookReference(uri));
+                selection = Contract.Books.BOOK_REFERENCE + "=?";
+                selectionArgs = new String[]{Contract.Books.getBookReference(uri)};
                 break;
             case BOOK_BY_AUTHOR:
                 qb.setTables(Database.Tables.BOOKS_JOIN_AUTHORS);
-                qb.appendWhere(Database.Tables.AUTHORS + "." + Contract.Authors.AUTHOR_ID + "=" + Contract.Authors.getAuthorId(uri));
+                selection = Database.Tables.AUTHORS + "." + Contract.Authors.AUTHOR_ID + "=?";
+                selectionArgs = new String[]{Long.toString(Contract.Authors.getAuthorId(uri))};
                 break;
             case AUTHORS:
                 qb.setTables(Database.Tables.AUTHORS);
@@ -189,11 +193,13 @@ public class DatabaseProvider extends ContentProvider {
                 break;
             case AUTHOR_ID:
                 qb.setTables(Database.Tables.AUTHORS);
-                qb.appendWhere(Contract.Authors.AUTHOR_ID + "=" + Contract.Authors.getAuthorId(uri));
+                selection = Contract.Authors.AUTHOR_ID + "=?";
+                selectionArgs = new String[]{Long.toString(Contract.Authors.getAuthorId(uri))};
                 break;
             case AUTHOR_BY_BOOK:
                 qb.setTables(Database.Tables.BOOKS_JOIN_AUTHORS);
-                qb.appendWhere(Database.Tables.BOOKS + "." + Contract.Books.BOOK_ID + "=" + Contract.Books.getBookId(uri));
+                selection = Database.Tables.BOOKS + "." + Contract.Books.BOOK_ID + "=?";
+                selectionArgs = new String[]{Long.toString(Contract.Books.getBookId(uri))};
                 break;
             case PUBLISHERS:
                 qb.setTables(Database.Tables.PUBLISHERS);
@@ -201,12 +207,14 @@ public class DatabaseProvider extends ContentProvider {
                 break;
             case PUBLISHER_BY_BOOK:
                 qb.setTables(Database.Tables.BOOKS_JOIN_PUBLISHERS);
-                qb.appendWhere(Database.Tables.BOOKS + "." + Contract.Books.BOOK_ID + "=" + Contract.Books.getBookId(uri));
+                selection = Database.Tables.BOOKS + "." + Contract.Books.BOOK_ID + "=?";
+                selectionArgs = new String[]{Long.toString(Contract.Books.getBookId(uri))};
                 sortOrder = sortOrder == null ? Contract.Publishers.DEFAULT_SORT : sortOrder;
                 break;
             case PUBLISHER_ID:
                 qb.setTables(Database.Tables.PUBLISHERS);
-                qb.appendWhere(Contract.Publishers.PUBLISHER_ID + "=" + Contract.Publishers.getPublisherId(uri));
+                selection = Contract.Publishers.PUBLISHER_ID + "=?";
+                selectionArgs = new String[]{Long.toString(Contract.Publishers.getPublisherId(uri))};
                 break;
             case BOOKS_AUTHORS:
                 qb.setTables(Database.Tables.BOOKS_JOIN_AUTHORS);
@@ -216,7 +224,8 @@ public class DatabaseProvider extends ContentProvider {
                 break;
             case BOOK_BY_PUBLISHER:
                 qb.setTables(Database.Tables.BOOKS_JOIN_PUBLISHERS);
-                qb.appendWhere(Database.Tables.PUBLISHERS + "." + Contract.Publishers.PUBLISHER_ID + "=" + Contract.Publishers.getPublisherId(uri));
+                selection = Database.Tables.PUBLISHERS + "." + Contract.Publishers.PUBLISHER_ID + "=?";
+                selectionArgs = new String[]{Long.toString(Contract.Publishers.getPublisherId(uri))};
                 break;
             case BORROW_INFO:
                 qb.setTables(Database.Tables.BORROW_INFO);
@@ -224,12 +233,14 @@ public class DatabaseProvider extends ContentProvider {
                 break;
             case BORROW_INFO_BY_BOOK:
                 qb.setTables(Database.Tables.BORROW_INFO);
-                qb.appendWhere(Contract.BorrowInfo.BORROW_BOOK_ID + "=" + Contract.BorrowInfo.getBookId(uri));
+                selection = Contract.BorrowInfo.BORROW_BOOK_ID + "=?";
+                selectionArgs = new String[]{Long.toString(Contract.BorrowInfo.getBookId(uri))};
                 sortOrder = sortOrder == null ? Contract.BorrowInfo.DEFAULT_SORT : sortOrder;
                 break;
             case BORROW_ME_INFO_BY_BOOK:
                 qb.setTables(Database.Tables.BORROW_ME);
-                qb.appendWhere(Contract.BorrowMeInfo.BORROW_BOOK_ID + "=" + Contract.BorrowMeInfo.getBookId(uri));
+                selection = Contract.BorrowMeInfo.BORROW_BOOK_ID + "=?";
+                selectionArgs = new String[]{Long.toString(Contract.BorrowMeInfo.getBookId(uri))};
                 sortOrder = sortOrder == null ? Contract.BorrowMeInfo.DEFAULT_SORT : sortOrder;
                 break;
             case BOOKS_BORROW:
@@ -243,15 +254,18 @@ public class DatabaseProvider extends ContentProvider {
                 break;
             case LIBRARY_ID:
                 qb.setTables(Database.Tables.LIBRARIES);
-                qb.appendWhere(Contract.Libraries.LIBRARY_ID + "=" + Contract.Libraries.getLibraryId(uri));
+                selection = Contract.Libraries.LIBRARY_ID + "=?";
+                selectionArgs = new String[]{Long.toString(Contract.Libraries.getLibraryId(uri))};
                 break;
             case BOOKS_BY_LIBRARY:
                 qb.setTables(Database.Tables.BOOKS_JOIN_LIBRARIES);
-                qb.appendWhere(Database.Tables.LIBRARIES + "." + Contract.Libraries.LIBRARY_ID + "=" + Contract.Libraries.getLibraryId(uri));
+                selection = Database.Tables.LIBRARIES + "." + Contract.Libraries.LIBRARY_ID + "=?";
+                selectionArgs = new String[]{Long.toString(Contract.Libraries.getLibraryId(uri))};
                 break;
             case LIBRARY_BY_BOOK:
                 qb.setTables(Database.Tables.BOOKS_JOIN_LIBRARIES);
-                qb.appendWhere(Database.Tables.BOOKS + "." + Contract.Books.BOOK_ID + "=" + Contract.Books.getBookId(uri));
+                selection = Database.Tables.BOOKS + "." + Contract.Books.BOOK_ID + "=?";
+                selectionArgs = new String[]{Long.toString(Contract.Books.getBookId(uri))};
                 sortOrder = sortOrder == null ? Contract.Libraries.DEFAULT_SORT : sortOrder;
                 break;
             case SPECIAL_TABLE:
