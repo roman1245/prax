@@ -246,7 +246,6 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
 
                     Book book = new Book.Builder()
                             .setFirebaseReference(bookSnapshot.getRef().getKey())
-                            // db reference
                             .setTitle((String) bookSnapshot.child("title").getValue())
                             .setIsbn((String) bookSnapshot.child("isbn").getValue())
                             .setDescription((String) bookSnapshot.child("description").getValue())
