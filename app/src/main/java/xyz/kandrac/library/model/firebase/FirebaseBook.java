@@ -2,8 +2,6 @@ package xyz.kandrac.library.model.firebase;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
-import static android.R.attr.id;
-
 /**
  * Created by jan on 23.10.2016.
  */
@@ -18,12 +16,14 @@ public class FirebaseBook {
     public String published;
     public String authors;
     public String publisher;
+    public String library;
+    public boolean wishlist;
 
     public FirebaseBook() {
 
     }
 
-    public FirebaseBook(String title, String isbn, String description, String subtitle, String published, String authors, String publisher, long updatedAt) {
+    public FirebaseBook(String title, String isbn, String description, String subtitle, String published, String authors, String publisher, long updatedAt, String library, boolean wishlist) {
         this.title = title;
         this.isbn = isbn;
         this.published = published;
@@ -32,6 +32,8 @@ public class FirebaseBook {
         this.subtitle = subtitle;
         this.publisher = publisher;
         this.updatedAt = updatedAt;
+        this.library = library;
+        this.wishlist = wishlist;
     }
 
     @Override
@@ -45,6 +47,8 @@ public class FirebaseBook {
                 ", published='" + published + '\'' +
                 ", authors='" + authors + '\'' +
                 ", publisher='" + publisher + '\'' +
+                ", library='" + library + '\'' +
+                ", wishlist=" + wishlist +
                 '}';
     }
 }

@@ -275,14 +275,16 @@ public class DatabaseProvider extends ContentProvider {
                         Contract.Books.BOOK_TITLE,
                         Contract.Books.BOOK_ISBN,
                         Contract.Books.BOOK_DESCRIPTION,
+                        Contract.Books.BOOK_WISH_LIST,
                         Contract.Books.BOOK_PUBLISHED,
                         Contract.Books.BOOK_SUBTITLE,
                         Contract.Books.BOOK_UPDATED_AT,
+                        Contract.Libraries.LIBRARY_NAME,
                         "group_concat(" + Contract.Authors.AUTHOR_NAME + ", \",\") AS " + Contract.Authors.AUTHOR_NAME,
                         Contract.Publishers.PUBLISHER_NAME};
 
                 group = Contract.Books.FULL_BOOK_ID;
-                qb.setTables(Database.Tables.BOOKS_JOIN_AUTHORS + " " + Database.Tables.JOIN_PUBLISHERS);
+                qb.setTables(Database.Tables.BOOKS_JOIN_AUTHORS + " " + Database.Tables.JOIN_PUBLISHERS + " " + Database.Tables.BOOKS_JOIN_LIBRARIES);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);

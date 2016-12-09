@@ -42,6 +42,7 @@ import xyz.kandrac.library.model.firebase.FirebaseBook;
 import xyz.kandrac.library.model.firebase.References;
 import xyz.kandrac.library.model.obj.Author;
 import xyz.kandrac.library.model.obj.Book;
+import xyz.kandrac.library.model.obj.Library;
 import xyz.kandrac.library.model.obj.Publisher;
 import xyz.kandrac.library.mviewp.MainView;
 import xyz.kandrac.library.utils.IABConfigurator;
@@ -226,47 +227,49 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
                 .child(References.USERS_REFERENCE).child(userUid)
                 .child(References.BOOKS_REFERENCE).orderByChild("updatedAt")
                 .addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot bookSnapshot : dataSnapshot.getChildren()) {
-                    long updatedAt = (long) bookSnapshot.child("updatedAt").getValue();
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot bookSnapshot : dataSnapshot.getChildren()) {
+                            long updatedAt = (long) bookSnapshot.child("updatedAt").getValue();
 
-                    if (updatedAt < lastSync) {
-                        return;
+                            if (updatedAt < lastSync) {
+                                return;
+                            }
+
+
+                            String[] authorsSplit = TextUtils.split((String) bookSnapshot.child("authors").getValue(), ",");
+
+                            Author[] authors = new Author[authorsSplit.length];
+                            for (int i = 0; i < authorsSplit.length; i++) {
+                                String authorName = authorsSplit[i].trim();
+                                authors[i] = new Author.Builder().setName(authorName).build();
+                            }
+
+                            Book book = new Book.Builder()
+                                    .setFirebaseReference(bookSnapshot.getRef().getKey())
+                                    .setTitle((String) bookSnapshot.child("title").getValue())
+                                    .setIsbn((String) bookSnapshot.child("isbn").getValue())
+                                    .setDescription((String) bookSnapshot.child("description").getValue())
+                                    .setSubtitle((String) bookSnapshot.child("subtitle").getValue())
+                                    .setPublished((String) bookSnapshot.child("published").getValue())
+                                    .setWish((boolean) bookSnapshot.child("wishlist").getValue())
+                                    .setAuthors(authors)
+                                    .setLibrary(new Library.Builder().setName((String) bookSnapshot.child("library").getValue()).build())
+                                    .setPublisher(new Publisher.Builder()
+                                            .setName((String) bookSnapshot.child("publisher").getValue())
+                                            .build())
+                                    .setUpdatedAt(updatedAt).build();
+
+                            DatabaseStoreUtils.saveBook(view.getActivity().getContentResolver(), book);
+
+                        }
                     }
 
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
-                    String[] authorsSplit = TextUtils.split((String) bookSnapshot.child("authors").getValue(), ",");
-
-                    Author[] authors = new Author[authorsSplit.length];
-                    for (int i = 0; i < authorsSplit.length; i++) {
-                        String authorName = authorsSplit[i].trim();
-                        authors[i] = new Author.Builder().setName(authorName).build();
                     }
-
-                    Book book = new Book.Builder()
-                            .setFirebaseReference(bookSnapshot.getRef().getKey())
-                            .setTitle((String) bookSnapshot.child("title").getValue())
-                            .setIsbn((String) bookSnapshot.child("isbn").getValue())
-                            .setDescription((String) bookSnapshot.child("description").getValue())
-                            .setSubtitle((String) bookSnapshot.child("subtitle").getValue())
-                            .setPublished((String) bookSnapshot.child("published").getValue())
-                            .setAuthors(authors)
-                            .setPublisher(new Publisher.Builder()
-                                    .setName((String) bookSnapshot.child("publisher").getValue())
-                                    .build())
-                            .setUpdatedAt(updatedAt).build();
-
-                    DatabaseStoreUtils.saveBook(view.getActivity().getContentResolver(), book);
-
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+                });
     }
 
     private void storeToCloud(Cursor data, FirebaseDatabase database, String userUid) {
@@ -285,9 +288,11 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
             String published = data.getString(data.getColumnIndex(Contract.Books.BOOK_PUBLISHED));
             String authors = data.getString(data.getColumnIndex(Contract.Authors.AUTHOR_NAME));
             String publisher = data.getString(data.getColumnIndex(Contract.Publishers.PUBLISHER_NAME));
+            String library = data.getString(data.getColumnIndex(Contract.Libraries.LIBRARY_NAME));
+            boolean wish = data.getInt(data.getColumnIndex(Contract.Books.BOOK_WISH_LIST)) == 1;
             long updatedAt = data.getLong(data.getColumnIndex(Contract.Books.BOOK_UPDATED_AT));
 
-            FirebaseBook result = new FirebaseBook(title, isbn, description, subtitle, published, authors, publisher, updatedAt);
+            FirebaseBook result = new FirebaseBook(title, isbn, description, subtitle, published, authors, publisher, updatedAt, library, wish);
 
             if (TextUtils.isEmpty(dbReference)) {
                 DatabaseReference reference = database.getReference()
