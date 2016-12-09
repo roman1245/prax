@@ -14,7 +14,7 @@
     <string name="incorrect_borrow_date">Borrow date should not be set to past date</string>
     <!-- General formatting strings -->
     <string name="format_book_title_subtitle">%1$s: %2$s</string>
-    <string name="format_book_published_year">%s</string>
+    <string name="format_book_published_year">%d</string>
     <string name="title_add_new_book">New Book</string>
     <string name="title_edit_book">Edit Book</string>
     <!-- Optimization -->

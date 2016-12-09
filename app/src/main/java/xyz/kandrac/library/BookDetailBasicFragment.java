@@ -20,8 +20,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.Date;
-
 import xyz.kandrac.library.fragments.SettingsFragment;
 import xyz.kandrac.library.model.Contract;
 import xyz.kandrac.library.model.obj.Author;
@@ -245,10 +243,7 @@ public class BookDetailBasicFragment extends Fragment implements LoaderManager.L
                             .setPositiveButton(R.string.dialog_return_book_positive, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    ContentValues cv = new ContentValues();
-                                    cv.put(Contract.BorrowInfo.BORROW_DATE_RETURNED, new Date(System.currentTimeMillis()).getTime());
-                                    cv.put(Contract.BorrowInfo.BORROW_NEXT_NOTIFICATION, 0);
-                                    getActivity().getContentResolver().update(Contract.BorrowInfo.buildUri(borrowed.id), cv, null, null);
+                                    getActivity().getContentResolver().delete(Contract.BorrowInfo.buildUri(borrowed.id), null, null);
 
                                     ContentValues bookContentValues = new ContentValues();
                                     bookContentValues.put(Contract.Books.BOOK_BORROWED, false);

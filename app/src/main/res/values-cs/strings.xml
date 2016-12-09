@@ -14,7 +14,7 @@
     <string name="incorrect_borrow_date">Datum vrácení knihy nemůže být nastaven do minulosti</string>
     <!-- General formatting strings -->
     <string name="format_book_title_subtitle">%1$s: %2$s</string>
-    <string name="format_book_published_year">%s</string>
+    <string name="format_book_published_year">%d</string>
     <string name="title_add_new_book">Nová kniha</string>
     <string name="title_edit_book">Úprava knihy</string>
     <!-- Optimization -->

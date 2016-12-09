@@ -234,7 +234,7 @@ public class DatabaseProvider extends ContentProvider {
             case BORROW_INFO_BY_BOOK:
                 qb.setTables(Database.Tables.BORROW_INFO);
                 selection = Contract.BorrowInfo.BORROW_BOOK_ID + "=?";
-                selectionArgs = new String[]{Long.toString(Contract.BorrowInfo.getBookId(uri))};
+                selectionArgs = new String[]{Long.toString(Contract.Books.getBookId(uri))};
                 sortOrder = sortOrder == null ? Contract.BorrowInfo.DEFAULT_SORT : sortOrder;
                 break;
             case BORROW_ME_INFO_BY_BOOK:
@@ -456,6 +456,7 @@ public class DatabaseProvider extends ContentProvider {
                 long id = Contract.Books.getBookId(uri);
                 count = db.delete(Database.Tables.BOOKS, Contract.Books.BOOK_ID + " = " + id +
                         (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
+                count += db.delete(Database.Tables.BORROW_INFO, Contract.BorrowInfo.BORROW_BOOK_ID + " = ?", new String[]{Long.toString(id)});
                 getContext().getContentResolver().notifyChange(Contract.Books.CONTENT_URI, null);
                 getContext().getContentResolver().notifyChange(Contract.BOOKS_AUTHORS_URI, null);
                 break;
@@ -520,9 +521,14 @@ public class DatabaseProvider extends ContentProvider {
                 count = db.delete(Database.Tables.BOOKS_AUTHORS, selection, selectionArgs);
                 break;
             }
+            case BORROW_INFO_ID: {
+                long id = Contract.BorrowInfo.getBorrowInfoId(uri);
+                count = db.delete(Database.Tables.BORROW_INFO, Contract.BorrowInfo.BORROW_ID + " = ?", new String[]{Long.toString(id)});
+                break;
+            }
             case BORROW_ME_INFO_ID: {
                 long id = Contract.Libraries.getLibraryId(uri);
-                count = db.delete(Database.Tables.BORROW_ME, Contract.BorrowInfo.BORROW_ID + " = ?", new String[]{Long.toString(id)});
+                count = db.delete(Database.Tables.BORROW_ME, Contract.BorrowMeInfo.BORROW_ID + " = ?", new String[]{Long.toString(id)});
                 break;
             }
             default:
@@ -571,8 +577,13 @@ public class DatabaseProvider extends ContentProvider {
                         (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
                 break;
             }
+            case BORROW_INFO_BY_BOOK: {
+                long id = Contract.Books.getBookId(uri);
+                count = db.update(Database.Tables.BORROW_INFO, values, Contract.BorrowInfo.BORROW_BOOK_ID + " = ? ", new String[]{Long.toString(id)});
+                break;
+            }
             case BORROW_INFO_ID: {
-                long id = Contract.BorrowInfo.getBookId(uri);
+                long id = Contract.BorrowInfo.getBorrowInfoId(uri);
                 count = db.update(Database.Tables.BORROW_INFO, values, Contract.BorrowInfo.BORROW_ID + " = ? ", new String[]{Long.toString(id)});
                 break;
             }

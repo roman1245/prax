@@ -395,7 +395,7 @@ public final class Contract {
             return CONTENT_URI.buildUpon().appendPath(Long.toString(borrowId)).build();
         }
 
-        public static long getBookId(Uri uri) {
+        public static long getBorrowInfoId(Uri uri) {
             return Long.parseLong(uri.getPathSegments().get(1));
         }
     }

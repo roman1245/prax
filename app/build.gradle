@@ -56,6 +56,10 @@ android {
 
         debug {
             applicationIdSuffix '.debug'
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                    'proguard-rules.pro',
+                    'proguard-rules-debug.pro'
 
             // Database authorities definitions
             buildConfigField 'String', 'GOOGLE_SIGN_TOKEN', '"958496077479-99fu3itr0squ1oplpivqqbahl7544uv0.apps.googleusercontent.com"'

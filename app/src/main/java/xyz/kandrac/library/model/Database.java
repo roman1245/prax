@@ -12,7 +12,7 @@ public class Database extends SQLiteOpenHelper {
 
 
     private static final String DATABASE_NAME = "library.db";
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 8;
 
     public Database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -143,6 +143,8 @@ public class Database extends SQLiteOpenHelper {
             case 6:
                 db.execSQL("ALTER TABLE " + Tables.BOOKS + " ADD " + Contract.Books.BOOK_UPDATED_AT + " INTEGER");
                 db.execSQL("UPDATE " + Tables.BOOKS + " SET " + Contract.Books.BOOK_UPDATED_AT + " = " + System.currentTimeMillis());
+            case 7:
+                db.execSQL("DELETE FROM " + Tables.BORROW_INFO + " WHERE " + Contract.BorrowInfo.BORROW_DATE_RETURNED + " != 0");
         }
     }
 }
