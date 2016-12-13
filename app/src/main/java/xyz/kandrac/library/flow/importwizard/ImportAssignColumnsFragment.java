@@ -117,13 +117,31 @@ public class ImportAssignColumnsFragment extends Fragment implements View.OnClic
                     columns.add(new BackupUtils.CsvColumn(i, BackupUtils.CsvColumn.COLUMN_TITLE));
                     break;
                 case 2:
-                    columns.add(new BackupUtils.CsvColumn(i, BackupUtils.CsvColumn.COLUMN_AUTHOR));
+                    columns.add(new BackupUtils.CsvColumn(i, BackupUtils.CsvColumn.COLUMN_SUBTITLE));
                     break;
                 case 3:
-                    columns.add(new BackupUtils.CsvColumn(i, BackupUtils.CsvColumn.COLUMN_PUBLISHER));
+                    columns.add(new BackupUtils.CsvColumn(i, BackupUtils.CsvColumn.COLUMN_DESCRIPTION));
                     break;
                 case 4:
+                    columns.add(new BackupUtils.CsvColumn(i, BackupUtils.CsvColumn.COLUMN_AUTHOR));
+                    break;
+                case 5:
+                    columns.add(new BackupUtils.CsvColumn(i, BackupUtils.CsvColumn.COLUMN_PUBLISHER));
+                    break;
+                case 6:
                     columns.add(new BackupUtils.CsvColumn(i, BackupUtils.CsvColumn.COLUMN_ISBN));
+                    break;
+                case 7:
+                    columns.add(new BackupUtils.CsvColumn(i, BackupUtils.CsvColumn.COLUMN_BORROWED_TO));
+                    break;
+                case 8:
+                    columns.add(new BackupUtils.CsvColumn(i, BackupUtils.CsvColumn.COLUMN_BORROWED_FROM));
+                    break;
+                case 9:
+                    columns.add(new BackupUtils.CsvColumn(i, BackupUtils.CsvColumn.COLUMN_WISH));
+                    break;
+                case 10:
+                    columns.add(new BackupUtils.CsvColumn(i, BackupUtils.CsvColumn.COLUMN_PUBLISHED));
                     break;
             }
         }

@@ -118,21 +118,57 @@ public final class BackupUtils {
                 return false;
             }
 
+            String content = TextUtils.htmlEncode(line[column.columnId]);
+
+            if (TextUtils.isEmpty(content)) {
+                continue;
+            }
+
             switch (column.representation) {
                 case CsvColumn.COLUMN_TITLE:
-                    bookBuilder.setTitle(TextUtils.htmlEncode(line[column.columnId]));
+                    bookBuilder.setTitle(content);
+                    break;
+                case CsvColumn.COLUMN_SUBTITLE:
+                    bookBuilder.setSubtitle(content);
+                    break;
+                case CsvColumn.COLUMN_DESCRIPTION:
+                    bookBuilder.setDescription(content);
                     break;
                 case CsvColumn.COLUMN_AUTHOR:
-                    bookBuilder.setAuthors(new Author[]{new Author.Builder().setName(TextUtils.htmlEncode(line[column.columnId])).build()});
+                    String[] authorNames = content.split(",");
+                    Author[] authors = new Author[authorNames.length];
+                    for (int i = 0; i < authorNames.length; i++) {
+                        authors[i] = new Author.Builder().setName(authorNames[i].trim()).build();
+                    }
+                    bookBuilder.setAuthors(authors);
                     break;
                 case CsvColumn.COLUMN_PUBLISHER:
-                    bookBuilder.setPublisher(new Publisher.Builder().setName(line[column.columnId]).build());
+                    bookBuilder.setPublisher(new Publisher.Builder().setName(content).build());
                     break;
                 case CsvColumn.COLUMN_ISBN:
-                    bookBuilder.setIsbn(line[column.columnId]);
+                    bookBuilder.setIsbn(content);
+                    break;
+                case CsvColumn.COLUMN_BORROWED_TO:
+                    bookBuilder.setBorrowed(true);
+                    bookBuilder.setBorrowedToWhen(0);
+                    bookBuilder.setBorrowedToNotify(0);
+                    bookBuilder.setBorrowedTo(content);
+                    break;
+                case CsvColumn.COLUMN_BORROWED_FROM:
+                    bookBuilder.setBorrowedToMe(true);
+                    bookBuilder.setBorrowedToMeWhen(0);
+                    bookBuilder.setBorrowedToMeName(content);
+                    break;
+                case CsvColumn.COLUMN_WISH:
+                    bookBuilder.setWish(true);
+                    break;
+                case CsvColumn.COLUMN_PUBLISHED:
+                    bookBuilder.setPublished(content);
                     break;
             }
         }
+
+        bookBuilder.setUpdatedAt(System.currentTimeMillis());
 
         return (DatabaseStoreUtils.saveBook(contentResolver, bookBuilder.build()) > 0);
     }
@@ -140,9 +176,15 @@ public final class BackupUtils {
     public static class CsvColumn implements Parcelable {
 
         public static final int COLUMN_TITLE = 0;
-        public static final int COLUMN_AUTHOR = 1;
-        public static final int COLUMN_PUBLISHER = 2;
-        public static final int COLUMN_ISBN = 3;
+        public static final int COLUMN_SUBTITLE = 1;
+        public static final int COLUMN_DESCRIPTION = 2;
+        public static final int COLUMN_AUTHOR = 3;
+        public static final int COLUMN_PUBLISHER = 4;
+        public static final int COLUMN_ISBN = 5;
+        public static final int COLUMN_BORROWED_TO = 6;
+        public static final int COLUMN_BORROWED_FROM = 7;
+        public static final int COLUMN_WISH = 8;
+        public static final int COLUMN_PUBLISHED = 9;
 
         protected CsvColumn(Parcel in) {
             representation = in.readInt();

@@ -128,7 +128,7 @@
     <string name="preferences_libraries_enabled_description">Marking this will allow you to add a book to individual libraries</string>
     <string name="preferences_libraries_default_name_title">Default library</string>
     <string name="preferences_libraries_default_name_description">Default library title to which new books will be automatically added</string>
-    <string name="format_order">%1$s.</string>
+    <string name="format_order">%1$d.</string>
     <string name="edit_book_search">Search</string>
     <string name="edit_book_origin">Borrowed from</string>
     <string name="edit_book_barcode_contact_permission">We need your permission to search in contacts</string>
@@ -185,18 +185,26 @@
     <string name="preferences_visual_category">Application appearance</string>
     <string name="preferences_visual_conservative_title">Conservative colors</string>
     <string name="preferences_visual_conservative_description">Enable this setting to display simple colors in lists of books, authors, publishers and libraries</string>
+
     <string-array name="column_names">
         <item>Ignore</item>
         <item>Book title</item>
+        <item>Subtitle</item>
+        <item>Description</item>
         <item>Author name</item>
         <item>Publisher</item>
         <item>ISBN</item>
+        <item>Borrowed to</item>
+        <item>Borrowed from</item>
+        <item>On wishlist</item>
+        <item>Year published</item>
     </string-array>
 
     <string-array name="file_formats">
         <item>UTF-8</item>
         <item>UTF-16</item>
         <item>ISO–8859–1</item>
+        <item>Windows-1250</item>
         <item>Windows-1251</item>
         <item>Windows-1252</item>
     </string-array>

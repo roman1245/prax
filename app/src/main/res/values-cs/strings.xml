@@ -128,7 +128,7 @@
     <string name="preferences_libraries_enabled_description">Po zatržení budeš moci přiřadit knížku do samostatných knihoven</string>
     <string name="preferences_libraries_default_name_title">Výchozí knihovna</string>
     <string name="preferences_libraries_default_name_description">Výchozí název knihovny, do které se budou knihy přidávat</string>
-    <string name="format_order">%1$s.</string>
+    <string name="format_order">%1$d.</string>
     <string name="edit_book_search">Hledat</string>
     <string name="edit_book_origin">Půjčené od</string>
     <string name="edit_book_barcode_contact_permission">Pro vyhledávaní v kontaktech, potřebujeme Vaše svolení.</string>
@@ -185,18 +185,26 @@
     <string name="preferences_visual_category">Vzhled aplikace</string>
     <string name="preferences_visual_conservative_title">Konzervativní barvy</string>
     <string name="preferences_visual_conservative_description">Povol tohle nastavení pro zobrazení jednoduchých barev v seznamech knih, autorů, vydavatelů a knihoven</string>
+
     <string-array name="column_names">
         <item>Ignorovat</item>
         <item>Název knihy</item>
+        <item>Podtitulek</item>
+        <item>Popis</item>
         <item>Jméno autora</item>
         <item>Vydavatel</item>
         <item>ISBN</item>
+        <item>Půjčené - jméno</item>
+        <item>Půjčené od - jméno</item>
+        <item>Na wishlistu</item>
+        <item>Rok publikování</item>
     </string-array>
 
     <string-array name="file_formats">
         <item>UTF-8</item>
         <item>UTF-16</item>
         <item>ISO–8859–1</item>
+        <item>Windows-1250</item>
         <item>Windows-1251</item>
         <item>Windows-1252</item>
     </string-array>

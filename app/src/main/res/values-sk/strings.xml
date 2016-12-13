@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Exported via lokaligo.com on Tue, 15 Mar 2016 21:36:14 +0000. -->
 
     <!-- Application texts -->
     <string name="app_name">Knižnica</string>
@@ -129,7 +128,7 @@
     <string name="preferences_libraries_enabled_description">Po zaškrtnutí budeš môcť priradiť knižku do samostatných knižníc</string>
     <string name="preferences_libraries_default_name_title">Predvolená knižnica</string>
     <string name="preferences_libraries_default_name_description">Predvolený názov knižnice, do ktorej sa budú knihy pridávať</string>
-    <string name="format_order">%1$s.</string>
+    <string name="format_order">%1$d.</string>
     <string name="edit_book_search">Hľadať</string>
     <string name="edit_book_origin">Požičané od</string>
     <string name="edit_book_barcode_contact_permission">Pre vyhľadávanie v kontaktoch, potrebujeme vaše povolenie</string>
@@ -186,18 +185,26 @@
     <string name="preferences_visual_category">Vzhľad aplikácie</string>
     <string name="preferences_visual_conservative_title">Konzervatívne farby</string>
     <string name="preferences_visual_conservative_description">Povoľ toto nastavenie pre zobrazenie jednoduchých farieb v zoznamoch kníh, autorov, vydavateľov a knižníc</string>
+
     <string-array name="column_names">
         <item>Ignorovať</item>
         <item>Názov knihy</item>
+        <item>Podtitulok</item>
+        <item>Popis</item>
         <item>Meno autora</item>
         <item>Vydavateľ</item>
         <item>ISBN</item>
+        <item>Požičané - meno</item>
+        <item>Požičané od - meno</item>
+        <item>Na wishliste</item>
+        <item>Rok publikovania</item>
     </string-array>
 
     <string-array name="file_formats">
         <item>UTF-8</item>
         <item>UTF-16</item>
         <item>ISO–8859–1</item>
+        <item>Windows-1250</item>
         <item>Windows-1251</item>
         <item>Windows-1252</item>
     </string-array>
