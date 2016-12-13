@@ -57,6 +57,7 @@ public class DatabaseProvider extends ContentProvider {
 
     public static final int BORROW_ME_INFO_BY_BOOK = 504;
     public static final int BORROW_ME_INFO_ID = 505;
+    public static final int BORROW_ME_INFO = 506;
 
     public static final int LIBRARIES = 600;
     public static final int LIBRARY_ID = 601;
@@ -92,6 +93,7 @@ public class DatabaseProvider extends ContentProvider {
 
         uriMatcher.addURI(authority, "books/borrow_info", BOOKS_BORROW);
         uriMatcher.addURI(authority, "borrow_me_info/#", BORROW_ME_INFO_ID);
+        uriMatcher.addURI(authority, "borrow_me_info", BORROW_ME_INFO);
 
         uriMatcher.addURI(authority, "libraries", LIBRARIES);
         uriMatcher.addURI(authority, "libraries/#", LIBRARY_ID);
@@ -282,12 +284,14 @@ public class DatabaseProvider extends ContentProvider {
                         Contract.BorrowInfo.BORROW_DATE_BORROWED,
                         Contract.BorrowInfo.BORROW_NAME,
                         Contract.BorrowInfo.BORROW_NEXT_NOTIFICATION,
+                        Contract.BorrowMeInfo.BORROW_DATE_BORROWED,
+                        Contract.BorrowMeInfo.BORROW_NAME,
                         Contract.Libraries.LIBRARY_NAME,
                         "group_concat(" + Contract.Authors.AUTHOR_NAME + ", \",\") AS " + Contract.Authors.AUTHOR_NAME,
                         Contract.Publishers.PUBLISHER_NAME};
 
                 group = Contract.Books.FULL_BOOK_ID;
-                qb.setTables(Database.Tables.BOOKS_JOIN_AUTHORS + " " + Database.Tables.JOIN_PUBLISHERS + " " + Database.Tables.JOIN_LIBRARIES + " " + Database.Tables.JOIN_BORROW);
+                qb.setTables(Database.Tables.BOOKS_JOIN_AUTHORS + " " + Database.Tables.JOIN_PUBLISHERS + " " + Database.Tables.JOIN_LIBRARIES + " " + Database.Tables.JOIN_BORROW + " " + Database.Tables.JOIN_BORROWED_TO_ME);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
@@ -381,6 +385,11 @@ public class DatabaseProvider extends ContentProvider {
                 long result = db.insert(Database.Tables.BORROW_INFO, null, values);
                 getContext().getContentResolver().notifyChange(uri, null);
                 return Contract.BorrowInfo.buildUri(result);
+            }
+            case BORROW_ME_INFO: {
+                long result = db.insert(Database.Tables.BORROW_ME, null, values);
+                getContext().getContentResolver().notifyChange(uri, null);
+                return Contract.BorrowMeInfo.buildUri(result);
             }
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
@@ -592,6 +601,10 @@ public class DatabaseProvider extends ContentProvider {
             case BORROW_INFO_ID: {
                 long id = Contract.BorrowInfo.getBorrowInfoId(uri);
                 count = db.update(Database.Tables.BORROW_INFO, values, Contract.BorrowInfo.BORROW_ID + " = ? ", new String[]{Long.toString(id)});
+                break;
+            }
+            case BORROW_ME_INFO: {
+                count = db.update(Database.Tables.BORROW_ME, values, selection, selectionArgs);
                 break;
             }
             case BORROW_ME_INFO_ID: {

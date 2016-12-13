@@ -31,6 +31,8 @@ public class Book {
     public final String borrowedTo;
     public final long borrowedToWhen;
     public final long borrowedToNotify;
+    public final String borrowedToMeName;
+    public final long borrowedToMeWhen;
 
     private Book(Builder builder) {
         id = builder.id;
@@ -50,8 +52,10 @@ public class Book {
         updatedAt = builder.updatedAt;
         firebaseReference = builder.firebaseReference;
         borrowedTo = builder.borrowedTo;
-        borrowedToWhen = builder.borrowedToWhen;
         borrowedToNotify = builder.borrowedToNotify;
+        borrowedToWhen = builder.borrowedToWhen;
+        borrowedToMeName = builder.borrowedToMeName;
+        borrowedToMeWhen = builder.borrowedToMeWhen;
     }
 
     public ContentValues getContentValues() {
@@ -88,6 +92,8 @@ public class Book {
         public String borrowedTo;
         public long borrowedToWhen;
         public long borrowedToNotify;
+        private String borrowedToMeName;
+        private long borrowedToMeWhen;
 
         public Builder setId(long id) {
             this.id = id;
@@ -190,6 +196,16 @@ public class Book {
 
         public Builder setBorrowedToNotify(long borrowedToNotify) {
             this.borrowedToNotify = borrowedToNotify;
+            return this;
+        }
+
+        public Builder setBorrowedToMeName(String borrowedToMeName) {
+            this.borrowedToMeName = borrowedToMeName;
+            return this;
+        }
+
+        public Builder setBorrowedToMeWhen(long borrowedToMeWhen) {
+            this.borrowedToMeWhen = borrowedToMeWhen;
             return this;
         }
 

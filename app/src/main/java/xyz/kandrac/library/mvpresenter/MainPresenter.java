@@ -224,7 +224,6 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
     }
 
     /**
-     *
      * @param database
      * @param userUid
      * @param fromTime
@@ -278,6 +277,16 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
                                 builder.setBorrowed(false);
                             }
 
+                            // borrowed to me
+                            String borrowedToMeName = (String) bookSnapshot.child("borrowedToMeName").getValue();
+                            if (!TextUtils.isEmpty(borrowedToMeName)) {
+                                builder.setBorrowedToMe(true)
+                                        .setBorrowedToMeName(borrowedToMeName)
+                                        .setBorrowedToMeWhen((long) bookSnapshot.child("borrowedToMeWhen").getValue());
+                            } else {
+                                builder.setBorrowedToMe(false);
+                            }
+
                             DatabaseStoreUtils.saveBook(view.getActivity().getContentResolver(), builder.build());
 
                         }
@@ -309,12 +318,15 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
             String library = data.getString(data.getColumnIndex(Contract.Libraries.LIBRARY_NAME));
             String borrowedToName = data.getString(data.getColumnIndex(Contract.BorrowInfo.BORROW_NAME));
             long borrowedWhen = data.getLong(data.getColumnIndex(Contract.BorrowInfo.BORROW_DATE_BORROWED));
-            long borrowNotifiy = data.getLong(data.getColumnIndex(Contract.BorrowInfo.BORROW_NEXT_NOTIFICATION));
+            long borrowNotify = data.getLong(data.getColumnIndex(Contract.BorrowInfo.BORROW_NEXT_NOTIFICATION));
+
+            String borrowedToMeName = data.getString(data.getColumnIndex(Contract.BorrowMeInfo.BORROW_NAME));
+            long borrowedToMeWhen = data.getLong(data.getColumnIndex(Contract.BorrowMeInfo.BORROW_DATE_BORROWED));
 
             boolean wish = data.getInt(data.getColumnIndex(Contract.Books.BOOK_WISH_LIST)) == 1;
             long updatedAt = data.getLong(data.getColumnIndex(Contract.Books.BOOK_UPDATED_AT));
 
-            FirebaseBook result = new FirebaseBook(title, isbn, description, subtitle, published, authors, publisher, updatedAt, library, wish, borrowedToName, borrowedWhen, borrowNotifiy);
+            FirebaseBook result = new FirebaseBook(title, isbn, description, subtitle, published, authors, publisher, updatedAt, library, wish, borrowedToName, borrowedWhen, borrowNotify, borrowedToMeName, borrowedToMeWhen);
 
             if (TextUtils.isEmpty(dbReference)) {
                 DatabaseReference reference = database.getReference()

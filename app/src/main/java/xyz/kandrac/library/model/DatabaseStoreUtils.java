@@ -4,7 +4,6 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
-import android.text.TextUtils;
 
 import xyz.kandrac.library.model.obj.Author;
 import xyz.kandrac.library.model.obj.Book;
@@ -53,11 +52,28 @@ public final class DatabaseStoreUtils {
             saveBookAuthor(contentResolver, bookId, authorId);
         }
 
-        if (!TextUtils.isEmpty(book.borrowedTo)) {
+        if (book.borrowed) {
             saveBorrowedInfo(bookId, contentResolver, book.borrowedTo, book.borrowedToNotify, book.borrowedToWhen);
         }
 
+        if (book.borrowedToMe) {
+            saveBorrowedToMeInfo(bookId, contentResolver, book.borrowedToMeName, book.borrowedToMeWhen);
+        }
+
         return bookId;
+    }
+
+    private static void saveBorrowedToMeInfo(long bookId, ContentResolver contentResolver, String borrowedToMeName, long borrowedToMeWhen) {
+        ContentValues cv = new ContentValues();
+        cv.put(Contract.BorrowMeInfo.BORROW_BOOK_ID, bookId);
+        cv.put(Contract.BorrowMeInfo.BORROW_NAME, borrowedToMeName);
+        cv.put(Contract.BorrowMeInfo.BORROW_DATE_BORROWED, borrowedToMeWhen);
+
+        int updated = contentResolver.update(Contract.BorrowMeInfo.CONTENT_URI, cv, Contract.BorrowMeInfo.BORROW_BOOK_ID + " = ?", new String[]{Long.toString(bookId)});
+
+        if (updated == 0) {
+            contentResolver.insert(Contract.BorrowMeInfo.CONTENT_URI, cv);
+        }
     }
 
     private static void saveBorrowedInfo(long bookId, ContentResolver contentResolver, String borrowedTo, long borrowedToNotify, long borrowedToWhen) {
