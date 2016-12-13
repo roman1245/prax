@@ -75,7 +75,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     private TabLayout tabs;
 
     private boolean mShowBorrowDialog = false;
-    private FirebaseAuth mAuth;
+    public FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,6 +165,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
             case R.id.action_move: {
                 ContentValues cv = new ContentValues();
                 cv.put(Contract.Books.BOOK_WISH_LIST, false);
+                cv.put(Contract.Books.BOOK_UPDATED_AT, System.currentTimeMillis());
                 getContentResolver().update(Contract.Books.buildBookUri(mBookId), cv, null, null);
                 finish();
                 return true;

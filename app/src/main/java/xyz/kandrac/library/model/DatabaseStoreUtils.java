@@ -99,7 +99,6 @@ public final class DatabaseStoreUtils {
         bookContentValues.put(Contract.Books.BOOK_WISH_LIST, book.wish);
         bookContentValues.put(Contract.Books.BOOK_BORROWED_TO_ME, book.borrowedToMe);
         bookContentValues.put(Contract.Books.BOOK_UPDATED_AT, book.updatedAt);
-        bookContentValues.put(Contract.Books.BOOK_REFERENCE, book.firebaseReference);
 
         if (book.published > 0) {
             bookContentValues.put(Contract.Books.BOOK_PUBLISHED, book.published);

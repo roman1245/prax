@@ -20,8 +20,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
+
 import xyz.kandrac.library.fragments.SettingsFragment;
 import xyz.kandrac.library.model.Contract;
+import xyz.kandrac.library.model.firebase.References;
 import xyz.kandrac.library.model.obj.Author;
 import xyz.kandrac.library.model.obj.Book;
 import xyz.kandrac.library.model.obj.Borrowed;
@@ -56,6 +60,8 @@ public class BookDetailBasicFragment extends Fragment implements LoaderManager.L
     private Button borrowMeButton;
     private TextView publishedText;
     private TextView publishedTitle;
+
+    private Book book;
 
     public static BookDetailBasicFragment newInstance(long bookId) {
         BookDetailBasicFragment result = new BookDetailBasicFragment();
@@ -161,6 +167,7 @@ public class BookDetailBasicFragment extends Fragment implements LoaderManager.L
 
     @Override
     public void onBookGet(Book book) {
+        this.book = book;
 
         if (TextUtils.isEmpty(book.subtitle)) {
             fullTitle.setText(book.title);
@@ -286,6 +293,14 @@ public class BookDetailBasicFragment extends Fragment implements LoaderManager.L
                             .setPositiveButton(R.string.dialog_return_book_positive, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    FirebaseAuth auth = ((BookDetailActivity) getActivity()).mAuth;
+
+                                    if (auth.getCurrentUser() != null) {
+                                        FirebaseDatabase.getInstance().getReference()
+                                                .child(References.USERS_REFERENCE).child(auth.getCurrentUser().getUid())
+                                                .child(References.BOOKS_REFERENCE).child(book.firebaseReference)
+                                                .removeValue();
+                                    }
                                     getActivity().getContentResolver().delete(Contract.BorrowMeInfo.buildUri(borrowedToMe.id), null, null);
                                     getActivity().getContentResolver().delete(Contract.Books.buildBookUri(mBookId), null, null);
                                     dialog.dismiss();
