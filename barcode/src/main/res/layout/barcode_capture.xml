@@ -17,4 +17,12 @@
             android:layout_height="match_parent" />
 
     </xyz.kandrac.barcode.ui.CameraSourcePreview>
+
+    <ImageButton
+        android:id="@+id/cancel_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_close" />
 </FrameLayout>

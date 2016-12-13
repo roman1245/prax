@@ -82,6 +82,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     public static final String EXTRA_WISH_LIST = "wish_list_extra";
     public static final String EXTRA_BORROWED_TO_ME = "borrowed_to_me_extra";
     public static final String EXTRA_SCAN = "scan_start";
+    public static final String EXTRA_BULK = "extra_bulk_insert";
 
     // Save instance state constants
     private static final String SAVE_STATE_FILE_NAME = "save_state_file_name";
@@ -117,6 +118,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     private boolean mBorrowedToMe;
     private String imageFileName;
     private boolean mStartingActivityForResult = false;
+    private boolean bulk;
 
     private Toolbar toolbar;
     private ImageView mOriginImage;
@@ -166,17 +168,20 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         }
 
         // handle extras
-        boolean startScan = false;
+        boolean startScan;
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             mBookId = extras.getLong(EXTRA_BOOK_ID, 0);
             mToWishList = extras.getInt(EXTRA_WISH_LIST) == BookCursorAdapter.TRUE;
             mBorrowedToMe = extras.getInt(EXTRA_BORROWED_TO_ME) == BookCursorAdapter.TRUE;
             startScan = extras.getBoolean(EXTRA_SCAN, false);
+            bulk = extras.getBoolean(EXTRA_BULK, false);
         } else {
             mBookId = 0L;
             mToWishList = false;
             mBorrowedToMe = false;
+            startScan = false;
+            bulk = false;
         }
 
         if (mBorrowedToMe) {
@@ -220,7 +225,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         setAdapter(Contract.Libraries.CONTENT_URI, Contract.Libraries.LIBRARY_NAME, mLibraryEdit);
         setAdapter(ContactsContract.Contacts.CONTENT_URI, ContactsContract.Contacts.DISPLAY_NAME, mOriginEdit);
 
-        if (startScan) {
+        if (startScan || bulk) {
             scan(mScanButton);
         }
     }
@@ -306,7 +311,9 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 } else {
                     Toast.makeText(EditBookActivity.this, R.string.communication_error, Toast.LENGTH_LONG).show();
                 }
-                dialog.dismiss();
+                if (!isFinishing()) {
+                    dialog.dismiss();
+                }
             }
 
             @Override
@@ -324,12 +331,14 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         switch (requestCode) {
             case REQUEST_BARCODE:
                 // Handle Barcode
-                if (resultCode == Activity.RESULT_OK) {
+                if (resultCode == RESULT_OK) {
                     if (data != null) {
                         String barcode = data.getStringExtra(BarcodeActivity.BARCODE_TEXT);
                         mIsbnEdit.setText(barcode);
                         searchIsbn(barcode);
                     }
+                } else if (resultCode == Activity.RESULT_CANCELED){
+                    finish();
                 }
                 break;
             case REQUEST_IMAGE_CAPTURE:
@@ -340,7 +349,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                 break;
             case REQUEST_PICK_IMAGE:
                 // Handle image pick from gallery
-                if (resultCode == Activity.RESULT_OK) {
+                if (resultCode == RESULT_OK) {
                     imageFileName = MediaUtils.x(data, this);
                     refreshImage();
                 }
@@ -493,7 +502,11 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
             getContentResolver().insert(Contract.Books.buildBorrowedToMeInfoUri(bookId), borrowContentValues);
         }
 
-        finish();
+        if (bulk) {
+            recreate();
+        } else {
+            finish();
+        }
     }
 
     public void scan(View view) {

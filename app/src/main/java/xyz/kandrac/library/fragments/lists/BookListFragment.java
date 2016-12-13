@@ -197,7 +197,9 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
                         break;
                     }
                     case R.id.action_bulk_add: {
-                        // TODO: implement
+                        Intent intent = new Intent(getActivity(), EditBookActivity.class);
+                        intent.putExtra(EditBookActivity.EXTRA_BULK, true);
+                        startActivity(intent);
                         break;
                     }
                     case R.id.action_scan_add: {

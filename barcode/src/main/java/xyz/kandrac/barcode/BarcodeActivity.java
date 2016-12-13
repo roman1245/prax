@@ -8,6 +8,8 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -29,7 +31,7 @@ import xyz.kandrac.barcode.ui.GraphicOverlay;
  * <p/>
  * Created by VizGhar on 18.10.2015.
  */
-public class BarcodeActivity extends AppCompatActivity {
+public class BarcodeActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "Barcode-reader";
 
@@ -54,6 +56,8 @@ public class BarcodeActivity extends AppCompatActivity {
 
         mPreview = (CameraSourcePreview) findViewById(R.id.preview);
         mGraphicOverlay = (GraphicOverlay) findViewById(R.id.graphicOverlay);
+        ImageButton mCancelButton = (ImageButton) findViewById(R.id.cancel_button);
+        mCancelButton.setOnClickListener(this);
 
         // read parameters from the intent used to launch the activity.
         boolean autoFocus = getIntent().getBooleanExtra(AUTO_FOCUS, true);
@@ -161,6 +165,12 @@ public class BarcodeActivity extends AppCompatActivity {
         Intent data = new Intent();
         data.putExtra(BARCODE_TEXT, barcode);
         setResult(Activity.RESULT_OK, data);
+        finish();
+    }
+
+    @Override
+    public void onClick(View v) {
+        setResult(Activity.RESULT_CANCELED);
         finish();
     }
 }
