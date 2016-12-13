@@ -28,6 +28,9 @@ public class Book {
     public Author[] authors;
     public Publisher publisher;
     public Library library;
+    public final String borrowedTo;
+    public final long borrowedToWhen;
+    public final long borrowedToNotify;
 
     private Book(Builder builder) {
         id = builder.id;
@@ -46,6 +49,9 @@ public class Book {
         published = builder.published;
         updatedAt = builder.updatedAt;
         firebaseReference = builder.firebaseReference;
+        borrowedTo = builder.borrowedTo;
+        borrowedToWhen = builder.borrowedToWhen;
+        borrowedToNotify = builder.borrowedToNotify;
     }
 
     public ContentValues getContentValues() {
@@ -78,6 +84,10 @@ public class Book {
         private int published;
         private long updatedAt;
         private String firebaseReference;
+
+        public String borrowedTo;
+        public long borrowedToWhen;
+        public long borrowedToNotify;
 
         public Builder setId(long id) {
             this.id = id;
@@ -165,6 +175,21 @@ public class Book {
 
         public Builder setFirebaseReference(String firebaseReference) {
             this.firebaseReference = firebaseReference;
+            return this;
+        }
+
+        public Builder setBorrowedTo(String borrowedTo) {
+            this.borrowedTo = borrowedTo;
+            return this;
+        }
+
+        public Builder setBorrowedToWhen(long borrowedToWhen) {
+            this.borrowedToWhen = borrowedToWhen;
+            return this;
+        }
+
+        public Builder setBorrowedToNotify(long borrowedToNotify) {
+            this.borrowedToNotify = borrowedToNotify;
             return this;
         }
 

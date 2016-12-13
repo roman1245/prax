@@ -210,10 +210,11 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
                 String userUid = mAuth.getCurrentUser().getUid();
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 long lastSync = manager.getLongPreference(SharedPreferencesManager.KEY_PREF_LAST_CLOUD_SYNC);
-
+                long beforeSync = System.currentTimeMillis();
                 LogUtils.d(LOG_TAG, "storing " + data.getCount() + " books to cloud");
+
                 storeToCloud(data, database, userUid);
-                storeFromCloud(database, userUid, lastSync);
+                storeFromCloud(database, userUid, lastSync, beforeSync);
 
                 manager.editPreference(SharedPreferencesManager.KEY_PREF_LAST_CLOUD_SYNC, System.currentTimeMillis());
 
@@ -222,21 +223,26 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
         }
     }
 
-    private void storeFromCloud(FirebaseDatabase database, String userUid, final long lastSync) {
+    /**
+     *
+     * @param database
+     * @param userUid
+     * @param fromTime
+     * @param toTime
+     */
+    private void storeFromCloud(final FirebaseDatabase database, final String userUid, final long fromTime, final long toTime) {
         database.getReference()
                 .child(References.USERS_REFERENCE).child(userUid)
                 .child(References.BOOKS_REFERENCE).orderByChild("updatedAt")
+                .startAt(fromTime)
+                .endAt(toTime)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot bookSnapshot : dataSnapshot.getChildren()) {
                             long updatedAt = (long) bookSnapshot.child("updatedAt").getValue();
 
-                            if (updatedAt < lastSync) {
-                                return;
-                            }
-
-
+                            // authors
                             String[] authorsSplit = TextUtils.split((String) bookSnapshot.child("authors").getValue(), ",");
 
                             Author[] authors = new Author[authorsSplit.length];
@@ -245,7 +251,8 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
                                 authors[i] = new Author.Builder().setName(authorName).build();
                             }
 
-                            Book book = new Book.Builder()
+
+                            Book.Builder builder = new Book.Builder()
                                     .setFirebaseReference(bookSnapshot.getRef().getKey())
                                     .setTitle((String) bookSnapshot.child("title").getValue())
                                     .setIsbn((String) bookSnapshot.child("isbn").getValue())
@@ -258,9 +265,20 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
                                     .setPublisher(new Publisher.Builder()
                                             .setName((String) bookSnapshot.child("publisher").getValue())
                                             .build())
-                                    .setUpdatedAt(updatedAt).build();
+                                    .setUpdatedAt(updatedAt);
 
-                            DatabaseStoreUtils.saveBook(view.getActivity().getContentResolver(), book);
+                            // borrowed
+                            String borrowedName = (String) bookSnapshot.child("borrowedToName").getValue();
+                            if (!TextUtils.isEmpty(borrowedName)) {
+                                builder.setBorrowed(true)
+                                        .setBorrowedTo(borrowedName)
+                                        .setBorrowedToNotify((long) bookSnapshot.child("borrowNotify").getValue())
+                                        .setBorrowedToWhen((long) bookSnapshot.child("borrowedWhen").getValue());
+                            } else {
+                                builder.setBorrowed(false);
+                            }
+
+                            DatabaseStoreUtils.saveBook(view.getActivity().getContentResolver(), builder.build());
 
                         }
                     }
@@ -289,10 +307,14 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
             String authors = data.getString(data.getColumnIndex(Contract.Authors.AUTHOR_NAME));
             String publisher = data.getString(data.getColumnIndex(Contract.Publishers.PUBLISHER_NAME));
             String library = data.getString(data.getColumnIndex(Contract.Libraries.LIBRARY_NAME));
+            String borrowedToName = data.getString(data.getColumnIndex(Contract.BorrowInfo.BORROW_NAME));
+            long borrowedWhen = data.getLong(data.getColumnIndex(Contract.BorrowInfo.BORROW_DATE_BORROWED));
+            long borrowNotifiy = data.getLong(data.getColumnIndex(Contract.BorrowInfo.BORROW_NEXT_NOTIFICATION));
+
             boolean wish = data.getInt(data.getColumnIndex(Contract.Books.BOOK_WISH_LIST)) == 1;
             long updatedAt = data.getLong(data.getColumnIndex(Contract.Books.BOOK_UPDATED_AT));
 
-            FirebaseBook result = new FirebaseBook(title, isbn, description, subtitle, published, authors, publisher, updatedAt, library, wish);
+            FirebaseBook result = new FirebaseBook(title, isbn, description, subtitle, published, authors, publisher, updatedAt, library, wish, borrowedToName, borrowedWhen, borrowNotifiy);
 
             if (TextUtils.isEmpty(dbReference)) {
                 DatabaseReference reference = database.getReference()

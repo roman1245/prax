@@ -18,12 +18,15 @@ public class FirebaseBook {
     public String publisher;
     public String library;
     public boolean wishlist;
+    public String borrowedToName;
+    public long borrowedWhen;
+    public long borrowNotify;
 
     public FirebaseBook() {
 
     }
 
-    public FirebaseBook(String title, String isbn, String description, String subtitle, String published, String authors, String publisher, long updatedAt, String library, boolean wishlist) {
+    public FirebaseBook(String title, String isbn, String description, String subtitle, String published, String authors, String publisher, long updatedAt, String library, boolean wishlist, String borrowedToName, long borrowedWhen, long borrowNotify) {
         this.title = title;
         this.isbn = isbn;
         this.published = published;
@@ -34,6 +37,9 @@ public class FirebaseBook {
         this.updatedAt = updatedAt;
         this.library = library;
         this.wishlist = wishlist;
+        this.borrowedToName = borrowedToName;
+        this.borrowedWhen = borrowedWhen;
+        this.borrowNotify = borrowNotify;
     }
 
     @Override
@@ -49,6 +55,9 @@ public class FirebaseBook {
                 ", publisher='" + publisher + '\'' +
                 ", library='" + library + '\'' +
                 ", wishlist=" + wishlist +
+                ", borrowedToName='" + borrowedToName + '\'' +
+                ", borrowedWhen=" + borrowedWhen +
+                ", borrowNotifiy=" + borrowNotify +
                 '}';
     }
 }

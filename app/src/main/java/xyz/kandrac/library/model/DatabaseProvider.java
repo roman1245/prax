@@ -279,12 +279,15 @@ public class DatabaseProvider extends ContentProvider {
                         Contract.Books.BOOK_PUBLISHED,
                         Contract.Books.BOOK_SUBTITLE,
                         Contract.Books.BOOK_UPDATED_AT,
+                        Contract.BorrowInfo.BORROW_DATE_BORROWED,
+                        Contract.BorrowInfo.BORROW_NAME,
+                        Contract.BorrowInfo.BORROW_NEXT_NOTIFICATION,
                         Contract.Libraries.LIBRARY_NAME,
                         "group_concat(" + Contract.Authors.AUTHOR_NAME + ", \",\") AS " + Contract.Authors.AUTHOR_NAME,
                         Contract.Publishers.PUBLISHER_NAME};
 
                 group = Contract.Books.FULL_BOOK_ID;
-                qb.setTables(Database.Tables.BOOKS_JOIN_AUTHORS + " " + Database.Tables.JOIN_PUBLISHERS + " " + Database.Tables.BOOKS_JOIN_LIBRARIES);
+                qb.setTables(Database.Tables.BOOKS_JOIN_AUTHORS + " " + Database.Tables.JOIN_PUBLISHERS + " " + Database.Tables.JOIN_LIBRARIES + " " + Database.Tables.JOIN_BORROW);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
@@ -575,6 +578,10 @@ public class DatabaseProvider extends ContentProvider {
                 long id = Contract.Publishers.getPublisherId(uri);
                 count = db.update(Database.Tables.PUBLISHERS, values, Contract.Publishers.PUBLISHER_ID + " = " + id +
                         (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
+                break;
+            }
+            case BORROW_INFO: {
+                count = db.update(Database.Tables.BORROW_INFO, values, selection, selectionArgs);
                 break;
             }
             case BORROW_INFO_BY_BOOK: {

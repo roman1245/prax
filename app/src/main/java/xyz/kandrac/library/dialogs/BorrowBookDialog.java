@@ -97,6 +97,7 @@ public class BorrowBookDialog extends DialogFragment {
 
                 ContentValues bookContentValues = new ContentValues();
                 bookContentValues.put(Contract.Books.BOOK_BORROWED, true);
+                bookContentValues.put(Contract.Books.BOOK_UPDATED_AT, System.currentTimeMillis());
                 getActivity().getContentResolver().update(Contract.Books.buildBookUri(mBookId), bookContentValues, null, null);
 
                 NotificationReceiver.prepareNotification(getActivity(), timeToNotify, mBookId);

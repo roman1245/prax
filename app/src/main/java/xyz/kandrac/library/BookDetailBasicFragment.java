@@ -247,6 +247,7 @@ public class BookDetailBasicFragment extends Fragment implements LoaderManager.L
 
                                     ContentValues bookContentValues = new ContentValues();
                                     bookContentValues.put(Contract.Books.BOOK_BORROWED, false);
+                                    bookContentValues.put(Contract.Books.BOOK_UPDATED_AT, System.currentTimeMillis());
                                     getActivity().getContentResolver().update(Contract.Books.buildBookUri(mBookId), bookContentValues, null, null);
 
                                     NotificationReceiver.cancelNotification(getActivity(), mBookId);
