@@ -113,6 +113,7 @@ public final class DatabaseStoreUtils {
         bookContentValues.put(Contract.Books.BOOK_PUBLISHER_ID, publisherId);
         bookContentValues.put(Contract.Books.BOOK_LIBRARY_ID, libraryId);
         bookContentValues.put(Contract.Books.BOOK_WISH_LIST, book.wish);
+        bookContentValues.put(Contract.Books.BOOK_BORROWED, book.borrowed);
         bookContentValues.put(Contract.Books.BOOK_BORROWED_TO_ME, book.borrowedToMe);
         bookContentValues.put(Contract.Books.BOOK_UPDATED_AT, book.updatedAt);
 
