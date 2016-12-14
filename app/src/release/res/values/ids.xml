@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- IDS used in debug but not release configuration -->
+    <item name="purchase_test_purchased" type="id"/>
+    <item name="purchase_test_cancelled" type="id"/>
+    <item name="purchase_test_refunded" type="id"/>
+    <item name="purchase_test_unavailable" type="id"/>
+    <item name="purchase_consume" type="id"/>
+</resources>
