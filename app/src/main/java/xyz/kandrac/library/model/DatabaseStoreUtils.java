@@ -116,20 +116,29 @@ public final class DatabaseStoreUtils {
         bookContentValues.put(Contract.Books.BOOK_BORROWED, book.borrowed);
         bookContentValues.put(Contract.Books.BOOK_BORROWED_TO_ME, book.borrowedToMe);
         bookContentValues.put(Contract.Books.BOOK_UPDATED_AT, book.updatedAt);
+        bookContentValues.put(Contract.Books.BOOK_REFERENCE, book.firebaseReference);
 
         if (book.published > 0) {
             bookContentValues.put(Contract.Books.BOOK_PUBLISHED, book.published);
         }
 
         if (book.id > 0) {
+
+            // Defined ID ? update right away
             contentResolver.update(Contract.Books.buildBookUri(book.id), bookContentValues, null, null);
             return book.id;
         } else if (book.firebaseReference != null && !book.firebaseReference.isEmpty()) {
+
+            // Undefined ID and defined Firebase Reference -> update if possible
             int updated = contentResolver.update(Contract.Books.buildBookFirebaseUri(book.firebaseReference), bookContentValues, null, null);
             if (updated == 0) {
+
+                // update fail -> insert book
                 Uri bookUri = contentResolver.insert(Contract.Books.CONTENT_URI, bookContentValues);
                 return Contract.Books.getBookId(bookUri);
             } else {
+
+                // update -> get book ID
                 Cursor result = contentResolver.query(Contract.Books.buildBookFirebaseUri(book.firebaseReference), null, null, null, null);
                 result.moveToFirst();
                 long id = result.getLong(result.getColumnIndex(Contract.Books.BOOK_REFERENCE));
@@ -137,6 +146,8 @@ public final class DatabaseStoreUtils {
                 return id;
             }
         } else {
+
+            //
             Uri bookUri = contentResolver.insert(Contract.Books.CONTENT_URI, bookContentValues);
             return Contract.Books.getBookId(bookUri);
         }

@@ -20,6 +20,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -181,7 +182,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                                 getContentResolver().delete(Contract.Books.buildBookUri(mBookId), null, null);
                                 NotificationReceiver.cancelNotification(BookDetailActivity.this, mBookId);
 
-                                if (mAuth.getCurrentUser() != null) {
+                                if (mAuth.getCurrentUser() != null && !TextUtils.isEmpty(mBook.firebaseReference)) {
                                     FirebaseDatabase.getInstance().getReference()
                                             .child(References.USERS_REFERENCE).child(mAuth.getCurrentUser().getUid())
                                             .child(References.BOOKS_REFERENCE).child(mBook.firebaseReference)
