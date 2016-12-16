@@ -1,27 +1,27 @@
 {
   "project_info": {
-    "project_number": "958496077479",
-    "firebase_url": "https://library-1117.firebaseio.com",
-    "project_id": "library-1117",
-    "storage_bucket": "library-1117.appspot.com"
+    "project_number": "484886958517",
+    "firebase_url": "https://library-debug.firebaseio.com",
+    "project_id": "library-debug",
+    "storage_bucket": "library-debug.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:958496077479:android:b3e3be9bb88186a2",
+        "mobilesdk_app_id": "1:484886958517:android:b3e3be9bb88186a2",
         "android_client_info": {
           "package_name": "xyz.kandrac.library.free.debug"
         }
       },
       "oauth_client": [
         {
-          "client_id": "958496077479-k98j56dm8cm42ltmrtvl7n452g73f6l5.apps.googleusercontent.com",
+          "client_id": "484886958517-1uk79pdo3readop5cgdj7lnbo95jd2i9.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBo2p925GRiQUM5ai4mBs8ZSsx4H_pBr1s"
+          "current_key": "AIzaSyCoqW3MjSYKG82ZfHRhwH1sToRArmPwZ98"
         }
       ],
       "services": {
@@ -29,49 +29,8 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "958496077479-k98j56dm8cm42ltmrtvl7n452g73f6l5.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        },
-        "ads_service": {
-          "status": 2
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:958496077479:android:6c7d5ef42212a019",
-        "android_client_info": {
-          "package_name": "xyz.kandrac.library.free"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "958496077479-k98j56dm8cm42ltmrtvl7n452g73f6l5.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBo2p925GRiQUM5ai4mBs8ZSsx4H_pBr1s"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "958496077479-k98j56dm8cm42ltmrtvl7n452g73f6l5.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "status": 1,
+          "other_platform_oauth_client": []
         },
         "ads_service": {
           "status": 2
