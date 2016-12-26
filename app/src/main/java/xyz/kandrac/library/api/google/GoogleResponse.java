@@ -10,6 +10,9 @@ public class GoogleResponse {
     @SerializedName("items")
     public Book[] books;
 
+    @SerializedName("totalItems")
+    public int totalItems;
+
     public class Book {
 
         @SerializedName("volumeInfo")
@@ -19,6 +22,9 @@ public class GoogleResponse {
 
             @SerializedName("title")
             public String title;
+
+            @SerializedName("publishedDate")
+            public String publishedDate;
 
             @SerializedName("subtitle")
             public String subtitle;

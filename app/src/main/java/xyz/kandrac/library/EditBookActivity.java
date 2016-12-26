@@ -45,6 +45,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
@@ -53,6 +54,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import xyz.kandrac.barcode.BarcodeActivity;
 import xyz.kandrac.library.api.RetrofitConfig;
+import xyz.kandrac.library.api.google.GoogleResponse;
 import xyz.kandrac.library.api.library.LibraryResponse;
 import xyz.kandrac.library.fragments.SettingsFragment;
 import xyz.kandrac.library.model.Contract;
@@ -289,7 +291,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         });
     }
 
-    private void searchIsbn(String barcode) {
+    private void searchIsbn(final String barcode) {
 
         if (!ConnectivityUtils.isConnected(this)) {
             Toast.makeText(this, R.string.not_connected_book_info, Toast.LENGTH_LONG).show();
@@ -298,26 +300,49 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
         final ProgressDialog dialog = ProgressDialog.show(this, getString(R.string.parsing_book_details), getString(R.string.parsing_book_details_message));
 
-        RetrofitConfig.getInstance().getLibraryApi().getBookByIsbn(barcode).enqueue(new Callback<LibraryResponse>() {
+        RetrofitConfig.getInstance().getGoogleApi().getBookByIsbn("isbn:" + barcode).enqueue(new Callback<GoogleResponse>() {
             @Override
-            public void onResponse(Call<LibraryResponse> call, Response<LibraryResponse> response) {
-                if (response.isSuccessful()) {
-                    LibraryResponse book = response.body();
-                    mTitleEdit.setText(book.title);
-                    mSubtitleEdit.setText(book.subtitle);
-                    mAuthorEdit.setText(book.authors);
-                    mPublisherEdit.setText(book.publisher);
-                    mPublished.setText(book.published);
+            public void onResponse(Call<GoogleResponse> call, Response<GoogleResponse> response) {
+
+                if (response.isSuccessful() && response.body() != null && response.body().totalItems > 0) {
+                    GoogleResponse.Book book = response.body().books[0];
+                    mTitleEdit.setText(book.volumeInfo.title);
+                    mSubtitleEdit.setText(book.volumeInfo.subtitle);
+                    mAuthorEdit.setText(Arrays.toString(book.volumeInfo.authors));
+                    mPublisherEdit.setText(book.volumeInfo.publisher);
+                    mPublished.setText(book.volumeInfo.publishedDate);
+
                 } else {
-                    Toast.makeText(EditBookActivity.this, R.string.communication_error, Toast.LENGTH_LONG).show();
-                }
-                if (!isFinishing()) {
-                    dialog.dismiss();
+                    RetrofitConfig.getInstance().getLibraryApi().getBookByIsbn(barcode).enqueue(new Callback<LibraryResponse>() {
+                        @Override
+                        public void onResponse(Call<LibraryResponse> call, Response<LibraryResponse> response) {
+                            if (response.isSuccessful()) {
+                                LibraryResponse book = response.body();
+                                mTitleEdit.setText(book.title);
+                                mSubtitleEdit.setText(book.subtitle);
+                                mAuthorEdit.setText(book.authors);
+                                mPublisherEdit.setText(book.publisher);
+                                mPublished.setText(book.published);
+                            } else {
+                                Toast.makeText(EditBookActivity.this, R.string.communication_error, Toast.LENGTH_LONG).show();
+                            }
+                            if (!isFinishing()) {
+                                dialog.dismiss();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<LibraryResponse> call, Throwable t) {
+                            dialog.dismiss();
+                            Toast.makeText(EditBookActivity.this, R.string.communication_error, Toast.LENGTH_LONG).show();
+                            LogUtils.e(TAG, "retrofit error", t);
+                        }
+                    });
                 }
             }
 
             @Override
-            public void onFailure(Call<LibraryResponse> call, Throwable t) {
+            public void onFailure(Call<GoogleResponse> call, Throwable t) {
                 dialog.dismiss();
                 Toast.makeText(EditBookActivity.this, R.string.communication_error, Toast.LENGTH_LONG).show();
                 LogUtils.e(TAG, "retrofit error", t);
@@ -337,7 +362,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                         mIsbnEdit.setText(barcode);
                         searchIsbn(barcode);
                     }
-                } else if (resultCode == Activity.RESULT_CANCELED){
+                } else if (resultCode == Activity.RESULT_CANCELED) {
                     finish();
                 }
                 break;
