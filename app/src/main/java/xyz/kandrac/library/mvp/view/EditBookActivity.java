@@ -308,12 +308,21 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
                 if (response.isSuccessful() && response.body() != null && response.body().totalItems > 0) {
                     GoogleResponse.Book book = response.body().books[0];
+
+                    StringBuilder builder = new StringBuilder();
+                    for (int i = 0; i < book.volumeInfo.authors.length; i++) {
+                        if (i != 0) {
+                            builder.append(", ");
+                        }
+                        builder.append(book.volumeInfo.authors[i]);
+                    }
+
                     mTitleEdit.setText(book.volumeInfo.title);
                     mSubtitleEdit.setText(book.volumeInfo.subtitle);
-                    mAuthorEdit.setText(Arrays.toString(book.volumeInfo.authors));
+                    mAuthorEdit.setText(builder.toString());
                     mPublisherEdit.setText(book.volumeInfo.publisher);
                     mPublished.setText(book.volumeInfo.publishedDate);
-
+                    dialog.dismiss();
                 } else {
                     RetrofitConfig.getInstance().getLibraryApi().getBookByIsbn(barcode).enqueue(new Callback<LibraryResponse>() {
                         @Override
