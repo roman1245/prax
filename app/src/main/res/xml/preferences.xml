@@ -9,7 +9,6 @@
             android:title="@string/preferences_libraries_enabled_title" />
 
         <EditTextPreference
-            android:defaultValue=""
             android:key="default_library"
             android:summary="@string/preferences_libraries_default_name_description"
             android:title="@string/preferences_libraries_default_name_title" />
@@ -21,6 +20,12 @@
             android:key="conservative_enabled"
             android:summary="@string/preferences_visual_conservative_description"
             android:title="@string/preferences_visual_conservative_title" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="search_sk_cz"
+            android:summary="@string/preferences_visual_sk_cz_description"
+            android:title="@string/preferences_visual_sk_cz_title" />
     </PreferenceCategory>
 
 </PreferenceScreen>

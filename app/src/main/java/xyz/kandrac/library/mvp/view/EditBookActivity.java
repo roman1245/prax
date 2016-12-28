@@ -324,6 +324,15 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                     mPublished.setText(book.volumeInfo.publishedDate);
                     dialog.dismiss();
                 } else {
+
+                    // check SK/CZ setting
+                    if (!PreferenceManager
+                            .getDefaultSharedPreferences(EditBookActivity.this)
+                            .getBoolean(SettingsFragment.KEY_PREF_SK_CZ_ENABLED, true)) {
+                        dialog.dismiss();
+                        return;
+                    }
+
                     RetrofitConfig.getInstance().getLibraryApi().getBookByIsbn(barcode).enqueue(new Callback<LibraryResponse>() {
                         @Override
                         public void onResponse(Call<LibraryResponse> call, Response<LibraryResponse> response) {

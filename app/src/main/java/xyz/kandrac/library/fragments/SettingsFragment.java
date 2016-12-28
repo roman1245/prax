@@ -22,6 +22,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     public static final String KEY_PREF_LIBRARY_DEFAULT = "default_library";
     public static final String KEY_PREF_LIBRARY_ENABLED = "library_enabled";
     public static final String KEY_PREF_CONSERVATIVE_ENABLED = "conservative_enabled";
+    public static final String KEY_PREF_SK_CZ_ENABLED = "search_sk_cz";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

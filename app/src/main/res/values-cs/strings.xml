@@ -185,6 +185,8 @@
     <string name="preferences_visual_category">Vzhled aplikace</string>
     <string name="preferences_visual_conservative_title">Konzervativní barvy</string>
     <string name="preferences_visual_conservative_description">Povol tohle nastavení pro zobrazení jednoduchých barev v seznamech knih, autorů, vydavatelů a knihoven</string>
+    <string name="preferences_visual_sk_cz_title">Vyhledávání v SK/CZ databáze</string>
+    <string name="preferences_visual_sk_cz_description">Povol tohle nastavení pro vyhledávání v slovenské a české databáze po skenování čárového kódu (vyhledávání v Google knihách je povoleno vždy)</string>
 
     <string-array name="column_names">
         <item>Ignorovat</item>
