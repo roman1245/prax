@@ -2,17 +2,18 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android"
     android:opacity="opaque">
 
-    <item
-        android:width="64dp"
-        android:height="64dp">
+    <item>
         <shape android:shape="oval">
             <solid android:color="@color/accent" />
         </shape>
     </item>
 
     <item
-        android:width="40dp"
-        android:height="40dp"
+
+        android:bottom="8dp"
         android:drawable="@drawable/ic_unknown_user"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:left="8dp"
+        android:right="8dp"
+        android:top="8dp" />
 </layer-list>
