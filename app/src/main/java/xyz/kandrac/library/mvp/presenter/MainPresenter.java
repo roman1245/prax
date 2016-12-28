@@ -1,4 +1,4 @@
-package xyz.kandrac.library.mvpresenter;
+package xyz.kandrac.library.mvp.presenter;
 
 import android.app.LoaderManager;
 import android.content.ContentValues;
@@ -44,15 +44,15 @@ import xyz.kandrac.library.model.obj.Author;
 import xyz.kandrac.library.model.obj.Book;
 import xyz.kandrac.library.model.obj.Library;
 import xyz.kandrac.library.model.obj.Publisher;
-import xyz.kandrac.library.mviewp.MainView;
+import xyz.kandrac.library.mvp.view.MainView;
 import xyz.kandrac.library.utils.IABConfigurator;
 import xyz.kandrac.library.utils.LogUtils;
 import xyz.kandrac.library.utils.SharedPreferencesManager;
 
-import static xyz.kandrac.library.mviewp.MainActivity.WAIT_FOR_DOUBLE_CLICK_BACK;
-import static xyz.kandrac.library.mviewp.MainView.ERROR_TYPE_GOOGLE_API_CONNECTION;
-import static xyz.kandrac.library.mviewp.MainView.ERROR_TYPE_GOOGLE_SIGNIN;
-import static xyz.kandrac.library.mviewp.MainView.INFO_PRESS_AGAIN_TO_LEAVE;
+import static xyz.kandrac.library.mvp.view.MainActivity.WAIT_FOR_DOUBLE_CLICK_BACK;
+import static xyz.kandrac.library.mvp.view.MainView.ERROR_TYPE_GOOGLE_API_CONNECTION;
+import static xyz.kandrac.library.mvp.view.MainView.ERROR_TYPE_GOOGLE_SIGNIN;
+import static xyz.kandrac.library.mvp.view.MainView.INFO_PRESS_AGAIN_TO_LEAVE;
 
 /**
  * Created by jan on 6.12.2016.

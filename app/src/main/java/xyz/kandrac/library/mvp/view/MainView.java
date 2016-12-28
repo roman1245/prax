@@ -1,4 +1,4 @@
-package xyz.kandrac.library.mviewp;
+package xyz.kandrac.library.mvp.view;
 
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;

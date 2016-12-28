@@ -7,7 +7,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
 import xyz.kandrac.library.R;
-import xyz.kandrac.library.mviewp.MainActivity;
+import xyz.kandrac.library.mvp.view.MainActivity;
 import xyz.kandrac.library.utils.SharedPreferencesManager;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;

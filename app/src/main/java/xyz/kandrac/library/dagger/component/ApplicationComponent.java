@@ -4,7 +4,7 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 import xyz.kandrac.library.dagger.module.ApplicationModule;
-import xyz.kandrac.library.mvpresenter.MainPresenter;
+import xyz.kandrac.library.mvp.presenter.MainPresenter;
 
 /**
  * Created by jan on 28.10.2016.

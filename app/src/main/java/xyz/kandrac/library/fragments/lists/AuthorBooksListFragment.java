@@ -27,7 +27,7 @@ import xyz.kandrac.library.Searchable;
 import xyz.kandrac.library.fragments.SettingsFragment;
 import xyz.kandrac.library.model.Contract;
 import xyz.kandrac.library.model.obj.Author;
-import xyz.kandrac.library.mviewp.MainActivity;
+import xyz.kandrac.library.mvp.view.MainActivity;
 
 /**
  * List of authors displayed in this fragment is based on data stored in

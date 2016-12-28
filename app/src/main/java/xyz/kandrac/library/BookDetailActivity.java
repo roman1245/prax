@@ -41,6 +41,7 @@ import xyz.kandrac.library.model.obj.Borrowed;
 import xyz.kandrac.library.model.obj.BorrowedToMe;
 import xyz.kandrac.library.model.obj.Library;
 import xyz.kandrac.library.model.obj.Publisher;
+import xyz.kandrac.library.mvp.view.EditBookActivity;
 import xyz.kandrac.library.utils.LogUtils;
 
 /**

@@ -5,7 +5,7 @@ import javax.inject.Singleton;
 import dagger.Component;
 import xyz.kandrac.library.dagger.module.ApplicationModule;
 import xyz.kandrac.library.dagger.module.NetModule;
-import xyz.kandrac.library.mviewp.MainActivity;
+import xyz.kandrac.library.mvp.view.MainActivity;
 
 /**
  * Every Dagger component is used to create dependency graph and have to define which

@@ -1,4 +1,4 @@
-package xyz.kandrac.library.mviewp;
+package xyz.kandrac.library.mvp.view;
 
 import android.app.Fragment;
 import android.content.Intent;
@@ -42,7 +42,7 @@ import xyz.kandrac.library.fragments.lists.BookListFragment;
 import xyz.kandrac.library.fragments.lists.LibraryBooksListFragment;
 import xyz.kandrac.library.fragments.lists.PublisherBooksListFragment;
 import xyz.kandrac.library.model.Contract;
-import xyz.kandrac.library.mvpresenter.MainPresenter;
+import xyz.kandrac.library.mvp.presenter.MainPresenter;
 import xyz.kandrac.library.utils.LogUtils;
 import xyz.kandrac.library.views.DummyDrawerCallback;
 

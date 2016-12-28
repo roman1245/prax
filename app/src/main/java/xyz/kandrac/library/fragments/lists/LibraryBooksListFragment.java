@@ -27,7 +27,7 @@ import xyz.kandrac.library.Searchable;
 import xyz.kandrac.library.fragments.SettingsFragment;
 import xyz.kandrac.library.model.Contract;
 import xyz.kandrac.library.model.obj.Library;
-import xyz.kandrac.library.mviewp.MainActivity;
+import xyz.kandrac.library.mvp.view.MainActivity;
 
 /**
  * Created by kandrac on 22/10/15.

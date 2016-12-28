@@ -16,11 +16,11 @@ import android.widget.TextView;
 
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
-import xyz.kandrac.library.EditBookActivity;
+import xyz.kandrac.library.mvp.view.EditBookActivity;
 import xyz.kandrac.library.R;
 import xyz.kandrac.library.Searchable;
 import xyz.kandrac.library.flow.importwizard.ImportWizardActivity;
-import xyz.kandrac.library.mviewp.MainActivity;
+import xyz.kandrac.library.mvp.view.MainActivity;
 import xyz.kandrac.library.utils.BookCursorAdapter;
 
 import static xyz.kandrac.library.R.id.action_import_add;

@@ -1,4 +1,4 @@
-package xyz.kandrac.library;
+package xyz.kandrac.library.mvp.view;
 
 import android.Manifest;
 import android.app.Activity;
@@ -53,6 +53,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import xyz.kandrac.barcode.BarcodeActivity;
+import xyz.kandrac.library.BuildConfig;
+import xyz.kandrac.library.R;
 import xyz.kandrac.library.api.RetrofitConfig;
 import xyz.kandrac.library.api.google.GoogleResponse;
 import xyz.kandrac.library.api.library.LibraryResponse;

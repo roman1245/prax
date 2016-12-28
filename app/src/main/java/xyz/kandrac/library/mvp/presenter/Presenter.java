@@ -1,4 +1,4 @@
-package xyz.kandrac.library.mvpresenter;
+package xyz.kandrac.library.mvp.presenter;
 
 /**
  * Cornerstone for Presenter part of MVP architecture. Interface is inspired by
