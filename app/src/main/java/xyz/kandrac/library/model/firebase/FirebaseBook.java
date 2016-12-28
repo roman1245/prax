@@ -1,6 +1,7 @@
 package xyz.kandrac.library.model.firebase;
 
 import com.google.firebase.database.IgnoreExtraProperties;
+import com.google.firebase.database.PropertyName;
 
 /**
  * Created by jan on 23.10.2016.
@@ -8,20 +9,35 @@ import com.google.firebase.database.IgnoreExtraProperties;
 @IgnoreExtraProperties
 public class FirebaseBook {
 
+    @PropertyName("updatedAt")
     public long updatedAt;
+    @PropertyName("title")
     public String title;
+    @PropertyName("isbn")
     public String isbn;
+    @PropertyName("description")
     public String description;
+    @PropertyName("subtitle")
     public String subtitle;
+    @PropertyName("published")
     public String published;
+    @PropertyName("authors")
     public String authors;
+    @PropertyName("publisher")
     public String publisher;
+    @PropertyName("library")
     public String library;
+    @PropertyName("wishlist")
     public boolean wishlist;
+    @PropertyName("borrowedToName")
     public String borrowedToName;
+    @PropertyName("borrowedWhen")
     public long borrowedWhen;
+    @PropertyName("borrowNotify")
     public long borrowNotify;
+    @PropertyName("borrowedToMeName")
     public String borrowedToMeName;
+    @PropertyName("borrowedToMeWhen")
     public long borrowedToMeWhen;
 
     public FirebaseBook() {
