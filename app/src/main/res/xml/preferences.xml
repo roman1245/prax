@@ -26,6 +26,11 @@
             android:key="search_sk_cz"
             android:summary="@string/preferences_visual_sk_cz_description"
             android:title="@string/preferences_visual_sk_cz_title" />
+
+        <Preference
+            android:key="privacy_policy"
+            android:title="@string/preferences_visual_privacy_title" />
     </PreferenceCategory>
+
 
 </PreferenceScreen>

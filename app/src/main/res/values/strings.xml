@@ -187,6 +187,7 @@
     <string name="preferences_visual_conservative_description">Enable this setting to display simple colors in lists of books, authors, publishers and libraries</string>
     <string name="preferences_visual_sk_cz_title">Search SK/CZ database</string>
     <string name="preferences_visual_sk_cz_description">Enable this setting to search in Slovak and Czech books after barcode scan (Google Books search is enabled always)</string>
+    <string name="preferences_visual_privacy_title">Privacy Policy</string>
 
     <string-array name="column_names">
         <item>Ignore</item>

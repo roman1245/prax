@@ -187,6 +187,7 @@
     <string name="preferences_visual_conservative_description">Povoľ toto nastavenie pre zobrazenie jednoduchých farieb v zoznamoch kníh, autorov, vydavateľov a knižníc</string>
     <string name="preferences_visual_sk_cz_title">Vyhľadávanie SK/CZ databáze</string>
     <string name="preferences_visual_sk_cz_description">Povoľ toto nastavenie pre vyhľadávanie v databáze slovenských a českých kníh po načítaní čiarového kódu (vyhľadávanie v Google knihách je povolené vždy)</string>
+    <string name="preferences_visual_privacy_title">Ochrana osobných údajov</string>
 
     <string-array name="column_names">
         <item>Ignorovať</item>
