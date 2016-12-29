@@ -360,6 +360,11 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
     public void configureIAB() {
         configurator = new IABConfigurator(view.getActivity(), this);
         if (mAuth.getCurrentUser() != null) {
+            String email = mAuth.getCurrentUser().getEmail();
+            if (email != null && !BuildConfig.DEBUG) {
+                // in release let this user to have full access to drive functions
+                configurator.setAdmin(email.equals("kandrac.jan@gmail.com"));
+            }
             configurator.start();
         }
     }

@@ -26,6 +26,7 @@ public class IABConfigurator {
 
     private IabHelper mHelper;
     private PurchasedListener mListener;
+    private boolean mAdmin;
 
     public void consume(String sku) {
         // querying inventory on main thread is dangerous, but this is only visible for debug
@@ -47,6 +48,10 @@ public class IABConfigurator {
 
     public interface PurchasedListener {
         void onDrivePurchased(boolean purchased);
+    }
+
+    public void setAdmin(boolean isAdmin) {
+        mAdmin = isAdmin;
     }
 
     public IABConfigurator(Context context, PurchasedListener listener) {
@@ -82,7 +87,11 @@ public class IABConfigurator {
                     if (result.isFailure()) {
                         LogUtils.d(LOG_TAG, "error getting inventory: " + result);
                     } else {
-                        mListener.onDrivePurchased(inventory.hasPurchase(BillingSkus.getDriveSku()));
+                        if (mAdmin) {
+                            mListener.onDrivePurchased(true);
+                        } else {
+                            mListener.onDrivePurchased(inventory.hasPurchase(BillingSkus.getDriveSku()));
+                        }
                     }
                 }
             });
@@ -96,6 +105,12 @@ public class IABConfigurator {
             mHelper.launchPurchaseFlow(activity, sku, PURCHASE_DRIVE_REQUEST, new IabHelper.OnIabPurchaseFinishedListener() {
                 @Override
                 public void onIabPurchaseFinished(IabResult result, Purchase info) {
+
+                    if (mAdmin) {
+                        mListener.onDrivePurchased(true);
+                        return;
+                    }
+
                     if (result.isFailure() && result.getResponse() != 7) {
                         LogUtils.d(LOG_TAG, "Error purchasing: " + result);
                     } else if (info.getSku().equals(BillingSkus.getDriveSku())) {
