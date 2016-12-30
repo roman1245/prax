@@ -8,6 +8,7 @@
         <item name="android:windowSoftInputMode">stateHidden</item>
         <item name="alertDialogTheme">@style/AppCompatAlertDialogStyle</item>
         <item name="dialogTheme">@style/AppCompatAlertDialogStyle</item>
+        <item name="windowActionModeOverlay">true</item>
     </style>
 
     <style name="AppTheme.Variant" parent="AppTheme">

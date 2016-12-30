@@ -8,11 +8,16 @@ import android.support.design.internal.NavigationMenu;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
@@ -32,7 +37,7 @@ import static xyz.kandrac.library.utils.BookCursorAdapter.TRUE;
  * <p/>
  * Created by kandrac on 20/10/15.
  */
-public class BookListFragment extends Fragment implements Searchable, BookCursorAdapter.CursorSizeChangedListener {
+public class BookListFragment extends Fragment implements Searchable, BookCursorAdapter.AdapterChangedListener {
 
     private static final String EXTRA_WISH_LIST = "wish_list";
     private static final String EXTRA_BORROWED = "borrowed";
@@ -56,6 +61,8 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
     private TextView mEmpty;
 
     private BookCursorAdapter adapter;
+
+    public ActionMode mActionMode;
 
     /**
      * Get instance of {@link BookListFragment}
@@ -239,4 +246,55 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
             mEmpty.setVisibility(View.GONE);
         }
     }
+
+    @Override
+    public void onMultiSelectStart() {
+        getActivity().startActionMode(mActionModeCallback);
+    }
+
+    @Override
+    public void onMultiSelectEnd() {
+        if (mActionMode != null) {
+            mActionMode.finish();
+        }
+    }
+
+    public ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+
+        // Called when the action mode is created; startActionMode() was called
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            // Inflate a menu resource providing context menu items
+            mActionMode = mode;
+            MenuInflater inflater = mode.getMenuInflater();
+            inflater.inflate(R.menu.multi_select_menu, menu);
+            return true;
+        }
+
+        // Called each time the action mode is shown. Always called after onCreateActionMode, but
+        // may be called multiple times if the mode is invalidated.
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.action_delete:
+                    Toast.makeText(getActivity(), "delete all", Toast.LENGTH_SHORT).show();
+                    mode.finish();
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        // Called when the user exits the action mode
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            adapter.closeMultiSelect();
+            mActionMode = null;
+        }
+    };
 }

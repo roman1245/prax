@@ -1,17 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- item is not yet selected but is pressed - elevate -->
     <item
         android:state_enabled="true"
-        android:state_pressed="true">
+        android:state_pressed="true"
+        android:state_selected="false">
+
         <objectAnimator
             android:duration="@android:integer/config_shortAnimTime"
             android:propertyName="translationZ"
             android:valueTo="8dp" />
     </item>
-    <item>
+
+    <!-- item is already selected and pressed - decrease elevation -->
+    <item
+        android:state_enabled="true"
+        android:state_pressed="true"
+        android:state_selected="true">
+
         <objectAnimator
             android:duration="@android:integer/config_shortAnimTime"
             android:propertyName="translationZ"
             android:valueTo="0dp" />
+    </item>
+
+    <!-- item is not selected and selection was not completed - elevate back -->
+    <item android:state_selected="false">
+        <objectAnimator
+            android:duration="@android:integer/config_shortAnimTime"
+            android:propertyName="translationZ"
+            android:valueTo="0dp" />
+    </item>
+
+    <!-- item is selected but unselection was not completed - elevate back -->
+    <item android:state_selected="true">
+        <objectAnimator
+            android:duration="@android:integer/config_shortAnimTime"
+            android:propertyName="translationZ"
+            android:valueTo="8dp" />
     </item>
 </selector>
