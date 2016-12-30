@@ -22,11 +22,11 @@ ext {
     minSdkVersion = 16
     targetSdkVersion = 25
     compileSdkVersion = 25
-    buildToolsVersion = '24.0.3'
+    buildToolsVersion = '25.0.1'
 
     // App dependencies
     playServicesVersion = '10.0.1'
-    supportLibraryVersion = '25.0.1'
+    supportLibraryVersion = '25.1.0'
     firebaseVersion = '9.6.1'
 
     junitVersion = '4.12'
