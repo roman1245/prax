@@ -21,7 +21,6 @@ android {
         buildConfigField 'String', 'GOOGLE_BOOKS_API_URL', '"https://www.googleapis.com"'
         buildConfigField 'String', 'LIBRARY_API_URL', '"http://kandrac.xyz"'
         buildConfigField 'String', 'APP_PUBLIC_KEY', '""'
-        buildConfigField 'String', 'GOOGLE_TOKEN', '"958496077479-k98j56dm8cm42ltmrtvl7n452g73f6l5.apps.googleusercontent.com"';
 
         vectorDrawables.useSupportLibrary = true
         manifestPlaceholders = [databaseAuthority    : "xyz.kandrac.library",
@@ -50,7 +49,7 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
-            buildConfigField 'String', 'GOOGLE_SIGN_TOKEN', '"958496077479-j3e710esiqdgpfocf26pj257iev8tbe8.apps.googleusercontent.com"'
+            buildConfigField 'String', 'GOOGLE_TOKEN', '"958496077479-k98j56dm8cm42ltmrtvl7n452g73f6l5.apps.googleusercontent.com"'
             buildConfigField 'String', 'GOOGLE_API_KEY', '"AIzaSyB856kGT7z6lYo_99pikNEGs1jFaCCltxs"'
         }
 
@@ -62,7 +61,7 @@ android {
                     'proguard-rules-debug.pro'
 
             // Database authorities definitions
-            buildConfigField 'String', 'GOOGLE_SIGN_TOKEN', '"958496077479-99fu3itr0squ1oplpivqqbahl7544uv0.apps.googleusercontent.com"'
+            buildConfigField 'String', 'GOOGLE_TOKEN', '"484886958517-1uk79pdo3readop5cgdj7lnbo95jd2i9.apps.googleusercontent.com"'
             buildConfigField 'String', 'DATABASE_AUTHORITY', '"xyz.kandrac.library.debug"'
             buildConfigField 'String', 'GOOGLE_API_KEY', '"AIzaSyBhGenifD9XgRW8q-rzEKyo3KlplHAf8J8"'
             buildConfigField 'String', 'FILE_PROVIDER_AUTHORITY', '"xyz.kandrac.library.files.debug"'
