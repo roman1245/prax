@@ -293,15 +293,6 @@ public class BookDetailBasicFragment extends Fragment implements LoaderManager.L
                             .setPositiveButton(R.string.dialog_return_book_positive, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    FirebaseAuth auth = ((BookDetailActivity) getActivity()).mAuth;
-
-                                    if (auth.getCurrentUser() != null) {
-                                        FirebaseDatabase.getInstance().getReference()
-                                                .child(References.USERS_REFERENCE).child(auth.getCurrentUser().getUid())
-                                                .child(References.BOOKS_REFERENCE).child(book.firebaseReference)
-                                                .removeValue();
-                                    }
-                                    getActivity().getContentResolver().delete(Contract.BorrowMeInfo.buildUri(borrowedToMe.id), null, null);
                                     getActivity().getContentResolver().delete(Contract.Books.buildBookUri(mBookId), null, null);
                                     dialog.dismiss();
                                     getActivity().finish();

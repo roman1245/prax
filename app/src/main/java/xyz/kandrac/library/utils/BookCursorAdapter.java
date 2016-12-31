@@ -362,22 +362,10 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
     }
 
     public void deleteSelectedBooks (Context context) {
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-
         for (int position : selectedPositions) {
             mCursor.moveToPosition(position);
             long id = mCursor.getLong(mCursor.getColumnIndex(Contract.Books.BOOK_ID));
-            String firebaseId = mCursor.getString(mCursor.getColumnIndex(Contract.Books.BOOK_REFERENCE));
-
             context.getContentResolver().delete(Contract.Books.buildBookUri(id), null, null);
-
-            if (auth.getCurrentUser() != null) {
-                FirebaseDatabase.getInstance().getReference()
-                        .child(References.USERS_REFERENCE).child(auth.getCurrentUser().getUid())
-                        .child(References.BOOKS_REFERENCE).child(firebaseId)
-                        .removeValue();
-            }
-
             notifyItemRemoved(position);
         }
         mListener.onMultiSelectEnd();

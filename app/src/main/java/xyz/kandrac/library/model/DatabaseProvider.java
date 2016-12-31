@@ -12,6 +12,10 @@ import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
+
+import xyz.kandrac.library.model.firebase.References;
 import xyz.kandrac.library.utils.LogUtils;
 
 /**
@@ -23,6 +27,7 @@ public class DatabaseProvider extends ContentProvider {
     private static final String LOG_TAG = DatabaseProvider.class.getName();
 
     private Database databaseHelper;
+    private FirebaseAuth mFirebaseAuth;
 
     private static final UriMatcher uriMatcher = buildUriMatcher();
 
@@ -107,6 +112,7 @@ public class DatabaseProvider extends ContentProvider {
     public boolean onCreate() {
         final Context context = getContext();
         databaseHelper = new Database(context);
+        mFirebaseAuth = FirebaseAuth.getInstance();
         return true;
     }
 
@@ -466,9 +472,29 @@ public class DatabaseProvider extends ContentProvider {
             }
             case BOOK_ID: {
                 long id = Contract.Books.getBookId(uri);
+
+                // clear cloud data first
+                if (mFirebaseAuth.getCurrentUser() != null) {
+
+                    Cursor firebaseCursor = db.query(Database.Tables.BOOKS, new String[]{Contract.Books.BOOK_REFERENCE}, Contract.Books.BOOK_ID + " = ?", new String[]{Long.toString(id)}, null, null, null);
+
+                    if (firebaseCursor.moveToFirst()) {
+                        String firebaseId = firebaseCursor.getString(firebaseCursor.getColumnIndex(Contract.Books.BOOK_REFERENCE));
+                        firebaseCursor.close();
+
+                        if (!TextUtils.isEmpty(firebaseId)) {
+                            FirebaseDatabase.getInstance().getReference()
+                                    .child(References.USERS_REFERENCE).child(mFirebaseAuth.getCurrentUser().getUid())
+                                    .child(References.BOOKS_REFERENCE).child(firebaseId)
+                                    .removeValue();
+                        }
+                    }
+                }
+
                 count = db.delete(Database.Tables.BOOKS, Contract.Books.BOOK_ID + " = " + id +
                         (!TextUtils.isEmpty(selection) ? " AND (" + selection + ')' : ""), selectionArgs);
                 count += db.delete(Database.Tables.BORROW_INFO, Contract.BorrowInfo.BORROW_BOOK_ID + " = ?", new String[]{Long.toString(id)});
+                count += db.delete(Database.Tables.BORROW_ME, Contract.BorrowMeInfo.BORROW_BOOK_ID + " = ?", new String[]{Long.toString(id)});
                 getContext().getContentResolver().notifyChange(Contract.Books.CONTENT_URI, null);
                 getContext().getContentResolver().notifyChange(Contract.BOOKS_AUTHORS_URI, null);
                 break;
