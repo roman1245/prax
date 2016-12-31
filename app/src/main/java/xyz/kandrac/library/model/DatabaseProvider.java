@@ -590,6 +590,7 @@ public class DatabaseProvider extends ContentProvider {
             }
             case BOOK_ID: {
                 long id = Contract.Books.getBookId(uri);
+                values.put(Contract.Books.BOOK_UPDATED_AT, System.currentTimeMillis());
                 count = db.update(Database.Tables.BOOKS, values, Contract.Books.BOOK_ID + " = ?", new String[]{Long.toString(id)});
                 getContext().getContentResolver().notifyChange(Contract.Books.CONTENT_URI, null);
                 getContext().getContentResolver().notifyChange(Contract.BOOKS_AUTHORS_URI, null);

@@ -36,6 +36,10 @@
     <string name="action_add_bulk">Hromadné vkladanie</string>
     <string name="action_add_scan">Skenovanie čiarového kódu</string>
     <string name="action_add_single">Pridať knihu</string>
+
+    <string name="action_change_author">Zmeniť autora</string>
+    <string name="action_change_publisher">Zmeniť vydavateľa</string>
+    <string name="action_change_library">Zmeniť knižnicu</string>
     <!-- Placeholders -->
     <string name="author_unknown">Neznámy autor</string>
     <string name="publisher_unknown">Neznámy vydavateľ</string>

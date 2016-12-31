@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.internal.NavigationMenu;
 import android.support.design.widget.FloatingActionButton;
@@ -23,6 +24,7 @@ import android.widget.Toast;
 
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
+import xyz.kandrac.library.fragments.SettingsFragment;
 import xyz.kandrac.library.mvp.view.EditBookActivity;
 import xyz.kandrac.library.R;
 import xyz.kandrac.library.Searchable;
@@ -270,6 +272,10 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
             mActionMode = mode;
             MenuInflater inflater = mode.getMenuInflater();
             inflater.inflate(R.menu.multi_select_menu, menu);
+
+            boolean enabled = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean(SettingsFragment.KEY_PREF_LIBRARY_ENABLED, true);
+            menu.findItem(R.id.action_change_library).setVisible(enabled);
+
             return true;
         }
 
@@ -298,6 +304,15 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
                             })
                             .setNegativeButton(R.string.action_cancel, null)
                             .show();
+                    return true;
+                case R.id.action_change_author:
+                    adapter.changeSelectedBooksAuthor(getActivity(), "author1");
+                    return true;
+                case R.id.action_change_library:
+                    adapter.changeSelectedBooksLibrary(getActivity(), "libraryr");
+                    return true;
+                case R.id.action_change_publisher:
+                    adapter.changeSelectedBooksPublisher(getActivity(), "publisherr");
                     return true;
                 default:
                     return false;

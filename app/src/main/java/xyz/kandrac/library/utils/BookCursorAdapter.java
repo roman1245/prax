@@ -2,6 +2,7 @@ package xyz.kandrac.library.utils;
 
 import android.app.Activity;
 import android.app.LoaderManager;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -33,8 +34,12 @@ import xyz.kandrac.library.R;
 import xyz.kandrac.library.fragments.SettingsFragment;
 import xyz.kandrac.library.model.Contract;
 import xyz.kandrac.library.model.Database;
+import xyz.kandrac.library.model.DatabaseStoreUtils;
 import xyz.kandrac.library.model.DatabaseUtils;
 import xyz.kandrac.library.model.firebase.References;
+import xyz.kandrac.library.model.obj.Author;
+import xyz.kandrac.library.model.obj.Library;
+import xyz.kandrac.library.model.obj.Publisher;
 
 /**
  * Adapter for {@link RecyclerView} that automatically handles requests for books based on 5
@@ -361,7 +366,11 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
         notifyDataSetChanged();
     }
 
-    public void deleteSelectedBooks (Context context) {
+    /**
+     * Delete selected books and end multi select after
+     * @param context to delete books from
+     */
+    public void deleteSelectedBooks(Context context) {
         for (int position : selectedPositions) {
             mCursor.moveToPosition(position);
             long id = mCursor.getLong(mCursor.getColumnIndex(Contract.Books.BOOK_ID));
@@ -369,6 +378,52 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
             notifyItemRemoved(position);
         }
         mListener.onMultiSelectEnd();
+    }
+
+    public void changeSelectedBooksAuthor(Context context, String value) {
+        for (int position : selectedPositions) {
+            mCursor.moveToPosition(position);
+            long id = mCursor.getLong(mCursor.getColumnIndex(Contract.Books.BOOK_ID));
+            DatabaseStoreUtils.deleteBookAuthor(context.getContentResolver(), id);
+
+            String[] authorsSplit = TextUtils.split(value, ",");
+
+            for (String anAuthorsSplit : authorsSplit) {
+                String authorName = anAuthorsSplit.trim();
+
+                long authorId = DatabaseStoreUtils.saveAuthor(context.getContentResolver(), new Author.Builder().setName(authorName).build());
+                DatabaseStoreUtils.saveBookAuthor(context.getContentResolver(), id, authorId);
+            }
+
+            context.getContentResolver().update(Contract.Books.buildBookUri(id), new ContentValues(), null, null);
+            notifyItemRemoved(position);
+        }
+    }
+
+    public void changeSelectedBooksPublisher(Context context, String value) {
+        for (int position : selectedPositions) {
+            mCursor.moveToPosition(position);
+            long publisherId = DatabaseStoreUtils.savePublisher(context.getContentResolver(), new Publisher.Builder().setName(value).build());
+            long id = mCursor.getLong(mCursor.getColumnIndex(Contract.Books.BOOK_ID));
+
+            ContentValues cv = new ContentValues();
+            cv.put(Contract.Books.BOOK_PUBLISHER_ID, publisherId);
+            context.getContentResolver().update(Contract.Books.buildBookUri(id), cv, null, null);
+            notifyItemRemoved(position);
+        }
+    }
+
+    public void changeSelectedBooksLibrary(Context context, String value) {
+        for (int position : selectedPositions) {
+            mCursor.moveToPosition(position);
+            long libraryId = DatabaseStoreUtils.saveLibrary(context.getContentResolver(), new Library.Builder().setName(value).build());
+            long id = mCursor.getLong(mCursor.getColumnIndex(Contract.Books.BOOK_ID));
+
+            ContentValues cv = new ContentValues();
+            cv.put(Contract.Books.BOOK_PUBLISHER_ID, libraryId);
+            context.getContentResolver().update(Contract.Books.buildBookUri(id), cv, null, null);
+            notifyItemRemoved(position);
+        }
     }
 
     /**
