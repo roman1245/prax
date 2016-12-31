@@ -284,9 +284,11 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.action_delete:
+                    int bookCount = adapter.getSelectedItemCount();
+
                     new AlertDialog.Builder(getActivity())
                             .setTitle(R.string.book_list_delete_title)
-                            .setMessage(getString(R.string.book_list_delete_message, adapter.getSelectedItemCount()))
+                            .setMessage(getResources().getQuantityString(R.plurals.book_list_delete_message, bookCount, bookCount))
                             .setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {

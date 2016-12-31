@@ -52,7 +52,11 @@
     <string name="library_list_empty">Zoznam knižníc je zatiaľ prázdny.\nPrvá knižnica sa zobrazí pri prvom pridaní knihy.</string>
     <!-- Lists -->
     <string name="book_list_delete_title">Vymazať knihy</string>
-    <string name="book_list_delete_message">Naozaj chcete vymazať %d kníh?</string>
+    <plurals name="book_list_delete_message">
+        <item quantity="one">Naozaj chcete vymazať %d knihu?</item>
+        <item quantity="few">Naozaj chcete vymazať %d knihy?</item>
+        <item quantity="other">Naozaj chcete vymazať %d kníh?</item>
+    </plurals>
     <!-- Edit/Input Book Screen -->
     <string name="edit_book_author">Autori</string>
     <string name="edit_book_publisher">Vydavateľ</string>

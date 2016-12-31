@@ -52,7 +52,10 @@
     <string name="library_list_empty">the library list is currently empty. Libraries will appear with the addition of the first book.</string>
     <!-- Lists -->
     <string name="book_list_delete_title">Delete books</string>
-    <string name="book_list_delete_message">Are you sure you want to delete %d books?</string>
+    <plurals name="book_list_delete_message">
+        <item quantity="one">Are you sure you want to delete %d book?</item>
+        <item quantity="other">Are you sure you want to delete %d books?</item>
+    </plurals>
     <!-- Edit/Input Book Screen -->
     <string name="edit_book_author">Author</string>
     <string name="edit_book_publisher">Publisher</string>
