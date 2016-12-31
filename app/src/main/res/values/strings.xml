@@ -50,6 +50,9 @@
     <string name="author_list_empty">The list of authors is currently empty. \nAuthors will appear with the addition of the first book.</string>
     <string name="publisher_list_empty">The list of publishers is currently empty. \nPublishers will appear with the addition of the first book.</string>
     <string name="library_list_empty">the library list is currently empty. Libraries will appear with the addition of the first book.</string>
+    <!-- Lists -->
+    <string name="book_list_delete_title">Delete books</string>
+    <string name="book_list_delete_message">Are you sure you want to delete %d books?</string>
     <!-- Edit/Input Book Screen -->
     <string name="edit_book_author">Author</string>
     <string name="edit_book_publisher">Publisher</string>

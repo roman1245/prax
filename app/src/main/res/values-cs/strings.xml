@@ -50,6 +50,9 @@
     <string name="author_list_empty">Seznam autorů je zatím prázdný. První autoři se zobrazí s prvním přidáním knihy.</string>
     <string name="publisher_list_empty">Seznam vydavatelů je zatím prázdný. První vydavatelé se zobrazí s prvním přidáním knihy.</string>
     <string name="library_list_empty">Seznam knihoven je zatím prázdný. První knihovna se zobrazí při prvním přidání knihy.</string>
+    <!-- Lists -->
+    <string name="book_list_delete_title">Vymazat knihy</string>
+    <string name="book_list_delete_message">Opravdu chcete vymazat %d knih?</string>
     <!-- Edit/Input Book Screen -->
     <string name="edit_book_author">Autoři</string>
     <string name="edit_book_publisher">Vydavatel</string>

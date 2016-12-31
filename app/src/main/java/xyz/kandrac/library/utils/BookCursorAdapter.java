@@ -19,6 +19,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -31,6 +34,7 @@ import xyz.kandrac.library.fragments.SettingsFragment;
 import xyz.kandrac.library.model.Contract;
 import xyz.kandrac.library.model.Database;
 import xyz.kandrac.library.model.DatabaseUtils;
+import xyz.kandrac.library.model.firebase.References;
 
 /**
  * Adapter for {@link RecyclerView} that automatically handles requests for books based on 5
@@ -123,6 +127,7 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
             Contract.Books.BOOK_BORROWED,
             Contract.Books.BOOK_BORROWED_TO_ME,
             Contract.Books.BOOK_IMAGE_FILE,
+            Contract.Books.BOOK_REFERENCE,
             DatabaseUtils.getConcat(Contract.Authors.AUTHOR_NAME, Contract.ConcatAliases.AUTHORS_CONCAT_ALIAS)};
 
     private Cursor mCursor;                         // Cursor with current data
@@ -290,6 +295,10 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
         }
     }
 
+    public int getSelectedItemCount() {
+        return selectedPositions.size();
+    }
+
     private class MultiSelectLongClickListener implements View.OnLongClickListener {
 
         int position;
@@ -350,6 +359,28 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
     public void closeMultiSelect() {
         selectedPositions.clear();
         notifyDataSetChanged();
+    }
+
+    public void deleteSelectedBooks (Context context) {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+
+        for (int position : selectedPositions) {
+            mCursor.moveToPosition(position);
+            long id = mCursor.getLong(mCursor.getColumnIndex(Contract.Books.BOOK_ID));
+            String firebaseId = mCursor.getString(mCursor.getColumnIndex(Contract.Books.BOOK_REFERENCE));
+
+            context.getContentResolver().delete(Contract.Books.buildBookUri(id), null, null);
+
+            if (auth.getCurrentUser() != null) {
+                FirebaseDatabase.getInstance().getReference()
+                        .child(References.USERS_REFERENCE).child(auth.getCurrentUser().getUid())
+                        .child(References.BOOKS_REFERENCE).child(firebaseId)
+                        .removeValue();
+            }
+
+            notifyItemRemoved(position);
+        }
+        mListener.onMultiSelectEnd();
     }
 
     /**

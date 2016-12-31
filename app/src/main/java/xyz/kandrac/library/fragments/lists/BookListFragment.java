@@ -1,11 +1,13 @@
 package xyz.kandrac.library.fragments.lists;
 
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.internal.NavigationMenu;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -282,8 +284,18 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.action_delete:
-                    Toast.makeText(getActivity(), "delete all", Toast.LENGTH_SHORT).show();
-                    mode.finish();
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle(R.string.book_list_delete_title)
+                            .setMessage(getString(R.string.book_list_delete_message, adapter.getSelectedItemCount()))
+                            .setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    adapter.deleteSelectedBooks(getActivity());
+                                    dialogInterface.dismiss();
+                                }
+                            })
+                            .setNegativeButton(R.string.action_cancel, null)
+                            .show();
                     return true;
                 default:
                     return false;
