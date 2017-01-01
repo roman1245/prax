@@ -37,6 +37,7 @@
     <string name="action_add_scan">Skenování čárového kódu</string>
     <string name="action_add_single">Přidat knihu</string>
 
+    <string name="action_change">Změnit</string>
     <string name="action_change_author">Změnit autora</string>
     <string name="action_change_publisher">Změnit vydavatele</string>
     <string name="action_change_library">Změnit knihovnu</string>

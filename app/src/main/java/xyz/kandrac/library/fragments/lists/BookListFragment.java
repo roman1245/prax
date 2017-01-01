@@ -19,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +32,7 @@ import xyz.kandrac.library.Searchable;
 import xyz.kandrac.library.flow.importwizard.ImportWizardActivity;
 import xyz.kandrac.library.mvp.view.MainActivity;
 import xyz.kandrac.library.utils.BookCursorAdapter;
+import xyz.kandrac.library.utils.EditTextDialog;
 
 import static xyz.kandrac.library.R.id.action_import_add;
 import static xyz.kandrac.library.utils.BookCursorAdapter.TRUE;
@@ -306,20 +308,47 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
                             .show();
                     return true;
                 case R.id.action_change_author:
-                    adapter.changeSelectedBooksAuthor(getActivity(), "author1");
+                    EditTextDialog
+                            .create(getActivity(), getString(R.string.action_change), new EditTextDialog.OnPositiveActionListener() {
+                                @Override
+                                public void onPositiveAction(DialogInterface dialogInterface, String text) {
+                                    adapter.changeSelectedBooksAuthor(getActivity(), text);
+                                }
+                            })
+                            .setTitle(R.string.action_change_author)
+                            .setNegativeButton(R.string.action_cancel, null)
+                            .show();
                     return true;
                 case R.id.action_change_library:
-                    adapter.changeSelectedBooksLibrary(getActivity(), "libraryr");
+                    EditTextDialog
+                            .create(getActivity(), getString(R.string.action_change), new EditTextDialog.OnPositiveActionListener() {
+                                @Override
+                                public void onPositiveAction(DialogInterface dialogInterface, String text) {
+                                    adapter.changeSelectedBooksLibrary(getActivity(), text);
+                                }
+                            })
+                            .setTitle(R.string.action_change_library)
+                            .setNegativeButton(R.string.action_cancel, null)
+                            .show();
                     return true;
                 case R.id.action_change_publisher:
-                    adapter.changeSelectedBooksPublisher(getActivity(), "publisherr");
+                    EditTextDialog
+                            .create(getActivity(), getString(R.string.action_change), new EditTextDialog.OnPositiveActionListener() {
+                                @Override
+                                public void onPositiveAction(DialogInterface dialogInterface, String text) {
+                                    adapter.changeSelectedBooksPublisher(getActivity(), text);
+                                }
+                            })
+                            .setTitle(R.string.action_change_publisher)
+                            .setNegativeButton(R.string.action_cancel, null)
+                            .show();
                     return true;
                 default:
                     return false;
             }
         }
 
-        // Called when the user exits the action mode
+        // Called when the user leaves the action mode
         @Override
         public void onDestroyActionMode(ActionMode mode) {
             adapter.closeMultiSelect();

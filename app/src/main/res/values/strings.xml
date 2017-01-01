@@ -37,6 +37,7 @@
     <string name="action_add_scan">Scan book barcode</string>
     <string name="action_add_single">Add single book</string>
 
+    <string name="action_change">Change</string>
     <string name="action_change_author">Change author</string>
     <string name="action_change_publisher">Change publisher</string>
     <string name="action_change_library">Change library</string>
