@@ -26,6 +26,7 @@ import android.widget.Toast;
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 import xyz.kandrac.library.fragments.SettingsFragment;
+import xyz.kandrac.library.model.Contract;
 import xyz.kandrac.library.mvp.view.EditBookActivity;
 import xyz.kandrac.library.R;
 import xyz.kandrac.library.Searchable;
@@ -308,8 +309,10 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
                             .show();
                     return true;
                 case R.id.action_change_author:
-                    EditTextDialog
-                            .create(getActivity(), getString(R.string.action_change), new EditTextDialog.OnPositiveActionListener() {
+                    new EditTextDialog.Builder(getActivity())
+                            .setAutocompleteUri(Contract.Authors.CONTENT_URI)
+                            .setAutocompleteColumn(Contract.Authors.AUTHOR_NAME)
+                            .setPositiveButton( getString(R.string.action_change), new EditTextDialog.OnPositiveActionListener() {
                                 @Override
                                 public void onPositiveAction(DialogInterface dialogInterface, String text) {
                                     adapter.changeSelectedBooksAuthor(getActivity(), text);
@@ -320,8 +323,10 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
                             .show();
                     return true;
                 case R.id.action_change_library:
-                    EditTextDialog
-                            .create(getActivity(), getString(R.string.action_change), new EditTextDialog.OnPositiveActionListener() {
+                    new EditTextDialog.Builder(getActivity())
+                            .setAutocompleteUri(Contract.Libraries.CONTENT_URI)
+                            .setAutocompleteColumn(Contract.Libraries.LIBRARY_NAME)
+                            .setPositiveButton(getString(R.string.action_change), new EditTextDialog.OnPositiveActionListener() {
                                 @Override
                                 public void onPositiveAction(DialogInterface dialogInterface, String text) {
                                     adapter.changeSelectedBooksLibrary(getActivity(), text);
@@ -332,8 +337,10 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
                             .show();
                     return true;
                 case R.id.action_change_publisher:
-                    EditTextDialog
-                            .create(getActivity(), getString(R.string.action_change), new EditTextDialog.OnPositiveActionListener() {
+                    new EditTextDialog.Builder(getActivity())
+                            .setAutocompleteUri(Contract.Publishers.CONTENT_URI)
+                            .setAutocompleteColumn(Contract.Publishers.PUBLISHER_NAME)
+                            .setPositiveButton(getString(R.string.action_change), new EditTextDialog.OnPositiveActionListener() {
                                 @Override
                                 public void onPositiveAction(DialogInterface dialogInterface, String text) {
                                     adapter.changeSelectedBooksPublisher(getActivity(), text);
