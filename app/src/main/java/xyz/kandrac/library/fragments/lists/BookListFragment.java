@@ -1,27 +1,39 @@
 package xyz.kandrac.library.fragments.lists;
 
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.internal.NavigationMenu;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
+import xyz.kandrac.library.fragments.SettingsFragment;
+import xyz.kandrac.library.model.Contract;
 import xyz.kandrac.library.mvp.view.EditBookActivity;
 import xyz.kandrac.library.R;
 import xyz.kandrac.library.Searchable;
 import xyz.kandrac.library.flow.importwizard.ImportWizardActivity;
 import xyz.kandrac.library.mvp.view.MainActivity;
 import xyz.kandrac.library.utils.BookCursorAdapter;
+import xyz.kandrac.library.utils.EditTextDialog;
 
 import static xyz.kandrac.library.R.id.action_import_add;
 import static xyz.kandrac.library.utils.BookCursorAdapter.TRUE;
@@ -32,7 +44,7 @@ import static xyz.kandrac.library.utils.BookCursorAdapter.TRUE;
  * <p/>
  * Created by kandrac on 20/10/15.
  */
-public class BookListFragment extends Fragment implements Searchable, BookCursorAdapter.CursorSizeChangedListener {
+public class BookListFragment extends Fragment implements Searchable, BookCursorAdapter.AdapterChangedListener {
 
     private static final String EXTRA_WISH_LIST = "wish_list";
     private static final String EXTRA_BORROWED = "borrowed";
@@ -56,6 +68,8 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
     private TextView mEmpty;
 
     private BookCursorAdapter adapter;
+
+    public ActionMode mActionMode;
 
     /**
      * Get instance of {@link BookListFragment}
@@ -239,4 +253,113 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
             mEmpty.setVisibility(View.GONE);
         }
     }
+
+    @Override
+    public void onMultiSelectStart() {
+        getActivity().startActionMode(mActionModeCallback);
+    }
+
+    @Override
+    public void onMultiSelectEnd() {
+        if (mActionMode != null) {
+            mActionMode.finish();
+        }
+    }
+
+    public ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+
+        // Called when the action mode is created; startActionMode() was called
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            // Inflate a menu resource providing context menu items
+            mActionMode = mode;
+            MenuInflater inflater = mode.getMenuInflater();
+            inflater.inflate(R.menu.multi_select_menu, menu);
+
+            boolean enabled = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean(SettingsFragment.KEY_PREF_LIBRARY_ENABLED, true);
+            menu.findItem(R.id.action_change_library).setVisible(enabled);
+
+            return true;
+        }
+
+        // Called each time the action mode is shown. Always called after onCreateActionMode, but
+        // may be called multiple times if the mode is invalidated.
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.action_delete:
+                    int bookCount = adapter.getSelectedItemCount();
+
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle(R.string.book_list_delete_title)
+                            .setMessage(getResources().getQuantityString(R.plurals.book_list_delete_message, bookCount, bookCount))
+                            .setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    adapter.deleteSelectedBooks(getActivity());
+                                    dialogInterface.dismiss();
+                                }
+                            })
+                            .setNegativeButton(R.string.action_cancel, null)
+                            .show();
+                    return true;
+                case R.id.action_change_author:
+                    new EditTextDialog.Builder(getActivity())
+                            .setAutocompleteUri(Contract.Authors.CONTENT_URI)
+                            .setAutocompleteColumn(Contract.Authors.AUTHOR_NAME)
+                            .setPositiveButton( getString(R.string.action_change), new EditTextDialog.OnPositiveActionListener() {
+                                @Override
+                                public void onPositiveAction(DialogInterface dialogInterface, String text) {
+                                    adapter.changeSelectedBooksAuthor(getActivity(), text);
+                                }
+                            })
+                            .setTitle(R.string.action_change_author)
+                            .setNegativeButton(R.string.action_cancel, null)
+                            .show();
+                    return true;
+                case R.id.action_change_library:
+                    new EditTextDialog.Builder(getActivity())
+                            .setAutocompleteUri(Contract.Libraries.CONTENT_URI)
+                            .setAutocompleteColumn(Contract.Libraries.LIBRARY_NAME)
+                            .setPositiveButton(getString(R.string.action_change), new EditTextDialog.OnPositiveActionListener() {
+                                @Override
+                                public void onPositiveAction(DialogInterface dialogInterface, String text) {
+                                    adapter.changeSelectedBooksLibrary(getActivity(), text);
+                                }
+                            })
+                            .setTitle(R.string.action_change_library)
+                            .setNegativeButton(R.string.action_cancel, null)
+                            .show();
+                    return true;
+                case R.id.action_change_publisher:
+                    new EditTextDialog.Builder(getActivity())
+                            .setAutocompleteUri(Contract.Publishers.CONTENT_URI)
+                            .setAutocompleteColumn(Contract.Publishers.PUBLISHER_NAME)
+                            .setPositiveButton(getString(R.string.action_change), new EditTextDialog.OnPositiveActionListener() {
+                                @Override
+                                public void onPositiveAction(DialogInterface dialogInterface, String text) {
+                                    adapter.changeSelectedBooksPublisher(getActivity(), text);
+                                }
+                            })
+                            .setTitle(R.string.action_change_publisher)
+                            .setNegativeButton(R.string.action_cancel, null)
+                            .show();
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        // Called when the user leaves the action mode
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            adapter.closeMultiSelect();
+            mActionMode = null;
+        }
+    };
 }

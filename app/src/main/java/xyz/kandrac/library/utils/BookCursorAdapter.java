@@ -2,6 +2,7 @@ package xyz.kandrac.library.utils;
 
 import android.app.Activity;
 import android.app.LoaderManager;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -19,16 +20,26 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import xyz.kandrac.library.BookDetailActivity;
 import xyz.kandrac.library.R;
 import xyz.kandrac.library.fragments.SettingsFragment;
 import xyz.kandrac.library.model.Contract;
 import xyz.kandrac.library.model.Database;
+import xyz.kandrac.library.model.DatabaseStoreUtils;
 import xyz.kandrac.library.model.DatabaseUtils;
+import xyz.kandrac.library.model.firebase.References;
+import xyz.kandrac.library.model.obj.Author;
+import xyz.kandrac.library.model.obj.Library;
+import xyz.kandrac.library.model.obj.Publisher;
 
 /**
  * Adapter for {@link RecyclerView} that automatically handles requests for books based on 5
@@ -52,7 +63,7 @@ import xyz.kandrac.library.model.DatabaseUtils;
  * <p>
  * Created by kandrac on 23/11/15.
  *
- * @see xyz.kandrac.library.utils.BookCursorAdapter.CursorSizeChangedListener
+ * @see AdapterChangedListener
  */
 public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.ViewHolder> implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -60,6 +71,9 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
     public static final int ANY = -1;
     public static final int TRUE = 1;
     public static final int FALSE = 0;
+
+    // Holds list of selected positions in multi-select mode
+    private Set<Integer> selectedPositions = new HashSet<>();
 
     /**
      * Based on field state we can identify whether some of search query attributes are mandatory,
@@ -93,7 +107,7 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
     /**
      * Interface for listening changes in Cursor length inside {@link BookCursorAdapter}.
      */
-    public interface CursorSizeChangedListener {
+    public interface AdapterChangedListener {
 
         /**
          * Invoked in case count of items in adapter is changed. This will not be invoked in case
@@ -102,6 +116,10 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
          * @param newCount count of items currently in adapter
          */
         void onCountChanged(int newCount);
+
+        void onMultiSelectStart();
+
+        void onMultiSelectEnd();
     }
 
     /**
@@ -114,12 +132,13 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
             Contract.Books.BOOK_BORROWED,
             Contract.Books.BOOK_BORROWED_TO_ME,
             Contract.Books.BOOK_IMAGE_FILE,
+            Contract.Books.BOOK_REFERENCE,
             DatabaseUtils.getConcat(Contract.Authors.AUTHOR_NAME, Contract.ConcatAliases.AUTHORS_CONCAT_ALIAS)};
 
     private Cursor mCursor;                         // Cursor with current data
     private int mLastCount = -1;                    // Last count of books in adapter
     private String mSearchQuery = "";               // Filter is based on this search query
-    private CursorSizeChangedListener mListener;    // Listener for book counter
+    private AdapterChangedListener mListener;    // Listener for book counter
     private String mSelectionString;                // Where part of selection query
     private ArrayList<String> mSelectionArguments;  // Selection arguments without filter arguments
     private int mLoaderId;                          // Loader id to be used with queries
@@ -250,16 +269,6 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
         final boolean borrowed = mCursor.getInt(mCursor.getColumnIndex(Contract.Books.BOOK_BORROWED)) == 1;
         final boolean borrowedToMe = mCursor.getInt(mCursor.getColumnIndex(Contract.Books.BOOK_BORROWED_TO_ME)) == 1;
 
-        // update view with cursor values
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mActivity, BookDetailActivity.class);
-                intent.putExtra(BookDetailActivity.EXTRA_BOOK_ID, bookId);
-                mActivity.startActivity(intent);
-            }
-        });
-
         holder.title.setText(bookTitle);
         holder.subtitle.setText(authors);
         holder.wishList.setVisibility(wishList ? View.VISIBLE : View.GONE);
@@ -276,6 +285,10 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
                 holder.image.setBackgroundColor(colors[(int) (bookId % colors.length)]);
             }
         }
+        holder.itemView.setSelected(selectedPositions.contains(position));
+
+        holder.itemView.setOnLongClickListener(new MultiSelectLongClickListener(position));
+        holder.itemView.setOnClickListener(new MultiSelectClickListener(position, bookId));
     }
 
     @Override
@@ -284,6 +297,132 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
             return mCursor.getCount();
         } else {
             return 0;
+        }
+    }
+
+    public int getSelectedItemCount() {
+        return selectedPositions.size();
+    }
+
+    private class MultiSelectLongClickListener implements View.OnLongClickListener {
+
+        int position;
+
+        MultiSelectLongClickListener(int position) {
+            this.position = position;
+        }
+
+        @Override
+        public boolean onLongClick(View view) {
+            if (selectedPositions.contains(position)) {
+                selectedPositions.remove(position);
+                if (selectedPositions.size() == 0) {
+                    mListener.onMultiSelectEnd();
+                }
+            } else {
+                if (selectedPositions.size() == 0) {
+                    mListener.onMultiSelectStart();
+                }
+                selectedPositions.add(position);
+            }
+            notifyItemChanged(position);
+            return true;
+        }
+    }
+
+    private class MultiSelectClickListener implements View.OnClickListener {
+
+        int position;
+        long bookId;
+
+        MultiSelectClickListener(int position, Long bookId) {
+            this.position = position;
+            this.bookId = bookId;
+        }
+
+        @Override
+        public void onClick(View view) {
+            if (selectedPositions.size() > 0) {
+                // multi-select mode
+                if (selectedPositions.contains(position)) {
+                    selectedPositions.remove(position);
+                    if (selectedPositions.size() == 0) {
+                        mListener.onMultiSelectEnd();
+                    }
+                } else {
+                    selectedPositions.add(position);
+                }
+                notifyItemChanged(position);
+            } else {
+                Intent intent = new Intent(mActivity, BookDetailActivity.class);
+                intent.putExtra(BookDetailActivity.EXTRA_BOOK_ID, bookId);
+                mActivity.startActivity(intent);
+            }
+        }
+    }
+
+    public void closeMultiSelect() {
+        selectedPositions.clear();
+        notifyDataSetChanged();
+    }
+
+    /**
+     * Delete selected books and end multi select after
+     * @param context to delete books from
+     */
+    public void deleteSelectedBooks(Context context) {
+        for (int position : selectedPositions) {
+            mCursor.moveToPosition(position);
+            long id = mCursor.getLong(mCursor.getColumnIndex(Contract.Books.BOOK_ID));
+            context.getContentResolver().delete(Contract.Books.buildBookUri(id), null, null);
+            notifyItemRemoved(position);
+        }
+        mListener.onMultiSelectEnd();
+    }
+
+    public void changeSelectedBooksAuthor(Context context, String value) {
+        for (int position : selectedPositions) {
+            mCursor.moveToPosition(position);
+            long id = mCursor.getLong(mCursor.getColumnIndex(Contract.Books.BOOK_ID));
+            DatabaseStoreUtils.deleteBookAuthor(context.getContentResolver(), id);
+
+            String[] authorsSplit = TextUtils.split(value, ",");
+
+            for (String anAuthorsSplit : authorsSplit) {
+                String authorName = anAuthorsSplit.trim();
+
+                long authorId = DatabaseStoreUtils.saveAuthor(context.getContentResolver(), new Author.Builder().setName(authorName).build());
+                DatabaseStoreUtils.saveBookAuthor(context.getContentResolver(), id, authorId);
+            }
+
+            context.getContentResolver().update(Contract.Books.buildBookUri(id), new ContentValues(), null, null);
+            notifyItemRemoved(position);
+        }
+    }
+
+    public void changeSelectedBooksPublisher(Context context, String value) {
+        for (int position : selectedPositions) {
+            mCursor.moveToPosition(position);
+            long publisherId = DatabaseStoreUtils.savePublisher(context.getContentResolver(), new Publisher.Builder().setName(value).build());
+            long id = mCursor.getLong(mCursor.getColumnIndex(Contract.Books.BOOK_ID));
+
+            ContentValues cv = new ContentValues();
+            cv.put(Contract.Books.BOOK_PUBLISHER_ID, publisherId);
+            context.getContentResolver().update(Contract.Books.buildBookUri(id), cv, null, null);
+            notifyItemRemoved(position);
+        }
+    }
+
+    public void changeSelectedBooksLibrary(Context context, String value) {
+        for (int position : selectedPositions) {
+            mCursor.moveToPosition(position);
+            long libraryId = DatabaseStoreUtils.saveLibrary(context.getContentResolver(), new Library.Builder().setName(value).build());
+            long id = mCursor.getLong(mCursor.getColumnIndex(Contract.Books.BOOK_ID));
+
+            ContentValues cv = new ContentValues();
+            cv.put(Contract.Books.BOOK_PUBLISHER_ID, libraryId);
+            context.getContentResolver().update(Contract.Books.buildBookUri(id), cv, null, null);
+            notifyItemRemoved(position);
         }
     }
 
@@ -302,7 +441,7 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
         private long library = ANY;
         private int loaderId = 1;
         private Activity activity;
-        private CursorSizeChangedListener listener;
+        private AdapterChangedListener listener;
 
 
         public Builder setWishList(@FieldState int wishList) {
@@ -345,7 +484,7 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
             return this;
         }
 
-        public Builder setListener(CursorSizeChangedListener listener) {
+        public Builder setListener(AdapterChangedListener listener) {
             this.listener = listener;
             return this;
         }

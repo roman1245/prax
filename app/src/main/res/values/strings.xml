@@ -36,6 +36,11 @@
     <string name="action_add_bulk">Bulk insert books</string>
     <string name="action_add_scan">Scan book barcode</string>
     <string name="action_add_single">Add single book</string>
+
+    <string name="action_change">Change</string>
+    <string name="action_change_author">Change author</string>
+    <string name="action_change_publisher">Change publisher</string>
+    <string name="action_change_library">Change library</string>
     <!-- Placeholders -->
     <string name="author_unknown">Author unknown</string>
     <string name="publisher_unknown">Publisher unknown</string>
@@ -50,6 +55,12 @@
     <string name="author_list_empty">The list of authors is currently empty. \nAuthors will appear with the addition of the first book.</string>
     <string name="publisher_list_empty">The list of publishers is currently empty. \nPublishers will appear with the addition of the first book.</string>
     <string name="library_list_empty">the library list is currently empty. Libraries will appear with the addition of the first book.</string>
+    <!-- Lists -->
+    <string name="book_list_delete_title">Delete books</string>
+    <plurals name="book_list_delete_message">
+        <item quantity="one">Are you sure you want to delete %d book?</item>
+        <item quantity="other">Are you sure you want to delete %d books?</item>
+    </plurals>
     <!-- Edit/Input Book Screen -->
     <string name="edit_book_author">Author</string>
     <string name="edit_book_publisher">Publisher</string>

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/selectableItemBackground"
+    android:background="@drawable/item_select_bg"
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -33,16 +33,16 @@
             style="@style/TextAppearance.AppCompat.Small.Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:singleLine="true"
-            tools:text="Lord of the Rings - The Return of the King" />
+            tools:text="Lord of the Rings - The Return of the King"
+            android:maxLines="1" />
 
         <TextView
             android:id="@+id/list_item_book_subtitle"
             style="@style/TextAppearance.AppCompat.Small"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:singleLine="true"
-            tools:text="John Ronald Reuel Tolkien" />
+            tools:text="John Ronald Reuel Tolkien"
+            android:maxLines="1" />
 
         <LinearLayout
             android:layout_width="wrap_content"

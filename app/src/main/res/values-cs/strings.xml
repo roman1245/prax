@@ -36,6 +36,11 @@
     <string name="action_add_bulk">Hromadné vkládání</string>
     <string name="action_add_scan">Skenování čárového kódu</string>
     <string name="action_add_single">Přidat knihu</string>
+
+    <string name="action_change">Změnit</string>
+    <string name="action_change_author">Změnit autora</string>
+    <string name="action_change_publisher">Změnit vydavatele</string>
+    <string name="action_change_library">Změnit knihovnu</string>
     <!-- Placeholders -->
     <string name="author_unknown">Neznámý autor</string>
     <string name="publisher_unknown">Neznámý vydavatel</string>
@@ -50,6 +55,13 @@
     <string name="author_list_empty">Seznam autorů je zatím prázdný. První autoři se zobrazí s prvním přidáním knihy.</string>
     <string name="publisher_list_empty">Seznam vydavatelů je zatím prázdný. První vydavatelé se zobrazí s prvním přidáním knihy.</string>
     <string name="library_list_empty">Seznam knihoven je zatím prázdný. První knihovna se zobrazí při prvním přidání knihy.</string>
+    <!-- Lists -->
+    <string name="book_list_delete_title">Vymazat knihy</string>
+    <plurals name="book_list_delete_message">
+        <item quantity="one">Opravdu chcete vymazat %d knihu?</item>
+        <item quantity="few">Opravdu chcete vymazat %d knihy?</item>
+        <item quantity="other">Opravdu chcete vymazat %d knih?</item>
+    </plurals>
     <!-- Edit/Input Book Screen -->
     <string name="edit_book_author">Autoři</string>
     <string name="edit_book_publisher">Vydavatel</string>

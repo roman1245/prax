@@ -65,6 +65,7 @@ import xyz.kandrac.library.model.obj.Author;
 import xyz.kandrac.library.model.obj.Book;
 import xyz.kandrac.library.model.obj.Library;
 import xyz.kandrac.library.model.obj.Publisher;
+import xyz.kandrac.library.utils.AutoCompleteUtils;
 import xyz.kandrac.library.utils.BookCursorAdapter;
 import xyz.kandrac.library.utils.ConnectivityUtils;
 import xyz.kandrac.library.utils.DisplayUtils;
@@ -224,10 +225,10 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         checkLibrariesPreferences();
 
         // set adapters for autocomplete fields
-        setAdapter(Contract.Authors.CONTENT_URI, Contract.Authors.AUTHOR_NAME, mAuthorEdit);
-        setAdapter(Contract.Publishers.CONTENT_URI, Contract.Publishers.PUBLISHER_NAME, mPublisherEdit);
-        setAdapter(Contract.Libraries.CONTENT_URI, Contract.Libraries.LIBRARY_NAME, mLibraryEdit);
-        setAdapter(ContactsContract.Contacts.CONTENT_URI, ContactsContract.Contacts.DISPLAY_NAME, mOriginEdit);
+        AutoCompleteUtils.setAdapter(this, Contract.Authors.CONTENT_URI, Contract.Authors.AUTHOR_NAME, mAuthorEdit);
+        AutoCompleteUtils.setAdapter(this, Contract.Publishers.CONTENT_URI, Contract.Publishers.PUBLISHER_NAME, mPublisherEdit);
+        AutoCompleteUtils.setAdapter(this, Contract.Libraries.CONTENT_URI, Contract.Libraries.LIBRARY_NAME, mLibraryEdit);
+        AutoCompleteUtils.setAdapter(this, ContactsContract.Contacts.CONTENT_URI, ContactsContract.Contacts.DISPLAY_NAME, mOriginEdit);
 
         if (startScan || bulk) {
             scan(mScanButton);
@@ -255,42 +256,6 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         } else {
             mLibraryEdit.setText(name);
         }
-    }
-
-    /**
-     * Sets adapter for given autocomplete text view
-     *
-     * @param uri           to get data from
-     * @param displayColumn identifier
-     * @param target        AutoCompleteTextView
-     */
-    private void setAdapter(final Uri uri, final String displayColumn, final AutoCompleteTextView target) {
-
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(
-                this,
-                android.R.layout.simple_list_item_1,
-                null,
-                new String[]{displayColumn},
-                new int[]{android.R.id.text1},
-                0);
-
-        target.setAdapter(adapter);
-
-        adapter.setFilterQueryProvider(new FilterQueryProvider() {
-            public Cursor runQuery(CharSequence str) {
-                String select = displayColumn + " LIKE ? ";
-                String[] selectArgs = {"%" + str + "%"};
-                String[] projection = new String[]{BaseColumns._ID, displayColumn};
-                return getContentResolver().query(uri, projection, select, selectArgs, null);
-            }
-        });
-
-        adapter.setCursorToStringConverter(new SimpleCursorAdapter.CursorToStringConverter() {
-            public CharSequence convertToString(Cursor cur) {
-                int index = cur.getColumnIndex(displayColumn);
-                return cur.getString(index);
-            }
-        });
     }
 
     private void searchIsbn(final String barcode) {

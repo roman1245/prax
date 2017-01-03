@@ -182,14 +182,6 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                             public void onClick(DialogInterface dialog, int which) {
                                 getContentResolver().delete(Contract.Books.buildBookUri(mBookId), null, null);
                                 NotificationReceiver.cancelNotification(BookDetailActivity.this, mBookId);
-
-                                if (mAuth.getCurrentUser() != null && !TextUtils.isEmpty(mBook.firebaseReference)) {
-                                    FirebaseDatabase.getInstance().getReference()
-                                            .child(References.USERS_REFERENCE).child(mAuth.getCurrentUser().getUid())
-                                            .child(References.BOOKS_REFERENCE).child(mBook.firebaseReference)
-                                            .removeValue();
-                                }
-
                                 dialog.dismiss();
                                 finish();
                             }
