@@ -67,6 +67,8 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
 
     private Long mBookId;
     private Book mBook;
+    private Publisher mPublisher;
+    private Author[] mAuthors;
 
     private Fragment[] mContents;
 
@@ -149,6 +151,43 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
+            case R.id.action_share: {
+                if (mBook == null) {
+                    return true;
+                }
+                StringBuilder sb = new StringBuilder();
+                sb.append(mBook.title);
+
+                if (mAuthors != null && mAuthors.length > 0) {
+                    StringBuilder authors = new StringBuilder();
+                    for (int i = 0; i < mAuthors.length; i++) {
+                        if (i != 0) {
+                            authors.append(", ");
+                        }
+                        authors.append(mAuthors[i].name);
+                    }
+
+                    sb.append("\n")
+                            .append(getResources().getQuantityString(R.plurals.book_authors, mAuthors.length, authors));
+                }
+
+                if (mPublisher != null) {
+                    sb.append("\n")
+                            .append(getString(R.string.book_share_by_publisher, mPublisher.name));
+                }
+
+                if (!TextUtils.isEmpty(mBook.isbn)) {
+                    sb.append("\n")
+                            .append(getString(R.string.book_share_isbn, mBook.isbn));
+                }
+
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, sb.toString());
+                sendIntent.setType("text/plain");
+                startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.book_detail_share)));
+                return true;
+            }
             case R.id.action_borrow: {
                 int readContactPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
                 if (readContactPermission == PackageManager.PERMISSION_GRANTED) {
@@ -398,20 +437,20 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     }
 
     private void bindAuthors(Cursor authorsCursor) {
-        Author[] authors = null;
+
         if (authorsCursor != null && authorsCursor.getCount() > 0 && authorsCursor.moveToFirst()) {
-            authors = new Author[authorsCursor.getCount()];
+            mAuthors = new Author[authorsCursor.getCount()];
             for (int i = 0; i < authorsCursor.getCount(); i++, authorsCursor.moveToNext()) {
                 Author author = new Author.Builder()
                         .setName(authorsCursor.getString(authorsCursor.getColumnIndex(Contract.Authors.AUTHOR_NAME)))
                         .build();
-                authors[i] = author;
+                mAuthors[i] = author;
             }
         }
 
         for (Fragment fragment : mContents) {
             if (fragment instanceof BookDatabaseCallbacks) {
-                ((BookDatabaseCallbacks) fragment).onAuthorsGet(authors);
+                ((BookDatabaseCallbacks) fragment).onAuthorsGet(mAuthors);
             }
         }
     }
@@ -457,17 +496,15 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
 
     private void bindPublisher(Cursor publisherCursor) {
 
-        Publisher publisher = null;
-
         if (publisherCursor.moveToFirst() && publisherCursor.getCount() != 0) {
-            publisher = new Publisher.Builder()
+            mPublisher = new Publisher.Builder()
                     .setName(publisherCursor.getString(publisherCursor.getColumnIndex(Contract.Publishers.PUBLISHER_NAME)))
                     .build();
         }
 
         for (Fragment fragment : mContents) {
             if (fragment instanceof BookDatabaseCallbacks) {
-                ((BookDatabaseCallbacks) fragment).onPublisherGet(publisher);
+                ((BookDatabaseCallbacks) fragment).onPublisherGet(mPublisher);
             }
         }
     }

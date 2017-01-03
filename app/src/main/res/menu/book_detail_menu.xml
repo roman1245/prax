@@ -3,6 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/action_share"
+        android:icon="@drawable/ic_share_white"
+        android:title="@string/action_share"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/action_edit"
         android:icon="@drawable/ic_pencil_white"
         android:title="@string/action_edit"
@@ -10,7 +16,7 @@
 
     <item
         android:id="@+id/action_borrow"
-        android:icon="@drawable/ic_share_white"
+        android:icon="@drawable/ic_borrow_white"
         android:title="@string/action_borrow"
         app:showAsAction="never" />
 

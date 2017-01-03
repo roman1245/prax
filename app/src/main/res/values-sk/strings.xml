@@ -36,6 +36,7 @@
     <string name="action_add_bulk">Hromadné vkladanie</string>
     <string name="action_add_scan">Skenovanie čiarového kódu</string>
     <string name="action_add_single">Pridať knihu</string>
+    <string name="action_share">Zdieľať</string>
     <!-- Placeholders -->
     <string name="author_unknown">Neznámy autor</string>
     <string name="publisher_unknown">Neznámy vydavateľ</string>
@@ -68,9 +69,9 @@
     <string name="edit_book_no_permission">Bez týchto oprávnení nemôžeme pokračovať. Ak chcete zmeniť oprávenia urobte tak v Nastaveniach telefónu.</string>
     <string name="edit_book_no_permission_title">Chýbajúce oprávnenia</string>
 
-    <string name="pick_image_select">Výběr fotografie</string>
+    <string name="pick_image_select">Výber fotografie</string>
     <string name="pick_image_photo">Fotoaparát</string>
-    <string name="pick_image_gallery">Galerie</string>
+    <string name="pick_image_gallery">Galéria</string>
 
     <string name="parsing_book_details">Získavam podrobnosti</string>
     <string name="parsing_book_details_message">Získavam podrobnosti o tejto knihe z internetu</string>
@@ -86,6 +87,15 @@
 
     <string name="book_detail_tab_basic">Základné</string>
     <string name="book_detail_tab_others">Ďalšie</string>
+
+    <string name="book_detail_share">Zdieľať knihu</string>
+    <string name="book_share_by_publisher">Vydalo vydavateľstvo: %s</string>
+    <string name="book_share_isbn">ISBN: %s</string>
+    <plurals name="book_authors">
+        <item quantity="one">Autor: %s</item>
+        <item quantity="few">Autori: %s</item>
+        <item quantity="other">Autori: %s</item>
+    </plurals>
     <!-- Book Borrow Texts -->
     <string name="borrow_to">Požičať knihu</string>
     <string name="borrow_until">Dohodnuté vrátenie knihy</string>

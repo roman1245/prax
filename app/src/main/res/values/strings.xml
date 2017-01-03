@@ -31,6 +31,7 @@
     <string name="action_cancel">Cancel</string>
     <string name="action_continue">Continue</string>
     <string name="action_select_file">Select file</string>
+    <string name="action_share">Share</string>
 
     <string name="action_add_import">Import from table</string>
     <string name="action_add_bulk">Bulk insert books</string>
@@ -86,6 +87,14 @@
 
     <string name="book_detail_tab_basic">Basic</string>
     <string name="book_detail_tab_others">Others</string>
+
+    <string name="book_detail_share">Share book detail</string>
+    <string name="book_share_by_publisher">Published by: %s</string>
+    <string name="book_share_isbn">ISBN: %s</string>
+    <plurals name="book_authors">
+        <item quantity="one">Author: %s</item>
+        <item quantity="other">Authors: %s</item>
+    </plurals>
     <!-- Book Borrow Texts -->
     <string name="borrow_to">Borrow book to</string>
     <string name="borrow_until">Book return date</string>
