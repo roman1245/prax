@@ -207,6 +207,8 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
                     return;
                 }
 
+                storeUserToFirebase();
+
                 String userUid = mAuth.getCurrentUser().getUid();
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 long lastSync = manager.getLongPreference(SharedPreferencesManager.KEY_PREF_LAST_CLOUD_SYNC);
@@ -233,7 +235,7 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
         database.getReference()
                 .child(References.USERS_REFERENCE).child(userUid)
                 .child(References.BOOKS_REFERENCE).orderByChild("updatedAt")
-                .startAt(fromTime)
+                .startAt(fromTime + 1)
                 .endAt(toTime)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
@@ -416,6 +418,32 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
                         }
                     }
                 });
+    }
+
+    private void storeUserToFirebase() {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user == null) {
+            return;
+        }
+
+        DatabaseReference reference = FirebaseDatabase.getInstance()
+                .getReference()
+                .child(References.USERS_REFERENCE).child(user.getUid());
+
+        reference
+                .child("email")
+                .setValue(user.getEmail());
+
+        reference
+                .child("name")
+                .setValue(user.getDisplayName());
+
+        if (user.getPhotoUrl() != null) {
+            reference
+                    .child("photo")
+                    .setValue(user.getPhotoUrl().toString());
+        }
+
     }
 
     public void configureSignIn() {
