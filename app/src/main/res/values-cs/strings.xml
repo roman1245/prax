@@ -31,6 +31,7 @@
     <string name="action_cancel">Zrušit</string>
     <string name="action_continue">Pokračovat</string>
     <string name="action_select_file">Vyber soubor</string>
+    <string name="action_share">Sdílet</string>
 
     <string name="action_add_import">Import z tabulky</string>
     <string name="action_add_bulk">Hromadné vkládání</string>
@@ -80,9 +81,9 @@
     <string name="edit_book_no_permission">Bez těchto oprávnění nemůžeme pokračovat. Chcete-li změnit oprávnění učiňte tak v Nastavení telefonu.</string>
     <string name="edit_book_no_permission_title">Chybějící oprávnění</string>
 
-    <string name="pick_image_select">Select image from…</string>
-    <string name="pick_image_photo">Take photo</string>
-    <string name="pick_image_gallery">From gallery</string>
+    <string name="pick_image_select">Výběr fotografie</string>
+    <string name="pick_image_photo">Fotoaparát</string>
+    <string name="pick_image_gallery">Galerie</string>
 
     <string name="parsing_book_details">Získávám podrobnosti</string>
     <string name="parsing_book_details_message">Získávám podrobnosti o této knize z internetu</string>
@@ -98,6 +99,15 @@
 
     <string name="book_detail_tab_basic">Základní</string>
     <string name="book_detail_tab_others">Další</string>
+
+    <string name="book_detail_share">Sdílet knihu</string>
+    <string name="book_share_by_publisher">Vydalo vydavatelství: %s</string>
+    <string name="book_share_isbn">ISBN: %s</string>
+    <plurals name="book_authors">
+        <item quantity="one">Autor: %s</item>
+        <item quantity="few">Autori: %s</item>
+        <item quantity="other">Autori: %s</item>
+    </plurals>
     <!-- Book Borrow Texts -->
     <string name="borrow_to">Půjčit knihu</string>
     <string name="borrow_until">Dohodnuté vrácení knihy</string>
