@@ -27,7 +27,7 @@ ext {
     // App dependencies
     playServicesVersion = '10.0.1'
     supportLibraryVersion = '25.1.0'
-    firebaseVersion = '9.6.1'
+    firebaseVersion = '10.0.1'
 
     junitVersion = '4.12'
     runnerVersion = '0.5'

@@ -86,7 +86,6 @@ android {
             events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
         }
     }
-    buildToolsVersion '25.0.0'
 }
 
 repositories {
@@ -114,9 +113,10 @@ dependencies {
     compile 'io.github.yavski:fab-speed-dial:1.0.6'
 
     // gms and fire-base
-    compile "com.google.android.gms:play-services:$rootProject.playServicesVersion"
+    compile "com.google.android.gms:play-services-auth:$rootProject.playServicesVersion"
     compile "com.google.firebase:firebase-database:$rootProject.firebaseVersion"
     compile "com.google.firebase:firebase-auth:$rootProject.firebaseVersion"
+    compile "com.google.firebase:firebase-crash:$rootProject.firebaseVersion"
 
     compile "com.android.support.test.espresso:espresso-idling-resource:$rootProject.espressoVersion"
 
