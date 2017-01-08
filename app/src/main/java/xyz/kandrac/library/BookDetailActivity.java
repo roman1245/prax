@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
@@ -20,28 +19,21 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
 import xyz.kandrac.library.dialogs.BorrowBookDialog;
 import xyz.kandrac.library.model.Contract;
-import xyz.kandrac.library.model.firebase.References;
-import xyz.kandrac.library.model.obj.Author;
-import xyz.kandrac.library.model.obj.Book;
-import xyz.kandrac.library.model.obj.Borrowed;
-import xyz.kandrac.library.model.obj.BorrowedToMe;
-import xyz.kandrac.library.model.obj.Library;
-import xyz.kandrac.library.model.obj.Publisher;
 import xyz.kandrac.library.mvp.view.EditBookActivity;
+import xyz.kandrac.library.mvp.view.bookdetail.BookDetailBasicFragment;
+import xyz.kandrac.library.mvp.view.bookdetail.BookDetailOthersFragment;
 import xyz.kandrac.library.utils.LogUtils;
 
 /**
@@ -54,21 +46,11 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     public static final String LOG_TAG = BookDetailActivity.class.getName();
     public static final String EXTRA_BOOK_ID = "book_id_extra";
 
-    // LOADERS
-    static final int LOADER_BOOK = 1;
-    static final int LOADER_BORROW_DETAIL = 3;
-    static final int LOADER_BORROW_ME_DETAIL = 4;
-    static final int LOADER_AUTHOR = 5;
-    static final int LOADER_PUBLISHER = 6;
-    static final int LOADER_LIBRARY = 7;
-
     // PERMISSIONS
     static final int PICK_CONTACT_PERMISSION = 1;
+    private static final int LOADER_BOOK = 555;
 
     private Long mBookId;
-    private Book mBook;
-    private Publisher mPublisher;
-    private Author[] mAuthors;
 
     private Fragment[] mContents;
 
@@ -80,6 +62,10 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
 
     private boolean mShowBorrowDialog = false;
     public FirebaseAuth mAuth;
+
+    private boolean wish;
+    private boolean borrowed;
+    private boolean borrowedToMe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,10 +108,6 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
         mAuth = FirebaseAuth.getInstance();
 
         getSupportLoaderManager().initLoader(BookDetailActivity.LOADER_BOOK, null, this);
-        getSupportLoaderManager().initLoader(BookDetailActivity.LOADER_AUTHOR, null, this);
-        getSupportLoaderManager().initLoader(BookDetailActivity.LOADER_BORROW_DETAIL, null, this);
-        getSupportLoaderManager().initLoader(BookDetailActivity.LOADER_BORROW_ME_DETAIL, null, this);
-        getSupportLoaderManager().initLoader(BookDetailActivity.LOADER_PUBLISHER, null, this);
     }
 
     @Override
@@ -140,10 +122,9 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
         MenuItem borrowItem = menu.findItem(R.id.action_borrow);
         MenuItem moveItem = menu.findItem(R.id.action_move);
 
-        if (mBook != null) {
-            borrowItem.setVisible(!mBook.wish && !mBook.borrowed && !mBook.borrowedToMe);
-            moveItem.setVisible(mBook.wish);
-        }
+        borrowItem.setVisible(!wish && !borrowed && !borrowedToMe);
+        moveItem.setVisible(wish);
+
         return true;
     }
 
@@ -152,40 +133,41 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
         int id = item.getItemId();
         switch (id) {
             case R.id.action_share: {
-                if (mBook == null) {
-                    return true;
-                }
-                StringBuilder sb = new StringBuilder();
-                sb.append(mBook.title);
-
-                if (mAuthors != null && mAuthors.length > 0) {
-                    StringBuilder authors = new StringBuilder();
-                    for (int i = 0; i < mAuthors.length; i++) {
-                        if (i != 0) {
-                            authors.append(", ");
-                        }
-                        authors.append(mAuthors[i].name);
-                    }
-
-                    sb.append("\n")
-                            .append(getResources().getQuantityString(R.plurals.book_authors, mAuthors.length, authors));
-                }
-
-                if (mPublisher != null) {
-                    sb.append("\n")
-                            .append(getString(R.string.book_share_by_publisher, mPublisher.name));
-                }
-
-                if (!TextUtils.isEmpty(mBook.isbn)) {
-                    sb.append("\n")
-                            .append(getString(R.string.book_share_isbn, mBook.isbn));
-                }
-
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, sb.toString());
-                sendIntent.setType("text/plain");
-                startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.book_detail_share)));
+// TODO
+//                if (mBook == null) {
+//                    return true;
+//                }
+//                StringBuilder sb = new StringBuilder();
+//                sb.append(mBook.title);
+//
+//                if (mAuthors != null && mAuthors.length > 0) {
+//                    StringBuilder authors = new StringBuilder();
+//                    for (int i = 0; i < mAuthors.length; i++) {
+//                        if (i != 0) {
+//                            authors.append(", ");
+//                        }
+//                        authors.append(mAuthors[i].name);
+//                    }
+//
+//                    sb.append("\n")
+//                            .append(getResources().getQuantityString(R.plurals.book_authors, mAuthors.length, authors));
+//                }
+//
+//                if (mPublisher != null) {
+//                    sb.append("\n")
+//                            .append(getString(R.string.book_share_by_publisher, mPublisher.name));
+//                }
+//
+//                if (!TextUtils.isEmpty(mBook.isbn)) {
+//                    sb.append("\n")
+//                            .append(getString(R.string.book_share_isbn, mBook.isbn));
+//                }
+//
+//                Intent sendIntent = new Intent();
+//                sendIntent.setAction(Intent.ACTION_SEND);
+//                sendIntent.putExtra(Intent.EXTRA_TEXT, sb.toString());
+//                sendIntent.setType("text/plain");
+//                startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.book_detail_share)));
                 return true;
             }
             case R.id.action_borrow: {
@@ -274,70 +256,7 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
         switch (id) {
 
             case LOADER_BOOK:
-
-                return new CursorLoader(
-                        this,
-                        Contract.Books.buildBookUri(mBookId),
-                        new String[]{
-                                Contract.Books.BOOK_TITLE,
-                                Contract.Books.BOOK_SUBTITLE,
-                                Contract.Books.BOOK_ISBN,
-                                Contract.Books.BOOK_DESCRIPTION,
-                                Contract.Books.BOOK_WISH_LIST,
-                                Contract.Books.BOOK_BORROWED_TO_ME,
-                                Contract.Books.BOOK_BORROWED,
-                                Contract.Books.BOOK_PUBLISHED,
-                                Contract.Books.BOOK_IMAGE_FILE,
-                                Contract.Books.BOOK_REFERENCE
-                        },
-                        null,
-                        null,
-                        null);
-
-            case LOADER_AUTHOR:
-
-                return new CursorLoader(
-                        this,
-                        Contract.Books.buildBookWithAuthorUri(mBookId),
-                        new String[]{
-                                Contract.Authors.AUTHOR_NAME
-                        },
-                        null,
-                        null,
-                        null);
-
-            case LOADER_BORROW_DETAIL:
-
-                return new CursorLoader(
-                        this,
-                        Contract.Books.buildBorrowInfoUri(mBookId),
-                        null,
-                        Contract.BorrowInfo.BORROW_DATE_RETURNED + " = 0",
-                        null,
-                        null);
-
-
-            case LOADER_BORROW_ME_DETAIL:
-
-                return new CursorLoader(
-                        this,
-                        Contract.Books.buildBorrowedToMeInfoUri(mBookId),
-                        null,
-                        null,
-                        null,
-                        null);
-
-            case LOADER_PUBLISHER:
-
-                return new CursorLoader(
-                        this,
-                        Contract.Books.buildBookPublisherUri(mBookId),
-                        new String[]{
-                                Contract.Publishers.PUBLISHER_NAME
-                        },
-                        null,
-                        null,
-                        null);
+                return new CursorLoader(this, Contract.Books.buildBookUri(mBookId), null, null, null, null);
 
             default:
                 return null;
@@ -348,28 +267,11 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     public void onLoadFinished(Loader<Cursor> loader, final Cursor data) {
 
         switch (loader.getId()) {
-
             case LOADER_BOOK:
-                bindBook(data);
+                if (data != null && data.moveToFirst()) {
+                    bindBook(data);
+                }
                 break;
-
-            case LOADER_AUTHOR:
-                bindAuthors(data);
-                break;
-
-            case LOADER_BORROW_DETAIL:
-                bindBorrowed(data);
-                break;
-
-            case LOADER_BORROW_ME_DETAIL: {
-                bindBorrowedToMe(data);
-                break;
-            }
-
-            case BookDetailActivity.LOADER_PUBLISHER: {
-                bindPublisher(data);
-                break;
-            }
         }
     }
 
@@ -380,26 +282,15 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
 
     private void bindBook(Cursor bookCursor) {
 
-        if (!bookCursor.moveToFirst()) {
-            return;
-        }
+        String title = bookCursor.getString(bookCursor.getColumnIndex(Contract.Books.BOOK_TITLE));
+        String image = bookCursor.getString(bookCursor.getColumnIndex(Contract.Books.BOOK_IMAGE_FILE));
+        wish = bookCursor.getInt(bookCursor.getColumnIndex(Contract.Books.BOOK_WISH_LIST)) == 1;
+        borrowed = bookCursor.getInt(bookCursor.getColumnIndex(Contract.Books.BOOK_BORROWED)) == 1;
+        borrowedToMe = bookCursor.getInt(bookCursor.getColumnIndex(Contract.Books.BOOK_BORROWED_TO_ME)) == 1;
+        File imageFile = image == null ? null : new File(image);
 
-        mBook = new Book.Builder()
-                .setTitle(bookCursor.getString(bookCursor.getColumnIndex(Contract.Books.BOOK_TITLE)))
-                .setSubtitle(bookCursor.getString(bookCursor.getColumnIndex(Contract.Books.BOOK_SUBTITLE)))
-                .setIsbn(bookCursor.getString(bookCursor.getColumnIndex(Contract.Books.BOOK_ISBN)))
-                .setWish(bookCursor.getInt(bookCursor.getColumnIndex(Contract.Books.BOOK_WISH_LIST)) == 1)
-                .setBorrowedToMe(bookCursor.getInt(bookCursor.getColumnIndex(Contract.Books.BOOK_BORROWED_TO_ME)) == 1)
-                .setBorrowed(bookCursor.getInt(bookCursor.getColumnIndex(Contract.Books.BOOK_BORROWED)) == 1)
-                .setImageFilePath(bookCursor.getString(bookCursor.getColumnIndex(Contract.Books.BOOK_IMAGE_FILE)))
-                .setFirebaseReference(bookCursor.getString(bookCursor.getColumnIndex(Contract.Books.BOOK_REFERENCE)))
-                .build();
+        collapsingToolbarLayout.setTitle(title);
 
-        File imageFile = mBook.imageFilePath == null ? null : new File(mBook.imageFilePath);
-
-        collapsingToolbarLayout.setTitle(mBook.title);
-
-        // TODO: do not use getMeasuredXXX
         int width = cover.getMeasuredWidth();
         int height = cover.getMeasuredHeight();
         if (width == 0 && height == 0) {
@@ -414,91 +305,12 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
                     .centerInside()
                     .into(cover);
         }
-//        TODO: uncomment this in order to display other details
-//        if (mBook.wish) {
-        tabs.setVisibility(View.GONE);
-//        }
 
-        for (Fragment fragment : mContents) {
-            if (fragment instanceof BookDatabaseCallbacks) {
-                ((BookDatabaseCallbacks) fragment).onBookGet(mBook);
-            }
+        if (wish) {
+            tabs.setVisibility(View.GONE);
         }
 
         invalidateOptionsMenu();
-    }
-
-    private void bindAuthors(Cursor authorsCursor) {
-
-        if (authorsCursor != null && authorsCursor.getCount() > 0 && authorsCursor.moveToFirst()) {
-            mAuthors = new Author[authorsCursor.getCount()];
-            for (int i = 0; i < authorsCursor.getCount(); i++, authorsCursor.moveToNext()) {
-                Author author = new Author.Builder()
-                        .setName(authorsCursor.getString(authorsCursor.getColumnIndex(Contract.Authors.AUTHOR_NAME)))
-                        .build();
-                mAuthors[i] = author;
-            }
-        }
-
-        for (Fragment fragment : mContents) {
-            if (fragment instanceof BookDatabaseCallbacks) {
-                ((BookDatabaseCallbacks) fragment).onAuthorsGet(mAuthors);
-            }
-        }
-    }
-
-    private void bindBorrowed(Cursor cursor) {
-
-        Borrowed borrowed = null;
-
-        if (cursor.moveToFirst() && cursor.getCount() != 0) {
-            borrowed = new Borrowed.Builder()
-                    .setId(cursor.getLong(cursor.getColumnIndex(Contract.BorrowInfo.BORROW_ID)))
-                    .setFrom(cursor.getLong(cursor.getColumnIndex(Contract.BorrowInfo.BORROW_DATE_BORROWED)))
-                    .setTo(cursor.getLong(cursor.getColumnIndex(Contract.BorrowInfo.BORROW_DATE_RETURNED)))
-                    .setName(cursor.getString(cursor.getColumnIndex(Contract.BorrowInfo.BORROW_NAME)))
-                    .build();
-        }
-
-        for (Fragment fragment : mContents) {
-            if (fragment instanceof BookDatabaseCallbacks) {
-                ((BookDatabaseCallbacks) fragment).onBorrowedGet(borrowed);
-            }
-        }
-    }
-
-    private void bindBorrowedToMe(Cursor cursor) {
-
-        BorrowedToMe borrowedToMe = null;
-
-        if (cursor.moveToFirst() && cursor.getCount() != 0) {
-            borrowedToMe = new BorrowedToMe.Builder()
-                    .setId(cursor.getLong(cursor.getColumnIndex(Contract.BorrowMeInfo.BORROW_ID)))
-                    .setName(cursor.getString(cursor.getColumnIndex(Contract.BorrowMeInfo.BORROW_NAME)))
-                    .setDateBorrowed(cursor.getLong(cursor.getColumnIndex(Contract.BorrowMeInfo.BORROW_DATE_BORROWED)))
-                    .build();
-        }
-
-        for (Fragment fragment : mContents) {
-            if (fragment instanceof BookDatabaseCallbacks) {
-                ((BookDatabaseCallbacks) fragment).onBorrowedToMeGet(borrowedToMe);
-            }
-        }
-    }
-
-    private void bindPublisher(Cursor publisherCursor) {
-
-        if (publisherCursor.moveToFirst() && publisherCursor.getCount() != 0) {
-            mPublisher = new Publisher.Builder()
-                    .setName(publisherCursor.getString(publisherCursor.getColumnIndex(Contract.Publishers.PUBLISHER_NAME)))
-                    .build();
-        }
-
-        for (Fragment fragment : mContents) {
-            if (fragment instanceof BookDatabaseCallbacks) {
-                ((BookDatabaseCallbacks) fragment).onPublisherGet(mPublisher);
-            }
-        }
     }
 
     @Override
@@ -528,37 +340,5 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
 
     private void searchContact() {
         BorrowBookDialog.getInstance(mBookId).show(getSupportFragmentManager(), null);
-    }
-
-    public interface BookDatabaseCallbacks {
-        void onBookGet(Book book);
-
-        void onAuthorsGet(Author[] author);
-
-        void onPublisherGet(Publisher publisher);
-
-        void onLibraryGet(Library library);
-
-        void onBorrowedGet(Borrowed borrowed);
-
-        void onBorrowedToMeGet(BorrowedToMe borrowedToMe);
-    }
-
-
-    /**
-     * Helper interface for creating Contact Requests
-     */
-    @SuppressWarnings("unused")
-    public interface ContactRequest {
-
-        // WHERE Statements
-        String GENERAL_SELECTION = ContactsContract.Data.CONTACT_ID + " = ?";
-        String PHONE_SELECTION = GENERAL_SELECTION + " AND " + ContactsContract.Data.MIMETYPE + "='" + ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE + "'";
-
-        // selection columns
-        String[] GENERAL_COLUMNS = new String[]{ContactsContract.Data.DISPLAY_NAME};
-        String[] PHONE_COLUMNS = new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER};
-
-        int NAME_COLUMN = 0;
     }
 }

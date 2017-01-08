@@ -18,13 +18,14 @@ import xyz.kandrac.library.BuildConfig;
  * <p/>
  * Created by kandrac on 26/10/15.
  */
+@SuppressWarnings("ALL")
 public final class Contract {
 
     private Contract() {
     }
 
     // Database Columns
-    interface BooksColumns {
+    public interface BooksColumns {
         String BOOK_ID = BaseColumns._ID;
         String BOOK_TITLE = "book_title";
         String BOOK_SUBTITLE = "book_subtitle";
@@ -40,6 +41,10 @@ public final class Contract {
         String BOOK_UPDATED_AT = "book_updated_at";
         String BOOK_PUBLISHED = "book_published";
         String BOOK_REFERENCE = "book_reference";
+        String BOOK_PROGRESS = "book_progress";
+        String BOOK_MY_SCORE = "book_my_score";
+        String BOOK_QUOTE = "book_quote";
+        String BOOK_NOTES = "book_notes";
     }
 
     interface AuthorsColumns {

@@ -12,7 +12,7 @@ public class Database extends SQLiteOpenHelper {
 
 
     private static final String DATABASE_NAME = "library.db";
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 9;
 
     public Database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -64,6 +64,10 @@ public class Database extends SQLiteOpenHelper {
                     Contract.Books.BOOK_BORROWED_TO_ME + " BOOLEAN DEFAULT 0," +
                     Contract.Books.BOOK_WISH_LIST + " BOOLEAN DEFAULT 0," +
                     Contract.Books.BOOK_UPDATED_AT + " INTEGER," +
+                    Contract.Books.BOOK_PROGRESS + " INTEGER," +
+                    Contract.Books.BOOK_MY_SCORE + " INTEGER," +
+                    Contract.Books.BOOK_QUOTE + " TEXT," +
+                    Contract.Books.BOOK_NOTES + " TEXT," +
                     Contract.Books.BOOK_LIBRARY_ID + " INTEGER " + References.LIBRARY_ID + " ON DELETE CASCADE, " +
                     Contract.Books.BOOK_PUBLISHER_ID + " INTEGER " + References.PUBLISHERS_ID + " ON DELETE CASCADE)";
 
@@ -149,6 +153,11 @@ public class Database extends SQLiteOpenHelper {
                 db.execSQL("UPDATE " + Tables.BOOKS + " SET " + Contract.Books.BOOK_UPDATED_AT + " = " + System.currentTimeMillis());
             case 7:
                 db.execSQL("DELETE FROM " + Tables.BORROW_INFO + " WHERE " + Contract.BorrowInfo.BORROW_DATE_RETURNED + " != 0");
+            case 8:
+                db.execSQL("ALTER TABLE " + Tables.BOOKS + " ADD " + Contract.Books.BOOK_PROGRESS + " INTEGER DEFAULT 0");
+                db.execSQL("ALTER TABLE " + Tables.BOOKS + " ADD " + Contract.Books.BOOK_MY_SCORE + " INTEGER DEFAULT 0");
+                db.execSQL("ALTER TABLE " + Tables.BOOKS + " ADD " + Contract.Books.BOOK_QUOTE + " TEXT");
+                db.execSQL("ALTER TABLE " + Tables.BOOKS + " ADD " + Contract.Books.BOOK_NOTES + " TEXT");
         }
     }
 }

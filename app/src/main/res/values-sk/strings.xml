@@ -96,6 +96,10 @@
     <string name="book_detail_library">Knižnica:</string>
     <string name="book_detail_isbn">ISBN/čiarový kód:</string>
     <string name="book_detail_published">Rok vydania:</string>
+    <string name="book_detail_reading_progress">Priebeh čítania</string>
+    <string name="book_detail_my_rating">Moje hodnotenie</string>
+    <string name="book_detail_my_favorite_quote">Obľúbený citát</string>
+    <string name="book_detail_personal_notes">Osobné poznámky</string>
 
     <string name="book_detail_tab_basic">Základné</string>
     <string name="book_detail_tab_others">Ďalšie</string>
@@ -210,6 +214,23 @@
     <string name="preferences_visual_sk_cz_title">Vyhľadávanie SK/CZ databáze</string>
     <string name="preferences_visual_sk_cz_description">Povoľ toto nastavenie pre vyhľadávanie v databáze slovenských a českých kníh po načítaní čiarového kódu (vyhľadávanie v Google knihách je povolené vždy)</string>
     <string name="preferences_visual_privacy_title">Ochrana osobných údajov</string>
+
+    <string-array name="reading_progress">
+        <item>Priebeh čítania</item>
+        <item>Nečítaná</item>
+        <item>Čítam</item>
+        <item>Prečítaná</item>
+        <item>Prerušené čítanie</item>
+    </string-array>
+
+    <string-array name="book_rating">
+        <item>Moje hodnotenie</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
 
     <string-array name="column_names">
         <item>Ignorovať</item>

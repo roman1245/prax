@@ -1,17 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".mvp.view.EditBookActivity">
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <TextView
+    <!-- Main content -->
+    <android.support.v7.widget.GridLayout
+        android:id="@+id/grid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="Progress" />
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        app:columnCount="2"
+        app:orientation="horizontal"
+        app:useDefaultMargins="false">
 
-    <SeekBar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-</LinearLayout>
+        <ImageView
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:contentDescription="@string/edit_book_info"
+            android:tint="@color/md_grey_700"
+            app:layout_gravity="center"
+            app:layout_rowSpan="2"
+            app:srcCompat="@drawable/ic_reading_progress" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:text="@string/book_detail_reading_progress"
+            android:textIsSelectable="true"
+            app:layout_gravity="fill" />
+
+        <Spinner
+            android:id="@+id/book_detail_progress"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:entries="@array/reading_progress"
+            android:gravity="center_vertical"
+            app:layout_gravity="fill"
+            tools:listitem="@android:layout/simple_list_item_1" />
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="24dp"
+            android:contentDescription="@string/edit_book_info"
+            android:tint="@color/md_grey_700"
+            app:layout_gravity="center"
+            app:layout_rowSpan="2"
+            app:srcCompat="@drawable/ic_star" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:gravity="center_vertical"
+            android:text="@string/book_detail_my_rating"
+            android:textIsSelectable="true"
+            app:layout_gravity="fill" />
+
+        <Spinner
+            android:id="@+id/book_detail_rating"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:entries="@array/book_rating"
+            android:gravity="center_vertical"
+            app:layout_gravity="fill"
+            tools:listitem="@android:layout/simple_list_item_1" />
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="24dp"
+            android:contentDescription="@string/edit_book_info"
+            android:tint="@color/md_grey_700"
+            app:layout_gravity="center"
+            app:layout_rowSpan="2"
+            app:srcCompat="@drawable/ic_quote" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:gravity="center_vertical"
+            android:text="@string/book_detail_my_favorite_quote"
+            android:textIsSelectable="true"
+            app:layout_gravity="fill" />
+
+        <EditText
+            android:id="@+id/book_detail_quote"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:hint="@string/book_detail_my_favorite_quote"
+            android:inputType="text"
+            android:maxLines="1"
+            app:layout_column="1"
+            app:layout_gravity="fill" />
+
+        <ImageView
+            android:id="@+id/book_detail_description_image"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="24dp"
+            android:contentDescription="@string/edit_book_info"
+            android:tint="@color/md_grey_700"
+            app:layout_gravity="center"
+            app:layout_rowSpan="2"
+            app:srcCompat="@drawable/ic_note" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_marginTop="24dp"
+            android:gravity="center_vertical"
+            android:text="@string/book_detail_personal_notes"
+            android:textIsSelectable="true"
+            app:layout_gravity="fill" />
+
+        <EditText
+            android:id="@+id/book_detail_notes"
+            android:layout_width="0dp"
+            android:hint="@string/book_detail_personal_notes"
+            android:inputType="textMultiLine"
+            app:layout_gravity="fill" />
+    </android.support.v7.widget.GridLayout>
+
+</android.support.v4.widget.NestedScrollView>

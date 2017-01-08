@@ -95,6 +95,10 @@
     <string name="book_detail_library">Library:</string>
     <string name="book_detail_isbn">ISBN/barcode:</string>
     <string name="book_detail_published">Publish Year:</string>
+    <string name="book_detail_reading_progress">Reading progress</string>
+    <string name="book_detail_my_rating">My rating</string>
+    <string name="book_detail_my_favorite_quote">My favorite quote</string>
+    <string name="book_detail_personal_notes">Personal notes</string>
 
     <string name="book_detail_tab_basic">Basic</string>
     <string name="book_detail_tab_others">Others</string>
@@ -208,6 +212,23 @@
     <string name="preferences_visual_sk_cz_title">Search SK/CZ database</string>
     <string name="preferences_visual_sk_cz_description">Enable this setting to search in Slovak and Czech books after barcode scan (Google Books search is enabled always)</string>
     <string name="preferences_visual_privacy_title">Privacy Policy</string>
+
+    <string-array name="reading_progress">
+        <item>Reading progress</item>
+        <item>Not started</item>
+        <item>Reading</item>
+        <item>Read</item>
+        <item>Reading break</item>
+    </string-array>
+
+    <string-array name="book_rating">
+        <item>My rating</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
 
     <string-array name="column_names">
         <item>Ignore</item>

@@ -3,6 +3,8 @@ package xyz.kandrac.library.dagger.component;
 import javax.inject.Singleton;
 
 import dagger.Component;
+import xyz.kandrac.library.mvp.view.bookdetail.BookDetailBasicFragment;
+import xyz.kandrac.library.mvp.view.bookdetail.BookDetailOthersFragment;
 import xyz.kandrac.library.dagger.module.ApplicationModule;
 import xyz.kandrac.library.dagger.module.NetModule;
 import xyz.kandrac.library.mvp.view.MainActivity;
@@ -16,4 +18,6 @@ import xyz.kandrac.library.mvp.view.MainActivity;
 @Component(modules = {ApplicationModule.class, NetModule.class})
 public interface NetComponent {
     void inject(MainActivity activity);
+    void inject(BookDetailOthersFragment fragment);
+    void inject(BookDetailBasicFragment fragment);
 }
