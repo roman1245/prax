@@ -679,6 +679,8 @@ public class DatabaseProvider extends ContentProvider {
                                 .child(key).setValue(values.get(key));
                     }
                 }
+                getContext().getContentResolver().notifyChange(Contract.Books.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(Contract.BOOKS_AUTHORS_URI, null);
                 break;
             }
             default:

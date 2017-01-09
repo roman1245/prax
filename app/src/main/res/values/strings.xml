@@ -213,12 +213,17 @@
     <string name="preferences_visual_sk_cz_description">Enable this setting to search in Slovak and Czech books after barcode scan (Google Books search is enabled always)</string>
     <string name="preferences_visual_privacy_title">Privacy Policy</string>
 
+    <string name="progress_not_started">Not started</string>
+    <string name="progress_reading">Reading</string>
+    <string name="progress_read">Read</string>
+    <string name="progress_break">Reading break</string>
+
     <string-array name="reading_progress">
         <item>Reading progress</item>
-        <item>Not started</item>
-        <item>Reading</item>
-        <item>Read</item>
-        <item>Reading break</item>
+        <item>@string/progress_not_started</item>
+        <item>@string/progress_reading</item>
+        <item>@string/progress_read</item>
+        <item>@string/progress_break</item>
     </string-array>
 
     <string-array name="book_rating">

@@ -20,9 +20,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -36,7 +33,6 @@ import xyz.kandrac.library.model.Contract;
 import xyz.kandrac.library.model.Database;
 import xyz.kandrac.library.model.DatabaseStoreUtils;
 import xyz.kandrac.library.model.DatabaseUtils;
-import xyz.kandrac.library.model.firebase.References;
 import xyz.kandrac.library.model.obj.Author;
 import xyz.kandrac.library.model.obj.Library;
 import xyz.kandrac.library.model.obj.Publisher;
@@ -128,6 +124,8 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
     private static final String[] PROJECTION = new String[]{
             Database.Tables.BOOKS + "." + Contract.Books.BOOK_ID,
             Contract.Books.BOOK_TITLE,
+            Contract.Books.BOOK_PROGRESS,
+            Contract.Books.BOOK_MY_SCORE,
             Contract.Books.BOOK_WISH_LIST,
             Contract.Books.BOOK_BORROWED,
             Contract.Books.BOOK_BORROWED_TO_ME,
@@ -235,6 +233,9 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
         private ImageView image;
         private TextView title;
         private TextView subtitle;
+        private TextView progress;
+        private ImageView star;
+        private TextView starCount;
         private ImageView wishList;
         private ImageView borrowed;
         private ImageView borrowedToMe;
@@ -244,6 +245,9 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
             image = (ImageView) rowView.findViewById(R.id.list_item_book_image);
             title = (TextView) rowView.findViewById(R.id.list_item_book_title);
             subtitle = (TextView) rowView.findViewById(R.id.list_item_book_subtitle);
+            progress = (TextView) rowView.findViewById(R.id.list_item_book_progress);
+            star = (ImageView) rowView.findViewById(R.id.list_item_book_star);
+            starCount = (TextView) rowView.findViewById(R.id.list_item_book_star_count);
             wishList = (ImageView) rowView.findViewById(R.id.list_item_book_wish_list);
             borrowed = (ImageView) rowView.findViewById(R.id.list_item_book_borrowed);
             borrowedToMe = (ImageView) rowView.findViewById(R.id.list_item_book_borrowed_to_me);
@@ -269,11 +273,20 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
         final boolean borrowed = mCursor.getInt(mCursor.getColumnIndex(Contract.Books.BOOK_BORROWED)) == 1;
         final boolean borrowedToMe = mCursor.getInt(mCursor.getColumnIndex(Contract.Books.BOOK_BORROWED_TO_ME)) == 1;
 
+        final int progress = mCursor.getInt(mCursor.getColumnIndex(Contract.Books.BOOK_PROGRESS));
+        final int starCount = mCursor.getInt(mCursor.getColumnIndex(Contract.Books.BOOK_MY_SCORE));
+
         holder.title.setText(bookTitle);
         holder.subtitle.setText(authors);
         holder.wishList.setVisibility(wishList ? View.VISIBLE : View.GONE);
         holder.borrowed.setVisibility(borrowed ? View.VISIBLE : View.GONE);
         holder.borrowedToMe.setVisibility(borrowedToMe ? View.VISIBLE : View.GONE);
+
+        holder.progress.setText(getProgressText(mActivity, progress));
+        holder.progress.setVisibility(progress == 0 ? View.GONE: View.VISIBLE);
+        holder.starCount.setText(starCount == 0 ? "" : Integer.toString(starCount));
+        holder.starCount.setVisibility(starCount == 0 ? View.GONE: View.VISIBLE);
+        holder.star.setVisibility(starCount == 0 ? View.GONE: View.VISIBLE);
 
         if (!TextUtils.isEmpty(image)) {
             DisplayUtils.displayScaledImage(mActivity, image, holder.image);
@@ -368,6 +381,7 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
 
     /**
      * Delete selected books and end multi select after
+     *
      * @param context to delete books from
      */
     public void deleteSelectedBooks(Context context) {
@@ -423,6 +437,16 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
             cv.put(Contract.Books.BOOK_PUBLISHER_ID, libraryId);
             context.getContentResolver().update(Contract.Books.buildBookUri(id), cv, null, null);
             notifyItemRemoved(position);
+        }
+    }
+
+    private static String getProgressText(Context context, int value) {
+        switch (value) {
+            case 1: return context.getString(R.string.progress_not_started);
+            case 2: return context.getString(R.string.progress_reading);
+            case 3: return context.getString(R.string.progress_read);
+            case 4: return context.getString(R.string.progress_break);
+            default: return "";
         }
     }
 

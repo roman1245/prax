@@ -215,12 +215,17 @@
     <string name="preferences_visual_sk_cz_description">Povol tohle nastavení pro vyhledávání v slovenské a české databáze po skenování čárového kódu (vyhledávání v Google knihách je povoleno vždy)</string>
     <string name="preferences_visual_privacy_title">Ochrana osobních údajů</string>
 
+    <string name="progress_not_started">Nečtená</string>
+    <string name="progress_reading">Čtu</string>
+    <string name="progress_read">Přečtena</string>
+    <string name="progress_break">Čtení přerušeno</string>
+
     <string-array name="reading_progress">
         <item>Průběh čtení</item>
-        <item>Nečtená</item>
-        <item>Čtu</item>
-        <item>Přečtena</item>
-        <item>Čtení přerušeno</item>
+        <item>@string/progress_not_started</item>
+        <item>@string/progress_reading</item>
+        <item>@string/progress_read</item>
+        <item>@string/progress_break</item>
     </string-array>
 
     <string-array name="book_rating">
