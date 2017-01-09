@@ -15,8 +15,12 @@ import android.text.TextUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
+import javax.inject.Inject;
+
+import xyz.kandrac.library.LibraryApplication;
 import xyz.kandrac.library.model.firebase.References;
 import xyz.kandrac.library.utils.LogUtils;
+import xyz.kandrac.library.utils.SharedPreferencesManager;
 
 /**
  * Content provider for all database items.
@@ -70,6 +74,9 @@ public class DatabaseProvider extends ContentProvider {
 
     public static final int SPECIAL_TABLE = 700;
 
+    @Inject
+    public SharedPreferencesManager manager;
+
     private static UriMatcher buildUriMatcher() {
         final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = Contract.CONTENT_AUTHORITY;
@@ -111,6 +118,7 @@ public class DatabaseProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         final Context context = getContext();
+        LibraryApplication.getAppComponent(context).inject(this);
         databaseHelper = new Database(context);
         mFirebaseAuth = FirebaseAuth.getInstance();
         return true;
@@ -319,7 +327,25 @@ public class DatabaseProvider extends ContentProvider {
 
         switch (uriMatcher.match(uri)) {
             case BOOKS: {
-                long result = db.insertOrThrow(Database.Tables.BOOKS, null, values);
+
+                if (mFirebaseAuth.getCurrentUser() != null && manager.getBooleanPreference(SharedPreferencesManager.KEY_PREF_DRIVER_BOUGHT)) {
+                    String uid = mFirebaseAuth.getCurrentUser().getUid();
+
+                    String reference = FirebaseDatabase.getInstance().getReference()
+                            .child(References.USERS_REFERENCE).child(uid)
+                            .child(References.BOOKS_REFERENCE).push().getKey();
+
+                    for (String key : values.keySet()) {
+                        FirebaseDatabase.getInstance().getReference()
+                                .child(References.USERS_REFERENCE).child(uid)
+                                .child(References.BOOKS_REFERENCE).child(reference)
+                                .child(key).setValue(values.get(key));
+                    }
+
+                    values.put(Contract.BooksColumns.BOOK_REFERENCE, reference);
+                }
+
+                long result = db.insert(Database.Tables.BOOKS, null, values);
                 getContext().getContentResolver().notifyChange(uri, null);
                 return Contract.Books.buildBookUri(result);
             }
@@ -642,6 +668,17 @@ public class DatabaseProvider extends ContentProvider {
             case BOOKS_BY_REFERENCE: {
                 String reference = Contract.Books.getBookReference(uri);
                 count = db.update(Database.Tables.BOOKS, values, Contract.Books.BOOK_REFERENCE + " = ? ", new String[]{reference});
+
+                if (mFirebaseAuth.getCurrentUser() != null) {
+                    String uid = mFirebaseAuth.getCurrentUser().getUid();
+
+                    for (String key : values.keySet()) {
+                        FirebaseDatabase.getInstance().getReference()
+                                .child(References.USERS_REFERENCE).child(uid)
+                                .child(References.BOOKS_REFERENCE).child(reference)
+                                .child(key).setValue(values.get(key));
+                    }
+                }
                 break;
             }
             default:

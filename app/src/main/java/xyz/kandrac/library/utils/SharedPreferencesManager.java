@@ -17,10 +17,11 @@ public class SharedPreferencesManager {
 
     public static final String KEY_PREF_LIBRARY_ENABLED = "library_enabled";
     public static final String KEY_PREF_LAST_CLOUD_SYNC = "last_cloud_sync";
+    public static final String KEY_PREF_DRIVER_BOUGHT = "driver_bought";
 
     // Define the list of accepted constants and declare the NavigationMode annotation
     @Retention(RetentionPolicy.SOURCE)
-    @StringDef({KEY_PREF_LIBRARY_ENABLED, KEY_PREF_LAST_CLOUD_SYNC})
+    @StringDef({KEY_PREF_LIBRARY_ENABLED, KEY_PREF_LAST_CLOUD_SYNC, KEY_PREF_DRIVER_BOUGHT})
     @interface ApplicationPreferenceKey {
     }
 

@@ -4,6 +4,7 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 import xyz.kandrac.library.dagger.module.ApplicationModule;
+import xyz.kandrac.library.model.DatabaseProvider;
 import xyz.kandrac.library.mvp.presenter.MainPresenter;
 
 /**
@@ -14,4 +15,6 @@ import xyz.kandrac.library.mvp.presenter.MainPresenter;
 public interface ApplicationComponent {
 
     void inject(MainPresenter presenter);
+
+    void inject(DatabaseProvider databaseProvider);
 }

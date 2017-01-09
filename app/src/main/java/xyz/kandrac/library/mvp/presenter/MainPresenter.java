@@ -53,6 +53,7 @@ import static xyz.kandrac.library.mvp.view.MainActivity.WAIT_FOR_DOUBLE_CLICK_BA
 import static xyz.kandrac.library.mvp.view.MainView.ERROR_TYPE_GOOGLE_API_CONNECTION;
 import static xyz.kandrac.library.mvp.view.MainView.ERROR_TYPE_GOOGLE_SIGNIN;
 import static xyz.kandrac.library.mvp.view.MainView.INFO_PRESS_AGAIN_TO_LEAVE;
+import static xyz.kandrac.library.utils.SharedPreferencesManager.KEY_PREF_DRIVER_BOUGHT;
 
 /**
  * Created by jan on 6.12.2016.
@@ -237,7 +238,7 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
                 .child(References.BOOKS_REFERENCE).orderByChild("updatedAt")
                 .startAt(fromTime + 1)
                 .endAt(toTime)
-                .addValueEventListener(new ValueEventListener() {
+                .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot bookSnapshot : dataSnapshot.getChildren()) {
@@ -367,12 +368,13 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
                 // in release let this user to have full access to drive functions
                 configurator.setAdmin(email.equals("kandrac.jan@gmail.com"));
             }
-            configurator.start();
         }
+        configurator.start();
     }
 
     @Override
     public void onDrivePurchased(boolean purchased) {
+        manager.editPreference(KEY_PREF_DRIVER_BOUGHT, purchased);
         evaluatePurchases(purchased);
     }
 
@@ -413,8 +415,6 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (!task.isSuccessful()) {
                             view.interact(ERROR_TYPE_GOOGLE_SIGNIN, null);
-                        } else {
-                            configurator.start();
                         }
                     }
                 });

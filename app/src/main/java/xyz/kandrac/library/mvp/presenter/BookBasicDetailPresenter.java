@@ -7,6 +7,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import javax.inject.Inject;
 
@@ -180,10 +181,11 @@ public class BookBasicDetailPresenter implements Presenter<BookDetailView> {
      * @param cv to store
      */
     public void save(@NonNull ContentValues cv) {
-        cv.put(BOOK_REFERENCE, bookReference);
         mView.getActivity()
                 .getContentResolver()
-                .update(Contract.Books.buildBookUri(bookId), cv, null, null);
+                .update(TextUtils.isEmpty(bookReference)
+                        ? Contract.Books.buildBookUri(bookId)
+                        : Contract.Books.buildBookFirebaseUri(bookReference), cv, null, null);
     }
 
     /**
