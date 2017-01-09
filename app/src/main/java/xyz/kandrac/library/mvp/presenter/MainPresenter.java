@@ -49,6 +49,21 @@ import xyz.kandrac.library.utils.IABConfigurator;
 import xyz.kandrac.library.utils.LogUtils;
 import xyz.kandrac.library.utils.SharedPreferencesManager;
 
+import static xyz.kandrac.library.model.firebase.FirebaseBook.KEY_AUTHORS;
+import static xyz.kandrac.library.model.firebase.FirebaseBook.KEY_BORROWED_TO_NAME;
+import static xyz.kandrac.library.model.firebase.FirebaseBook.KEY_BORROWED_WHEN;
+import static xyz.kandrac.library.model.firebase.FirebaseBook.KEY_BORROW_ME_NAME;
+import static xyz.kandrac.library.model.firebase.FirebaseBook.KEY_BORROW_ME_WHEN;
+import static xyz.kandrac.library.model.firebase.FirebaseBook.KEY_BORROW_NOTIFY;
+import static xyz.kandrac.library.model.firebase.FirebaseBook.KEY_DESCRIPTION;
+import static xyz.kandrac.library.model.firebase.FirebaseBook.KEY_ISBN;
+import static xyz.kandrac.library.model.firebase.FirebaseBook.KEY_LIBRARY;
+import static xyz.kandrac.library.model.firebase.FirebaseBook.KEY_PUBLISHED;
+import static xyz.kandrac.library.model.firebase.FirebaseBook.KEY_PUBLISHER;
+import static xyz.kandrac.library.model.firebase.FirebaseBook.KEY_SUBTITLE;
+import static xyz.kandrac.library.model.firebase.FirebaseBook.KEY_TITLE;
+import static xyz.kandrac.library.model.firebase.FirebaseBook.KEY_UPDATED_AT;
+import static xyz.kandrac.library.model.firebase.FirebaseBook.KEY_WISH_LIST;
 import static xyz.kandrac.library.mvp.view.MainActivity.WAIT_FOR_DOUBLE_CLICK_BACK;
 import static xyz.kandrac.library.mvp.view.MainView.ERROR_TYPE_GOOGLE_API_CONNECTION;
 import static xyz.kandrac.library.mvp.view.MainView.ERROR_TYPE_GOOGLE_SIGNIN;
@@ -235,17 +250,17 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
     private void storeFromCloud(final FirebaseDatabase database, final String userUid, final long fromTime, final long toTime) {
         database.getReference()
                 .child(References.USERS_REFERENCE).child(userUid)
-                .child(References.BOOKS_REFERENCE).orderByChild("updatedAt")
+                .child(References.BOOKS_REFERENCE).orderByChild(KEY_UPDATED_AT)
                 .startAt(fromTime + 1)
                 .endAt(toTime)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot bookSnapshot : dataSnapshot.getChildren()) {
-                            long updatedAt = (long) bookSnapshot.child("updatedAt").getValue();
+                            long updatedAt = (long) bookSnapshot.child(KEY_UPDATED_AT).getValue();
 
                             // authors
-                            String[] authorsSplit = TextUtils.split((String) bookSnapshot.child("authors").getValue(), ",");
+                            String[] authorsSplit = TextUtils.split((String) bookSnapshot.child(KEY_AUTHORS).getValue(), ",");
 
                             Author[] authors = new Author[authorsSplit.length];
                             for (int i = 0; i < authorsSplit.length; i++) {
@@ -256,36 +271,36 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
 
                             Book.Builder builder = new Book.Builder()
                                     .setFirebaseReference(bookSnapshot.getRef().getKey())
-                                    .setTitle((String) bookSnapshot.child("title").getValue())
-                                    .setIsbn((String) bookSnapshot.child("isbn").getValue())
-                                    .setDescription((String) bookSnapshot.child("description").getValue())
-                                    .setSubtitle((String) bookSnapshot.child("subtitle").getValue())
-                                    .setPublished((String) bookSnapshot.child("published").getValue())
-                                    .setWish((boolean) bookSnapshot.child("wishlist").getValue())
+                                    .setTitle((String) bookSnapshot.child(KEY_TITLE).getValue())
+                                    .setIsbn((String) bookSnapshot.child(KEY_ISBN).getValue())
+                                    .setDescription((String) bookSnapshot.child(KEY_DESCRIPTION).getValue())
+                                    .setSubtitle((String) bookSnapshot.child(KEY_SUBTITLE).getValue())
+                                    .setPublished((String) bookSnapshot.child(KEY_PUBLISHED).getValue())
+                                    .setWish((boolean) bookSnapshot.child(KEY_WISH_LIST).getValue())
                                     .setAuthors(authors)
-                                    .setLibrary(new Library.Builder().setName((String) bookSnapshot.child("library").getValue()).build())
+                                    .setLibrary(new Library.Builder().setName((String) bookSnapshot.child(KEY_LIBRARY).getValue()).build())
                                     .setPublisher(new Publisher.Builder()
-                                            .setName((String) bookSnapshot.child("publisher").getValue())
+                                            .setName((String) bookSnapshot.child(KEY_PUBLISHER).getValue())
                                             .build())
                                     .setUpdatedAt(updatedAt);
 
                             // borrowed
-                            String borrowedName = (String) bookSnapshot.child("borrowedToName").getValue();
+                            String borrowedName = (String) bookSnapshot.child(KEY_BORROWED_TO_NAME).getValue();
                             if (!TextUtils.isEmpty(borrowedName)) {
                                 builder.setBorrowed(true)
                                         .setBorrowedTo(borrowedName)
-                                        .setBorrowedToNotify((long) bookSnapshot.child("borrowNotify").getValue())
-                                        .setBorrowedToWhen((long) bookSnapshot.child("borrowedWhen").getValue());
+                                        .setBorrowedToNotify((long) bookSnapshot.child(KEY_BORROW_NOTIFY).getValue())
+                                        .setBorrowedToWhen((long) bookSnapshot.child(KEY_BORROWED_WHEN).getValue());
                             } else {
                                 builder.setBorrowed(false);
                             }
 
                             // borrowed to me
-                            String borrowedToMeName = (String) bookSnapshot.child("borrowedToMeName").getValue();
+                            String borrowedToMeName = (String) bookSnapshot.child(KEY_BORROW_ME_NAME).getValue();
                             if (!TextUtils.isEmpty(borrowedToMeName)) {
                                 builder.setBorrowedToMe(true)
                                         .setBorrowedToMeName(borrowedToMeName)
-                                        .setBorrowedToMeWhen((long) bookSnapshot.child("borrowedToMeWhen").getValue());
+                                        .setBorrowedToMeWhen((long) bookSnapshot.child(KEY_BORROW_ME_WHEN).getValue());
                             } else {
                                 builder.setBorrowedToMe(false);
                             }

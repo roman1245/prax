@@ -3,41 +3,73 @@ package xyz.kandrac.library.model.firebase;
 import com.google.firebase.database.IgnoreExtraProperties;
 import com.google.firebase.database.PropertyName;
 
+import xyz.kandrac.library.model.Contract;
+
 /**
  * Created by jan on 23.10.2016.
  */
 @IgnoreExtraProperties
 public class FirebaseBook {
 
-    @PropertyName("updatedAt")
+    public static final String KEY_UPDATED_AT = Contract.BooksColumns.BOOK_UPDATED_AT;
+    public static final String KEY_TITLE = Contract.BooksColumns.BOOK_TITLE;
+    public static final String KEY_ISBN = Contract.BooksColumns.BOOK_ISBN;
+    public static final String KEY_DESCRIPTION = Contract.BooksColumns.BOOK_DESCRIPTION;
+    public static final String KEY_SUBTITLE = Contract.BooksColumns.BOOK_SUBTITLE;
+    public static final String KEY_PUBLISHED = Contract.BooksColumns.BOOK_PUBLISHED;
+    public static final String KEY_AUTHORS = "authors";
+    public static final String KEY_PUBLISHER = "publisher";
+    public static final String KEY_LIBRARY = "library";
+    public static final String KEY_WISH_LIST = Contract.BooksColumns.BOOK_WISH_LIST;
+    public static final String KEY_BORROWED_TO_NAME = "borrowedToName";
+    public static final String KEY_BORROWED_WHEN = "borrowedWhen";
+    public static final String KEY_BORROW_NOTIFY = "borrowNotify";
+    public static final String KEY_BORROW_ME_NAME = "borrowedToMeName";
+    public static final String KEY_BORROW_ME_WHEN = "borrowedToMeWhen";
+
+    @PropertyName(KEY_UPDATED_AT)
     public long updatedAt;
-    @PropertyName("title")
+
+    @PropertyName(KEY_TITLE)
     public String title;
-    @PropertyName("isbn")
+
+    @PropertyName(KEY_ISBN)
     public String isbn;
-    @PropertyName("description")
+
+    @PropertyName(KEY_DESCRIPTION)
     public String description;
-    @PropertyName("subtitle")
+
+    @PropertyName(KEY_SUBTITLE)
     public String subtitle;
-    @PropertyName("published")
+
+    @PropertyName(KEY_PUBLISHED)
     public String published;
-    @PropertyName("authors")
+
+    @PropertyName(KEY_AUTHORS)
     public String authors;
-    @PropertyName("publisher")
+
+    @PropertyName(KEY_PUBLISHER)
     public String publisher;
-    @PropertyName("library")
+
+    @PropertyName(KEY_LIBRARY)
     public String library;
-    @PropertyName("wishlist")
+
+    @PropertyName(KEY_WISH_LIST)
     public boolean wishlist;
-    @PropertyName("borrowedToName")
+
+    @PropertyName(KEY_BORROWED_TO_NAME)
     public String borrowedToName;
-    @PropertyName("borrowedWhen")
+
+    @PropertyName(KEY_BORROWED_WHEN)
     public long borrowedWhen;
-    @PropertyName("borrowNotify")
+
+    @PropertyName(KEY_BORROW_NOTIFY)
     public long borrowNotify;
-    @PropertyName("borrowedToMeName")
+
+    @PropertyName(KEY_BORROW_ME_NAME)
     public String borrowedToMeName;
-    @PropertyName("borrowedToMeWhen")
+
+    @PropertyName(KEY_BORROW_ME_WHEN)
     public long borrowedToMeWhen;
 
     public FirebaseBook() {

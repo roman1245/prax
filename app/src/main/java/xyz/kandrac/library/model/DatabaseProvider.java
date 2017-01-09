@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import javax.inject.Inject;
@@ -21,6 +22,12 @@ import xyz.kandrac.library.LibraryApplication;
 import xyz.kandrac.library.model.firebase.References;
 import xyz.kandrac.library.utils.LogUtils;
 import xyz.kandrac.library.utils.SharedPreferencesManager;
+
+import static xyz.kandrac.library.model.firebase.FirebaseBook.KEY_AUTHORS;
+import static xyz.kandrac.library.model.firebase.FirebaseBook.KEY_BORROW_ME_NAME;
+import static xyz.kandrac.library.model.firebase.FirebaseBook.KEY_BORROW_ME_WHEN;
+import static xyz.kandrac.library.model.firebase.FirebaseBook.KEY_LIBRARY;
+import static xyz.kandrac.library.model.firebase.FirebaseBook.KEY_PUBLISHER;
 
 /**
  * Content provider for all database items.
@@ -56,6 +63,10 @@ public class DatabaseProvider extends ContentProvider {
     public static final int PUBLISHERS = 300;
     public static final int PUBLISHER_ID = 301;
     public static final int PUBLISHER_BY_BOOK = 302;
+    public static final int PUBLISHER_BY_BOOK_REFERENCE = 303;
+    public static final int LIBRARY_BY_BOOK_REFERENCE = 304;
+    public static final int AUTHORS_BY_BOOK_REFERENCE = 305;
+    public static final int BORROW_ME_INFO_BY_BOOK_REFERENCE = 306;
 
     public static final int BOOKS_AUTHORS = 400;
 
@@ -85,6 +96,10 @@ public class DatabaseProvider extends ContentProvider {
         uriMatcher.addURI(authority, "books/#", BOOK_ID);
         uriMatcher.addURI(authority, "books/isbn/*", BOOKS_BY_ISBN);
         uriMatcher.addURI(authority, "books/ref/*", BOOKS_BY_REFERENCE);
+        uriMatcher.addURI(authority, "books/ref/*/publishers", PUBLISHER_BY_BOOK_REFERENCE);
+        uriMatcher.addURI(authority, "books/ref/*/libraries", LIBRARY_BY_BOOK_REFERENCE);
+        uriMatcher.addURI(authority, "books/ref/*/authors", AUTHORS_BY_BOOK_REFERENCE);
+        uriMatcher.addURI(authority, "books/ref/*/borrow_me_info", BORROW_ME_INFO_BY_BOOK_REFERENCE);
         uriMatcher.addURI(authority, "books/#/authors", AUTHOR_BY_BOOK);
         uriMatcher.addURI(authority, "books/#/borrow_info", BORROW_INFO_BY_BOOK);
         uriMatcher.addURI(authority, "books/#/borrow_me_info", BORROW_ME_INFO_BY_BOOK);
@@ -343,11 +358,13 @@ public class DatabaseProvider extends ContentProvider {
                     }
 
                     values.put(Contract.BooksColumns.BOOK_REFERENCE, reference);
-                }
 
-                long result = db.insert(Database.Tables.BOOKS, null, values);
-                getContext().getContentResolver().notifyChange(uri, null);
-                return Contract.Books.buildBookUri(result);
+                    db.insert(Database.Tables.BOOKS, null, values);
+                    return Contract.Books.buildBookFirebaseUri(reference);
+                } else {
+                    long result = db.insert(Database.Tables.BOOKS, null, values);
+                    return Contract.Books.buildBookUri(result);
+                }
             }
             case AUTHORS: {
                 long result = insertOrIgnore(db, values, Database.Tables.AUTHORS, Contract.Authors.AUTHOR_NAME);
@@ -356,17 +373,46 @@ public class DatabaseProvider extends ContentProvider {
             }
             case AUTHOR_BY_BOOK: {
                 long bookId = Contract.Books.getBookId(uri);
+                ContentValues foo = new ContentValues();
 
-                // insert author
-                long result = insertOrIgnore(db, values, Database.Tables.AUTHORS, Contract.Authors.AUTHOR_NAME);
-
-                // insert author book connection
-                ContentValues cv = Contract.BookAuthors.generateContentValues(bookId, result);
-
-                db.insert(Database.Tables.BOOKS_AUTHORS, null, cv);
+                for (int i = 0; i < values.size(); i++) {
+                    foo.put(Contract.Authors.AUTHOR_NAME, values.getAsString(Integer.toString(i)));
+                    long result = insertOrIgnore(db, foo, Database.Tables.AUTHORS, Contract.Authors.AUTHOR_NAME);
+                    ContentValues cv = Contract.BookAuthors.generateContentValues(bookId, result);
+                    db.insert(Database.Tables.BOOKS_AUTHORS, null, cv);
+                }
 
                 getContext().getContentResolver().notifyChange(uri, null);
-                return Contract.Authors.buildAuthorUri(result);
+                return uri;
+            }
+            case AUTHORS_BY_BOOK_REFERENCE: {
+                String reference = Contract.Books.getBookReference(uri);
+                StringBuilder sb = new StringBuilder();
+
+                for (int i = 0; i < values.size(); i++) {
+                    String authorName = values.getAsString(Integer.toString(i));
+                    ContentValues foo = new ContentValues();
+                    foo.put(Contract.Authors.AUTHOR_NAME, authorName);
+                    long authorId = insertOrIgnore(db, foo, Database.Tables.AUTHORS, Contract.Authors.AUTHOR_NAME);
+                    ContentValues cv = Contract.BookAuthors.generateContentValues(getBookId(db, reference), authorId);
+                    db.insert(Database.Tables.BOOKS_AUTHORS, null, cv);
+
+                    if (i != 0) {
+                        sb.append(",");
+                    }
+                    sb.append(authorName);
+                }
+
+                if (mFirebaseAuth.getCurrentUser() != null && manager.getBooleanPreference(SharedPreferencesManager.KEY_PREF_DRIVER_BOUGHT)) {
+                    String uid = mFirebaseAuth.getCurrentUser().getUid();
+
+                    FirebaseDatabase.getInstance().getReference()
+                            .child(References.USERS_REFERENCE).child(uid)
+                            .child(References.BOOKS_REFERENCE).child(reference)
+                            .child(KEY_AUTHORS).setValue(sb.toString());
+                }
+
+                return uri;
             }
             case BOOK_BY_AUTHOR: {
                 long authorId = Contract.Authors.getAuthorId(uri);
@@ -376,16 +422,63 @@ public class DatabaseProvider extends ContentProvider {
 
                 // insert author book connection
                 ContentValues cv = Contract.BookAuthors.generateContentValues(result, authorId);
-
                 db.insert(Database.Tables.BOOKS_AUTHORS, null, cv);
 
                 getContext().getContentResolver().notifyChange(uri, null);
                 return Contract.Authors.buildAuthorUri(result);
             }
+            case PUBLISHER_BY_BOOK_REFERENCE: {
+                String reference = Contract.Books.getBookReference(uri);
+
+                if (mFirebaseAuth.getCurrentUser() != null && manager.getBooleanPreference(SharedPreferencesManager.KEY_PREF_DRIVER_BOUGHT)) {
+                    String uid = mFirebaseAuth.getCurrentUser().getUid();
+
+                    FirebaseDatabase.getInstance().getReference()
+                            .child(References.USERS_REFERENCE).child(uid)
+                            .child(References.BOOKS_REFERENCE).child(reference)
+                            .child(KEY_PUBLISHER).setValue(values.get(Contract.Publishers.PUBLISHER_NAME));
+                }
+                long result = insertOrIgnore(db, values, Database.Tables.PUBLISHERS, Contract.Publishers.PUBLISHER_NAME);
+                getContext().getContentResolver().notifyChange(uri, null);
+                return Contract.Publishers.buildPublisherUri(result);
+            }
+            case PUBLISHER_BY_BOOK: {
+                long bookId = Contract.Books.getBookId(uri);
+                long result = insertOrIgnore(db, values, Database.Tables.PUBLISHERS, Contract.Publishers.PUBLISHER_NAME);
+                ContentValues cv = new ContentValues();
+                cv.put(Contract.Books.BOOK_PUBLISHER_ID, result);
+                update(Contract.Books.buildBookUri(bookId), cv, null, null);
+                getContext().getContentResolver().notifyChange(uri, null);
+                return Contract.Publishers.buildPublisherUri(result);
+            }
             case PUBLISHERS: {
                 long result = insertOrIgnore(db, values, Database.Tables.PUBLISHERS, Contract.Publishers.PUBLISHER_NAME);
                 getContext().getContentResolver().notifyChange(uri, null);
                 return Contract.Publishers.buildPublisherUri(result);
+            }
+            case LIBRARY_BY_BOOK: {
+                long bookId = Contract.Books.getBookId(uri);
+                long result = insertOrIgnore(db, values, Database.Tables.LIBRARIES, Contract.Libraries.LIBRARY_NAME);
+                ContentValues cv = new ContentValues();
+                cv.put(Contract.Books.BOOK_LIBRARY_ID, result);
+                update(Contract.Books.buildBookUri(bookId), cv, null, null);
+                getContext().getContentResolver().notifyChange(uri, null);
+                return Contract.Libraries.buildLibraryUri(result);
+            }
+            case LIBRARY_BY_BOOK_REFERENCE: {
+                String reference = Contract.Books.getBookReference(uri);
+
+                if (mFirebaseAuth.getCurrentUser() != null && manager.getBooleanPreference(SharedPreferencesManager.KEY_PREF_DRIVER_BOUGHT)) {
+                    String uid = mFirebaseAuth.getCurrentUser().getUid();
+
+                    FirebaseDatabase.getInstance().getReference()
+                            .child(References.USERS_REFERENCE).child(uid)
+                            .child(References.BOOKS_REFERENCE).child(reference)
+                            .child(KEY_LIBRARY).setValue(values.get(Contract.Libraries.LIBRARY_NAME));
+                }
+                long result = insertOrIgnore(db, values, Database.Tables.LIBRARIES, Contract.Libraries.LIBRARY_NAME);
+                getContext().getContentResolver().notifyChange(uri, null);
+                return Contract.Libraries.buildLibraryUri(result);
             }
             case LIBRARIES: {
                 long result = insertOrIgnore(db, values, Database.Tables.LIBRARIES, Contract.Libraries.LIBRARY_NAME);
@@ -404,6 +497,24 @@ public class DatabaseProvider extends ContentProvider {
                 long result = db.insert(Database.Tables.BORROW_INFO, null, values);
                 getContext().getContentResolver().notifyChange(uri, null);
                 return Contract.BorrowInfo.buildUri(result);
+            }
+            case BORROW_ME_INFO_BY_BOOK_REFERENCE: {
+                String reference = Contract.Books.getBookReference(uri);
+
+                if (mFirebaseAuth.getCurrentUser() != null && manager.getBooleanPreference(SharedPreferencesManager.KEY_PREF_DRIVER_BOUGHT)) {
+                    String uid = mFirebaseAuth.getCurrentUser().getUid();
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
+                            .child(References.USERS_REFERENCE).child(uid)
+                            .child(References.BOOKS_REFERENCE).child(reference);
+
+                    ref.child(KEY_BORROW_ME_NAME).setValue(values.get(Contract.BorrowMeInfoColumns.BORROW_NAME));
+                    ref.child(KEY_BORROW_ME_WHEN).setValue(values.get(Contract.BorrowMeInfoColumns.BORROW_DATE_BORROWED));
+                }
+
+                values.put(Contract.BorrowMeInfo.BORROW_BOOK_ID, getBookId(db, reference));
+                long result = db.insert(Database.Tables.BORROW_ME, null, values);
+                getContext().getContentResolver().notifyChange(uri, null);
+                return Contract.BorrowMeInfo.buildUri(result);
             }
             case BORROW_ME_INFO_BY_BOOK: {
                 long bookId = Contract.Books.getBookId(uri);
@@ -748,5 +859,16 @@ public class DatabaseProvider extends ContentProvider {
         }
 
         return result;
+    }
+
+    private long getBookId(SQLiteDatabase db, String reference) {
+        Cursor c = db.query(Database.Tables.BOOKS, new String[]{Contract.BooksColumns.BOOK_ID}, Contract.BooksColumns.BOOK_REFERENCE + " = ?", new String[]{reference}, null, null, null);
+        if (c != null && c.moveToFirst()) {
+            long result = c.getLong(c.getColumnIndex(Contract.BooksColumns.BOOK_ID));
+            c.close();
+            return result;
+        } else {
+            return -1;
+        }
     }
 }

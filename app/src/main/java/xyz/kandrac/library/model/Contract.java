@@ -89,10 +89,12 @@ public final class Contract {
     // Aliases
     // Base URI specification (authority and its URI representation)
     public static final String CONTENT_AUTHORITY = BuildConfig.DATABASE_AUTHORITY;
+
     public interface ConcatAliases {
         String AUTHORS_CONCAT_ALIAS = "concat";
 
     }
+
     // URI Paths
     public static final String PATH_BOOKS = "books";
     public static final String PATH_AUTHORS = "authors";
@@ -167,8 +169,16 @@ public final class Contract {
             return CONTENT_URI.buildUpon().appendPath(Long.toString(bookId)).appendPath(PATH_PUBLISHERS).build();
         }
 
+        public static Uri buildBookPublisherFirebaseUri(String reference) {
+            return CONTENT_URI.buildUpon().appendPath(PATH_REFERENCE).appendPath(reference).appendPath(PATH_PUBLISHERS).build();
+        }
+
         public static Uri buildBookLibraryUri(long bookId) {
             return CONTENT_URI.buildUpon().appendPath(Long.toString(bookId)).appendPath(PATH_LIBRARIES).build();
+        }
+
+        public static Uri buildBookLibraryFirebaseUri(String reference) {
+            return CONTENT_URI.buildUpon().appendPath(PATH_REFERENCE).appendPath(reference).appendPath(PATH_LIBRARIES).build();
         }
 
         /**
@@ -176,6 +186,14 @@ public final class Contract {
          */
         public static Uri buildBookWithAuthorUri(long bookId) {
             return CONTENT_URI.buildUpon().appendPath(Long.toString(bookId)).appendPath(PATH_AUTHORS).build();
+        }
+
+        private static Uri buildBookWithAuthorFirebaseUri(String reference) {
+            return CONTENT_URI.buildUpon().appendPath(PATH_REFERENCE).appendPath(reference).appendPath(PATH_AUTHORS).build();
+        }
+
+        private static Uri buildBorrowedToMeInfoFirebaseUri(String reference) {
+            return CONTENT_URI.buildUpon().appendPath(PATH_REFERENCE).appendPath(reference).appendPath(PATH_BORROW_ME_INFO).build();
         }
 
         /**
@@ -202,6 +220,42 @@ public final class Contract {
 
         public static Uri buildBorrowedToMeInfoUri(long bookId) {
             return CONTENT_URI.buildUpon().appendPath(Long.toString(bookId)).appendPath(PATH_BORROW_ME_INFO).build();
+        }
+
+        public static Uri buildBookPublisherUri(Uri bookUri) {
+            if (isReferenceUri(bookUri)) {
+                return buildBookPublisherFirebaseUri(getBookReference(bookUri));
+            } else {
+                return buildBookPublisherUri(getBookId(bookUri));
+            }
+        }
+
+        public static Uri buildBookLibraryUri(Uri bookUri) {
+            if (isReferenceUri(bookUri)) {
+                return buildBookLibraryFirebaseUri(getBookReference(bookUri));
+            } else {
+                return buildBookLibraryUri(getBookId(bookUri));
+            }
+        }
+
+        public static Uri buildBookAuthorUri(Uri bookUri) {
+            if (isReferenceUri(bookUri)) {
+                return buildBookWithAuthorFirebaseUri(getBookReference(bookUri));
+            } else {
+                return buildBookWithAuthorUri(getBookId(bookUri));
+            }
+        }
+
+        public static Uri buildBorrowedToMeInfoUri(Uri bookUri) {
+            if (isReferenceUri(bookUri)) {
+                return buildBorrowedToMeInfoFirebaseUri(getBookReference(bookUri));
+            } else {
+                return buildBorrowedToMeInfoUri(getBookId(bookUri));
+            }
+        }
+
+        private static boolean isReferenceUri(Uri bookUri) {
+            return bookUri.getPathSegments().size() == 3;
         }
     }
 

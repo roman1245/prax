@@ -15,7 +15,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.provider.BaseColumns;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -26,7 +25,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.FileProvider;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -37,7 +35,6 @@ import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FilterQueryProvider;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -45,7 +42,6 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
@@ -60,11 +56,6 @@ import xyz.kandrac.library.api.google.GoogleResponse;
 import xyz.kandrac.library.api.library.LibraryResponse;
 import xyz.kandrac.library.fragments.SettingsFragment;
 import xyz.kandrac.library.model.Contract;
-import xyz.kandrac.library.model.DatabaseStoreUtils;
-import xyz.kandrac.library.model.obj.Author;
-import xyz.kandrac.library.model.obj.Book;
-import xyz.kandrac.library.model.obj.Library;
-import xyz.kandrac.library.model.obj.Publisher;
 import xyz.kandrac.library.utils.AutoCompleteUtils;
 import xyz.kandrac.library.utils.BookCursorAdapter;
 import xyz.kandrac.library.utils.ConnectivityUtils;
@@ -119,14 +110,13 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
     // Globals
     private long mBookId;
+    private String mBookReference;
     private boolean mToWishList;
     private boolean mBorrowedToMe;
     private String imageFileName;
     private boolean mStartingActivityForResult = false;
     private boolean bulk;
 
-    private Toolbar toolbar;
-    private ImageView mOriginImage;
     private AutoCompleteTextView mOriginEdit;
     private AutoCompleteTextView mAuthorEdit;
     private AutoCompleteTextView mPublisherEdit;
@@ -147,8 +137,8 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_book_edit);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        mOriginImage = (ImageView) findViewById(R.id.book_input_origin_image);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        ImageView mOriginImage = (ImageView) findViewById(R.id.book_input_origin_image);
         mOriginEdit = (AutoCompleteTextView) findViewById(R.id.book_input_origin);
         mAuthorEdit = (AutoCompleteTextView) findViewById(R.id.book_input_author);
         mPublisherEdit = (AutoCompleteTextView) findViewById(R.id.book_input_publisher);
@@ -467,40 +457,51 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
     public void saveConfirmed() {
         String authorsReadable = mAuthorEdit.getText().toString();
+        String publisherName = mPublisherEdit.getText().toString();
+        String libraryName = mLibraryEdit.getText().toString();
 
-        Publisher publisher = new Publisher.Builder()
-                .setName(mPublisherEdit.getText().toString())
-                .build();
+        // Content values of book
+        ContentValues bookCv = new ContentValues();
+        bookCv.put(Contract.Books.BOOK_TITLE, mTitleEdit.getText().toString());
+        bookCv.put(Contract.Books.BOOK_SUBTITLE, mSubtitleEdit.getText().toString());
+        bookCv.put(Contract.Books.BOOK_ISBN, mIsbnEdit.getText().toString());
+        bookCv.put(Contract.Books.BOOK_IMAGE_FILE, (String) mImageEdit.getTag());
+        bookCv.put(Contract.Books.BOOK_DESCRIPTION, mDescription.getText().toString());
+        bookCv.put(Contract.Books.BOOK_PUBLISHED, mPublished.getText().toString());
+        bookCv.put(Contract.Books.BOOK_BORROWED_TO_ME, mBorrowedToMe);
+        bookCv.put(Contract.Books.BOOK_WISH_LIST, mToWishList);
 
-        Library library = new Library.Builder()
-                .setName(mLibraryEdit.getText().toString())
-                .build();
+        Uri bookUri;
+        if (mBookId == 0) {
+            bookUri = getContentResolver().insert(Contract.Books.CONTENT_URI, bookCv);
+        } else {
+            if (TextUtils.isEmpty(mBookReference)) {
+                getContentResolver().update(Contract.Books.buildBookUri(mBookId), bookCv, null, null);
+                bookUri = Contract.Books.buildBookUri(mBookId);
+            } else {
+                getContentResolver().update(Contract.Books.buildBookFirebaseUri(mBookReference), bookCv, null, null);
+                bookUri = Contract.Books.buildBookFirebaseUri(mBookReference);
+            }
+        }
+
+        // Publisher
+        ContentValues publisherCv = new ContentValues();
+        publisherCv.put(Contract.Publishers.PUBLISHER_NAME, publisherName);
+        getContentResolver().insert(Contract.Books.buildBookPublisherUri(bookUri), publisherCv);
+
+        // Library
+        ContentValues libraryCv = new ContentValues();
+        libraryCv.put(Contract.Libraries.LIBRARY_NAME, libraryName);
+        getContentResolver().insert(Contract.Books.buildBookLibraryUri(bookUri), libraryCv);
 
         String[] authorsSplit = TextUtils.split(authorsReadable, ",");
 
-        Author[] authors = new Author[authorsSplit.length];
+        ContentValues authorCv = new ContentValues();
         for (int i = 0; i < authorsSplit.length; i++) {
-            String authorName = authorsSplit[i].trim();
-            authors[i] = new Author.Builder().setName(authorName).build();
+            authorCv.put(Integer.toString(i), authorsSplit[i].trim());
+            //
         }
-
-        Book book = new Book.Builder()
-                .setId(mBookId)
-                .setPublisher(publisher)
-                .setLibrary(library)
-                .setAuthors(authors)
-                .setTitle(mTitleEdit.getText().toString())
-                .setSubtitle(mSubtitleEdit.getText().toString())
-                .setIsbn(mIsbnEdit.getText().toString())
-                .setImageFilePath((String) mImageEdit.getTag())
-                .setDescription(mDescription.getText().toString())
-                .setWish(mToWishList)
-                .setBorrowedToMe(mBorrowedToMe)
-                .setPublished(mPublished.getText().toString())
-                .setUpdatedAt(System.currentTimeMillis())
-                .build();
-
-        long bookId = DatabaseStoreUtils.saveBook(getContentResolver(), book);
+        getContentResolver().insert(Contract.Books.buildBookAuthorUri(bookUri), authorCv);
 
         if (mBorrowedToMe) {
             final long dateFrom = new Date(System.currentTimeMillis()).getTime();
@@ -509,8 +510,11 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
             borrowContentValues.put(Contract.BorrowMeInfoColumns.BORROW_DATE_BORROWED, dateFrom);
             borrowContentValues.put(Contract.BorrowMeInfoColumns.BORROW_NAME, mOriginEdit.getText().toString());
 
-            getContentResolver().insert(Contract.Books.buildBorrowedToMeInfoUri(bookId), borrowContentValues);
+            getContentResolver().insert(Contract.Books.buildBorrowedToMeInfoUri(bookUri), borrowContentValues);
         }
+
+        getContentResolver().notifyChange(Contract.Books.CONTENT_URI, null);
+        getContentResolver().notifyChange(Contract.BOOKS_AUTHORS_URI, null);
 
         if (bulk) {
             recreate();
@@ -805,6 +809,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         String published = data.getString(data.getColumnIndex(Contract.Books.BOOK_PUBLISHED));
         boolean wish = data.getInt(data.getColumnIndex(Contract.Books.BOOK_WISH_LIST)) == 1;
         boolean borrowedToMe = data.getInt(data.getColumnIndex(Contract.Books.BOOK_BORROWED_TO_ME)) == 1;
+        mBookReference = data.getString(data.getColumnIndex(Contract.Books.BOOK_REFERENCE));
 
         mTitleEdit.setText(title);
         mSubtitleEdit.setText(subtitle);
