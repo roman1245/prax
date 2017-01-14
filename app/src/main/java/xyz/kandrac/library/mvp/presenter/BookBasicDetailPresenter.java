@@ -3,6 +3,7 @@ package xyz.kandrac.library.mvp.presenter;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -11,11 +12,22 @@ import android.text.TextUtils;
 
 import javax.inject.Inject;
 
+import xyz.kandrac.library.R;
 import xyz.kandrac.library.model.Contract;
 import xyz.kandrac.library.mvp.view.bookdetail.BookDetailView;
 
-import static xyz.kandrac.library.model.Contract.BooksColumns.*;
-import static xyz.kandrac.library.mvp.view.bookdetail.BookDetailView.*;
+import static xyz.kandrac.library.model.Contract.BooksColumns.BOOK_MY_SCORE;
+import static xyz.kandrac.library.model.Contract.BooksColumns.BOOK_NOTES;
+import static xyz.kandrac.library.model.Contract.BooksColumns.BOOK_PROGRESS;
+import static xyz.kandrac.library.model.Contract.BooksColumns.BOOK_QUOTE;
+import static xyz.kandrac.library.model.Contract.BooksColumns.BOOK_REFERENCE;
+import static xyz.kandrac.library.mvp.view.bookdetail.BookDetailView.LOADER_BASIC;
+import static xyz.kandrac.library.mvp.view.bookdetail.BookDetailView.LOADER_BASIC_AUTHORS;
+import static xyz.kandrac.library.mvp.view.bookdetail.BookDetailView.LOADER_BASIC_BORROW;
+import static xyz.kandrac.library.mvp.view.bookdetail.BookDetailView.LOADER_BASIC_BORROW_ME;
+import static xyz.kandrac.library.mvp.view.bookdetail.BookDetailView.LOADER_BASIC_LIBRARY;
+import static xyz.kandrac.library.mvp.view.bookdetail.BookDetailView.LOADER_BASIC_PUBLISHER;
+import static xyz.kandrac.library.mvp.view.bookdetail.BookDetailView.LOADER_OTHER;
 
 /**
  * Presenter for getting data about book
@@ -27,6 +39,7 @@ public class BookBasicDetailPresenter implements Presenter<BookDetailView> {
     private BookDetailView mView;
     private long bookId;
     private String bookReference;
+    private BookShareData shareData = new BookShareData();
 
     @Inject
     BookBasicDetailPresenter() {
@@ -121,6 +134,8 @@ public class BookBasicDetailPresenter implements Presenter<BookDetailView> {
             switch (loader.getId()) {
                 case LOADER_BASIC:
                     bookReference = cursor.getString(cursor.getColumnIndex(BOOK_REFERENCE));
+                    shareData.title = cursor.getString(cursor.getColumnIndex(Contract.Books.BOOK_TITLE));
+                    shareData.isbn = cursor.getString(cursor.getColumnIndex(Contract.Books.BOOK_ISBN));
                     mView.onBasicDataLoaded(cursor);
                     break;
 
@@ -130,11 +145,13 @@ public class BookBasicDetailPresenter implements Presenter<BookDetailView> {
                         cursor.moveToPosition(i);
                         authors[i] = cursor.getString(cursor.getColumnIndex(Contract.Authors.AUTHOR_NAME));
                     }
+                    shareData.authors = authors;
                     mView.onAuthorsDataLoaded(authors);
                     break;
 
                 case LOADER_BASIC_PUBLISHER:
                     String pubName = cursor.getString(cursor.getColumnIndex(Contract.Publishers.PUBLISHER_NAME));
+                    shareData.publisher = cursor.getString(cursor.getColumnIndex(Contract.Publishers.PUBLISHER_NAME));
                     mView.onPublisherLoaded(pubName);
                     break;
 
@@ -194,5 +211,54 @@ public class BookBasicDetailPresenter implements Presenter<BookDetailView> {
      */
     public long getBookId() {
         return bookId;
+    }
+
+    public Intent getShareIntent() {
+
+        if (shareData.title == null) {
+            return null;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(shareData.title);
+
+        if (shareData.authors != null && shareData.authors.length > 0) {
+            StringBuilder authors = new StringBuilder();
+            for (int i = 0; i < shareData.authors.length; i++) {
+                if (i != 0) {
+                    authors.append(", ");
+                }
+                authors.append(shareData.authors[i]);
+            }
+
+            sb.append("\n")
+                    .append(mView.getActivity().getResources().getQuantityString(R.plurals.book_authors, shareData.authors.length, authors));
+        }
+
+        if (!TextUtils.isEmpty(shareData.publisher)) {
+            sb.append("\n")
+                    .append(mView.getActivity().getString(R.string.book_share_by_publisher, shareData.publisher));
+        }
+
+        if (!TextUtils.isEmpty(shareData.isbn)) {
+            sb.append("\n")
+                    .append(mView.getActivity().getString(R.string.book_share_isbn, shareData.isbn));
+        }
+
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, sb.toString());
+        sendIntent.setType("text/plain");
+
+        return sendIntent;
+    }
+
+    private class BookShareData {
+
+        private String isbn;
+        private String title;
+        private String[] authors;
+        private String publisher;
+
     }
 }

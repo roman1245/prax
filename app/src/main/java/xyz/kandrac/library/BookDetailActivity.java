@@ -19,6 +19,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,6 +32,8 @@ import java.io.File;
 
 import xyz.kandrac.library.dialogs.BorrowBookDialog;
 import xyz.kandrac.library.model.Contract;
+import xyz.kandrac.library.model.obj.Author;
+import xyz.kandrac.library.model.obj.Book;
 import xyz.kandrac.library.mvp.view.EditBookActivity;
 import xyz.kandrac.library.mvp.view.bookdetail.BookDetailBasicFragment;
 import xyz.kandrac.library.mvp.view.bookdetail.BookDetailOthersFragment;
@@ -132,44 +135,6 @@ public class BookDetailActivity extends AppCompatActivity implements LoaderManag
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            case R.id.action_share: {
-// TODO
-//                if (mBook == null) {
-//                    return true;
-//                }
-//                StringBuilder sb = new StringBuilder();
-//                sb.append(mBook.title);
-//
-//                if (mAuthors != null && mAuthors.length > 0) {
-//                    StringBuilder authors = new StringBuilder();
-//                    for (int i = 0; i < mAuthors.length; i++) {
-//                        if (i != 0) {
-//                            authors.append(", ");
-//                        }
-//                        authors.append(mAuthors[i].name);
-//                    }
-//
-//                    sb.append("\n")
-//                            .append(getResources().getQuantityString(R.plurals.book_authors, mAuthors.length, authors));
-//                }
-//
-//                if (mPublisher != null) {
-//                    sb.append("\n")
-//                            .append(getString(R.string.book_share_by_publisher, mPublisher.name));
-//                }
-//
-//                if (!TextUtils.isEmpty(mBook.isbn)) {
-//                    sb.append("\n")
-//                            .append(getString(R.string.book_share_isbn, mBook.isbn));
-//                }
-//
-//                Intent sendIntent = new Intent();
-//                sendIntent.setAction(Intent.ACTION_SEND);
-//                sendIntent.putExtra(Intent.EXTRA_TEXT, sb.toString());
-//                sendIntent.setType("text/plain");
-//                startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.book_detail_share)));
-                return true;
-            }
             case R.id.action_borrow: {
                 int readContactPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
                 if (readContactPermission == PackageManager.PERMISSION_GRANTED) {

@@ -385,7 +385,9 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
                 configurator.setAdmin(email.equals("kandrac.jan@gmail.com"));
             }
         }
-        configurator.start();
+        if (!configurator.start()) {
+            LogUtils.d(LOG_TAG, "IAB config error");
+        }
     }
 
     @Override

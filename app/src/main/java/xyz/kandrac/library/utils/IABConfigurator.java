@@ -64,17 +64,22 @@ public class IABConfigurator {
         mHelper = null;
     }
 
-    public void start() {
+    public boolean start() {
 
-        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
-            public void onIabSetupFinished(IabResult result) {
-                if (!result.isSuccess()) {
-                    LogUtils.d(LOG_TAG, "Problem setting up In-app Billing: " + result);
+        try {
+            mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
+                public void onIabSetupFinished(IabResult result) {
+                    if (!result.isSuccess()) {
+                        LogUtils.d(LOG_TAG, "Problem setting up In-app Billing: " + result);
+                    }
+                    LogUtils.d(LOG_TAG, "IAB is setup - getting info about paid content");
+                    setupPaidContent();
                 }
-                LogUtils.d(LOG_TAG, "IAB is setup - getting info about paid content");
-                setupPaidContent();
-            }
-        });
+            });
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
     }
 
     private void setupPaidContent() {

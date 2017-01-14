@@ -3,6 +3,7 @@ package xyz.kandrac.library.mvp.view.bookdetail;
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -12,6 +13,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -58,6 +62,8 @@ public class BookDetailBasicFragment extends Fragment implements BookDetailView 
     private TextView publishedText;
     private TextView publishedTitle;
 
+    private boolean showShare;
+
     public static BookDetailBasicFragment newInstance(long bookId) {
         BookDetailBasicFragment result = new BookDetailBasicFragment();
         Bundle bundle = new Bundle();
@@ -74,6 +80,8 @@ public class BookDetailBasicFragment extends Fragment implements BookDetailView 
 
         presenter.setView(this);
         presenter.setBookId(getArguments().getLong(BOOK_ID_EXTRA));
+
+        setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -106,6 +114,31 @@ public class BookDetailBasicFragment extends Fragment implements BookDetailView 
 
         checkLibrariesPreferences();
         presenter.loadBasicBookData();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.book_detail_menu_basic, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_share: {
+                startActivity(Intent.createChooser(presenter.getShareIntent(), getResources().getText(R.string.book_detail_share)));
+                return true;
+            }
+            default:
+                return false;
+        }
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        menu.findItem(R.id.action_share)
+                .setVisible(showShare);
     }
 
     public void checkLibrariesPreferences() {
@@ -162,6 +195,8 @@ public class BookDetailBasicFragment extends Fragment implements BookDetailView 
             descriptionImage.setVisibility(View.VISIBLE);
         }
 
+        showShare = true;
+        getActivity().invalidateOptionsMenu();
     }
 
     @Override
