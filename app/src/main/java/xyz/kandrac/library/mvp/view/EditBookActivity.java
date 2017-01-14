@@ -525,6 +525,12 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
     public void scan(View view) {
         if (mIsbnEdit.getText().length() == 0) {
+
+            if ( !MediaUtils.checkCameraHardware(this)) {
+                Toast.makeText(this, R.string.edit_book_no_camera, Toast.LENGTH_LONG).show();
+                return;
+            }
+
             int cameraPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
             if (cameraPermission != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(

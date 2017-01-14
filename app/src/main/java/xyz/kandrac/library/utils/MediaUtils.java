@@ -2,6 +2,7 @@ package xyz.kandrac.library.utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -25,4 +26,10 @@ public class MediaUtils {
         }
         return result;
     }
+
+
+    public static boolean checkCameraHardware(Context context) {
+        return context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA);
+    }
+
 }

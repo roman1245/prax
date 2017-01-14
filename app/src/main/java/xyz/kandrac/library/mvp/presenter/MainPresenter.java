@@ -27,6 +27,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -416,8 +417,13 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
 
     public void authenticate() {
         if (mAuth.getCurrentUser() == null) {
-            Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-            view.getActivity().startActivityForResult(signInIntent, RC_SIGN_IN);
+            try {
+                Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+                view.getActivity().startActivityForResult(signInIntent, RC_SIGN_IN);
+            } catch (Exception ex) {
+                FirebaseCrash.report(ex);
+                view.interact(ERROR_TYPE_GOOGLE_SIGNIN, null);
+            }
         }
     }
 
