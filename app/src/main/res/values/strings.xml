@@ -79,6 +79,7 @@
     <string name="edit_book_gallery_permission">We need your permission to pick images from gallery</string>
     <string name="edit_book_no_permission">We cannot continue without these permissions. If you wish to change the restrictions, access the phone settings to do so</string>
     <string name="edit_book_no_permission_title">Permissions are missing</string>
+    <string name="edit_book_no_camera">Your device doesn\'t have any camera. Camera is required for scanning</string>
 
     <string name="pick_image_select">Select image</string>
     <string name="pick_image_photo">Take photo</string>

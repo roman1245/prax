@@ -80,6 +80,7 @@
     <string name="edit_book_gallery_permission">Chcete-li vybrat obrázek z galerie budeme potřebovat vaše povolenív</string>
     <string name="edit_book_no_permission">Bez těchto oprávnění nemůžeme pokračovat. Chcete-li změnit oprávnění učiňte tak v Nastavení telefonu.</string>
     <string name="edit_book_no_permission_title">Chybějící oprávnění</string>
+    <string name="edit_book_no_camera">Vaše zařízení nemá fotoaparát, který je potřebný pro skenování</string>
 
     <string name="pick_image_select">Výběr fotografie</string>
     <string name="pick_image_photo">Fotoaparát</string>

@@ -15,7 +15,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.provider.BaseColumns;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -26,7 +25,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.FileProvider;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -37,7 +35,6 @@ import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FilterQueryProvider;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -45,7 +42,6 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
@@ -521,6 +517,12 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
     public void scan(View view) {
         if (mIsbnEdit.getText().length() == 0) {
+
+            if ( !MediaUtils.checkCameraHardware(this)) {
+                Toast.makeText(this, R.string.edit_book_no_camera, Toast.LENGTH_LONG).show();
+                return;
+            }
+
             int cameraPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
             if (cameraPermission != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(
