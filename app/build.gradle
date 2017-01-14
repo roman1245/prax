@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'com.google.firebase.firebase-crash'
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
@@ -86,7 +87,6 @@ android {
             events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
         }
     }
-    buildToolsVersion '25.0.0'
 }
 
 repositories {
