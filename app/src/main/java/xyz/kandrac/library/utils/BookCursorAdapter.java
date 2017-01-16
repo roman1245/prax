@@ -291,6 +291,7 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
         if (!TextUtils.isEmpty(image)) {
             DisplayUtils.displayScaledImage(mActivity, image, holder.image);
         } else {
+            holder.image.setImageResource(R.drawable.ic_book_white);
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mActivity);
             boolean conservative = sharedPref.getBoolean(SettingsFragment.KEY_PREF_CONSERVATIVE_ENABLED, true);
             if (!conservative) {
