@@ -26,6 +26,7 @@
     <string name="action_delete">Delete</string>
     <string name="action_borrow">Borrow</string>
     <string name="action_search">Search</string>
+    <string name="action_search_isbn">ISBN search</string>
     <string name="action_move_to_library">Move to Library</string>
     <string name="action_ok">OK</string>
     <string name="action_cancel">Cancel</string>

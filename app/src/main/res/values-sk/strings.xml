@@ -26,6 +26,7 @@
     <string name="action_delete">Vymazať</string>
     <string name="action_borrow">Požičať</string>
     <string name="action_search">Hľadať</string>
+    <string name="action_search_isbn">ISBN vyhľadávanie</string>
     <string name="action_move_to_library">Presunúť do knižnice</string>
     <string name="action_ok">OK</string>
     <string name="action_cancel">Zrušiť</string>

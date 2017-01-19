@@ -88,6 +88,8 @@ public class MainActivity extends AppCompatActivity implements
     private SearchView searchView;
     private ActionBar mActionBar;
 
+    private MenuItem isbnSearch;
+
     @Inject
     MainPresenter presenter;
 
@@ -186,6 +188,8 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.search_by_ean:
+                return true;
             case android.R.id.home:
                 drawerLayout.openDrawer(GravityCompat.START);
                 return true;
@@ -219,6 +223,7 @@ public class MainActivity extends AppCompatActivity implements
 
         // Associate searchable configuration with the SearchView
         MenuItem searchMenuItem = menu.findItem(R.id.search);
+        isbnSearch = menu.findItem(R.id.search_by_ean);
         searchView = (SearchView) searchMenuItem.getActionView();
         searchView.setMaxWidth(Integer.MAX_VALUE);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
