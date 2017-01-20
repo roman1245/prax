@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -486,18 +485,11 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
         view.interact(ERROR_TYPE_GOOGLE_API_CONNECTION, connectionResult.getErrorMessage());
     }
 
-    public boolean evaluateBack(DrawerLayout drawerLayout, NavigationView navigation, SearchView searchView) {
+    public boolean evaluateBack(DrawerLayout drawerLayout, NavigationView navigation) {
 
         if (drawerLayout.isDrawerOpen(navigation)) {
             // close drawer first (do not give focus to search)
             drawerLayout.closeDrawers();
-        } else if (!searchView.isIconified()) {
-            // close search second
-            searchView.setIconified(true);
-            if (!searchView.isIconified()) {
-                // first iconify
-                searchView.setIconified(true);
-            }
         } else {
             // don't close immediately
             long currentTime = System.currentTimeMillis();

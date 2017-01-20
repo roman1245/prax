@@ -16,13 +16,16 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -85,10 +88,14 @@ public class MainActivity extends AppCompatActivity implements
 
     private MenuItem lastChecked;
     private Fragment mShownFragment;
-    private SearchView searchView;
     private ActionBar mActionBar;
 
+    private LinearLayout mContentHolder;
+
     private MenuItem isbnSearch;
+
+    private boolean searchOpened;
+    private EditText searchView;
 
     @Inject
     MainPresenter presenter;
@@ -113,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements
         userMail = (TextView) navigationHeader.findViewById(R.id.navigation_header_line2);
         userPhoto = (ImageView) navigationHeader.findViewById(R.id.navigation_header_profile_image);
         drawerLayout = (DrawerLayout) findViewById(R.id.main_drawer);
+        mContentHolder = (LinearLayout) findViewById(R.id.main_content_holder);
 
 
         // Action Bar settings
@@ -188,6 +196,36 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.search:
+                if (searchOpened) {
+                    mContentHolder.removeViewAt(1);
+                    searchOpened = false;
+                } else {
+                    View searchView2 = getLayoutInflater().inflate(R.layout.search, mContentHolder, false);
+                    this.searchView = (EditText) searchView2.findViewById(R.id.search_text);
+                    searchView.requestFocus();
+                    this.searchView.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                            if (mShownFragment instanceof Searchable) {
+                                ((Searchable) mShownFragment).requestSearch(searchView.getText().toString());
+                            }
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable editable) {
+                            searchView.clearFocus();
+                        }
+                    });
+                    mContentHolder.addView(searchView2, 1);
+                    searchOpened = true;
+                }
+                return true;
             case R.id.search_by_ean:
                 return true;
             case android.R.id.home:
@@ -222,32 +260,17 @@ public class MainActivity extends AppCompatActivity implements
         inflater.inflate(R.menu.main_menu, menu);
 
         // Associate searchable configuration with the SearchView
-        MenuItem searchMenuItem = menu.findItem(R.id.search);
         isbnSearch = menu.findItem(R.id.search_by_ean);
-        searchView = (SearchView) searchMenuItem.getActionView();
-        searchView.setMaxWidth(Integer.MAX_VALUE);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                searchView.clearFocus();
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String query) {
-                if (mShownFragment instanceof Searchable) {
-                    ((Searchable) mShownFragment).requestSearch(query);
-                    return true;
-                }
-                return false;
-            }
-        });
         return true;
     }
 
     @Override
     public void onBackPressed() {
-        if (presenter.evaluateBack(drawerLayout, navigation, searchView)) {
+        if (searchOpened) {
+            searchOpened = false;
+            mContentHolder.removeViewAt(1);
+            searchView = null;
+        } else if (presenter.evaluateBack(drawerLayout, navigation)) {
             super.onBackPressed();
         }
     }
