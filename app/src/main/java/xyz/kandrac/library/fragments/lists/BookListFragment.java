@@ -28,6 +28,7 @@ import android.widget.TextView;
 
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
+import xyz.kandrac.library.BackPressable;
 import xyz.kandrac.library.R;
 import xyz.kandrac.library.Searchable;
 import xyz.kandrac.library.flow.importwizard.ImportWizardActivity;
@@ -47,7 +48,7 @@ import static xyz.kandrac.library.utils.BookCursorAdapter.TRUE;
  * <p/>
  * Created by kandrac on 20/10/15.
  */
-public class BookListFragment extends Fragment implements Searchable, BookCursorAdapter.AdapterChangedListener {
+public class BookListFragment extends Fragment implements Searchable, BookCursorAdapter.AdapterChangedListener, BackPressable {
 
     private static final String EXTRA_WISH_LIST = "wish_list";
     private static final String EXTRA_BORROWED = "borrowed";
@@ -76,6 +77,7 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
 
     private LinearLayout mContentHolder;
     private boolean searchOpened = false;
+    private MenuItem mSearchItem;
 
     private EditText searchView;
 
@@ -252,6 +254,7 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_book_list, menu);
+        mSearchItem = menu.findItem(R.id.search);
     }
 
     @Override
@@ -288,9 +291,7 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
                 searchView2.findViewById(R.id.search_hide).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        mContentHolder.removeViewAt(0);
-                        searchOpened = false;
-                        item.setVisible(true);
+                        hideSearch();
                     }
                 });
 
@@ -347,6 +348,12 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
                 return super.onOptionsItemSelected(item);
         }
         return true;
+    }
+
+    private void hideSearch() {
+        mContentHolder.removeViewAt(0);
+        searchOpened = false;
+        mSearchItem.setVisible(true);
     }
 
     @Override
@@ -484,4 +491,14 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
             mActionMode = null;
         }
     };
+
+    @Override
+    public boolean onBackPressed() {
+        if (searchOpened) {
+            hideSearch();
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

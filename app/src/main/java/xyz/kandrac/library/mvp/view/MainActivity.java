@@ -31,6 +31,7 @@ import java.io.File;
 
 import javax.inject.Inject;
 
+import xyz.kandrac.library.BackPressable;
 import xyz.kandrac.library.InitService;
 import xyz.kandrac.library.LibraryApplication;
 import xyz.kandrac.library.R;
@@ -221,6 +222,9 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
+        if (mShownFragment instanceof BackPressable) {
+            if (((BackPressable) mShownFragment).onBackPressed()) return;
+        }
         if (presenter.evaluateBack(drawerLayout, navigation)) {
             super.onBackPressed();
         }
