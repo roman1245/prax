@@ -23,7 +23,10 @@ import android.widget.TextView;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import xyz.kandrac.library.BookDetailActivity;
@@ -67,6 +70,8 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
     public static final int ANY = -1;
     public static final int TRUE = 1;
     public static final int FALSE = 0;
+
+    private static final String LOG_TAG = BookCursorAdapter.class.getName();
 
     // Holds list of selected positions in multi-select mode
     private Set<Integer> selectedPositions = new HashSet<>();
@@ -135,10 +140,8 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
 
     private Cursor mCursor;                         // Cursor with current data
     private int mLastCount = -1;                    // Last count of books in adapter
-    private String mSearchQuery = "";               // Filter is based on this search query
-    private AdapterChangedListener mListener;    // Listener for book counter
-    private String mSelectionString;                // Where part of selection query
-    private ArrayList<String> mSelectionArguments;  // Selection arguments without filter arguments
+    private AdapterChangedListener mListener;       // Listener for book counter
+    private HashMap<String, String[]> mSelection;   // Selection string and arguments mapping
     private int mLoaderId;                          // Loader id to be used with queries
     private Activity mActivity;                     // To make operations on
 
@@ -147,6 +150,7 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
      * {@link xyz.kandrac.library.utils.BookCursorAdapter.Builder}
      */
     private BookCursorAdapter() {
+        mSelection = new HashMap<>();
     }
 
     /**
@@ -155,29 +159,69 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
      * @param filter for searching
      */
     public void setFilter(String filter) {
-        mSearchQuery = filter;
+
+        mSelection.put(" ( " +
+                Contract.Books.BOOK_TITLE + " LIKE ? OR " +
+                Contract.Books.BOOK_SUBTITLE + " LIKE ? OR " +
+                Contract.Authors.AUTHOR_NAME + " LIKE ? OR " +
+                Contract.Books.BOOK_DESCRIPTION + " LIKE ? OR " +
+                Contract.Books.BOOK_ISBN + " LIKE ?" +
+                ") ",
+                new String[]{
+                        "%" + filter + "%",
+                        "%" + filter + "%",
+                        "%" + filter + "%",
+                        "%" + filter + "%",
+                        "%" + filter + "%"
+                });
+
         mActivity.getLoaderManager().restartLoader(mLoaderId, null, this);
     }
 
+    public void addFilter(String field, String[] args) {
+        mSelection.put(field, args);
+        mActivity.getLoaderManager().restartLoader(mLoaderId, null, this);
+    }
+
+    public void clearFilter(String field) {
+        mSelection.remove(field);
+        mActivity.getLoaderManager().restartLoader(mLoaderId, null, this);
+    }
+
+    private String getSelectionString() {
+        StringBuilder result = new StringBuilder();
+
+        Iterator<String> iterator = mSelection.keySet().iterator();
+
+        boolean firstAdded = false;
+        while (iterator.hasNext()) {
+            if (firstAdded) {
+                result.append(" AND ");
+            }
+            result.append(iterator.next());
+            firstAdded = true;
+        }
+        String resultString = result.toString();
+        LogUtils.d(LOG_TAG, resultString);
+        return result.toString();
+    }
+
     /**
-     * Merges {@link #mSearchQuery} filter string with rest of the selection arguments from
-     * {@link #mSelectionArguments}. Filter is intended to be updated multiple times while
+     * Filter is intended to be updated multiple times while
      * other selection arguments not (like author id or publisher id). To change search query
      * {@link #setFilter(String)} have to be used
      *
      * @return all selection arguments
      */
     private String[] getSelectionArguments() {
-        ArrayList<String> result = new ArrayList<>();
-        result.add("%" + mSearchQuery + "%");
-        result.add("%" + mSearchQuery + "%");
-        result.add("%" + mSearchQuery + "%");
-        result.add("%" + mSearchQuery + "%");
-        result.add("%" + mSearchQuery + "%");
-        result.addAll(mSelectionArguments);
 
-        String[] arrayResult = new String[mSelectionArguments.size() + 4];
-        return result.toArray(arrayResult);
+        ArrayList<String> result = new ArrayList<>();
+
+        for (String[] value : mSelection.values()) {
+            result.addAll(Arrays.asList(value));
+        }
+
+        return result.toArray(new String[0]);
     }
 
     @Override
@@ -188,7 +232,7 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
                     mActivity,                  // activity required for cursor loading
                     Contract.BOOKS_AUTHORS_URI, // keep in mind we are listening for books/authors
                     PROJECTION,                 // static projection columns, cannot be edited
-                    mSelectionString,           // static selection string from initialization
+                    getSelectionString(),       // static selection string from initialization
                     getSelectionArguments(),    // dynamically updated selection arguments
                     null);
         } else {
@@ -517,48 +561,30 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
         public BookCursorAdapter build() {
             BookCursorAdapter result = new BookCursorAdapter();
 
-            String selectionString = " ( " +
-                    Contract.Books.BOOK_TITLE + " LIKE ? OR " +
-                    Contract.Books.BOOK_SUBTITLE + " LIKE ? OR " +
-                    Contract.Authors.AUTHOR_NAME + " LIKE ? OR " +
-                    Contract.Books.BOOK_DESCRIPTION + " LIKE ? OR " +
-                    Contract.Books.BOOK_ISBN + " LIKE ?" +
-                    ") ";
-
-            ArrayList<String> selectionArguments = new ArrayList<>();
-
             if (publisher != ANY) {
-                selectionString += " AND " + Contract.Books.BOOK_PUBLISHER_ID + " = ? ";
-                selectionArguments.add(Long.toString(publisher));
+                result.mSelection.put(Contract.Books.BOOK_PUBLISHER_ID + " = ? ", new String[]{Long.toString(publisher)});
             }
 
             if (library != ANY) {
-                selectionString += " AND " + Contract.Books.BOOK_LIBRARY_ID + " = ? ";
-                selectionArguments.add(Long.toString(library));
+                result.mSelection.put(Contract.Books.BOOK_LIBRARY_ID + " = ? ", new String[]{Long.toString(library)});
             }
 
             if (author != ANY) {
-                selectionString += " AND " + Database.Tables.BOOKS_AUTHORS + "." + Contract.BookAuthors.AUTHOR_ID + " = ? ";
-                selectionArguments.add(Long.toString(author));
+                result.mSelection.put(Database.Tables.BOOKS_AUTHORS + "." + Contract.BookAuthors.AUTHOR_ID + " = ? ", new String[]{Long.toString(author)});
             }
 
             if (wishList != ANY) {
-                selectionString += " AND " + Contract.Books.BOOK_WISH_LIST + " = ? ";
-                selectionArguments.add(getFieldStateStringValue(wishList));
+                result.mSelection.put(Contract.Books.BOOK_WISH_LIST + " = ? ", new String[]{getFieldStateStringValue(wishList)});
             }
 
             if (borrowed != ANY) {
-                selectionString += " AND " + Contract.Books.BOOK_BORROWED + " = ?";
-                selectionArguments.add(getFieldStateStringValue(borrowed));
+                result.mSelection.put(Contract.Books.BOOK_BORROWED + " = ?", new String[]{getFieldStateStringValue(borrowed)});
             }
 
             if (borrowedToMe != ANY) {
-                selectionString += " AND " + Contract.Books.BOOK_BORROWED_TO_ME + " = ?";
-                selectionArguments.add(getFieldStateStringValue(borrowedToMe));
+                result.mSelection.put(Contract.Books.BOOK_BORROWED_TO_ME + " = ?", new String[]{getFieldStateStringValue(borrowedToMe)});
             }
 
-            result.mSelectionString = selectionString;
-            result.mSelectionArguments = selectionArguments;
             result.mLoaderId = loaderId;
             result.mActivity = activity;
             result.mListener = listener;

@@ -244,6 +244,16 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
     }
 
     @Override
+    public void clearFilter(String field) {
+        adapter.clearFilter(field + " = ? ");
+    }
+
+    @Override
+    public void requestFilter(String field, String[] arguments) {
+        adapter.addFilter(field + " = ? ", arguments);
+    }
+
+    @Override
     public void onCountChanged(int newCount) {
         if (newCount == 0) {
             list.setVisibility(View.GONE);

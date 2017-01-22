@@ -23,9 +23,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -95,7 +97,10 @@ public class MainActivity extends AppCompatActivity implements
     private MenuItem isbnSearch;
 
     private boolean searchOpened;
+
     private EditText searchView;
+    private Spinner searchRating;
+    private Spinner searchReadingProgress;
 
     @Inject
     MainPresenter presenter;
@@ -219,9 +224,48 @@ public class MainActivity extends AppCompatActivity implements
 
                         @Override
                         public void afterTextChanged(Editable editable) {
-                            searchView.clearFocus();
                         }
                     });
+
+                    searchRating = (Spinner) searchView2.findViewById(R.id.search_rating);
+                    searchReadingProgress = (Spinner) searchView2.findViewById(R.id.search_reading_progress);
+
+                    searchRating.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                            if (mShownFragment instanceof Searchable) {
+                                if (i == 0) {
+                                    ((Searchable) mShownFragment).clearFilter(Contract.Books.BOOK_MY_SCORE);
+                                } else {
+                                    ((Searchable) mShownFragment).requestFilter(Contract.Books.BOOK_MY_SCORE, new String[]{Integer.toString(i)});
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+
+                        }
+                    });
+
+                    searchReadingProgress.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                            if (mShownFragment instanceof Searchable) {
+                                if (i == 0) {
+                                    ((Searchable) mShownFragment).clearFilter(Contract.Books.BOOK_PROGRESS);
+                                } else {
+                                    ((Searchable) mShownFragment).requestFilter(Contract.Books.BOOK_PROGRESS, new String[]{Integer.toString(i)});
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+
+                        }
+                    });
+
                     mContentHolder.addView(searchView2, 1);
                     searchOpened = true;
                 }

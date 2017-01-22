@@ -113,6 +113,16 @@ public class PublisherBooksListFragment extends Fragment implements LoaderManage
         return true;
     }
 
+    @Override
+    public void clearFilter(String field) {
+
+    }
+
+    @Override
+    public void requestFilter(String field, String[] arguments) {
+
+    }
+
     private class PublishCursorAdapter extends RecyclerView.Adapter<PublishCursorAdapter.BindingHolder> {
 
         public class BindingHolder extends RecyclerView.ViewHolder {

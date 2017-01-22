@@ -118,6 +118,16 @@ public class AuthorBooksListFragment extends Fragment implements LoaderManager.L
         return true;
     }
 
+    @Override
+    public void clearFilter(String field) {
+
+    }
+
+    @Override
+    public void requestFilter(String field, String[] arguments) {
+
+    }
+
     /**
      * Adapter for getting views based on {@link Cursor} provided and transformed to {@link Author}
      * object. The view displayed is based on @layout/list_item_author

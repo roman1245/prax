@@ -113,6 +113,16 @@ public class LibraryBooksListFragment extends Fragment implements LoaderManager.
         return true;
     }
 
+    @Override
+    public void clearFilter(String field) {
+
+    }
+
+    @Override
+    public void requestFilter(String field, String[] arguments) {
+
+    }
+
     private class LibraryAdapter extends RecyclerView.Adapter<LibraryAdapter.BindingHolder> {
 
         public class BindingHolder extends RecyclerView.ViewHolder {

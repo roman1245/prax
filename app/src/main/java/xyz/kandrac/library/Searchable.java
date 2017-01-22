@@ -15,4 +15,7 @@ public interface Searchable {
      * @return true if search is handled
      */
     boolean requestSearch(String query);
+
+    void clearFilter(String field);
+    void requestFilter(String field, String[] arguments);
 }

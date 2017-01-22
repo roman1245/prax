@@ -36,6 +36,7 @@
             app:srcCompat="@drawable/ic_filter" />
 
         <Spinner
+            android:id="@+id/search_rating"
             android:entries="@array/book_rating"
             app:layout_columnWeight="1"
             app:layout_gravity="center_vertical" />
@@ -48,6 +49,7 @@
             app:srcCompat="@drawable/ic_filter" />
 
         <Spinner
+            android:id="@+id/search_reading_progress"
             android:entries="@array/reading_progress"
             app:layout_columnWeight="1"
             app:layout_gravity="center_vertical" />
