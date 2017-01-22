@@ -3,18 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/search"
-        android:icon="@drawable/ic_search_white"
-        android:title="@string/action_search"
-        app:showAsAction="ifRoom" />
-
-    <item
-        android:id="@+id/search_by_ean"
-        android:icon="@drawable/ic_barcode_white"
-        android:title="@string/action_search_isbn"
-        app:showAsAction="always" />
-
-    <item
         android:id="@+id/purchase_test_purchased"
         android:title="@string/purchase_test_purchased"
         app:showAsAction="never" />

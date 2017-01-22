@@ -17,17 +17,11 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,7 +34,6 @@ import javax.inject.Inject;
 import xyz.kandrac.library.InitService;
 import xyz.kandrac.library.LibraryApplication;
 import xyz.kandrac.library.R;
-import xyz.kandrac.library.Searchable;
 import xyz.kandrac.library.billing.BillingSkus;
 import xyz.kandrac.library.fragments.SettingsFragment;
 import xyz.kandrac.library.fragments.lists.AuthorBooksListFragment;
@@ -92,16 +85,6 @@ public class MainActivity extends AppCompatActivity implements
     private Fragment mShownFragment;
     private ActionBar mActionBar;
 
-    private LinearLayout mContentHolder;
-
-    private MenuItem isbnSearch;
-
-    private boolean searchOpened;
-
-    private EditText searchView;
-    private Spinner searchRating;
-    private Spinner searchReadingProgress;
-
     @Inject
     MainPresenter presenter;
 
@@ -125,7 +108,6 @@ public class MainActivity extends AppCompatActivity implements
         userMail = (TextView) navigationHeader.findViewById(R.id.navigation_header_line2);
         userPhoto = (ImageView) navigationHeader.findViewById(R.id.navigation_header_profile_image);
         drawerLayout = (DrawerLayout) findViewById(R.id.main_drawer);
-        mContentHolder = (LinearLayout) findViewById(R.id.main_content_holder);
 
 
         // Action Bar settings
@@ -161,8 +143,9 @@ public class MainActivity extends AppCompatActivity implements
         drawerLayout.addDrawerListener(new DummyDrawerCallback() {
             @Override
             public void onDrawerOpened(View drawerView) {
-                if (searchView != null) {
-                    searchView.clearFocus();
+                View focus = getCurrentFocus();
+                if (focus != null) {
+                    getCurrentFocus().clearFocus();
                 }
             }
         });
@@ -201,75 +184,6 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.search:
-                if (searchOpened) {
-                    mContentHolder.removeViewAt(1);
-                    searchOpened = false;
-                } else {
-                    View searchView2 = getLayoutInflater().inflate(R.layout.search, mContentHolder, false);
-                    this.searchView = (EditText) searchView2.findViewById(R.id.search_text);
-                    searchView.requestFocus();
-                    this.searchView.addTextChangedListener(new TextWatcher() {
-                        @Override
-                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                        }
-
-                        @Override
-                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                            if (mShownFragment instanceof Searchable) {
-                                ((Searchable) mShownFragment).requestSearch(searchView.getText().toString());
-                            }
-                        }
-
-                        @Override
-                        public void afterTextChanged(Editable editable) {
-                        }
-                    });
-
-                    searchRating = (Spinner) searchView2.findViewById(R.id.search_rating);
-                    searchReadingProgress = (Spinner) searchView2.findViewById(R.id.search_reading_progress);
-
-                    searchRating.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                        @Override
-                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                            if (mShownFragment instanceof Searchable) {
-                                if (i == 0) {
-                                    ((Searchable) mShownFragment).clearFilter(Contract.Books.BOOK_MY_SCORE);
-                                } else {
-                                    ((Searchable) mShownFragment).requestFilter(Contract.Books.BOOK_MY_SCORE, new String[]{Integer.toString(i)});
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onNothingSelected(AdapterView<?> adapterView) {
-
-                        }
-                    });
-
-                    searchReadingProgress.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                        @Override
-                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                            if (mShownFragment instanceof Searchable) {
-                                if (i == 0) {
-                                    ((Searchable) mShownFragment).clearFilter(Contract.Books.BOOK_PROGRESS);
-                                } else {
-                                    ((Searchable) mShownFragment).requestFilter(Contract.Books.BOOK_PROGRESS, new String[]{Integer.toString(i)});
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onNothingSelected(AdapterView<?> adapterView) {
-
-                        }
-                    });
-
-                    mContentHolder.addView(searchView2, 1);
-                    searchOpened = true;
-                }
-                return true;
             case R.id.search_by_ean:
                 return true;
             case android.R.id.home:
@@ -302,19 +216,12 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
-
-        // Associate searchable configuration with the SearchView
-        isbnSearch = menu.findItem(R.id.search_by_ean);
         return true;
     }
 
     @Override
     public void onBackPressed() {
-        if (searchOpened) {
-            searchOpened = false;
-            mContentHolder.removeViewAt(1);
-            searchView = null;
-        } else if (presenter.evaluateBack(drawerLayout, navigation)) {
+        if (presenter.evaluateBack(drawerLayout, navigation)) {
             super.onBackPressed();
         }
     }
@@ -373,12 +280,6 @@ public class MainActivity extends AppCompatActivity implements
                 .beginTransaction()
                 .replace(R.id.fragment_container, fragmentToShow)
                 .commit();
-
-        if (fragmentToShow instanceof SettingsFragment) {
-            searchView.setVisibility(View.GONE);
-        } else {
-            searchView.setVisibility(View.VISIBLE);
-        }
 
         // change title
         if (mActionBar != null) {

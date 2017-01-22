@@ -11,7 +11,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,18 +20,20 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
-import xyz.kandrac.library.fragments.SettingsFragment;
-import xyz.kandrac.library.model.Contract;
-import xyz.kandrac.library.mvp.view.EditBookActivity;
 import xyz.kandrac.library.R;
 import xyz.kandrac.library.Searchable;
 import xyz.kandrac.library.flow.importwizard.ImportWizardActivity;
+import xyz.kandrac.library.fragments.SettingsFragment;
+import xyz.kandrac.library.model.Contract;
+import xyz.kandrac.library.mvp.view.EditBookActivity;
 import xyz.kandrac.library.mvp.view.MainActivity;
 import xyz.kandrac.library.utils.BookCursorAdapter;
 import xyz.kandrac.library.utils.EditTextDialog;
@@ -70,6 +73,11 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
     private BookCursorAdapter adapter;
 
     public ActionMode mActionMode;
+
+    private LinearLayout mContentHolder;
+    private boolean searchOpened = false;
+
+    private EditText searchView;
 
     /**
      * Get instance of {@link BookListFragment}
@@ -159,12 +167,16 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
         mBorrowedToMe = arguments.getInt(EXTRA_BORROWED_TO_ME);
         mAddButton = arguments.getBoolean(EXTRA_ADD_BUTTON);
         mLoaderId = arguments.getInt(EXTRA_LOADER_ID);
+
+        setHasOptionsMenu(true);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View result = inflater.inflate(R.layout.list_fragment, container, false);
+
+        mContentHolder = (LinearLayout) result.findViewById(R.id.content_holder);
 
         list = (RecyclerView) result.findViewById(R.id.list);
         mFab = (FabSpeedDial) result.findViewById(R.id.fab_speed_dial);
@@ -235,6 +247,106 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
                 return false;
             }
         });
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_book_list, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.search:
+                if (searchOpened) {
+                    break;
+                }
+
+                item.setVisible(false);
+                View searchView2 = getActivity().getLayoutInflater().inflate(R.layout.search, mContentHolder, false);
+                searchView = (EditText) searchView2.findViewById(R.id.search_text);
+                searchView.requestFocus();
+                searchView.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        requestSearch(searchView.getText().toString());
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+                    }
+                });
+
+                final Spinner searchRating = (Spinner) searchView2.findViewById(R.id.search_rating);
+                final Spinner searchReadingProgress = (Spinner) searchView2.findViewById(R.id.search_reading_progress);
+
+                searchView2.findViewById(R.id.search_hide).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mContentHolder.removeViewAt(0);
+                        searchOpened = false;
+                        item.setVisible(true);
+                    }
+                });
+
+                searchView2.findViewById(R.id.search_restore).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        searchRating.setSelection(0);
+                        searchReadingProgress.setSelection(0);
+
+                        clearFilter(Contract.Books.BOOK_MY_SCORE);
+                        clearFilter(Contract.Books.BOOK_PROGRESS);
+
+                        searchView.setText("");
+                        requestSearch("");
+                    }
+                });
+
+                searchRating.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                        if (i == 0) {
+                            clearFilter(Contract.Books.BOOK_MY_SCORE);
+                        } else {
+                            requestFilter(Contract.Books.BOOK_MY_SCORE, new String[]{Integer.toString(i)});
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+
+                    }
+                });
+
+                searchReadingProgress.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                        if (i == 0) {
+                            clearFilter(Contract.Books.BOOK_PROGRESS);
+                        } else {
+                            requestFilter(Contract.Books.BOOK_PROGRESS, new String[]{Integer.toString(i)});
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+
+                    }
+                });
+
+                mContentHolder.addView(searchView2, 0);
+                searchOpened = true;
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+        return true;
     }
 
     @Override
@@ -322,7 +434,7 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
                     new EditTextDialog.Builder(getActivity())
                             .setAutocompleteUri(Contract.Authors.CONTENT_URI)
                             .setAutocompleteColumn(Contract.Authors.AUTHOR_NAME)
-                            .setPositiveButton( getString(R.string.action_change), new EditTextDialog.OnPositiveActionListener() {
+                            .setPositiveButton(getString(R.string.action_change), new EditTextDialog.OnPositiveActionListener() {
                                 @Override
                                 public void onPositiveAction(DialogInterface dialogInterface, String text) {
                                     adapter.changeSelectedBooksAuthor(getActivity(), text);
