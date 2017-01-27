@@ -27,12 +27,17 @@ public final class DisplayUtils {
     }
 
     public static void displayScaledImage(Context context, String imageFileName, ImageView imageView) {
+        int densityDpi = getPixelsFromDips(96, context);
+        displayScaledImage(context, imageFileName, imageView, densityDpi, densityDpi);
+    }
+
+
+    public static void displayScaledImage(Context context, String imageFileName, ImageView imageView, int width, int height) {
         if (imageFileName != null) {
             File f = new File(imageFileName);
 
             if (f.exists()) {
-                int densityDpi = getPixelsFromDips(96, context);
-                Picasso.with(context).load(f).resize(densityDpi, densityDpi).centerInside().into(imageView);
+                Picasso.with(context).load(f).resize(width, height).centerCrop().into(imageView);
                 return;
             }
         }

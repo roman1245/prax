@@ -41,7 +41,6 @@
             android:name=".mvp.view.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Splash"
             android:windowSoftInputMode="stateAlwaysHidden">
 

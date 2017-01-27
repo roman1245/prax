@@ -161,12 +161,12 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
     public void setFilter(String filter) {
 
         mSelection.put(" ( " +
-                Contract.Books.BOOK_TITLE + " LIKE ? OR " +
-                Contract.Books.BOOK_SUBTITLE + " LIKE ? OR " +
-                Contract.Authors.AUTHOR_NAME + " LIKE ? OR " +
-                Contract.Books.BOOK_DESCRIPTION + " LIKE ? OR " +
-                Contract.Books.BOOK_ISBN + " LIKE ?" +
-                ") ",
+                        Contract.Books.BOOK_TITLE + " LIKE ? OR " +
+                        Contract.Books.BOOK_SUBTITLE + " LIKE ? OR " +
+                        Contract.Authors.AUTHOR_NAME + " LIKE ? OR " +
+                        Contract.Books.BOOK_DESCRIPTION + " LIKE ? OR " +
+                        Contract.Books.BOOK_ISBN + " LIKE ?" +
+                        ") ",
                 new String[]{
                         "%" + filter + "%",
                         "%" + filter + "%",
@@ -327,13 +327,17 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
         holder.borrowedToMe.setVisibility(borrowedToMe ? View.VISIBLE : View.GONE);
 
         holder.progress.setText(getProgressText(mActivity, progress));
-        holder.progress.setVisibility(progress == 0 ? View.GONE: View.VISIBLE);
+        holder.progress.setVisibility(progress == 0 ? View.GONE : View.VISIBLE);
         holder.starCount.setText(starCount == 0 ? "" : Integer.toString(starCount));
-        holder.starCount.setVisibility(starCount == 0 ? View.GONE: View.VISIBLE);
-        holder.star.setVisibility(starCount == 0 ? View.GONE: View.VISIBLE);
+        holder.starCount.setVisibility(starCount == 0 ? View.GONE : View.VISIBLE);
+        holder.star.setVisibility(starCount == 0 ? View.GONE : View.VISIBLE);
+
+        Context context = holder.itemView.getContext();
+        boolean tab = context.getResources().getBoolean(R.bool.use_grid);
+        int height = tab ? DisplayUtils.getPixelsFromDips(200, context) : DisplayUtils.getPixelsFromDips(64, context);
 
         if (!TextUtils.isEmpty(image)) {
-            DisplayUtils.displayScaledImage(mActivity, image, holder.image);
+            DisplayUtils.displayScaledImage(mActivity, image, holder.image, 2 * height, height);
         } else {
             holder.image.setImageResource(R.drawable.ic_book_white);
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mActivity);
@@ -487,11 +491,16 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
 
     private static String getProgressText(Context context, int value) {
         switch (value) {
-            case 1: return context.getString(R.string.progress_not_started);
-            case 2: return context.getString(R.string.progress_reading);
-            case 3: return context.getString(R.string.progress_read);
-            case 4: return context.getString(R.string.progress_break);
-            default: return "";
+            case 1:
+                return context.getString(R.string.progress_not_started);
+            case 2:
+                return context.getString(R.string.progress_reading);
+            case 3:
+                return context.getString(R.string.progress_read);
+            case 4:
+                return context.getString(R.string.progress_break);
+            default:
+                return "";
         }
     }
 
@@ -502,9 +511,12 @@ public class BookCursorAdapter extends RecyclerView.Adapter<BookCursorAdapter.Vi
     public static class Builder {
 
         // fields
-        @FieldState private int wishList = ANY;
-        @FieldState private int borrowed = ANY;
-        @FieldState private int borrowedToMe = ANY;
+        @FieldState
+        private int wishList = ANY;
+        @FieldState
+        private int borrowed = ANY;
+        @FieldState
+        private int borrowedToMe = ANY;
         private long publisher = ANY;
         private long author = ANY;
         private long library = ANY;

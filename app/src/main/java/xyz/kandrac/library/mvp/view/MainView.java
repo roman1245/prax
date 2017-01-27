@@ -17,7 +17,7 @@ public interface MainView {
     /**
      * @param count of items in wish-list
      */
-    void onWishlistItemsCount(int count);
+    void onWishListItemsCount(int count);
 
     /**
      * @param count of items in my books

@@ -52,4 +52,10 @@
         <item name="android:textSize">15sp</item>
         <item name="android:textColor">@color/title</item>
     </style>
+
+    <style name="TextAppearance.AppCompat.Small.Title.Inverse" parent="TextAppearance.AppCompat.Small.Inverse">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/title_inverse</item>
+    </style>
 </resources>

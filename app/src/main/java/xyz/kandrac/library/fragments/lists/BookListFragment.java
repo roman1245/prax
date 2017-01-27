@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.design.internal.NavigationMenu;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -184,7 +185,12 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
         mFab = (FabSpeedDial) result.findViewById(R.id.fab_speed_dial);
         mEmpty = (TextView) result.findViewById(R.id.list_empty);
 
-        list.setLayoutManager(new LinearLayoutManager(getActivity()));
+        if (getActivity().getResources().getBoolean(R.bool.use_grid)) {
+            list.setLayoutManager(new GridLayoutManager(getActivity(), getActivity().getResources().getInteger(R.integer.list_columns)));
+        } else {
+            list.setLayoutManager(new LinearLayoutManager(getActivity()));
+        }
+
         mFab.setVisibility(mAddButton ? View.VISIBLE : View.GONE);
         mEmpty.setText(mAddButton ? R.string.book_list_empty : R.string.book_borrowed_list_empty);
 

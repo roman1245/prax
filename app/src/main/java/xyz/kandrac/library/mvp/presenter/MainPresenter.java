@@ -163,7 +163,7 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
      * <p>
      * This methods should be invoked on result:
      * <ul>
-     * <li>{@link MainView#onWishlistItemsCount(int)}</li>
+     * <li>{@link MainView#onWishListItemsCount(int)}</li>
      * <li>{@link MainView#onBooksFromFriendsCount(int)}</li>
      * <li>{@link MainView#onBorrowedBooksCount(int)}</li>
      * <li>{@link MainView#onMyBooksCount(int)}</li>
@@ -212,7 +212,7 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         switch (loader.getId()) {
             case WISH_COUNT:
-                view.onWishlistItemsCount(data.moveToFirst() ? data.getInt(0) : 0);
+                view.onWishListItemsCount(data.moveToFirst() ? data.getInt(0) : 0);
                 break;
             case MY_COUNT:
                 view.onMyBooksCount(data.moveToFirst() ? data.getInt(0) : 0);

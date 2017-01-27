@@ -315,7 +315,7 @@ public class MainActivity extends AppCompatActivity implements
     // Action view texts based on db results
 
     @Override
-    public void onWishlistItemsCount(int count) {
+    public void onWishListItemsCount(int count) {
         setActionViewText(R.id.main_navigation_wish_list, Integer.toString(count));
     }
 
