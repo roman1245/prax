@@ -21,6 +21,7 @@ import javax.inject.Inject;
 import xyz.kandrac.library.LibraryApplication;
 import xyz.kandrac.library.model.firebase.References;
 import xyz.kandrac.library.utils.LogUtils;
+import xyz.kandrac.library.utils.MediaUtils;
 import xyz.kandrac.library.utils.SharedPreferencesManager;
 
 import static xyz.kandrac.library.model.firebase.FirebaseBook.KEY_AUTHORS;
@@ -603,21 +604,17 @@ public class DatabaseProvider extends ContentProvider {
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
         switch (uriMatcher.match(uri)) {
-            case BOOKS: {
-                count = db.delete(Database.Tables.BOOKS, selection, selectionArgs);
-                break;
-            }
             case BOOK_ID: {
                 long id = Contract.Books.getBookId(uri);
 
-                // clear cloud data first
-                if (mFirebaseAuth.getCurrentUser() != null) {
+                Cursor bookCursor = db.query(Database.Tables.BOOKS, new String[]{Contract.Books.BOOK_REFERENCE, Contract.Books.BOOK_IMAGE_FILE}, Contract.Books.BOOK_ID + " = ?", new String[]{Long.toString(id)}, null, null, null);
 
-                    Cursor firebaseCursor = db.query(Database.Tables.BOOKS, new String[]{Contract.Books.BOOK_REFERENCE}, Contract.Books.BOOK_ID + " = ?", new String[]{Long.toString(id)}, null, null, null);
 
-                    if (firebaseCursor.moveToFirst()) {
-                        String firebaseId = firebaseCursor.getString(firebaseCursor.getColumnIndex(Contract.Books.BOOK_REFERENCE));
-                        firebaseCursor.close();
+                if (bookCursor.moveToFirst()) {
+                    // clear cloud data first
+                    if (mFirebaseAuth.getCurrentUser() != null) {
+
+                        String firebaseId = bookCursor.getString(bookCursor.getColumnIndex(Contract.Books.BOOK_REFERENCE));
 
                         if (!TextUtils.isEmpty(firebaseId)) {
                             FirebaseDatabase.getInstance().getReference()
@@ -626,6 +623,11 @@ public class DatabaseProvider extends ContentProvider {
                                     .removeValue();
                         }
                     }
+
+                    String imagePath =bookCursor.getString(bookCursor.getColumnIndex(Contract.Books.BOOK_IMAGE_FILE));
+                    MediaUtils.delete(getContext(), imagePath);
+
+                    bookCursor.close();
                 }
 
                 count = db.delete(Database.Tables.BOOKS, Contract.Books.BOOK_ID + " = " + id +

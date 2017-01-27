@@ -6,7 +6,10 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -33,6 +36,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.File;
+
 import javax.inject.Inject;
 
 import xyz.kandrac.library.BuildConfig;
@@ -44,6 +49,7 @@ import xyz.kandrac.library.model.obj.Author;
 import xyz.kandrac.library.model.obj.Book;
 import xyz.kandrac.library.model.obj.Library;
 import xyz.kandrac.library.model.obj.Publisher;
+import xyz.kandrac.library.mvp.view.MainActivity;
 import xyz.kandrac.library.mvp.view.MainView;
 import xyz.kandrac.library.utils.IABConfigurator;
 import xyz.kandrac.library.utils.LogUtils;
@@ -64,6 +70,7 @@ import static xyz.kandrac.library.model.firebase.FirebaseBook.KEY_SUBTITLE;
 import static xyz.kandrac.library.model.firebase.FirebaseBook.KEY_TITLE;
 import static xyz.kandrac.library.model.firebase.FirebaseBook.KEY_UPDATED_AT;
 import static xyz.kandrac.library.model.firebase.FirebaseBook.KEY_WISH_LIST;
+import static xyz.kandrac.library.mvp.view.MainActivity.PREFERENCE_PHOTOS_REMOVED;
 import static xyz.kandrac.library.mvp.view.MainActivity.WAIT_FOR_DOUBLE_CLICK_BACK;
 import static xyz.kandrac.library.mvp.view.MainView.ERROR_TYPE_GOOGLE_API_CONNECTION;
 import static xyz.kandrac.library.mvp.view.MainView.ERROR_TYPE_GOOGLE_SIGNIN;
@@ -485,6 +492,12 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
         view.interact(ERROR_TYPE_GOOGLE_API_CONNECTION, connectionResult.getErrorMessage());
     }
 
+
+    /**
+     * Handle back if possible.
+     *
+     * @return true if back not handled
+     */
     public boolean evaluateBack(DrawerLayout drawerLayout, NavigationView navigation) {
 
         if (drawerLayout.isDrawerOpen(navigation)) {
@@ -503,5 +516,62 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
         }
 
         return false;
+    }
+
+
+    /**
+     * Remove unused photos from disk if they are not referenced in books table
+     */
+    @Deprecated
+    public void removeUnusedPhotosIfNeeded() {
+        long lastTimeRemoval = PreferenceManager.getDefaultSharedPreferences(view.getActivity()).getLong(PREFERENCE_PHOTOS_REMOVED, 0);
+
+        if (System.currentTimeMillis() - lastTimeRemoval < 60_000 * 60 * 24) {
+            return;
+        }
+
+        File imageDirectory = view.getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
+        if (imageDirectory != null) {
+            File[] files = imageDirectory.listFiles();
+
+            new AsyncTask<File, Integer, Void>() {
+
+                @Override
+                protected Void doInBackground(File... params) {
+
+                    int count = 0;
+
+                    for (File file : params) {
+                        String filePath = file.getAbsolutePath();
+
+                        // search for book with given file name
+                        Cursor cursor = view.getActivity().getContentResolver().query(
+                                Contract.Books.CONTENT_URI,
+                                new String[]{Contract.Books.BOOK_ID},
+                                Contract.Books.BOOK_IMAGE_FILE + " = ?",
+                                new String[]{filePath},
+                                null
+                        );
+
+                        // remove book if found
+                        if (cursor == null || cursor.getCount() == 0) {
+                            if (file.delete()) {
+                                count++;
+                            }
+                        } else {
+                            cursor.close();
+                        }
+                    }
+
+                    LogUtils.d(MainActivity.class.getSimpleName(), "deleted " + count + " files");
+
+                    return null;
+                }
+
+            }.execute(files);
+        }
+
+        PreferenceManager.getDefaultSharedPreferences(view.getActivity()).edit().putLong(PREFERENCE_PHOTOS_REMOVED, System.currentTimeMillis()).apply();
     }
 }
