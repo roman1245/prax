@@ -11,8 +11,8 @@ android {
         testApplicationId "kandrac.xyz.library.test"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
-        versionCode 34
-        versionName "1.5.5"
+        versionCode 35
+        versionName "1.5.6"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
