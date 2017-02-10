@@ -1,0 +1,5 @@
+Fastlane prepared
+Crashlytics prepared
+Gradle update
+Book List for landscape mode prepared
+Delete book photo when deleting book
