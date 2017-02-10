@@ -3,6 +3,9 @@ package xyz.kandrac.library;
 import android.app.Application;
 import android.content.Context;
 
+import com.crashlytics.android.Crashlytics;
+
+import io.fabric.sdk.android.Fabric;
 import xyz.kandrac.library.dagger.component.ApplicationComponent;
 import xyz.kandrac.library.dagger.component.DaggerApplicationComponent;
 import xyz.kandrac.library.dagger.component.DaggerNetComponent;
@@ -11,9 +14,10 @@ import xyz.kandrac.library.dagger.module.ApplicationModule;
 import xyz.kandrac.library.dagger.module.NetModule;
 
 /**
+ * Base application class for generating Dagger 2 graphs and for initializing Crashlytics
+ * <p>
  * Created by jan on 6.12.2016.
  */
-
 public class LibraryApplication extends Application {
 
     private NetComponent mNetComponent;
@@ -49,4 +53,10 @@ public class LibraryApplication extends Application {
         return app.mNetComponent;
     }
 
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Fabric.with(this, new Crashlytics());
+    }
 }
