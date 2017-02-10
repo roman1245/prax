@@ -1,0 +1,37 @@
+fastlane_version "2.14.2"
+
+default_platform :android
+
+platform :android do
+  before_all do
+  end
+
+  desc "Runs all the tests"
+  lane :test do
+    gradle(task: "test")
+  end
+
+  desc "Submit a new Beta Build to Crashlytics Beta"
+  lane :beta do
+    gradle(task: "assembleFreeDebug")
+    crashlytics(
+      api_token: 'a45242414925f7d737bcfa791f62f2f8d40d391a',
+      build_secret: 'c5fa26d28586f411ecf493c5540ab0c56e34a4776df28ca09fa7815966ffa71f',
+      apk_path: 'app/build/outputs/apk/app-free-debug.apk',
+      notes_path: 'fastlane/release_notes.txt',
+      emails: ['mariazajacova@gmail.com']
+    )
+    mailgun(
+      to: "mariazajacova@gmail.com",
+      success: true,
+      message: "Ahoj, nova verzia aplikacie je pripravena na stiahnutie :)"
+    )
+
+  end
+
+  after_all do |lane|
+  end
+
+  error do |lane, exception|
+  end
+end
