@@ -106,8 +106,7 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
         public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
             FirebaseUser user = firebaseAuth.getCurrentUser();
             if (user != null) {
-                MainPresenter.this.view.showUserDetail(user.getDisplayName(), user.getEmail(), user.getPhotoUrl());
-
+                view.showUserDetail(user.getDisplayName(), user.getEmail(), user.getPhotoUrl());
             } else {
                 Log.d(LOG_TAG, "onAuthStateChanged:signed_out");
             }
@@ -573,5 +572,14 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
         }
 
         PreferenceManager.getDefaultSharedPreferences(view.getActivity()).edit().putLong(PREFERENCE_PHOTOS_REMOVED, System.currentTimeMillis()).apply();
+    }
+
+    public void checkNews() {
+        if (manager.getIntPreference(SharedPreferencesManager.KEY_PREF_NEWS_VERSION) < BuildConfig.NEWS_VERSION) {
+            manager.editPreference(SharedPreferencesManager.KEY_PREF_NEWS_VERSION, BuildConfig.NEWS_VERSION);
+            if (BuildConfig.NEWS_SHOW) {
+                view.displayNews();
+            }
+        }
     }
 }

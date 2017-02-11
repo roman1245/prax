@@ -222,6 +222,9 @@
     <string name="progress_read">Přečtena</string>
     <string name="progress_break">Čtení přerušeno</string>
 
+    <string name="news_title">Novinky</string>
+    <string name="news_text">Knižnica je jednou z najsťahovanejších slovenských aplikácií s tématikou kníh. Stále si ju však veľa ľudí rýchlo odinštaluje a tak sa pomaly zamýšľam, či má zmysel na Knižnici ďalej pracovať.\n\nPreto vás chcem poprosiť, ak máte akékoľvek pripomienky, povzbudenia alebo nápady, oddnes pribúda možnosť tieto pripomienky anonymne posielať.\n\nVšetky rozumné pripomienky, sa posunú do hlasovania.</string>
+
     <string-array name="reading_progress">
         <item>Průběh čtení</item>
         <item>@string/progress_not_started</item>

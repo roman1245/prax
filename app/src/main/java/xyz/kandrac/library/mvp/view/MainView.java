@@ -44,4 +44,6 @@ public interface MainView {
     void showUserDetail(String displayName, String email, Uri photoUrl);
 
     void interact(int type, String message);
+
+    void displayNews();
 }

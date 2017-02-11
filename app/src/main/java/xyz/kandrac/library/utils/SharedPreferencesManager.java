@@ -18,10 +18,11 @@ public class SharedPreferencesManager {
     public static final String KEY_PREF_LIBRARY_ENABLED = "library_enabled";
     public static final String KEY_PREF_LAST_CLOUD_SYNC = "last_cloud_sync";
     public static final String KEY_PREF_DRIVER_BOUGHT = "driver_bought";
+    public static final String KEY_PREF_NEWS_VERSION = "news_version";
 
     // Define the list of accepted constants and declare the NavigationMode annotation
     @Retention(RetentionPolicy.SOURCE)
-    @StringDef({KEY_PREF_LIBRARY_ENABLED, KEY_PREF_LAST_CLOUD_SYNC, KEY_PREF_DRIVER_BOUGHT})
+    @StringDef({KEY_PREF_LIBRARY_ENABLED, KEY_PREF_LAST_CLOUD_SYNC, KEY_PREF_DRIVER_BOUGHT, KEY_PREF_NEWS_VERSION})
     @interface ApplicationPreferenceKey {
     }
 
@@ -57,6 +58,10 @@ public class SharedPreferencesManager {
 
     public boolean getBooleanPreference(@ApplicationPreferenceKey String preferenceKey) {
         return mPreferences.getBoolean(preferenceKey, false);
+    }
+
+    public int getIntPreference(@ApplicationPreferenceKey String preferenceKey) {
+        return mPreferences.getInt(preferenceKey, 0);
     }
 
     public String getStringPreference(@ApplicationPreferenceKey String preferenceKey) {

@@ -10,6 +10,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
@@ -148,6 +149,7 @@ public class MainActivity extends AppCompatActivity implements
         presenter.initNavigationView();
         presenter.configureSignIn();
         presenter.configureIAB();
+        presenter.checkNews();
     }
 
     @Override
@@ -369,6 +371,14 @@ public class MainActivity extends AppCompatActivity implements
                 Toast.makeText(this, R.string.press_again_to_leave, Toast.LENGTH_SHORT).show();
                 break;
         }
+    }
+
+    @Override
+    public void displayNews() {
+        new AlertDialog.Builder(this).
+                setPositiveButton(R.string.action_continue, null)
+        .setTitle(R.string.news_title)
+        .setMessage(R.string.news_text).show();
     }
 
     private void setActionViewText(@IdRes int viewId, String show) {
