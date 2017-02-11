@@ -21,12 +21,6 @@ platform :android do
       notes_path: 'fastlane/release_notes.txt',
       emails: ['mariazajacova@gmail.com']
     )
-    mailgun(
-      to: "mariazajacova@gmail.com",
-      success: true,
-      message: "Ahoj, nova verzia aplikacie je pripravena na stiahnutie :)"
-    )
-
   end
 
   after_all do |lane|
