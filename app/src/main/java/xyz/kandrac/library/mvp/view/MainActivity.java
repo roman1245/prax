@@ -31,6 +31,7 @@ import xyz.kandrac.library.InitService;
 import xyz.kandrac.library.LibraryApplication;
 import xyz.kandrac.library.R;
 import xyz.kandrac.library.billing.BillingSkus;
+import xyz.kandrac.library.fragments.FeedbackFragment;
 import xyz.kandrac.library.fragments.SettingsFragment;
 import xyz.kandrac.library.fragments.lists.AuthorBooksListFragment;
 import xyz.kandrac.library.fragments.lists.BookListFragment;
@@ -258,6 +259,9 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case R.id.main_navigation_libraries:
                 fragmentToShow = new LibraryBooksListFragment();
+                break;
+            case R.id.main_navigation_feedback:
+                fragmentToShow = new FeedbackFragment();
                 break;
             case R.id.main_navigation_settings:
                 fragmentToShow = new SettingsFragment();

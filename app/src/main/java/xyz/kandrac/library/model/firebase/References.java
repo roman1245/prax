@@ -7,4 +7,5 @@ public interface References {
 
     String USERS_REFERENCE = "users";
     String BOOKS_REFERENCE = "books";
+    String FEEDBACK_REFERENCE = "feedback";
 }

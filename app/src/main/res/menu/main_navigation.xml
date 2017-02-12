@@ -64,6 +64,10 @@
             android:title="@string/menu_settings">
             <menu>
                 <item
+                    android:id="@+id/main_navigation_feedback"
+                    android:icon="@drawable/ic_feedback"
+                    android:title="@string/menu_feedback" />
+                <item
                     android:id="@+id/main_navigation_settings"
                     android:icon="@drawable/ic_settings"
                     android:title="@string/menu_settings" />

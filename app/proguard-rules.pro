@@ -17,4 +17,8 @@
 # in app billing
 -keep class com.android.vending.billing.**
 
+-keepclassmembers class xyz.kandrac.library.model.firebase.** {
+  *;
+}
+
 -keep class org.apache.commons.** { *; }
