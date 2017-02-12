@@ -16,3 +16,5 @@
 
 # in app billing
 -keep class com.android.vending.billing.**
+
+-keep class org.apache.commons.** { *; }
