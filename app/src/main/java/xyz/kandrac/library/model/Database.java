@@ -12,7 +12,7 @@ public class Database extends SQLiteOpenHelper {
 
 
     private static final String DATABASE_NAME = "library.db";
-    private static final int DATABASE_VERSION = 9;
+    private static final int DATABASE_VERSION = 10;
 
     public Database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -25,6 +25,7 @@ public class Database extends SQLiteOpenHelper {
         String BORROW_INFO = "borrow_info";
         String BORROW_ME = "borrow_me";
         String LIBRARIES = "libraries";
+        String FEEDBACK = "feedback";
 
         // m-n connections
         String BOOKS_AUTHORS = "book_author";
@@ -107,6 +108,11 @@ public class Database extends SQLiteOpenHelper {
                     Contract.BorrowInfoColumns.BORROW_NAME + " TEXT, " +
                     Contract.BorrowInfoColumns.BORROW_PHONE + " TEXT)";
 
+    private static final String FEEDBACK_CREATE_TABLE =
+            "CREATE TABLE " + Tables.FEEDBACK + " (" +
+                    Contract.FeedbackColumns.FEEDBACK_REFERENCE + " TEXT PRIMARY KEY," +
+                    Contract.FeedbackColumns.FEEDBACK_VALUE + " INTEGER)";
+
     private static final String BORROW_ME_CREATE_TABLE =
             "CREATE TABLE " + Tables.BORROW_ME + " (" +
                     Contract.BorrowMeInfoColumns.BORROW_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -129,6 +135,7 @@ public class Database extends SQLiteOpenHelper {
         db.execSQL(BOOKS_AUTHORS_CREATE_TABLE);
         db.execSQL(BORROW_INFO_CREATE_TABLE);
         db.execSQL(BORROW_ME_CREATE_TABLE);
+        db.execSQL(FEEDBACK_CREATE_TABLE);
     }
 
     @Override
@@ -158,6 +165,8 @@ public class Database extends SQLiteOpenHelper {
                 db.execSQL("ALTER TABLE " + Tables.BOOKS + " ADD " + Contract.Books.BOOK_MY_SCORE + " INTEGER DEFAULT 0");
                 db.execSQL("ALTER TABLE " + Tables.BOOKS + " ADD " + Contract.Books.BOOK_QUOTE + " TEXT");
                 db.execSQL("ALTER TABLE " + Tables.BOOKS + " ADD " + Contract.Books.BOOK_NOTES + " TEXT");
+            case 9:
+                db.execSQL(FEEDBACK_CREATE_TABLE);
         }
     }
 }

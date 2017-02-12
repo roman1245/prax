@@ -84,7 +84,10 @@ public class DatabaseProvider extends ContentProvider {
     public static final int LIBRARY_ID = 601;
     public static final int LIBRARY_BY_BOOK = 602;
 
-    public static final int SPECIAL_TABLE = 700;
+    public static final int FEEDBACK = 700;
+    public static final int FEEDBACK_REFERENCE = 701;
+
+    public static final int SPECIAL_TABLE = 800;
 
     @Inject
     public SharedPreferencesManager manager;
@@ -126,6 +129,9 @@ public class DatabaseProvider extends ContentProvider {
         uriMatcher.addURI(authority, "libraries", LIBRARIES);
         uriMatcher.addURI(authority, "libraries/#", LIBRARY_ID);
         uriMatcher.addURI(authority, "libraries/#/books", BOOKS_BY_LIBRARY);
+
+        uriMatcher.addURI(authority, "feedback", FEEDBACK);
+        uriMatcher.addURI(authority, "feedback/*", FEEDBACK_REFERENCE);
 
         uriMatcher.addURI(authority, "special/table", SPECIAL_TABLE);
         return uriMatcher;
@@ -181,6 +187,10 @@ public class DatabaseProvider extends ContentProvider {
                 return Contract.Books.CONTENT_TYPE;
             case LIBRARY_BY_BOOK:
                 return Contract.Libraries.CONTENT_ITEM_TYPE;
+            case FEEDBACK:
+                return Contract.Feedback.CONTENT_TYPE;
+            case FEEDBACK_REFERENCE:
+                return Contract.Feedback.CONTENT_ITEM_TYPE;
             case SPECIAL_TABLE:
                 return Contract.Special.CONTENT_TYPE;
             default:
@@ -299,6 +309,11 @@ public class DatabaseProvider extends ContentProvider {
                 selection = Database.Tables.BOOKS + "." + Contract.Books.BOOK_ID + "=?";
                 selectionArgs = new String[]{Long.toString(Contract.Books.getBookId(uri))};
                 sortOrder = sortOrder == null ? Contract.Libraries.DEFAULT_SORT : sortOrder;
+                break;
+            case FEEDBACK_REFERENCE:
+                qb.setTables(Database.Tables.FEEDBACK);
+                selection = Contract.FeedbackColumns.FEEDBACK_REFERENCE + "=?";
+                selectionArgs = new String[]{Contract.Feedback.getReference(uri)};
                 break;
             case SPECIAL_TABLE:
                 projection = new String[]{
@@ -535,6 +550,12 @@ public class DatabaseProvider extends ContentProvider {
                 getContext().getContentResolver().notifyChange(uri, null);
                 return Contract.BorrowMeInfo.buildUri(result);
             }
+            case FEEDBACK: {
+                db.insert(Database.Tables.FEEDBACK, null, values);
+                getContext().getContentResolver().notifyChange(uri, null);
+                getContext().getContentResolver().notifyChange(Contract.Feedback.CONTENT_URI, null);
+                return Contract.Feedback.buildUri((String) values.get(Contract.Feedback.FEEDBACK_REFERENCE));
+            }
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -624,7 +645,7 @@ public class DatabaseProvider extends ContentProvider {
                         }
                     }
 
-                    String imagePath =bookCursor.getString(bookCursor.getColumnIndex(Contract.Books.BOOK_IMAGE_FILE));
+                    String imagePath = bookCursor.getString(bookCursor.getColumnIndex(Contract.Books.BOOK_IMAGE_FILE));
                     MediaUtils.delete(getContext(), imagePath);
 
                     bookCursor.close();
@@ -794,6 +815,11 @@ public class DatabaseProvider extends ContentProvider {
                 }
                 getContext().getContentResolver().notifyChange(Contract.Books.CONTENT_URI, null);
                 getContext().getContentResolver().notifyChange(Contract.BOOKS_AUTHORS_URI, null);
+                break;
+            }
+            case FEEDBACK_REFERENCE: {
+                String reference = Contract.Feedback.getReference(uri);
+                count = db.update(Database.Tables.FEEDBACK, values, Contract.Feedback.FEEDBACK_REFERENCE + " = ? ", new String[]{reference});
                 break;
             }
             default:

@@ -52,6 +52,7 @@
             android:orientation="vertical">
 
             <ImageButton
+                android:id="@+id/feedback_plus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -68,6 +69,7 @@
                 tools:text="15" />
 
             <ImageButton
+                android:id="@+id/feedback_minus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"

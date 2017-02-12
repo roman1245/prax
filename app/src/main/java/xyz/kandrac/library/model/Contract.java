@@ -79,6 +79,11 @@ public final class Contract {
         String BORROW_NEXT_NOTIFICATION = "borrow_next_notify";
     }
 
+    interface FeedbackColumns {
+        String FEEDBACK_REFERENCE = "feedback_reference";
+        String FEEDBACK_VALUE = "feedback_value";
+    }
+
     public interface BorrowMeInfoColumns {
         String BORROW_ID = BaseColumns._ID;
         String BORROW_BOOK_ID = "borrow_me_book_id";
@@ -100,6 +105,7 @@ public final class Contract {
     public static final String PATH_AUTHORS = "authors";
     public static final String PATH_PUBLISHERS = "publishers";
     public static final String PATH_LIBRARIES = "libraries";
+    public static final String PATH_FEEDBACK = "feedback";
 
     public static final String PATH_BORROW_INFO = "borrow_info";
     public static final String PATH_BORROW_ME_INFO = "borrow_me_info";
@@ -492,6 +498,23 @@ public final class Contract {
         public static long getBookId(Uri uri) {
             return Long.parseLong(uri.getPathSegments().get(1));
         }
+    }
+
+    public static class Feedback implements FeedbackColumns {
+
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_FEEDBACK).build();
+
+        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.feedback";
+        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.feedback";
+
+        public static Uri buildUri(String reference) {
+            return CONTENT_URI.buildUpon().appendPath(reference).build();
+        }
+
+        public static String getReference(Uri uri) {
+            return uri.getPathSegments().get(1);
+        }
+
     }
 
     public static class Special {
