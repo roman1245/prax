@@ -1,5 +1,4 @@
-Fastlane prepared
-Crashlytics prepared
-Gradle update
-Book List for landscape mode prepared
-Delete book photo when deleting book
+Feedback implemented
+Voting fully implemented
+Fixed crash in release version for book import
+News dialog introduced
