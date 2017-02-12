@@ -33,6 +33,7 @@
     <string name="action_continue">Pokračovat</string>
     <string name="action_select_file">Vyber soubor</string>
     <string name="action_share">Sdílet</string>
+    <string name="action_send">Poslat</string>
 
     <string name="action_add_import">Import z tabulky</string>
     <string name="action_add_bulk">Hromadné vkládání</string>
@@ -227,6 +228,12 @@
     <string name="news_text">Knižnica je jednou z najsťahovanejších slovenských aplikácií s tématikou kníh. Stále si ju však veľa ľudí rýchlo odinštaluje a tak sa pomaly zamýšľam, či má zmysel na Knižnici ďalej pracovať.\n\nPreto vás chcem poprosiť, ak máte akékoľvek pripomienky, povzbudenia alebo nápady, oddnes pribúda možnosť tieto pripomienky anonymne posielať.\n\nVšetky rozumné pripomienky, sa posunú do hlasovania.</string>
     <string name="cd_upvote">Upvote</string>
     <string name="cd_downvote">Downvote</string>
+
+    <string name="author_field">Autor (nepovinné)</string>
+    <string name="hint_title">Název</string>
+    <string name="hint_description">Popis</string>
+    <string name="add_title_and_desc">Zadejte Název a Popis pro vaší zpětní vazbu</string>
+    <string name="thanks">Díky za vaší zpětní vazbu. Zobrazí se zde po schválení</string>
 
     <string-array name="reading_progress">
         <item>Průběh čtení</item>

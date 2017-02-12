@@ -33,6 +33,7 @@
     <string name="action_continue">Continue</string>
     <string name="action_select_file">Select file</string>
     <string name="action_share">Share</string>
+    <string name="action_send">Send</string>
 
     <string name="action_add_import">Import from table</string>
     <string name="action_add_bulk">Bulk insert books</string>
@@ -222,7 +223,6 @@
     <string name="progress_break">Reading break</string>
 
     <string name="news_title">News</string>
-<<<<<<< HEAD
     <string name="news_text">Library is one of the most downloaded apps in Slovakia related to books. But there are many users, that uninstalls the Library right away. Because of that I\'m thinking about cancelling it.\n\nSo I need your support. If you have any feedback or suggestion, now you are able to send it to me anonymously.\n\nAll reasonable suggestions, will be moved to a voting.</string>
     <string name="cd_upvote">Upvote</string>
     <string name="cd_downvote">Downvote</string>
@@ -232,11 +232,6 @@
     <string name="hint_description">Description</string>
     <string name="add_title_and_desc">Please set Title and Description for your feedback</string>
     <string name="thanks">Thank you for your feedback. It will be displayed after approval</string>
-=======
-    <string name="news_text">Library is one of the most downloaded apps in Slovakia related to books. But there are many users, that uninstalls the Library right away. Therefor I\'m thinking about cancelling it.\n\nTherefor I need your support. If you have any feedback or suggestion, now you are able to send it to me anonymously.\n\nAll reasonable suggestions, will be moved to a voting.</string>
-    <string name="cd_upvote">Upvote</string>
-    <string name="cd_downvote">Downvote</string>
->>>>>>> 5b6b3a6... Feedback Fragment introduction
 
     <string-array name="reading_progress">
         <item>Reading progress</item>

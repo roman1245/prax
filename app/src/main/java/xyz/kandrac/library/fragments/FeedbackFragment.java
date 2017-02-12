@@ -53,6 +53,13 @@ public class FeedbackFragment extends android.app.Fragment {
 
         list.setLayoutManager(new LinearLayoutManager(getActivity()));
         list.setAdapter(new FeedbackAdapter());
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new CreateFeedbackDialog().show(getFragmentManager(), null);
+            }
+        });
     }
 
     private class FeedbackAdapter extends RecyclerView.Adapter<FeedbackAdapter.Holder> {
