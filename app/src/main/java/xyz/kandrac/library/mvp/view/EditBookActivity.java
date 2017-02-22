@@ -267,11 +267,13 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                     GoogleResponse.Book book = response.body().books[0];
 
                     StringBuilder builder = new StringBuilder();
-                    for (int i = 0; i < book.volumeInfo.authors.length; i++) {
-                        if (i != 0) {
-                            builder.append(", ");
+                    if (book.volumeInfo.authors != null) {
+                        for (int i = 0; i < book.volumeInfo.authors.length; i++) {
+                            if (i != 0) {
+                                builder.append(", ");
+                            }
+                            builder.append(book.volumeInfo.authors[i]);
                         }
-                        builder.append(book.volumeInfo.authors[i]);
                     }
 
                     mTitleEdit.setText(book.volumeInfo.title);
@@ -528,7 +530,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     public void scan(View view) {
         if (mIsbnEdit.getText().length() == 0) {
 
-            if ( !MediaUtils.checkCameraHardware(this)) {
+            if (!MediaUtils.checkCameraHardware(this)) {
                 Toast.makeText(this, R.string.edit_book_no_camera, Toast.LENGTH_LONG).show();
                 return;
             }

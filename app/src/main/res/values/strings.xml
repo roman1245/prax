@@ -233,12 +233,40 @@
     <string name="add_title_and_desc">Please set Title and Description for your feedback</string>
     <string name="thanks">Thank you for your feedback. It will be displayed after approval</string>
 
+    <!-- Book genres -->
+    <string name="book_genre_action_adventure">Action and Adventure</string>
+    <string name="book_genre_sci_fi">Science fiction</string>
+    <string name="book_genre_fantasy">Fantasy</string>
+    <string name="book_genre_drama">Drama</string>
+    <string name="book_genre_romance">Romance</string>
+    <string name="book_genre_mystery">Mystery/Horror</string>
+    <string name="book_genre_poetry">Poetry</string>
+    <string name="book_genre_comic">Comic</string>
+
+    <string name="book_genre_self_help">Self help</string>
+    <string name="book_genre_health">Health</string>
+    <string name="book_genre_guide">Guide/Travel</string>
+    <string name="book_genre_child">Children's</string>
+    <string name="book_genre_religion">Religion/Spirituality</string>
+    <string name="book_genre_science">Science</string>
+    <string name="book_genre_history">History</string>
+    <string name="book_genre_encyclopedia">Encyclopedia</string>
+    <string name="book_genre_dictionary">Dictionary</string>
+    <string name="book_genre_art">Art</string>
+    <string name="book_genre_cookbook">Cookbooks</string>
+    <string name="book_genre_bio">Biography</string>
+    <string name="book_genre_other">Other</string>
+
     <string-array name="reading_progress">
         <item>Reading progress</item>
         <item>@string/progress_not_started</item>
         <item>@string/progress_reading</item>
         <item>@string/progress_read</item>
         <item>@string/progress_break</item>
+    </string-array>
+
+    <string-array name="book_genres">
+        <item>Reading progress</item>
     </string-array>
 
     <string-array name="book_rating">
