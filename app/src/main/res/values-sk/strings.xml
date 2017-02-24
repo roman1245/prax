@@ -235,12 +235,61 @@
     <string name="add_title_and_desc">Zadajte Názov a Popis pre vašu spätnú väzbu</string>
     <string name="thanks">Ďakujeme za vašu spätnú väzbu. Zobrazí sa tu po schválení</string>
 
+    <!-- Book genres -->
+    <string name="book_genre_action_adventure">Dobrodružné</string>
+    <string name="book_genre_sci_fi">Sci-fi</string>
+    <string name="book_genre_fantasy">Fantasy</string>
+    <string name="book_genre_drama">Dráma</string>
+    <string name="book_genre_romance">Romantické</string>
+    <string name="book_genre_mystery">Horory a Mysteriózne</string>
+    <string name="book_genre_poetry">Poézia</string>
+    <string name="book_genre_comic">Komix</string>
+
+    <string name="book_genre_self_help">Motivačné</string>
+    <string name="book_genre_health">Zdravie</string>
+    <string name="book_genre_guide">Cestovateľské</string>
+    <string name="book_genre_child">Detské</string>
+    <string name="book_genre_religion">Náboženstvo a duchovno</string>
+    <string name="book_genre_science">Vedecké</string>
+    <string name="book_genre_history">Historické</string>
+    <string name="book_genre_encyclopedia">Encyklopédie</string>
+    <string name="book_genre_dictionary">Slovníky</string>
+    <string name="book_genre_art">Umenie</string>
+    <string name="book_genre_cookbook">Kuchárske knihy</string>
+    <string name="book_genre_bio">Biografie</string>
+    <string name="book_genre_other">Iné</string>
+
     <string-array name="reading_progress">
         <item>Priebeh čítania</item>
         <item>@string/progress_not_started</item>
         <item>@string/progress_reading</item>
         <item>@string/progress_read</item>
         <item>@string/progress_break</item>
+    </string-array>
+
+    <string-array name="book_genres">
+        <item>Žáner</item>
+        <item>@string/book_genre_action_adventure</item>
+        <item>@string/book_genre_sci_fi</item>
+        <item>@string/book_genre_fantasy</item>
+        <item>@string/book_genre_drama</item>
+        <item>@string/book_genre_romance</item>
+        <item>@string/book_genre_mystery</item>
+        <item>@string/book_genre_poetry</item>
+        <item>@string/book_genre_comic</item>
+        <item>@string/book_genre_self_help</item>
+        <item>@string/book_genre_health</item>
+        <item>@string/book_genre_guide</item>
+        <item>@string/book_genre_child</item>
+        <item>@string/book_genre_religion</item>
+        <item>@string/book_genre_science</item>
+        <item>@string/book_genre_history</item>
+        <item>@string/book_genre_encyclopedia</item>
+        <item>@string/book_genre_dictionary</item>
+        <item>@string/book_genre_art</item>
+        <item>@string/book_genre_cookbook</item>
+        <item>@string/book_genre_bio</item>
+        <item>@string/book_genre_other</item>
     </string-array>
 
     <string-array name="book_rating">

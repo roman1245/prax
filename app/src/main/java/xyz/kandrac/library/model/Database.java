@@ -1,8 +1,11 @@
 package xyz.kandrac.library.model;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import xyz.kandrac.library.R;
 
 /**
  * SQLite database representation for this application
@@ -12,10 +15,13 @@ public class Database extends SQLiteOpenHelper {
 
 
     private static final String DATABASE_NAME = "library.db";
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 11;
+
+    private Context context;
 
     public Database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
     }
 
     public interface Tables {
@@ -26,6 +32,7 @@ public class Database extends SQLiteOpenHelper {
         String BORROW_ME = "borrow_me";
         String LIBRARIES = "libraries";
         String FEEDBACK = "feedback";
+        String GENRES = "genres";
 
         // m-n connections
         String BOOKS_AUTHORS = "book_author";
@@ -120,6 +127,11 @@ public class Database extends SQLiteOpenHelper {
                     Contract.BorrowMeInfoColumns.BORROW_DATE_BORROWED + " INTEGER, " +
                     Contract.BorrowMeInfoColumns.BORROW_NAME + " TEXT)";
 
+    private static final String GENRES_CREATE_TABLE =
+            "CREATE TABLE " + Tables.GENRES + " (" +
+                    Contract.GenresColumns.GENRE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    Contract.GenresColumns.GENRE_NAME + " TEXT)";
+
     @Override
     public void onConfigure(SQLiteDatabase db) {
         db.setForeignKeyConstraintsEnabled(true);
@@ -167,6 +179,18 @@ public class Database extends SQLiteOpenHelper {
                 db.execSQL("ALTER TABLE " + Tables.BOOKS + " ADD " + Contract.Books.BOOK_NOTES + " TEXT");
             case 9:
                 db.execSQL(FEEDBACK_CREATE_TABLE);
+            case 10:
+                db.execSQL(GENRES_CREATE_TABLE);
+                String[] genres = context.getResources().getStringArray(R.array.book_genres);
+
+                for (String genre : genres) {
+                    ContentValues cv = new ContentValues();
+                    cv.put(Contract.GenresColumns.GENRE_NAME, genre);
+                    db.insert(Tables.GENRES, null, cv);
+                }
         }
+
+        // clear context after upgrade
+        context = null;
     }
 }

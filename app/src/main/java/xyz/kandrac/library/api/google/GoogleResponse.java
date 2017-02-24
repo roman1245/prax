@@ -34,6 +34,9 @@ public class GoogleResponse {
 
             @SerializedName("authors")
             public String[] authors;
+
+            @SerializedName("categories")
+            public String[] categories;
         }
     }
 }

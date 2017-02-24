@@ -246,7 +246,7 @@
     <string name="book_genre_self_help">Self help</string>
     <string name="book_genre_health">Health</string>
     <string name="book_genre_guide">Guide/Travel</string>
-    <string name="book_genre_child">Children's</string>
+    <string name="book_genre_child">Children\'s</string>
     <string name="book_genre_religion">Religion/Spirituality</string>
     <string name="book_genre_science">Science</string>
     <string name="book_genre_history">History</string>
@@ -266,7 +266,28 @@
     </string-array>
 
     <string-array name="book_genres">
-        <item>Reading progress</item>
+        <item>Book Genre</item>
+        <item>@string/book_genre_action_adventure</item>
+        <item>@string/book_genre_sci_fi</item>
+        <item>@string/book_genre_fantasy</item>
+        <item>@string/book_genre_drama</item>
+        <item>@string/book_genre_romance</item>
+        <item>@string/book_genre_mystery</item>
+        <item>@string/book_genre_poetry</item>
+        <item>@string/book_genre_comic</item>
+        <item>@string/book_genre_self_help</item>
+        <item>@string/book_genre_health</item>
+        <item>@string/book_genre_guide</item>
+        <item>@string/book_genre_child</item>
+        <item>@string/book_genre_religion</item>
+        <item>@string/book_genre_science</item>
+        <item>@string/book_genre_history</item>
+        <item>@string/book_genre_encyclopedia</item>
+        <item>@string/book_genre_dictionary</item>
+        <item>@string/book_genre_art</item>
+        <item>@string/book_genre_cookbook</item>
+        <item>@string/book_genre_bio</item>
+        <item>@string/book_genre_other</item>
     </string-array>
 
     <string-array name="book_rating">
