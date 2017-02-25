@@ -267,7 +267,7 @@ public class MainActivity extends AppCompatActivity implements
                 fragmentToShow = new SettingsFragment();
                 break;
             case R.id.main_navigation_drive:
-                presenter.startPurchaseFlow(BillingSkus.getDriveSku());
+//                presenter.startPurchaseFlow(BillingSkus.getDriveSku());
                 return true;
         }
 
@@ -352,7 +352,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void setDriveVisibility(boolean visible) {
-        navigation.getMenu().findItem(R.id.main_navigation_drive).setVisible(visible);
+//        navigation.getMenu().findItem(R.id.main_navigation_drive).setVisible(visible);
     }
 
     @Override
