@@ -232,6 +232,7 @@ public class BookDetailBasicFragment extends Fragment implements BookDetailView 
 
     @Override
     public void onGenreLoaded(String genreName) {
+        if (!isAdded()) return;
         genreText.setText(TextUtils.isEmpty(genreName)? getString(R.string.genre_unknown): genreName);
     }
 
