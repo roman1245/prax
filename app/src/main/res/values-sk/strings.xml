@@ -97,6 +97,7 @@
     <string name="book_detail_full_title">Názov knihy:</string>
     <string name="book_detail_authors">Autori:</string>
     <string name="book_detail_publisher">Vydavateľ:</string>
+    <string name="book_detail_genre">Žáner:</string>
     <string name="book_detail_library">Knižnica:</string>
     <string name="book_detail_isbn">ISBN/čiarový kód:</string>
     <string name="book_detail_published">Rok vydania:</string>
@@ -259,6 +260,8 @@
     <string name="book_genre_cookbook">Kuchárske knihy</string>
     <string name="book_genre_bio">Biografie</string>
     <string name="book_genre_other">Iné</string>
+
+    <string name="genre_unknown">@string/book_genre_other</string>
 
     <string-array name="reading_progress">
         <item>Priebeh čítania</item>

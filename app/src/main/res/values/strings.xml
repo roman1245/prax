@@ -96,6 +96,7 @@
     <string name="book_detail_full_title">Book Title:</string>
     <string name="book_detail_authors">Authors:</string>
     <string name="book_detail_publisher">Publisher:</string>
+    <string name="book_detail_genre">Genre:</string>
     <string name="book_detail_library">Library:</string>
     <string name="book_detail_isbn">ISBN/barcode:</string>
     <string name="book_detail_published">Publish Year:</string>
@@ -257,6 +258,8 @@
     <string name="book_genre_cookbook">Cookbooks</string>
     <string name="book_genre_bio">Biography</string>
     <string name="book_genre_other">Other</string>
+
+    <string name="genre_unknown">@string/book_genre_other</string>
 
     <string-array name="reading_progress">
         <item>Reading progress</item>

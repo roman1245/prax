@@ -40,6 +40,7 @@ public class Database extends SQLiteOpenHelper {
         // everything from connected authors and books
         String BOOKS_JOIN_AUTHORS = "books LEFT JOIN book_author ON books._id = book_author.book_id LEFT JOIN authors ON authors._id = book_author.author_id";
         String BOOKS_JOIN_PUBLISHERS = "books JOIN publishers ON books.book_publisher_id = publishers._id";
+        String BOOKS_JOIN_GENRES = "books JOIN genres ON books.book_genre = genres._id";
         String BOOKS_JOIN_LIBRARIES = "books JOIN libraries ON books.book_library_id = libraries._id";
         String BOOKS_JOIN_BORROW = "books LEFT JOIN borrow_info ON borrow_info.borrow_book_id = books._id";
 

@@ -102,6 +102,11 @@ public class BookDetailOthersFragment extends Fragment implements BookDetailView
     }
 
     @Override
+    public void onGenreLoaded(String genreName) {
+        // not used
+    }
+
+    @Override
     public void onLibraryLoaded(String libName) {
         // not used
     }

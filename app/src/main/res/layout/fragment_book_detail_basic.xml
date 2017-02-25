@@ -152,6 +152,32 @@
             tools:text="Domaca" />
 
         <ImageView
+            android:id="@+id/book_detail_genre_icon"
+            android:contentDescription="@string/edit_book_info"
+            app:layout_rowSpan="2" />
+
+        <TextView
+            android:id="@+id/book_detail_genre_heading"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:gravity="center_vertical"
+            android:text="@string/book_detail_genre"
+            android:textIsSelectable="true"
+            app:layout_gravity="fill" />
+
+        <TextView
+            android:id="@+id/book_detail_genre"
+            style="@style/TextAppearance.AppCompat.Small.Title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:textIsSelectable="true"
+            app:layout_gravity="fill"
+            tools:text="Dobrodružné" />
+
+        <ImageView
             android:id="@+id/book_detail_isbn_image"
             android:layout_width="24dp"
             android:layout_height="24dp"

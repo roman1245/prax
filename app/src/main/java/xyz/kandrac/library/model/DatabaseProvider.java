@@ -89,6 +89,7 @@ public class DatabaseProvider extends ContentProvider {
 
     public static final int GENRES = 800;
     public static final int GENRE_ID = 801;
+    public static final int GENRE_BY_BOOK = 802;
 
     public static final int SPECIAL_TABLE = 900;
 
@@ -112,6 +113,7 @@ public class DatabaseProvider extends ContentProvider {
         uriMatcher.addURI(authority, "books/#/borrow_me_info", BORROW_ME_INFO_BY_BOOK);
         uriMatcher.addURI(authority, "books/#/publishers", PUBLISHER_BY_BOOK);
         uriMatcher.addURI(authority, "books/#/libraries", LIBRARY_BY_BOOK);
+        uriMatcher.addURI(authority, "books/#/genres", GENRE_BY_BOOK);
 
         uriMatcher.addURI(authority, "authors", AUTHORS);
         uriMatcher.addURI(authority, "authors/#", AUTHOR_ID);
@@ -332,6 +334,11 @@ public class DatabaseProvider extends ContentProvider {
                 qb.setTables(Database.Tables.GENRES);
                 selection = Contract.GenresColumns.GENRE_ID + "=?";
                 selectionArgs = new String[]{Long.toString(Contract.Genres.getId(uri))};
+                break;
+            case GENRE_BY_BOOK:
+                qb.setTables(Database.Tables.BOOKS_JOIN_GENRES);
+                selection = Database.Tables.BOOKS + "." +Contract.Books.BOOK_ID + "=?";
+                selectionArgs = new String[]{Long.toString(Contract.Genres.getBookId(uri))};
                 break;
             case SPECIAL_TABLE:
                 projection = new String[]{

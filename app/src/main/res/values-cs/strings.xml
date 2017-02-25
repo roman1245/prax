@@ -97,6 +97,7 @@
     <string name="book_detail_full_title">Název Knihy:</string>
     <string name="book_detail_authors">Autoři:</string>
     <string name="book_detail_publisher">Vydavatel:</string>
+    <string name="book_detail_genre">Žánr:</string>
     <string name="book_detail_library">Knihovna:</string>
     <string name="book_detail_isbn">ISBN:</string>
     <string name="book_detail_published">Rok vydání:</string>
@@ -259,6 +260,8 @@
     <string name="book_genre_cookbook">Kuchařské knihy</string>
     <string name="book_genre_bio">Biografie</string>
     <string name="book_genre_other">Jiné</string>
+
+    <string name="genre_unknown">@string/book_genre_other</string>
 
     <string-array name="reading_progress">
         <item>Průběh čtení</item>

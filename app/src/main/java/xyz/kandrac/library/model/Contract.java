@@ -243,12 +243,8 @@ public final class Contract {
             }
         }
 
-        public static Uri buildBookGenreUri(Uri bookUri) {
-            if (isReferenceUri(bookUri)) {
-                return buildBookPublisherFirebaseUri(getBookReference(bookUri));
-            } else {
-                return buildBookPublisherUri(getBookId(bookUri));
-            }
+        public static Uri buildBookGenreUri(long id) {
+            return CONTENT_URI.buildUpon().appendPath(Long.toString(id)).appendPath(PATH_GENRES).build();
         }
 
         public static Uri buildBookLibraryUri(Uri bookUri) {
@@ -547,6 +543,9 @@ public final class Contract {
             return Long.parseLong(uri.getPathSegments().get(1));
         }
 
+        public static long getBookId(Uri uri) {
+            return Long.parseLong(uri.getPathSegments().get(1));
+        }
     }
 
     public static class Special {
