@@ -120,6 +120,7 @@ public final class Contract {
     public static final String PATH_GENRES = "genres";
 
     public static final String PATH_SPECIAL = "special";
+    public static final String PATH_USED = "used";
 
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
@@ -531,6 +532,7 @@ public final class Contract {
     public static class Genres implements GenresColumns {
 
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_GENRES).build();
+        public static final Uri USED_GENRES_URI = CONTENT_URI.buildUpon().appendPath(PATH_USED).build();
 
         public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.genres";
         public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.genres";

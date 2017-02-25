@@ -48,7 +48,7 @@ public class GenreSpinnerAdapter extends ArrayAdapter<String> implements LoaderM
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         if (id == 412) {
-            return new CursorLoader(getContext(), Contract.Genres.CONTENT_URI, null, null, null, null);
+            return new CursorLoader(getContext(), Contract.Genres.USED_GENRES_URI, null, null, null, null);
         }
         return null;
     }

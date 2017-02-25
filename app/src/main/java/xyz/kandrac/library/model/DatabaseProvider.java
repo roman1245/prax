@@ -88,8 +88,9 @@ public class DatabaseProvider extends ContentProvider {
     public static final int FEEDBACK_REFERENCE = 701;
 
     public static final int GENRES = 800;
-    public static final int GENRE_ID = 801;
-    public static final int GENRE_BY_BOOK = 802;
+    public static final int GENRES_USED = 801;
+    public static final int GENRE_ID = 802;
+    public static final int GENRE_BY_BOOK = 803;
 
     public static final int SPECIAL_TABLE = 900;
 
@@ -139,6 +140,7 @@ public class DatabaseProvider extends ContentProvider {
         uriMatcher.addURI(authority, "feedback/*", FEEDBACK_REFERENCE);
 
         uriMatcher.addURI(authority, "genres", GENRES);
+        uriMatcher.addURI(authority, "genres/used", GENRES_USED);
         uriMatcher.addURI(authority, "genres/*", GENRE_ID);
 
         uriMatcher.addURI(authority, "special/table", SPECIAL_TABLE);
@@ -329,6 +331,14 @@ public class DatabaseProvider extends ContentProvider {
                 break;
             case GENRES:
                 qb.setTables(Database.Tables.GENRES);
+                sortOrder = sortOrder == null ? Contract.Genres.GENRE_NAME : sortOrder;
+                break;
+            case GENRES_USED:
+                qb.setTables(Database.Tables.BOOKS_JOIN_GENRES);
+                projection = new String[]{Database.Tables.GENRES + "." + Contract.Genres.GENRE_ID, Contract.Genres.GENRE_NAME};
+                sortOrder = sortOrder == null ? Contract.Genres.GENRE_NAME : sortOrder;
+                group = Database.Tables.GENRES + "." + Contract.Genres.GENRE_ID;
+                qb.setDistinct(true);
                 break;
             case GENRE_ID:
                 qb.setTables(Database.Tables.GENRES);
@@ -337,7 +347,7 @@ public class DatabaseProvider extends ContentProvider {
                 break;
             case GENRE_BY_BOOK:
                 qb.setTables(Database.Tables.BOOKS_JOIN_GENRES);
-                selection = Database.Tables.BOOKS + "." +Contract.Books.BOOK_ID + "=?";
+                selection = Database.Tables.BOOKS + "." + Contract.Books.BOOK_ID + "=?";
                 selectionArgs = new String[]{Long.toString(Contract.Genres.getBookId(uri))};
                 break;
             case SPECIAL_TABLE:
