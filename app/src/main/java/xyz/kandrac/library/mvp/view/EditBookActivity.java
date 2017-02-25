@@ -281,6 +281,10 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                         }
                     }
 
+                    if (book.volumeInfo.categories != null && book.volumeInfo.categories.length > 0) {
+                        mGenreEdit.setText(book.volumeInfo.categories[0]);
+                    }
+
                     mTitleEdit.setText(book.volumeInfo.title);
                     mSubtitleEdit.setText(book.volumeInfo.subtitle);
                     mAuthorEdit.setText(builder.toString());
