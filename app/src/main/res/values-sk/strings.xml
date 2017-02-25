@@ -262,6 +262,7 @@
     <string name="book_genre_other">Iné</string>
 
     <string name="genre_unknown">Neznámy žáner</string>
+    <string name="genre_select">Vyber žáner</string>
 
     <string-array name="reading_progress">
         <item>Priebeh čítania</item>

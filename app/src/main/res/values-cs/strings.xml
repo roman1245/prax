@@ -262,6 +262,7 @@
     <string name="book_genre_other">Jiné</string>
 
     <string name="genre_unknown">Neznámý žánr</string>
+    <string name="genre_select">Vyber žánr</string>
 
     <string-array name="reading_progress">
         <item>Průběh čtení</item>

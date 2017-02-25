@@ -202,11 +202,6 @@ public class Database extends SQLiteOpenHelper {
 
         String[] genres = context.getResources().getStringArray(R.array.book_genres);
 
-        ContentValues cvEmpty = new ContentValues();
-        cvEmpty.put(Contract.GenresColumns.GENRE_NAME, "");
-        cvEmpty.put(Contract.GenresColumns.GENRE_ID, -1);
-        db.insert(Tables.GENRES, null, cvEmpty);
-
         for (String genre : genres) {
             ContentValues cv = new ContentValues();
             cv.put(Contract.GenresColumns.GENRE_NAME, genre);

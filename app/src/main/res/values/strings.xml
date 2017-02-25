@@ -260,6 +260,7 @@
     <string name="book_genre_other">Other</string>
 
     <string name="genre_unknown">Unknown genre</string>
+    <string name="genre_select">Select genre</string>
 
     <string-array name="reading_progress">
         <item>Reading progress</item>
@@ -294,7 +295,7 @@
     </string-array>
 
     <string-array name="book_rating">
-        <item>My rating</item>
+        <item>My rating asdf sadf asdf asdf </item>
         <item>1</item>
         <item>2</item>
         <item>3</item>
