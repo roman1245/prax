@@ -67,6 +67,7 @@
     <!-- Edit/Input Book Screen -->
     <string name="edit_book_author">Author</string>
     <string name="edit_book_publisher">Publisher</string>
+    <string name="edit_book_genre">Genre</string>
     <string name="edit_book_library">Library (Home, College…)</string>
     <string name="edit_book_title">Book Title</string>
     <string name="edit_book_subtitle">Additional Title</string>
@@ -95,6 +96,7 @@
     <string name="book_detail_full_title">Book Title:</string>
     <string name="book_detail_authors">Authors:</string>
     <string name="book_detail_publisher">Publisher:</string>
+    <string name="book_detail_genre">Genre:</string>
     <string name="book_detail_library">Library:</string>
     <string name="book_detail_isbn">ISBN/barcode:</string>
     <string name="book_detail_published">Publish Year:</string>
@@ -233,6 +235,33 @@
     <string name="add_title_and_desc">Please set Title and Description for your feedback</string>
     <string name="thanks">Thank you for your feedback. It will be displayed after approval</string>
 
+    <!-- Book genres -->
+    <string name="book_genre_action_adventure">Action and Adventure</string>
+    <string name="book_genre_sci_fi">Science fiction</string>
+    <string name="book_genre_fantasy">Fantasy</string>
+    <string name="book_genre_drama">Drama</string>
+    <string name="book_genre_romance">Romance</string>
+    <string name="book_genre_mystery">Mystery/Horror</string>
+    <string name="book_genre_poetry">Poetry</string>
+    <string name="book_genre_comic">Comic</string>
+
+    <string name="book_genre_self_help">Self help</string>
+    <string name="book_genre_health">Health</string>
+    <string name="book_genre_guide">Guide/Travel</string>
+    <string name="book_genre_child">Children\'s</string>
+    <string name="book_genre_religion">Religion/Spirituality</string>
+    <string name="book_genre_science">Science</string>
+    <string name="book_genre_history">History</string>
+    <string name="book_genre_encyclopedia">Encyclopedia</string>
+    <string name="book_genre_dictionary">Dictionary</string>
+    <string name="book_genre_art">Art</string>
+    <string name="book_genre_cookbook">Cookbooks</string>
+    <string name="book_genre_bio">Biography</string>
+    <string name="book_genre_other">Other</string>
+
+    <string name="genre_unknown">Unknown genre</string>
+    <string name="genre_select">Select genre</string>
+
     <string-array name="reading_progress">
         <item>Reading progress</item>
         <item>@string/progress_not_started</item>
@@ -241,8 +270,32 @@
         <item>@string/progress_break</item>
     </string-array>
 
+    <string-array name="book_genres">
+        <item>@string/book_genre_other</item>
+        <item>@string/book_genre_action_adventure</item>
+        <item>@string/book_genre_sci_fi</item>
+        <item>@string/book_genre_fantasy</item>
+        <item>@string/book_genre_drama</item>
+        <item>@string/book_genre_romance</item>
+        <item>@string/book_genre_mystery</item>
+        <item>@string/book_genre_poetry</item>
+        <item>@string/book_genre_comic</item>
+        <item>@string/book_genre_self_help</item>
+        <item>@string/book_genre_health</item>
+        <item>@string/book_genre_guide</item>
+        <item>@string/book_genre_child</item>
+        <item>@string/book_genre_religion</item>
+        <item>@string/book_genre_science</item>
+        <item>@string/book_genre_history</item>
+        <item>@string/book_genre_encyclopedia</item>
+        <item>@string/book_genre_dictionary</item>
+        <item>@string/book_genre_art</item>
+        <item>@string/book_genre_cookbook</item>
+        <item>@string/book_genre_bio</item>
+    </string-array>
+
     <string-array name="book_rating">
-        <item>My rating</item>
+        <item>My rating asdf sadf asdf asdf </item>
         <item>1</item>
         <item>2</item>
         <item>3</item>

@@ -93,7 +93,8 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     public static final int LOADER_BOOK = 1;
     public static final int LOADER_AUTHOR = 2;
     public static final int LOADER_PUBLISHER = 3;
-    public static final int LOADER_LIBRARY = 4;
+    public static final int LOADER_GENRE = 4;
+    public static final int LOADER_LIBRARY = 5;
 
     // Content menus
     public static final int CONTENT_MENU_PHOTO = 123;
@@ -124,6 +125,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     private AutoCompleteTextView mPublisherEdit;
     private ImageView mLibraryImage;
     private AutoCompleteTextView mLibraryEdit;
+    private AutoCompleteTextView mGenreEdit;
     private EditText mTitleEdit;
     private EditText mSubtitleEdit;
     private EditText mIsbnEdit;
@@ -146,6 +148,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         mPublisherEdit = (AutoCompleteTextView) findViewById(R.id.book_input_publisher);
         mLibraryImage = (ImageView) findViewById(R.id.book_input_library_icon);
         mLibraryEdit = (AutoCompleteTextView) findViewById(R.id.book_input_library);
+        mGenreEdit = (AutoCompleteTextView) findViewById(R.id.book_input_genre);
         mTitleEdit = (EditText) findViewById(R.id.book_input_title);
         mSubtitleEdit = (EditText) findViewById(R.id.book_input_subtitle);
         mIsbnEdit = (EditText) findViewById(R.id.book_input_isbn);
@@ -196,6 +199,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
             getSupportLoaderManager().initLoader(LOADER_BOOK, null, this);
             getSupportLoaderManager().initLoader(LOADER_AUTHOR, null, this);
             getSupportLoaderManager().initLoader(LOADER_PUBLISHER, null, this);
+            getSupportLoaderManager().initLoader(LOADER_GENRE, null, this);
             getSupportLoaderManager().initLoader(LOADER_LIBRARY, null, this);
         } else {
             setTitle(R.string.title_add_new_book);
@@ -221,6 +225,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         AutoCompleteUtils.setAdapter(this, Contract.Publishers.CONTENT_URI, Contract.Publishers.PUBLISHER_NAME, mPublisherEdit);
         AutoCompleteUtils.setAdapter(this, Contract.Libraries.CONTENT_URI, Contract.Libraries.LIBRARY_NAME, mLibraryEdit);
         AutoCompleteUtils.setAdapter(this, ContactsContract.Contacts.CONTENT_URI, ContactsContract.Contacts.DISPLAY_NAME, mOriginEdit);
+        AutoCompleteUtils.setAdapter(this, Contract.Genres.CONTENT_URI, Contract.Genres.GENRE_NAME, mGenreEdit);
 
         if (startScan || bulk) {
             scan(mScanButton);
@@ -274,6 +279,10 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                             }
                             builder.append(book.volumeInfo.authors[i]);
                         }
+                    }
+
+                    if (book.volumeInfo.categories != null && book.volumeInfo.categories.length > 0) {
+                        mGenreEdit.setText(book.volumeInfo.categories[0]);
                     }
 
                     mTitleEdit.setText(book.volumeInfo.title);
@@ -462,7 +471,13 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     public void saveConfirmed() {
         String authorsReadable = mAuthorEdit.getText().toString();
         String publisherName = mPublisherEdit.getText().toString();
+        String genreName = mGenreEdit.getText().toString();
         String libraryName = mLibraryEdit.getText().toString();
+
+        // Genre
+        ContentValues genreCv = new ContentValues();
+        genreCv.put(Contract.Genres.GENRE_NAME, TextUtils.isEmpty(genreName) ? getString(R.string.genre_unknown) : genreName);
+        Uri genre = getContentResolver().insert(Contract.Genres.CONTENT_URI, genreCv);
 
         // Content values of book
         ContentValues bookCv = new ContentValues();
@@ -474,6 +489,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         bookCv.put(Contract.Books.BOOK_PUBLISHED, mPublished.getText().toString());
         bookCv.put(Contract.Books.BOOK_BORROWED_TO_ME, mBorrowedToMe);
         bookCv.put(Contract.Books.BOOK_WISH_LIST, mToWishList);
+        bookCv.put(Contract.Books.BOOK_GENRE_ID, Contract.Genres.getId(genre));
 
         Uri bookUri;
         if (mBookId == 0) {
@@ -767,6 +783,16 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                         null,
                         null,
                         null);
+            case LOADER_GENRE:
+                return new CursorLoader(
+                        this,
+                        Contract.Books.buildBookGenreUri(mBookId),
+                        new String[]{
+                                Contract.Genres.GENRE_NAME
+                        },
+                        null,
+                        null,
+                        null);
             case LOADER_LIBRARY:
                 return new CursorLoader(
                         this,
@@ -797,6 +823,10 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
             case LOADER_PUBLISHER:
                 bindPublisher(data);
+                break;
+
+            case LOADER_GENRE:
+                bindGenre(data);
                 break;
 
             case LOADER_LIBRARY:
@@ -868,6 +898,16 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         String result = publisherCursor.getString(publisherCursor.getColumnIndex(Contract.Publishers.PUBLISHER_NAME));
 
         mPublisherEdit.setText(result);
+    }
+
+    private void bindGenre(Cursor genreCursor) {
+        if (genreCursor == null || genreCursor.getCount() == 0 || !genreCursor.moveToFirst()) {
+            return;
+        }
+
+        String result = genreCursor.getString(genreCursor.getColumnIndex(Contract.Genres.GENRE_NAME));
+
+        mGenreEdit.setText(result);
     }
 
     private void bindLibrary(Cursor libraryCursor) {

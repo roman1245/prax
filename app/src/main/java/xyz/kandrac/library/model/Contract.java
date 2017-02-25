@@ -31,6 +31,7 @@ public final class Contract {
         String BOOK_SUBTITLE = "book_subtitle";
         String BOOK_ISBN = "book_isbn";
         String BOOK_DESCRIPTION = "book_description";
+        String BOOK_GENRE_ID = "book_genre";
         String BOOK_IMAGE_FILE = "book_image_file";
         String BOOK_PUBLISHER_ID = "book_publisher_id";
         String BOOK_LIBRARY_ID = "book_library_id";
@@ -84,6 +85,11 @@ public final class Contract {
         String FEEDBACK_VALUE = "feedback_value";
     }
 
+    interface GenresColumns {
+        String GENRE_ID = BaseColumns._ID;
+        String GENRE_NAME = "genre_name";
+    }
+
     public interface BorrowMeInfoColumns {
         String BORROW_ID = BaseColumns._ID;
         String BORROW_BOOK_ID = "borrow_me_book_id";
@@ -111,8 +117,10 @@ public final class Contract {
     public static final String PATH_BORROW_ME_INFO = "borrow_me_info";
     public static final String PATH_REFERENCE = "ref";
     public static final String PATH_ISBN = "isbn";
+    public static final String PATH_GENRES = "genres";
 
     public static final String PATH_SPECIAL = "special";
+    public static final String PATH_USED = "used";
 
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
@@ -234,6 +242,10 @@ public final class Contract {
             } else {
                 return buildBookPublisherUri(getBookId(bookUri));
             }
+        }
+
+        public static Uri buildBookGenreUri(long id) {
+            return CONTENT_URI.buildUpon().appendPath(Long.toString(id)).appendPath(PATH_GENRES).build();
         }
 
         public static Uri buildBookLibraryUri(Uri bookUri) {
@@ -515,6 +527,27 @@ public final class Contract {
             return uri.getPathSegments().get(1);
         }
 
+    }
+
+    public static class Genres implements GenresColumns {
+
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_GENRES).build();
+        public static final Uri USED_GENRES_URI = CONTENT_URI.buildUpon().appendPath(PATH_USED).build();
+
+        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.genres";
+        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.genres";
+
+        public static Uri buildUri(long id) {
+            return CONTENT_URI.buildUpon().appendPath(Long.toString(id)).build();
+        }
+
+        public static long getId(Uri uri) {
+            return Long.parseLong(uri.getPathSegments().get(1));
+        }
+
+        public static long getBookId(Uri uri) {
+            return Long.parseLong(uri.getPathSegments().get(1));
+        }
     }
 
     public static class Special {

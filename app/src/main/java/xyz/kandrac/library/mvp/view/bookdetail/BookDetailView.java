@@ -20,15 +20,18 @@ public interface BookDetailView {
     int LOADER_BASIC_LIBRARY = 11;
     int LOADER_BASIC_AUTHORS = 12;
     int LOADER_BASIC_PUBLISHER = 13;
-    int LOADER_BASIC_BORROW = 14;
-    int LOADER_BASIC_BORROW_ME = 15;
-    int LOADER_OTHER = 16;
+    int LOADER_BASIC_GENRE = 14;
+    int LOADER_BASIC_BORROW = 15;
+    int LOADER_BASIC_BORROW_ME = 16;
+    int LOADER_OTHER = 17;
+
 
     @Retention(SOURCE)
     @IntDef({LOADER_BASIC,
             LOADER_BASIC_LIBRARY,
             LOADER_BASIC_AUTHORS,
             LOADER_BASIC_PUBLISHER,
+            LOADER_BASIC_GENRE,
             LOADER_BASIC_BORROW,
             LOADER_BASIC_BORROW_ME,
             LOADER_OTHER})
@@ -44,6 +47,8 @@ public interface BookDetailView {
     void onAuthorsDataLoaded(String[] authors);
 
     void onPublisherLoaded(String pubName);
+
+    void onGenreLoaded(String genreName);
 
     void onLibraryLoaded(String libName);
 

@@ -52,6 +52,7 @@ public class BookDetailBasicFragment extends Fragment implements BookDetailView 
     private TextView isbnTitle;
     private TextView descriptionText;
     private TextView publisher;
+    private TextView genreText;
     private TextView library;
     private TextView libraryHead;
     private ImageView borrowImage;
@@ -91,6 +92,7 @@ public class BookDetailBasicFragment extends Fragment implements BookDetailView 
         isbnImage = (ImageView) result.findViewById(R.id.book_detail_isbn_image);
         descriptionImage = (ImageView) result.findViewById(R.id.book_detail_description_image);
         fullTitle = (TextView) result.findViewById(R.id.book_detail_full_book_name);
+        genreText = (TextView) result.findViewById(R.id.book_detail_genre);
         author = (TextView) result.findViewById(R.id.book_detail_author);
         isbnText = (TextView) result.findViewById(R.id.book_detail_isbn);
         isbnTitle = (TextView) result.findViewById(R.id.book_detail_isbn_title);
@@ -226,6 +228,12 @@ public class BookDetailBasicFragment extends Fragment implements BookDetailView 
     public void onPublisherLoaded(String pubName) {
         if (!isAdded()) return;
         publisher.setText(TextUtils.isEmpty(pubName) ? getString(R.string.publisher_unknown) : pubName);
+    }
+
+    @Override
+    public void onGenreLoaded(String genreName) {
+        if (!isAdded()) return;
+        genreText.setText(TextUtils.isEmpty(genreName)? getString(R.string.genre_unknown): genreName);
     }
 
     @Override

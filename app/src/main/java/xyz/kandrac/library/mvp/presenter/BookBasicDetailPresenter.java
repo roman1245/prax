@@ -25,6 +25,7 @@ import static xyz.kandrac.library.mvp.view.bookdetail.BookDetailView.LOADER_BASI
 import static xyz.kandrac.library.mvp.view.bookdetail.BookDetailView.LOADER_BASIC_AUTHORS;
 import static xyz.kandrac.library.mvp.view.bookdetail.BookDetailView.LOADER_BASIC_BORROW;
 import static xyz.kandrac.library.mvp.view.bookdetail.BookDetailView.LOADER_BASIC_BORROW_ME;
+import static xyz.kandrac.library.mvp.view.bookdetail.BookDetailView.LOADER_BASIC_GENRE;
 import static xyz.kandrac.library.mvp.view.bookdetail.BookDetailView.LOADER_BASIC_LIBRARY;
 import static xyz.kandrac.library.mvp.view.bookdetail.BookDetailView.LOADER_BASIC_PUBLISHER;
 import static xyz.kandrac.library.mvp.view.bookdetail.BookDetailView.LOADER_OTHER;
@@ -67,6 +68,7 @@ public class BookBasicDetailPresenter implements Presenter<BookDetailView> {
         mView.getActivity().getLoaderManager().initLoader(LOADER_BASIC_LIBRARY, null, callbacks);
         mView.getActivity().getLoaderManager().initLoader(LOADER_BASIC_AUTHORS, null, callbacks);
         mView.getActivity().getLoaderManager().initLoader(LOADER_BASIC_PUBLISHER, null, callbacks);
+        mView.getActivity().getLoaderManager().initLoader(LOADER_BASIC_GENRE, null, callbacks);
         mView.getActivity().getLoaderManager().initLoader(LOADER_BASIC_BORROW, null, callbacks);
         mView.getActivity().getLoaderManager().initLoader(LOADER_BASIC_BORROW_ME, null, callbacks);
     }
@@ -96,6 +98,11 @@ public class BookBasicDetailPresenter implements Presenter<BookDetailView> {
                 case LOADER_BASIC_PUBLISHER:
 
                     return new CursorLoader(mView.getActivity(), Contract.Books.buildBookPublisherUri(bookId),
+                            null, null, null, null);
+
+                case LOADER_BASIC_GENRE:
+
+                    return new CursorLoader(mView.getActivity(), Contract.Books.buildBookGenreUri(bookId),
                             null, null, null, null);
 
                 case LOADER_BASIC_LIBRARY:
@@ -153,6 +160,11 @@ public class BookBasicDetailPresenter implements Presenter<BookDetailView> {
                     String pubName = cursor.getString(cursor.getColumnIndex(Contract.Publishers.PUBLISHER_NAME));
                     shareData.publisher = cursor.getString(cursor.getColumnIndex(Contract.Publishers.PUBLISHER_NAME));
                     mView.onPublisherLoaded(pubName);
+                    break;
+
+                case LOADER_BASIC_GENRE:
+                    String genreName = cursor.getString(cursor.getColumnIndex(Contract.Genres.GENRE_NAME));
+                    mView.onGenreLoaded(genreName);
                     break;
 
                 case LOADER_BASIC_LIBRARY:

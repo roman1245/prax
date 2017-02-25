@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -33,6 +34,7 @@ import xyz.kandrac.library.BackPressable;
 import xyz.kandrac.library.R;
 import xyz.kandrac.library.Searchable;
 import xyz.kandrac.library.flow.importwizard.ImportWizardActivity;
+import xyz.kandrac.library.fragments.GenreSpinnerAdapter;
 import xyz.kandrac.library.fragments.SettingsFragment;
 import xyz.kandrac.library.model.Contract;
 import xyz.kandrac.library.mvp.view.EditBookActivity;
@@ -293,6 +295,11 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
 
                 final Spinner searchRating = (Spinner) searchView2.findViewById(R.id.search_rating);
                 final Spinner searchReadingProgress = (Spinner) searchView2.findViewById(R.id.search_reading_progress);
+                final Spinner searchGenre = (Spinner) searchView2.findViewById(R.id.search_genre);
+
+                searchRating.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, getActivity().getResources().getStringArray(R.array.book_rating)));
+                searchReadingProgress.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, getActivity().getResources().getStringArray(R.array.reading_progress)));
+                searchGenre.setAdapter(new GenreSpinnerAdapter(getActivity()));
 
                 searchView2.findViewById(R.id.search_hide).setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -306,6 +313,7 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
                     public void onClick(View view) {
                         searchRating.setSelection(0);
                         searchReadingProgress.setSelection(0);
+                        searchGenre.setSelection(0);
 
                         clearFilter(Contract.Books.BOOK_MY_SCORE);
                         clearFilter(Contract.Books.BOOK_PROGRESS);
@@ -338,6 +346,22 @@ public class BookListFragment extends Fragment implements Searchable, BookCursor
                             clearFilter(Contract.Books.BOOK_PROGRESS);
                         } else {
                             requestFilter(Contract.Books.BOOK_PROGRESS, new String[]{Integer.toString(i)});
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+
+                    }
+                });
+
+                searchGenre.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                        if (i == 0) {
+                            clearFilter(Contract.Books.BOOK_GENRE_ID);
+                        } else {
+                            requestFilter(Contract.Books.BOOK_GENRE_ID, new String[]{Long.toString(l)});
                         }
                     }
 

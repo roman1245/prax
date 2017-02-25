@@ -87,7 +87,12 @@ public class DatabaseProvider extends ContentProvider {
     public static final int FEEDBACK = 700;
     public static final int FEEDBACK_REFERENCE = 701;
 
-    public static final int SPECIAL_TABLE = 800;
+    public static final int GENRES = 800;
+    public static final int GENRES_USED = 801;
+    public static final int GENRE_ID = 802;
+    public static final int GENRE_BY_BOOK = 803;
+
+    public static final int SPECIAL_TABLE = 900;
 
     @Inject
     public SharedPreferencesManager manager;
@@ -109,6 +114,7 @@ public class DatabaseProvider extends ContentProvider {
         uriMatcher.addURI(authority, "books/#/borrow_me_info", BORROW_ME_INFO_BY_BOOK);
         uriMatcher.addURI(authority, "books/#/publishers", PUBLISHER_BY_BOOK);
         uriMatcher.addURI(authority, "books/#/libraries", LIBRARY_BY_BOOK);
+        uriMatcher.addURI(authority, "books/#/genres", GENRE_BY_BOOK);
 
         uriMatcher.addURI(authority, "authors", AUTHORS);
         uriMatcher.addURI(authority, "authors/#", AUTHOR_ID);
@@ -132,6 +138,10 @@ public class DatabaseProvider extends ContentProvider {
 
         uriMatcher.addURI(authority, "feedback", FEEDBACK);
         uriMatcher.addURI(authority, "feedback/*", FEEDBACK_REFERENCE);
+
+        uriMatcher.addURI(authority, "genres", GENRES);
+        uriMatcher.addURI(authority, "genres/used", GENRES_USED);
+        uriMatcher.addURI(authority, "genres/*", GENRE_ID);
 
         uriMatcher.addURI(authority, "special/table", SPECIAL_TABLE);
         return uriMatcher;
@@ -191,6 +201,10 @@ public class DatabaseProvider extends ContentProvider {
                 return Contract.Feedback.CONTENT_TYPE;
             case FEEDBACK_REFERENCE:
                 return Contract.Feedback.CONTENT_ITEM_TYPE;
+            case GENRES:
+                return Contract.Genres.CONTENT_TYPE;
+            case GENRE_ID:
+                return Contract.Genres.CONTENT_ITEM_TYPE;
             case SPECIAL_TABLE:
                 return Contract.Special.CONTENT_TYPE;
             default:
@@ -314,6 +328,27 @@ public class DatabaseProvider extends ContentProvider {
                 qb.setTables(Database.Tables.FEEDBACK);
                 selection = Contract.FeedbackColumns.FEEDBACK_REFERENCE + "=?";
                 selectionArgs = new String[]{Contract.Feedback.getReference(uri)};
+                break;
+            case GENRES:
+                qb.setTables(Database.Tables.GENRES);
+                sortOrder = sortOrder == null ? Contract.Genres.GENRE_NAME : sortOrder;
+                break;
+            case GENRES_USED:
+                qb.setTables(Database.Tables.BOOKS_JOIN_GENRES);
+                projection = new String[]{Database.Tables.GENRES + "." + Contract.Genres.GENRE_ID, Contract.Genres.GENRE_NAME};
+                sortOrder = sortOrder == null ? Contract.Genres.GENRE_NAME : sortOrder;
+                group = Database.Tables.GENRES + "." + Contract.Genres.GENRE_ID;
+                qb.setDistinct(true);
+                break;
+            case GENRE_ID:
+                qb.setTables(Database.Tables.GENRES);
+                selection = Contract.GenresColumns.GENRE_ID + "=?";
+                selectionArgs = new String[]{Long.toString(Contract.Genres.getId(uri))};
+                break;
+            case GENRE_BY_BOOK:
+                qb.setTables(Database.Tables.BOOKS_JOIN_GENRES);
+                selection = Database.Tables.BOOKS + "." + Contract.Books.BOOK_ID + "=?";
+                selectionArgs = new String[]{Long.toString(Contract.Genres.getBookId(uri))};
                 break;
             case SPECIAL_TABLE:
                 projection = new String[]{
@@ -555,6 +590,11 @@ public class DatabaseProvider extends ContentProvider {
                 getContext().getContentResolver().notifyChange(uri, null);
                 getContext().getContentResolver().notifyChange(Contract.Feedback.CONTENT_URI, null);
                 return Contract.Feedback.buildUri((String) values.get(Contract.Feedback.FEEDBACK_REFERENCE));
+            }
+            case GENRES: {
+                long result = insertOrIgnore(db, values, Database.Tables.GENRES, Contract.GenresColumns.GENRE_NAME);
+                getContext().getContentResolver().notifyChange(uri, null);
+                return Contract.Genres.buildUri(result);
             }
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);

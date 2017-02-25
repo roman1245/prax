@@ -1,8 +1,11 @@
 package xyz.kandrac.library.model;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import xyz.kandrac.library.R;
 
 /**
  * SQLite database representation for this application
@@ -12,10 +15,13 @@ public class Database extends SQLiteOpenHelper {
 
 
     private static final String DATABASE_NAME = "library.db";
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 11;
+
+    private Context context;
 
     public Database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
     }
 
     public interface Tables {
@@ -26,6 +32,7 @@ public class Database extends SQLiteOpenHelper {
         String BORROW_ME = "borrow_me";
         String LIBRARIES = "libraries";
         String FEEDBACK = "feedback";
+        String GENRES = "genres";
 
         // m-n connections
         String BOOKS_AUTHORS = "book_author";
@@ -33,6 +40,7 @@ public class Database extends SQLiteOpenHelper {
         // everything from connected authors and books
         String BOOKS_JOIN_AUTHORS = "books LEFT JOIN book_author ON books._id = book_author.book_id LEFT JOIN authors ON authors._id = book_author.author_id";
         String BOOKS_JOIN_PUBLISHERS = "books JOIN publishers ON books.book_publisher_id = publishers._id";
+        String BOOKS_JOIN_GENRES = "books JOIN genres ON books.book_genre = genres._id";
         String BOOKS_JOIN_LIBRARIES = "books JOIN libraries ON books.book_library_id = libraries._id";
         String BOOKS_JOIN_BORROW = "books LEFT JOIN borrow_info ON borrow_info.borrow_book_id = books._id";
 
@@ -48,6 +56,7 @@ public class Database extends SQLiteOpenHelper {
         String BOOKS_ID = "REFERENCES " + Tables.BOOKS + "(" + Contract.Books.BOOK_ID + ")";
         String PUBLISHERS_ID = "REFERENCES " + Tables.PUBLISHERS + "(" + Contract.Publishers.PUBLISHER_ID + ")";
         String LIBRARY_ID = "REFERENCES " + Tables.LIBRARIES + "(" + Contract.Libraries.LIBRARY_ID + ")";
+        String GENRE_ID = "REFERENCES " + Tables.GENRES + "(" + Contract.GenresColumns.GENRE_ID+ ")";
     }
 
     private static final String BOOKS_CREATE_TABLE =
@@ -69,6 +78,7 @@ public class Database extends SQLiteOpenHelper {
                     Contract.Books.BOOK_MY_SCORE + " INTEGER," +
                     Contract.Books.BOOK_QUOTE + " TEXT," +
                     Contract.Books.BOOK_NOTES + " TEXT," +
+                    Contract.Books.BOOK_GENRE_ID + " INTEGER " + References.GENRE_ID + " ON DELETE CASCADE, "+
                     Contract.Books.BOOK_LIBRARY_ID + " INTEGER " + References.LIBRARY_ID + " ON DELETE CASCADE, " +
                     Contract.Books.BOOK_PUBLISHER_ID + " INTEGER " + References.PUBLISHERS_ID + " ON DELETE CASCADE)";
 
@@ -120,6 +130,12 @@ public class Database extends SQLiteOpenHelper {
                     Contract.BorrowMeInfoColumns.BORROW_DATE_BORROWED + " INTEGER, " +
                     Contract.BorrowMeInfoColumns.BORROW_NAME + " TEXT)";
 
+    private static final String GENRES_CREATE_TABLE =
+            "CREATE TABLE " + Tables.GENRES + " (" +
+                    Contract.GenresColumns.GENRE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    Contract.GenresColumns.GENRE_NAME + " TEXT NOT NULL," +
+                    "UNIQUE (" + Contract.GenresColumns.GENRE_NAME + ") ON CONFLICT REPLACE)";
+
     @Override
     public void onConfigure(SQLiteDatabase db) {
         db.setForeignKeyConstraintsEnabled(true);
@@ -136,6 +152,11 @@ public class Database extends SQLiteOpenHelper {
         db.execSQL(BORROW_INFO_CREATE_TABLE);
         db.execSQL(BORROW_ME_CREATE_TABLE);
         db.execSQL(FEEDBACK_CREATE_TABLE);
+        db.execSQL(GENRES_CREATE_TABLE);
+        genresInit(context, db);
+
+        // clear context after create
+        context = null;
     }
 
     @Override
@@ -167,6 +188,24 @@ public class Database extends SQLiteOpenHelper {
                 db.execSQL("ALTER TABLE " + Tables.BOOKS + " ADD " + Contract.Books.BOOK_NOTES + " TEXT");
             case 9:
                 db.execSQL(FEEDBACK_CREATE_TABLE);
+            case 10:
+                db.execSQL(GENRES_CREATE_TABLE);
+                genresInit(context, db);
+                db.execSQL("ALTER TABLE " + Tables.BOOKS + " ADD " + Contract.Books.BOOK_GENRE_ID + " INTEGER DEFAULT -1 "+ References.GENRE_ID + " ON DELETE CASCADE");
+        }
+
+        // clear context after upgrade
+        context = null;
+    }
+
+    private void genresInit(Context context, SQLiteDatabase db) {
+
+        String[] genres = context.getResources().getStringArray(R.array.book_genres);
+
+        for (String genre : genres) {
+            ContentValues cv = new ContentValues();
+            cv.put(Contract.GenresColumns.GENRE_NAME, genre);
+            db.insert(Tables.GENRES, null, cv);
         }
     }
 }
