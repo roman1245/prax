@@ -472,7 +472,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
         // Genre
         ContentValues genreCv = new ContentValues();
-        genreCv.put(Contract.Genres.GENRE_NAME, genreName);
+        genreCv.put(Contract.Genres.GENRE_NAME, TextUtils.isEmpty(genreName) ? getString(R.string.genre_unknown) : genreName);
         Uri genre = getContentResolver().insert(Contract.Genres.CONTENT_URI, genreCv);
 
         // Content values of book
