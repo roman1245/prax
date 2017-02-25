@@ -56,7 +56,7 @@ public class Database extends SQLiteOpenHelper {
         String BOOKS_ID = "REFERENCES " + Tables.BOOKS + "(" + Contract.Books.BOOK_ID + ")";
         String PUBLISHERS_ID = "REFERENCES " + Tables.PUBLISHERS + "(" + Contract.Publishers.PUBLISHER_ID + ")";
         String LIBRARY_ID = "REFERENCES " + Tables.LIBRARIES + "(" + Contract.Libraries.LIBRARY_ID + ")";
-        String GENRE_ID = "REFERENCES " + Tables.GENRES + "(" + Contract.GenresColumns.GENRE_ID+ ")";
+        String GENRE_ID = "REFERENCES " + Tables.GENRES + "(" + Contract.GenresColumns.GENRE_ID + ")";
     }
 
     private static final String BOOKS_CREATE_TABLE =
@@ -78,7 +78,7 @@ public class Database extends SQLiteOpenHelper {
                     Contract.Books.BOOK_MY_SCORE + " INTEGER," +
                     Contract.Books.BOOK_QUOTE + " TEXT," +
                     Contract.Books.BOOK_NOTES + " TEXT," +
-                    Contract.Books.BOOK_GENRE_ID + " INTEGER " + References.GENRE_ID + " ON DELETE CASCADE, "+
+                    Contract.Books.BOOK_GENRE_ID + " INTEGER " + References.GENRE_ID + " ON DELETE CASCADE, " +
                     Contract.Books.BOOK_LIBRARY_ID + " INTEGER " + References.LIBRARY_ID + " ON DELETE CASCADE, " +
                     Contract.Books.BOOK_PUBLISHER_ID + " INTEGER " + References.PUBLISHERS_ID + " ON DELETE CASCADE)";
 
@@ -190,22 +190,28 @@ public class Database extends SQLiteOpenHelper {
                 db.execSQL(FEEDBACK_CREATE_TABLE);
             case 10:
                 db.execSQL(GENRES_CREATE_TABLE);
-                genresInit(context, db);
-                db.execSQL("ALTER TABLE " + Tables.BOOKS + " ADD " + Contract.Books.BOOK_GENRE_ID + " INTEGER DEFAULT -1 "+ References.GENRE_ID + " ON DELETE CASCADE");
+                long unknownId = genresInit(context, db);
+                db.execSQL("ALTER TABLE " + Tables.BOOKS + " ADD " + Contract.Books.BOOK_GENRE_ID + " INTEGER DEFAULT " + unknownId);
         }
 
         // clear context after upgrade
         context = null;
     }
 
-    private void genresInit(Context context, SQLiteDatabase db) {
+    private long genresInit(Context context, SQLiteDatabase db) {
 
         String[] genres = context.getResources().getStringArray(R.array.book_genres);
+
+        ContentValues unknown = new ContentValues();
+        unknown.put(Contract.GenresColumns.GENRE_NAME, context.getString(R.string.genre_unknown));
+        long id = db.insert(Tables.GENRES, null, unknown);
 
         for (String genre : genres) {
             ContentValues cv = new ContentValues();
             cv.put(Contract.GenresColumns.GENRE_NAME, genre);
             db.insert(Tables.GENRES, null, cv);
         }
+
+        return id;
     }
 }
