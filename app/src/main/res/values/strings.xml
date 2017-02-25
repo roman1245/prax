@@ -259,7 +259,7 @@
     <string name="book_genre_bio">Biography</string>
     <string name="book_genre_other">Other</string>
 
-    <string name="genre_unknown">@string/book_genre_other</string>
+    <string name="genre_unknown">Unknown genre</string>
 
     <string-array name="reading_progress">
         <item>Reading progress</item>

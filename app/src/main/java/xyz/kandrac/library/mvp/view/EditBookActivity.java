@@ -93,7 +93,8 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     public static final int LOADER_BOOK = 1;
     public static final int LOADER_AUTHOR = 2;
     public static final int LOADER_PUBLISHER = 3;
-    public static final int LOADER_LIBRARY = 4;
+    public static final int LOADER_GENRE = 4;
+    public static final int LOADER_LIBRARY = 5;
 
     // Content menus
     public static final int CONTENT_MENU_PHOTO = 123;
@@ -198,6 +199,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
             getSupportLoaderManager().initLoader(LOADER_BOOK, null, this);
             getSupportLoaderManager().initLoader(LOADER_AUTHOR, null, this);
             getSupportLoaderManager().initLoader(LOADER_PUBLISHER, null, this);
+            getSupportLoaderManager().initLoader(LOADER_GENRE, null, this);
             getSupportLoaderManager().initLoader(LOADER_LIBRARY, null, this);
         } else {
             setTitle(R.string.title_add_new_book);
@@ -777,6 +779,16 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
                         null,
                         null,
                         null);
+            case LOADER_GENRE:
+                return new CursorLoader(
+                        this,
+                        Contract.Books.buildBookGenreUri(mBookId),
+                        new String[]{
+                                Contract.Genres.GENRE_NAME
+                        },
+                        null,
+                        null,
+                        null);
             case LOADER_LIBRARY:
                 return new CursorLoader(
                         this,
@@ -807,6 +819,10 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
 
             case LOADER_PUBLISHER:
                 bindPublisher(data);
+                break;
+
+            case LOADER_GENRE:
+                bindGenre(data);
                 break;
 
             case LOADER_LIBRARY:
@@ -878,6 +894,16 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         String result = publisherCursor.getString(publisherCursor.getColumnIndex(Contract.Publishers.PUBLISHER_NAME));
 
         mPublisherEdit.setText(result);
+    }
+
+    private void bindGenre(Cursor genreCursor) {
+        if (genreCursor == null || genreCursor.getCount() == 0 || !genreCursor.moveToFirst()) {
+            return;
+        }
+
+        String result = genreCursor.getString(genreCursor.getColumnIndex(Contract.Genres.GENRE_NAME));
+
+        mGenreEdit.setText(result);
     }
 
     private void bindLibrary(Cursor libraryCursor) {

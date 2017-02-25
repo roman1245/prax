@@ -261,7 +261,7 @@
     <string name="book_genre_bio">Biografie</string>
     <string name="book_genre_other">Jiné</string>
 
-    <string name="genre_unknown">@string/book_genre_other</string>
+    <string name="genre_unknown">Neznámý žánr</string>
 
     <string-array name="reading_progress">
         <item>Průběh čtení</item>

@@ -261,7 +261,7 @@
     <string name="book_genre_bio">Biografie</string>
     <string name="book_genre_other">Iné</string>
 
-    <string name="genre_unknown">@string/book_genre_other</string>
+    <string name="genre_unknown">Neznámy žáner</string>
 
     <string-array name="reading_progress">
         <item>Priebeh čítania</item>
