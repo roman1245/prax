@@ -67,6 +67,7 @@
     <!-- Edit/Input Book Screen -->
     <string name="edit_book_author">Author</string>
     <string name="edit_book_publisher">Publisher</string>
+    <string name="edit_book_genre">Genre</string>
     <string name="edit_book_library">Library (Home, College…)</string>
     <string name="edit_book_title">Book Title</string>
     <string name="edit_book_subtitle">Additional Title</string>
@@ -266,7 +267,7 @@
     </string-array>
 
     <string-array name="book_genres">
-        <item>Book Genre</item>
+        <item>@string/book_genre_other</item>
         <item>@string/book_genre_action_adventure</item>
         <item>@string/book_genre_sci_fi</item>
         <item>@string/book_genre_fantasy</item>
@@ -287,7 +288,6 @@
         <item>@string/book_genre_art</item>
         <item>@string/book_genre_cookbook</item>
         <item>@string/book_genre_bio</item>
-        <item>@string/book_genre_other</item>
     </string-array>
 
     <string-array name="book_rating">

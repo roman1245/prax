@@ -331,7 +331,7 @@ public class DatabaseProvider extends ContentProvider {
             case GENRE_ID:
                 qb.setTables(Database.Tables.GENRES);
                 selection = Contract.GenresColumns.GENRE_ID + "=?";
-                selectionArgs = new String[]{Contract.Genres.getId(uri)};
+                selectionArgs = new String[]{Long.toString(Contract.Genres.getId(uri))};
                 break;
             case SPECIAL_TABLE:
                 projection = new String[]{
@@ -575,7 +575,7 @@ public class DatabaseProvider extends ContentProvider {
                 return Contract.Feedback.buildUri((String) values.get(Contract.Feedback.FEEDBACK_REFERENCE));
             }
             case GENRES: {
-                long result = db.insert(Database.Tables.GENRES, null, values);
+                long result = insertOrIgnore(db, values, Database.Tables.GENRES, Contract.GenresColumns.GENRE_NAME);
                 getContext().getContentResolver().notifyChange(uri, null);
                 return Contract.Genres.buildUri(result);
             }

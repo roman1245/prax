@@ -31,6 +31,7 @@ public final class Contract {
         String BOOK_SUBTITLE = "book_subtitle";
         String BOOK_ISBN = "book_isbn";
         String BOOK_DESCRIPTION = "book_description";
+        String BOOK_GENRE_ID = "book_genre";
         String BOOK_IMAGE_FILE = "book_image_file";
         String BOOK_PUBLISHER_ID = "book_publisher_id";
         String BOOK_LIBRARY_ID = "book_library_id";
@@ -235,6 +236,14 @@ public final class Contract {
         }
 
         public static Uri buildBookPublisherUri(Uri bookUri) {
+            if (isReferenceUri(bookUri)) {
+                return buildBookPublisherFirebaseUri(getBookReference(bookUri));
+            } else {
+                return buildBookPublisherUri(getBookId(bookUri));
+            }
+        }
+
+        public static Uri buildBookGenreUri(Uri bookUri) {
             if (isReferenceUri(bookUri)) {
                 return buildBookPublisherFirebaseUri(getBookReference(bookUri));
             } else {
@@ -534,8 +543,8 @@ public final class Contract {
             return CONTENT_URI.buildUpon().appendPath(Long.toString(id)).build();
         }
 
-        public static String getId(Uri uri) {
-            return uri.getPathSegments().get(1);
+        public static long getId(Uri uri) {
+            return Long.parseLong(uri.getPathSegments().get(1));
         }
 
     }

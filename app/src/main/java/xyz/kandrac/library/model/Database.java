@@ -55,6 +55,7 @@ public class Database extends SQLiteOpenHelper {
         String BOOKS_ID = "REFERENCES " + Tables.BOOKS + "(" + Contract.Books.BOOK_ID + ")";
         String PUBLISHERS_ID = "REFERENCES " + Tables.PUBLISHERS + "(" + Contract.Publishers.PUBLISHER_ID + ")";
         String LIBRARY_ID = "REFERENCES " + Tables.LIBRARIES + "(" + Contract.Libraries.LIBRARY_ID + ")";
+        String GENRE_ID = "REFERENCES " + Tables.GENRES + "(" + Contract.GenresColumns.GENRE_ID+ ")";
     }
 
     private static final String BOOKS_CREATE_TABLE =
@@ -76,6 +77,7 @@ public class Database extends SQLiteOpenHelper {
                     Contract.Books.BOOK_MY_SCORE + " INTEGER," +
                     Contract.Books.BOOK_QUOTE + " TEXT," +
                     Contract.Books.BOOK_NOTES + " TEXT," +
+                    Contract.Books.BOOK_GENRE_ID + " INTEGER " + References.GENRE_ID + " ON DELETE CASCADE, "+
                     Contract.Books.BOOK_LIBRARY_ID + " INTEGER " + References.LIBRARY_ID + " ON DELETE CASCADE, " +
                     Contract.Books.BOOK_PUBLISHER_ID + " INTEGER " + References.PUBLISHERS_ID + " ON DELETE CASCADE)";
 
@@ -130,7 +132,8 @@ public class Database extends SQLiteOpenHelper {
     private static final String GENRES_CREATE_TABLE =
             "CREATE TABLE " + Tables.GENRES + " (" +
                     Contract.GenresColumns.GENRE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    Contract.GenresColumns.GENRE_NAME + " TEXT)";
+                    Contract.GenresColumns.GENRE_NAME + " TEXT NOT NULL," +
+                    "UNIQUE (" + Contract.GenresColumns.GENRE_NAME + ") ON CONFLICT REPLACE)";
 
     @Override
     public void onConfigure(SQLiteDatabase db) {
@@ -148,6 +151,11 @@ public class Database extends SQLiteOpenHelper {
         db.execSQL(BORROW_INFO_CREATE_TABLE);
         db.execSQL(BORROW_ME_CREATE_TABLE);
         db.execSQL(FEEDBACK_CREATE_TABLE);
+        db.execSQL(GENRES_CREATE_TABLE);
+        genresInit(context, db);
+
+        // clear context after create
+        context = null;
     }
 
     @Override
@@ -181,16 +189,27 @@ public class Database extends SQLiteOpenHelper {
                 db.execSQL(FEEDBACK_CREATE_TABLE);
             case 10:
                 db.execSQL(GENRES_CREATE_TABLE);
-                String[] genres = context.getResources().getStringArray(R.array.book_genres);
-
-                for (String genre : genres) {
-                    ContentValues cv = new ContentValues();
-                    cv.put(Contract.GenresColumns.GENRE_NAME, genre);
-                    db.insert(Tables.GENRES, null, cv);
-                }
+                genresInit(context, db);
+                db.execSQL("ALTER TABLE " + Tables.BOOKS + " ADD " + Contract.Books.BOOK_GENRE_ID + " INTEGER DEFAULT -1 "+ References.GENRE_ID + " ON DELETE CASCADE");
         }
 
         // clear context after upgrade
         context = null;
+    }
+
+    private void genresInit(Context context, SQLiteDatabase db) {
+
+        String[] genres = context.getResources().getStringArray(R.array.book_genres);
+
+        ContentValues cvEmpty = new ContentValues();
+        cvEmpty.put(Contract.GenresColumns.GENRE_NAME, "");
+        cvEmpty.put(Contract.GenresColumns.GENRE_ID, -1);
+        db.insert(Tables.GENRES, null, cvEmpty);
+
+        for (String genre : genres) {
+            ContentValues cv = new ContentValues();
+            cv.put(Contract.GenresColumns.GENRE_NAME, genre);
+            db.insert(Tables.GENRES, null, cv);
+        }
     }
 }

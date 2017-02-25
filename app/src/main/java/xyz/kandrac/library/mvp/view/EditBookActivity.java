@@ -124,6 +124,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     private AutoCompleteTextView mPublisherEdit;
     private ImageView mLibraryImage;
     private AutoCompleteTextView mLibraryEdit;
+    private AutoCompleteTextView mGenreEdit;
     private EditText mTitleEdit;
     private EditText mSubtitleEdit;
     private EditText mIsbnEdit;
@@ -146,6 +147,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         mPublisherEdit = (AutoCompleteTextView) findViewById(R.id.book_input_publisher);
         mLibraryImage = (ImageView) findViewById(R.id.book_input_library_icon);
         mLibraryEdit = (AutoCompleteTextView) findViewById(R.id.book_input_library);
+        mGenreEdit = (AutoCompleteTextView) findViewById(R.id.book_input_genre);
         mTitleEdit = (EditText) findViewById(R.id.book_input_title);
         mSubtitleEdit = (EditText) findViewById(R.id.book_input_subtitle);
         mIsbnEdit = (EditText) findViewById(R.id.book_input_isbn);
@@ -221,6 +223,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         AutoCompleteUtils.setAdapter(this, Contract.Publishers.CONTENT_URI, Contract.Publishers.PUBLISHER_NAME, mPublisherEdit);
         AutoCompleteUtils.setAdapter(this, Contract.Libraries.CONTENT_URI, Contract.Libraries.LIBRARY_NAME, mLibraryEdit);
         AutoCompleteUtils.setAdapter(this, ContactsContract.Contacts.CONTENT_URI, ContactsContract.Contacts.DISPLAY_NAME, mOriginEdit);
+        AutoCompleteUtils.setAdapter(this, Contract.Genres.CONTENT_URI, Contract.Genres.GENRE_NAME, mGenreEdit);
 
         if (startScan || bulk) {
             scan(mScanButton);
@@ -462,7 +465,13 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
     public void saveConfirmed() {
         String authorsReadable = mAuthorEdit.getText().toString();
         String publisherName = mPublisherEdit.getText().toString();
+        String genreName = mGenreEdit.getText().toString();
         String libraryName = mLibraryEdit.getText().toString();
+
+        // Genre
+        ContentValues genreCv = new ContentValues();
+        genreCv.put(Contract.Genres.GENRE_NAME, genreName);
+        Uri genre = getContentResolver().insert(Contract.Genres.CONTENT_URI, genreCv);
 
         // Content values of book
         ContentValues bookCv = new ContentValues();
@@ -474,6 +483,7 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         bookCv.put(Contract.Books.BOOK_PUBLISHED, mPublished.getText().toString());
         bookCv.put(Contract.Books.BOOK_BORROWED_TO_ME, mBorrowedToMe);
         bookCv.put(Contract.Books.BOOK_WISH_LIST, mToWishList);
+        bookCv.put(Contract.Books.BOOK_GENRE_ID, Contract.Genres.getId(genre));
 
         Uri bookUri;
         if (mBookId == 0) {
