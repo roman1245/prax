@@ -32,12 +32,12 @@ public class GenreSpinnerAdapter extends ArrayAdapter<String> implements LoaderM
     @Nullable
     @Override
     public String getItem(int position) {
-        return items.get(position);
+        return items == null ? "" : items.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return ids.get(position);
+        return ids == null ? 0L : ids.get(position);
     }
 
     @Override
@@ -56,16 +56,19 @@ public class GenreSpinnerAdapter extends ArrayAdapter<String> implements LoaderM
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (loader.getId() == 412) {
+
+            items = new ArrayList<>();
+            ids = new ArrayList<>();
+            items.add(getContext().getString(R.string.genre_select));
+            ids.add(0L);
+
             if (data != null && data.moveToFirst()) {
-                items = new ArrayList<>();
-                ids = new ArrayList<>();
-                items.add(getContext().getString(R.string.genre_select));
-                ids.add(0L);
                 do {
                     items.add(data.getString(data.getColumnIndex(Contract.Genres.GENRE_NAME)));
                     ids.add(data.getLong(data.getColumnIndex(Contract.Genres.GENRE_ID)));
                 } while (data.moveToNext());
             }
+
             notifyDataSetChanged();
         }
     }

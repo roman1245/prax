@@ -295,7 +295,7 @@
     </string-array>
 
     <string-array name="book_rating">
-        <item>My rating asdf sadf asdf asdf </item>
+        <item>My rating </item>
         <item>1</item>
         <item>2</item>
         <item>3</item>
