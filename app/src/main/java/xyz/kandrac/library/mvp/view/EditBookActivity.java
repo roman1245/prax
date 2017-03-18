@@ -519,8 +519,8 @@ public class EditBookActivity extends AppCompatActivity implements LoaderManager
         ContentValues authorCv = new ContentValues();
         for (int i = 0; i < authorsSplit.length; i++) {
             authorCv.put(Integer.toString(i), authorsSplit[i].trim());
-            //
         }
+        getContentResolver().delete(Contract.Books.buildBookAuthorUri(bookUri), null, null);
         getContentResolver().insert(Contract.Books.buildBookAuthorUri(bookUri), authorCv);
 
         if (mBorrowedToMe) {

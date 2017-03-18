@@ -606,7 +606,6 @@ public class DatabaseProvider extends ContentProvider {
      * unique column value except of {@link BaseColumns#_ID}, therefor we are updating based on
      * {@code uniqueColumn} name. In this case updating is completely ignored, but select request is required
      * in order to get the missing BaseColumns._ID value.
-     *
      * @param db           database to insert to
      * @param values       values to insert
      * @param table        table to insert to
@@ -622,7 +621,6 @@ public class DatabaseProvider extends ContentProvider {
      * Insert or update {@link ContentValues} to database. While inserting you are able to know any
      * unique column value except of {@link BaseColumns#_ID}, therefor we are updating based on
      * {@code uniqueColumn} name.
-     *
      * @param db           database to insert to
      * @param values       values to insert
      * @param table        table to insert to
@@ -641,7 +639,6 @@ public class DatabaseProvider extends ContentProvider {
 
     /**
      * Select {@link BaseColumns#_ID} from given table based on other {@code uniqueColumn}
-     *
      * @param db           database to insert to
      * @param values       values to insert
      * @param table        table to insert to
@@ -669,7 +666,6 @@ public class DatabaseProvider extends ContentProvider {
                 long id = Contract.Books.getBookId(uri);
 
                 Cursor bookCursor = db.query(Database.Tables.BOOKS, new String[]{Contract.Books.BOOK_REFERENCE, Contract.Books.BOOK_IMAGE_FILE}, Contract.Books.BOOK_ID + " = ?", new String[]{Long.toString(id)}, null, null, null);
-
 
                 if (bookCursor.moveToFirst()) {
                     // clear cloud data first
@@ -718,6 +714,13 @@ public class DatabaseProvider extends ContentProvider {
                 count += db.delete(Database.Tables.BOOKS_AUTHORS, Contract.BookAuthors.AUTHOR_ID + " = ?", new String[]{Long.toString(id)});
                 count += db.delete(Database.Tables.AUTHORS, Contract.Authors.AUTHOR_ID + " = ?", new String[]{Long.toString(id)});
 
+                break;
+            }
+            case AUTHOR_BY_BOOK: {
+                long id = Contract.Books.getBookId(uri);
+                count += db.delete(Database.Tables.BOOKS_AUTHORS, Contract.BookAuthorsColumns.BOOK_ID + " = ?", new String[]{Long.toString(id)});
+                getContext().getContentResolver().notifyChange(Contract.Books.CONTENT_URI, null);
+                getContext().getContentResolver().notifyChange(Contract.Books.buildBookUri(id), null);
                 break;
             }
             case PUBLISHERS: {
