@@ -79,11 +79,15 @@ android {
         }
     }
 
+    flavorDimensions "paid"
+
     productFlavors {
         pro {
+            dimension "paid"
             applicationIdSuffix ".pro"
         }
         free {
+            dimension "paid"
             applicationIdSuffix ".free"
         }
     }
