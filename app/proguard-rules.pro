@@ -4,6 +4,10 @@
 -keep class retrofit2.** { *; }
 -keepattributes Signature
 -keepattributes Exceptions
+-dontwarn okhttp3.internal.platform.*
+-keep public class com.google.android.gms.* { public *; }
+-dontwarn com.google.android.gms.**
+
 
 # picasso
 -dontwarn com.squareup.picasso.**
