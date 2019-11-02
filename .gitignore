@@ -1,8 +1,10 @@
 .gradle
 /local.properties
+key.properties
 /.idea
 .DS_Store
 /build
 /captures
 *.iml
+*.jks
 /library-1117-firebase-crashreporting-yveai-1f013cbfad.json
