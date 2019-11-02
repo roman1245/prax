@@ -107,7 +107,6 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".StartupService" />
         <service android:name=".InitService" />
 
         <meta-data
