@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,17 +8,17 @@
     tools:context=".mvp.view.EditBookActivity">
 
     <!-- Toolbar -->
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -26,7 +26,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <!-- Main content -->
-        <android.support.v7.widget.GridLayout
+        <androidx.gridlayout.widget.GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -251,11 +251,11 @@
                 app:layout_columnSpan="2"
                 app:layout_gravity="fill"
                 tools:text="This book was completely awesome! It was about some small Hobbit." />
-        </android.support.v7.widget.GridLayout>
+        </androidx.gridlayout.widget.GridLayout>
     </ScrollView>
 
     <!-- FAB - scan button -->
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -265,4 +265,4 @@
         app:fabSize="normal"
         app:pressedTranslationZ="12dp"
         app:srcCompat="@drawable/ic_content_save" />
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

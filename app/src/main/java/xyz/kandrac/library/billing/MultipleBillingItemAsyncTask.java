@@ -3,7 +3,7 @@ package xyz.kandrac.library.billing;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
-import android.support.v4.util.Pair;
+import androidx.core.util.Pair;
 import android.util.Log;
 
 import com.android.vending.billing.IInAppBillingService;

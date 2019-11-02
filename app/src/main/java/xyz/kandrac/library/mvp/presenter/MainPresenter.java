@@ -10,9 +10,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.v4.widget.DrawerLayout;
+import androidx.annotation.NonNull;
+import com.google.android.material.navigation.NavigationView;
+import androidx.drawerlayout.widget.DrawerLayout;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -29,7 +29,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -428,7 +427,6 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
                 Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
                 view.getActivity().startActivityForResult(signInIntent, RC_SIGN_IN);
             } catch (Exception ex) {
-                FirebaseCrash.report(ex);
                 view.interact(ERROR_TYPE_GOOGLE_SIGNIN, null);
             }
         }

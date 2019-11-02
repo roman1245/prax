@@ -10,7 +10,6 @@ repositories {
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
-    buildToolsVersion rootProject.buildToolsVersion
 
     defaultConfig {
         applicationId "xyz.kandrac.library"
@@ -21,7 +20,7 @@ android {
         versionName "1.6.1"
         multiDexEnabled true
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         // Database authorities definitions
         buildConfigField 'String', 'DATABASE_AUTHORITY', '"xyz.kandrac.library"'
@@ -113,59 +112,35 @@ dependencies {
     implementation project(':barcode')
 
     // compat libraries
-    implementation "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
-    implementation "com.android.support:design:$rootProject.supportLibraryVersion"
-    implementation "com.android.support:recyclerview-v7:$rootProject.supportLibraryVersion"
-    implementation "com.android.support:cardview-v7:$rootProject.supportLibraryVersion"
-    implementation "com.android.support:gridlayout-v7:$rootProject.supportLibraryVersion"
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.gridlayout:gridlayout:1.0.0'
 
     // helper libraries
     implementation 'com.squareup.picasso:picasso:2.5.2'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
-    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.2.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.0.1'
+    implementation 'com.squareup.retrofit2:retrofit:2.6.2'
+    implementation 'com.squareup.retrofit2:converter-gson:2.6.2'
     implementation 'io.github.yavski:fab-speed-dial:1.0.6'
 
     // gms and fire-base
-    implementation "com.google.android.gms:play-services-auth:15.0.1"
+    implementation "com.google.android.gms:play-services-auth:17.0.0"
     implementation "com.google.firebase:firebase-database:$rootProject.firebaseVersion"
-    implementation "com.google.firebase:firebase-auth:16.0.2"
-    implementation "com.google.firebase:firebase-crash:$rootProject.firebaseVersion"
-
-    implementation "com.android.support.test.espresso:espresso-idling-resource:$rootProject.espressoVersion"
+    implementation "com.google.firebase:firebase-auth:19.1.0"
 
     // Dagger dependencies
     kapt "com.google.dagger:dagger-compiler:$rootProject.daggerVersion"
     implementation "com.google.dagger:dagger:$rootProject.daggerVersion"
 
-    // Dependencies for local unit tests
-    testImplementation "junit:junit:$rootProject.ext.junitVersion"
-
-    // Android Testing Support Library's runner and rules
-    androidTestImplementation "com.android.support.test:runner:$rootProject.ext.runnerVersion"
-    androidTestImplementation "com.android.support.test:rules:$rootProject.ext.runnerVersion"
-
-    // Dependencies for Android unit tests
-    androidTestImplementation "junit:junit:$rootProject.ext.junitVersion"
-
-    // Espresso UI Testing
-    androidTestImplementation "com.android.support.test.espresso:espresso-core:$rootProject.espressoVersion"
-    androidTestImplementation "com.android.support.test.espresso:espresso-contrib:$rootProject.espressoVersion"
-    androidTestImplementation "com.android.support.test.espresso:espresso-intents:$rootProject.espressoVersion"
-
-    // Resolve conflicts between main and test APK:
-    androidTestImplementation "com.android.support:support-annotations:$rootProject.supportLibraryVersion"
-    androidTestImplementation "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
-    androidTestImplementation "com.android.support:design:$rootProject.supportLibraryVersion"
-
-    androidTestImplementation 'com.google.dexmaker:dexmaker:1.2'
     compileOnly 'org.glassfish:javax.annotation:10.0-b28'
 
     implementation('com.crashlytics.sdk.android:crashlytics:2.6.6@aar') {
         transitive = true
     }
 
-    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'androidx.multidex:multidex:2.0.1'
 
 }
 

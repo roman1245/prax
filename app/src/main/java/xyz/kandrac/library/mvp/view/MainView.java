@@ -1,7 +1,7 @@
 package xyz.kandrac.library.mvp.view;
 
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * Created by jan on 31.10.2016.

@@ -5,9 +5,9 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.provider.ContactsContract;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.widget.SimpleCursorAdapter;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.cursoradapter.widget.SimpleCursorAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.FilterQueryProvider;
 
