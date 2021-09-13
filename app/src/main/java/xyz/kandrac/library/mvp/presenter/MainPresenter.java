@@ -95,7 +95,6 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
     SharedPreferencesManager manager;
 
     private MainView view;
-    private IABConfigurator configurator;
     private FirebaseAuth mAuth;
     private GoogleApiClient mGoogleApiClient;
     private long mLastFinishingBackClicked;
@@ -132,16 +131,11 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
 
     public void onDestroy() {
         LogUtils.d(LOG_TAG, "Destroying helper.");
-        if (configurator != null) {
-            configurator.onDestroy();
-        }
     }
 
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
         // Pass on the activity result to the helper for handling
-        if (configurator.handleActivityResult(requestCode, resultCode, data)) {
-            LogUtils.d(LOG_TAG, "onActivityResult handled by IABUtil.");
-        } else if (requestCode == RC_SIGN_IN) {
+        if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (!result.isSuccess()) {
                 view.interact(ERROR_TYPE_GOOGLE_SIGNIN, null);
@@ -377,23 +371,6 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
 
     }
 
-    /**
-     * In App Billing configuration
-     */
-    public void configureIAB() {
-        configurator = new IABConfigurator(view.getActivity(), this);
-        if (mAuth.getCurrentUser() != null) {
-            String email = mAuth.getCurrentUser().getEmail();
-            if (email != null && !BuildConfig.DEBUG) {
-                // in release let this user to have full access to drive functions
-                configurator.setAdmin(email.equals("kandrac.jan@gmail.com"));
-            }
-        }
-        if (!configurator.start()) {
-            LogUtils.d(LOG_TAG, "IAB config error");
-        }
-    }
-
     @Override
     public void onDrivePurchased(boolean purchased) {
         manager.editPreference(KEY_PREF_DRIVER_BOUGHT, purchased);
@@ -411,14 +388,6 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
             LogUtils.d(LOG_TAG, "starting sync");
             view.getActivity().getLoaderManager().initLoader(SYNC_LOADER, null, this);
         }
-    }
-
-    public void consume(String sku) {
-        configurator.consume(sku);
-    }
-
-    public void startPurchaseFlow(String sku) {
-        configurator.purchaseFlow(view.getActivity(), sku);
     }
 
     public void authenticate() {

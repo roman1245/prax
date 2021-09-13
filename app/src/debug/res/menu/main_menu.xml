@@ -22,9 +22,4 @@
         android:title="@string/purchase_test_unavailable"
         app:showAsAction="never" />
 
-    <item
-        android:id="@+id/purchase_consume"
-        android:title="@string/purchase_consume"
-        app:showAsAction="never" />
-
 </menu>

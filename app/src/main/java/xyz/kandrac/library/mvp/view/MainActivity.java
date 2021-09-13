@@ -149,7 +149,6 @@ public class MainActivity extends AppCompatActivity implements
         presenter.removeUnusedPhotosIfNeeded();
         presenter.initNavigationView();
         presenter.configureSignIn();
-        presenter.configureIAB();
         presenter.checkNews();
     }
 
@@ -200,9 +199,6 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.purchase_test_unavailable:
                 BillingSkus.getInstance().setDebugAlternative(BillingSkus.TEST_UNAVAILABLE);
                 Toast.makeText(this, BillingSkus.TEST_UNAVAILABLE + " set", Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.purchase_consume:
-                presenter.consume(BillingSkus.getDriveSku());
                 return true;
         }
         return super.onOptionsItemSelected(item);
