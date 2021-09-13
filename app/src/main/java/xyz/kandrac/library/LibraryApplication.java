@@ -3,9 +3,6 @@ package xyz.kandrac.library;
 import android.app.Application;
 import android.content.Context;
 
-import com.crashlytics.android.Crashlytics;
-
-import io.fabric.sdk.android.Fabric;
 import xyz.kandrac.library.dagger.component.ApplicationComponent;
 import xyz.kandrac.library.dagger.component.DaggerApplicationComponent;
 import xyz.kandrac.library.dagger.component.DaggerNetComponent;
@@ -53,10 +50,4 @@ public class LibraryApplication extends Application {
         return app.mNetComponent;
     }
 
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        Fabric.with(this, new Crashlytics());
-    }
 }

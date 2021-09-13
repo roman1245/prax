@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'io.fabric'
 apply plugin: "kotlin-android"
 apply plugin: "kotlin-android-extensions"
 apply plugin: "kotlin-kapt"
@@ -9,10 +8,6 @@ def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('key.properties')
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-}
-
-repositories {
-    maven { url 'https://maven.fabric.io/public' }
 }
 
 android {
@@ -60,9 +55,6 @@ android {
 //            signingConfig signingConfigs.release
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-
-            buildConfigField 'String', 'GOOGLE_TOKEN', '"958496077479-k98j56dm8cm42ltmrtvl7n452g73f6l5.apps.googleusercontent.com"'
-            buildConfigField 'String', 'GOOGLE_API_KEY', '"AIzaSyB856kGT7z6lYo_99pikNEGs1jFaCCltxs"'
         }
 
         debug {
@@ -73,9 +65,7 @@ android {
                     'proguard-rules-debug.pro'
 
             // Database authorities definitions
-            buildConfigField 'String', 'GOOGLE_TOKEN', '"484886958517-1uk79pdo3readop5cgdj7lnbo95jd2i9.apps.googleusercontent.com"'
             buildConfigField 'String', 'DATABASE_AUTHORITY', '"xyz.kandrac.library.debug"'
-            buildConfigField 'String', 'GOOGLE_API_KEY', '"AIzaSyBhGenifD9XgRW8q-rzEKyo3KlplHAf8J8"'
             buildConfigField 'String', 'FILE_PROVIDER_AUTHORITY', '"xyz.kandrac.library.files.debug"'
 
             manifestPlaceholders = [databaseAuthority    : "xyz.kandrac.library.debug",
@@ -143,12 +133,7 @@ dependencies {
 
     compileOnly 'org.glassfish:javax.annotation:10.0-b28'
 
-    implementation('com.crashlytics.sdk.android:crashlytics:2.6.6@aar') {
-        transitive = true
-    }
-
     implementation 'androidx.multidex:multidex:2.0.1'
-
 
 }
 

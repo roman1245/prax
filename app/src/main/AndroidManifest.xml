@@ -109,9 +109,6 @@
 
         <service android:name=".InitService" />
 
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="a45242414925f7d737bcfa791f62f2f8d40d391a" />
     </application>
 
 </manifest>

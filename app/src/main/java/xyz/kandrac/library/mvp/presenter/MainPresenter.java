@@ -441,18 +441,6 @@ public class MainPresenter implements Presenter<MainView>, LoaderManager.LoaderC
 
     }
 
-    public void configureSignIn() {
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(BuildConfig.GOOGLE_TOKEN)
-                .requestEmail()
-                .build();
-
-        mGoogleApiClient = new GoogleApiClient.Builder(view.getActivity())
-                .enableAutoManage(view.getActivity(), this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
-    }
-
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         view.interact(ERROR_TYPE_GOOGLE_API_CONNECTION, connectionResult.getErrorMessage());

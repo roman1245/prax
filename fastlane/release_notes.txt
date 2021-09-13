@@ -1,4 +1,0 @@
-Feedback implemented
-Voting fully implemented
-Fixed crash in release version for book import
-News dialog introduced

@@ -148,7 +148,6 @@ public class MainActivity extends AppCompatActivity implements
         // remove this in version 2.0 maybe?
         presenter.removeUnusedPhotosIfNeeded();
         presenter.initNavigationView();
-        presenter.configureSignIn();
         presenter.checkNews();
     }
 
